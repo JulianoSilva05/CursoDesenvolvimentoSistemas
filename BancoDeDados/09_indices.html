@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Introdução a Banco de Dados</title>
+    <title>Índices e Otimização</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -17,249 +17,100 @@
         
         <!-- Slide 1: Capa -->
         <div class="slide active">
-            <h1>Introdução a Banco de Dados</h1>
-            <p>Conceitos Fundamentais, Modelagem e SQL</p>
+            <h1>Índices e Otimização</h1>
+            <p>Acelerando suas consultas SQL</p>
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
             <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
         </div>
 
-        <!-- Slide 2: Agenda -->
+        <!-- Slide 2: O que é um Índice? -->
         <div class="slide">
-            <h2>Agenda da Aula</h2>
-            <ul>
-                <li><strong>Parte 1:</strong> Conceitos Básicos e História (30 min)</li>
-                <li><strong>Parte 2:</strong> Modelagem de Dados e Relacionamentos (40 min)</li>
-                <li><strong>Parte 3:</strong> Introdução ao SQL (30 min)</li>
-                <li><strong>Parte 4:</strong> NoSQL, Tendências e Encerramento (20 min)</li>
-            </ul>
+            <h2>O que é um Índice?</h2>
+            <p>Imagine procurar um tópico num livro de 1000 páginas sem o índice remissivo. Você teria que ler página por página (Full Table Scan).</p>
+            <p>O índice é uma estrutura de dados auxiliar (geralmente B-Tree) que aponta onde está o dado.</p>
         </div>
 
-        <!-- Slide 3: O Problema dos Dados -->
+        <!-- Slide 3: Vantagens e Desvantagens -->
         <div class="slide">
-            <h2>O Problema dos Dados</h2>
-            <p>Antes dos computadores, como guardávamos informações?</p>
-            <ul>
-                <li>Arquivos físicos, pastas, gavetas.</li>
-                <li>Problemas: Espaço físico, deterioração, dificuldade de busca, redundância (cópias desatualizadas).</li>
-            </ul>
-            <p class="highlight">O Banco de Dados surgiu para resolver a <strong>organização</strong>, <strong>segurança</strong> e <strong>acesso rápido</strong> à informação.</p>
-        </div>
-
-        <!-- Slide 4: Definição de BD -->
-        <div class="slide">
-            <h2>O que é um Banco de Dados?</h2>
-            <p>Um <strong>Banco de Dados (BD)</strong> é uma coleção organizada de informações estruturadas, armazenadas eletronicamente.</p>
-            <div class="note" style="border-left: 4px solid var(--senai-blue); padding-left: 10px; background-color: #eef; padding: 10px; border-radius: 0 5px 5px 0; max-width: 800px; margin-top: 20px; width: 100%;">
-                Não confunda o "BD" (os dados em si) com o "SGBD" (o software que gerencia).
+            <h2>Vantagens e Desvantagens</h2>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1; background: #eeffee; padding: 15px; border-radius: 10px;">
+                    <h3>Vantagens</h3>
+                    <ul>
+                        <li>Consultas (SELECT) muito mais rápidas.</li>
+                        <li>Ordenação (ORDER BY) instantânea.</li>
+                    </ul>
+                </div>
+                <div style="flex: 1; background: #ffeeee; padding: 15px; border-radius: 10px;">
+                    <h3>Desvantagens</h3>
+                    <ul>
+                        <li>Ocupa espaço extra em disco.</li>
+                        <li>Deixa a escrita (INSERT, UPDATE, DELETE) mais lenta (pois precisa atualizar o índice também).</li>
+                    </ul>
+                </div>
             </div>
-            <p><strong>Analogia:</strong> O BD é como uma biblioteca gigante. O SGBD é o bibliotecário que sabe onde está cada livro e controla quem pode pegar emprestado.</p>
         </div>
 
-        <!-- Slide 5: SGBD -->
+        <!-- Slide 4: Quando criar índices? -->
         <div class="slide">
-            <h2>O SGBD</h2>
-            <p><strong>Sistema Gerenciador de Banco de Dados</strong> (DBMS em inglês).</p>
-            <p>Funções principais:</p>
+            <h2>Quando criar índices?</h2>
+            <p>✅ Crie em colunas que:</p>
             <ul>
-                <li>Permitir a criação, leitura, atualização e exclusão de dados (CRUD).</li>
-                <li>Controlar acesso (segurança/login).</li>
-                <li>Garantir consistência (evitar dados corrompidos).</li>
-                <li>Backup e recuperação.</li>
+                <li>São usadas frequentemente no <code>WHERE</code>.</li>
+                <li>São usadas em <code>JOINs</code> (Chaves Estrangeiras).</li>
+                <li>São usadas em <code>ORDER BY</code>.</li>
             </ul>
-            <p>Exemplos: MySQL, PostgreSQL, Oracle, SQL Server, MariaDB.</p>
-        </div>
-
-        <!-- Slide 6: Quem trabalha com BD? -->
-        <div class="slide">
-            <h2>Quem trabalha com BD?</h2>
+            <p>❌ Evite em colunas que:</p>
             <ul>
-                <li><strong>DBA (Database Administrator):</strong> Responsável pela infraestrutura, desempenho, segurança e backups. O "guardião".</li>
-                <li><strong>Desenvolvedor de Software:</strong> Cria as aplicações que consomem e gravam dados no BD. Projeta o esquema lógico.</li>
-                <li><strong>Analista de Dados / Cientista de Dados:</strong> Extrai informações e insights dos dados armazenados para tomada de decisão (Business Intelligence).</li>
+                <li>Têm poucos valores únicos (ex: Gênero M/F, Status Ativo/Inativo).</li>
+                <li>São atualizadas com frequência extrema.</li>
             </ul>
         </div>
 
-        <!-- Slide 7: Evolução dos Modelos -->
+        <!-- Slide 5: Tipos de Índices -->
         <div class="slide">
-            <h2>Breve História dos Modelos</h2>
+            <h2>Tipos de Índices</h2>
             <ul>
-                <li><strong>Modelo Hierárquico (Anos 60):</strong> Estrutura de árvore (pai-filho). Rígido.</li>
-                <li><strong>Modelo de Rede (Anos 70):</strong> Grafos complexos. Difícil manutenção.</li>
-                <li><strong>Modelo Relacional (Anos 70/80 - Hoje):</strong> Baseado em tabelas e álgebra relacional. O padrão da indústria.</li>
-                <li><strong>NoSQL (Anos 2000+):</strong> Foco em flexibilidade e big data (Documentos, Grafos, Chave-Valor).</li>
+                <li><strong>PRIMARY:</strong> Criado automaticamente na Chave Primária. Único e não nulo.</li>
+                <li><strong>UNIQUE:</strong> Garante que não haja valores repetidos (ex: CPF, Email).</li>
+                <li><strong>INDEX (Comum):</strong> Apenas acelera a busca. Permite repetidos.</li>
+                <li><strong>FULLTEXT:</strong> Para busca em textos longos (como Google).</li>
             </ul>
         </div>
 
-        <!-- Slide 8: Modelo Relacional (Conceitos) -->
+        <!-- Slide 6: Comando CREATE INDEX -->
         <div class="slide">
-            <h2>O Modelo Relacional</h2>
-            <p>Proposto por Edgar F. Codd (IBM) em 1970.</p>
-            <p>Conceitos Fundamentais:</p>
-            <ul>
-                <li><strong>Entidade (Tabela):</strong> Algo do mundo real sobre o qual queremos guardar dados (ex: Cliente, Produto).</li>
-                <li><strong>Atributo (Coluna):</strong> Uma característica da entidade (ex: Nome do Cliente, Preço do Produto).</li>
-                <li><strong>Tupla (Linha/Registro):</strong> Uma instância única da entidade.</li>
-            </ul>
+            <h2>Criando Índices</h2>
+            <div class="code-block">
+-- Criar um índice no CPF do cliente
+CREATE INDEX idx_cpf ON Clientes(CPF);
+
+-- Criar um índice composto (Nome + Sobrenome)
+CREATE INDEX idx_nome_completo ON Clientes(Nome, Sobrenome);
+
+-- Apagar um índice
+DROP INDEX idx_cpf ON Clientes;
+            </div>
         </div>
 
-        <!-- Slide 9: Chave Primária (PK) -->
+        <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Chave Primária (Primary Key - PK)</h2>
-            <p>É o atributo (ou conjunto de atributos) que identifica <strong>unicamente</strong> cada registro em uma tabela.</p>
-            <ul>
-                <li>Não pode se repetir.</li>
-                <li>Não pode ser nulo (vazio).</li>
-                <li>Exemplos: CPF, Matrícula, Código do Produto, ID (auto-incremento).</li>
-            </ul>
+            <h2>Atividade: Estratégia de Índices</h2>
             <div class="activity-box">
-                <span class="activity-title">Reflexão Rápida:</span>
-                Por que o "Nome" de uma pessoa é uma péssima chave primária?
-            </div>
-        </div>
-
-        <!-- Slide 10: Chave Estrangeira (FK) -->
-        <div class="slide">
-            <h2>Chave Estrangeira (Foreign Key - FK)</h2>
-            <p>É um atributo que cria um vínculo (relacionamento) entre duas tabelas.</p>
-            <p>Ela aponta para a Chave Primária de outra tabela.</p>
-            <div class="diagram" style="margin: 20px 0; padding: 20px; background: #fff; border: 1px solid #ddd; border-radius: 8px; text-align: center; font-family: monospace; max-width: 800px;">
-                Tabela PEDIDOS (FK: id_cliente)  ----->  Tabela CLIENTES (PK: id_cliente)
-            </div>
-            <p>Isso garante a <strong>Integridade Referencial</strong>: Não posso criar um pedido para um cliente que não existe!</p>
-        </div>
-
-        <!-- Slide 11: Exemplo Visual de Relacionamento -->
-        <div class="slide">
-            <h2>Exemplo Visual</h2>
-            <p><strong>Tabela: Clientes</strong></p>
-            <table>
-                <tr><th>ID (PK)</th><th>Nome</th></tr>
-                <tr><td>1</td><td>Ana</td></tr>
-                <tr><td>2</td><td>Beto</td></tr>
-            </table>
-            <br>
-            <p><strong>Tabela: Pedidos</strong></p>
-            <table>
-                <tr><th>ID_Pedido (PK)</th><th>Data</th><th>ID_Cliente (FK)</th></tr>
-                <tr><td>101</td><td>01/03</td><td>1 (Ana)</td></tr>
-                <tr><td>102</td><td>02/03</td><td>1 (Ana)</td></tr>
-                <tr><td>103</td><td>03/03</td><td>2 (Beto)</td></tr>
-            </table>
-        </div>
-
-        <!-- Slide 12: Cardinalidade -->
-        <div class="slide">
-            <h2>Cardinalidade (Relacionamentos)</h2>
-            <p>Define "quantos" de um lado se relacionam com "quantos" do outro.</p>
-            <ul>
-                <li><strong>1:1 (Um para Um):</strong> Um marido tem uma esposa (legalmente). Raro em modelagem.</li>
-                <li><strong>1:N (Um para Muitos):</strong> Um Cliente faz N Pedidos. Um Departamento tem N Funcionários. (O mais comum).</li>
-                <li><strong>N:N (Muitos para Muitos):</strong> Um Aluno cursa N Disciplinas, e uma Disciplina tem N Alunos. (Gera uma tabela intermediária).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 13: Atividade Prática de Modelagem -->
-        <div class="slide">
-            <h2>Atividade Prática: Modelagem</h2>
-            <div class="activity-box">
-                <span class="activity-title">Cenário: Biblioteca Escolar</span>
-                <p>Identifique as <strong>Entidades</strong> (Tabelas) e os <strong>Atributos</strong> principais.</p>
-                <p>Pense nos relacionamentos:</p>
-                <ul>
-                    <li>Um Aluno pega Livros.</li>
-                    <li>Um Livro tem um Autor.</li>
-                </ul>
-                <p style="font-size: 1rem; margin-top: 10px;">(Tempo: 5-10 minutos para discussão)</p>
+                <span class="activity-title">Otimizando o E-commerce</span>
+                <p>Tabela: <code>Produtos</code> (ID, Nome, Descricao, Preco, Categoria, Estoque, DataCadastro).</p>
+                <p>Consultas mais comuns:</p>
+                <ol>
+                    <li>Buscar produto pelo <strong>Nome</strong>.</li>
+                    <li>Listar produtos de uma <strong>Categoria</strong> ordenados pelo <strong>Preco</strong>.</li>
+                </ol>
+                <p>Quais índices você criaria para otimizar essas buscas? Justifique.</p>
             </div>
             
-            <textarea id="modelagem-code" class="code-input" placeholder="Escreva sua resposta aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="modelagem-code">
-                📧 Enviar Resposta para o Professor
+            <textarea id="index-code" class="code-input" placeholder="Criaria índice em..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="index-code">
+                📧 Enviar Resposta
             </button>
-        </div>
-
-        <!-- Slide 14: SQL - Introdução -->
-        <div class="slide">
-            <h2>Introdução ao SQL</h2>
-            <p><strong>SQL (Structured Query Language)</strong> é a linguagem universal dos bancos relacionais.</p>
-            <p>Dividida em subconjuntos:</p>
-            <ul>
-                <li><strong>DDL (Data Definition):</strong> CREATE, DROP, ALTER (Define a estrutura).</li>
-                <li><strong>DML (Data Manipulation):</strong> INSERT, UPDATE, DELETE, SELECT (Mexe nos dados).</li>
-                <li><strong>DCL (Data Control):</strong> GRANT, REVOKE (Permissões).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 15: SQL - SELECT -->
-        <div class="slide">
-            <h2>O Comando SELECT</h2>
-            <p>O comando mais usado. Serve para consultar dados.</p>
-            <div class="code-block">
-SELECT coluna1, coluna2 
-FROM tabela 
-WHERE condicao
-ORDER BY coluna1;
-            </div>
-            <p>Exemplo:</p>
-            <div class="code-block">
-SELECT Nome, Email 
-FROM Alunos 
-WHERE Curso = 'Técnico em DS'
-ORDER BY Nome ASC;
-            </div>
-        </div>
-
-        <!-- Slide 16: SQL - INSERT, UPDATE, DELETE -->
-        <div class="slide">
-            <h2>Manipulando Dados</h2>
-            <div class="code-block">
--- INSERIR
-INSERT INTO Alunos (Nome, Idade) VALUES ('Carlos', 25);
-
--- ATUALIZAR (Cuidado com o WHERE!)
-UPDATE Alunos SET Idade = 26 WHERE Nome = 'Carlos';
-
--- DELETAR (MUITO Cuidado!)
-DELETE FROM Alunos WHERE Idade < 18;
-            </div>
-            <div class="note" style="border-left: 4px solid var(--senai-blue); padding-left: 10px; background-color: #eef; padding: 10px; border-radius: 0 5px 5px 0; max-width: 800px; margin-top: 20px; width: 100%; color: red;">
-                Atenção: Um UPDATE ou DELETE sem WHERE afeta TODA a tabela!
-            </div>
-        </div>
-
-        <!-- Slide 17: NoSQL -->
-        <div class="slide">
-            <h2>O Mundo NoSQL</h2>
-            <p>Quando usar NoSQL?</p>
-            <ul>
-                <li>Volume de dados massivo (Big Data).</li>
-                <li>Estrutura dos dados muda frequentemente (Schema-less).</li>
-                <li>Alta velocidade de escrita/leitura é crítica.</li>
-            </ul>
-            <p>Tipos: Documentos (MongoDB), Chave-Valor (Redis), Grafos (Neo4j), Colunar (Cassandra).</p>
-        </div>
-
-        <!-- Slide 18: Tendências -->
-        <div class="slide">
-            <h2>Tendências em Banco de Dados</h2>
-            <ul>
-                <li><strong>DBaaS (Database as a Service):</strong> AWS RDS, Azure SQL, Google Cloud SQL. Você não gerencia o servidor, apenas usa.</li>
-                <li><strong>NewSQL:</strong> Tentativa de unir a escalabilidade do NoSQL com a consistência do SQL (ex: CockroachDB).</li>
-                <li><strong>IA e Dados:</strong> Bancos de dados vetoriais para suporte a Machine Learning e LLMs.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 19: Conclusão -->
-        <div class="slide">
-            <h2>Conclusão da Aula</h2>
-            <p>Hoje aprendemos:</p>
-            <ul>
-                <li>A importância dos dados e a evolução para SGBDs.</li>
-                <li>O Modelo Relacional: Tabelas, PK, FK e Relacionamentos.</li>
-                <li>Conceitos básicos de SQL para consulta e manipulação.</li>
-                <li>Visão geral sobre NoSQL e futuro.</li>
-            </ul>
-            <p style="margin-top: 20px; font-weight: bold; color: var(--senai-blue);">Próximos passos: Instalar um SGBD (MySQL/Postgres) e criar seu primeiro banco!</p>
         </div>
 
     </div>
@@ -270,7 +121,7 @@ DELETE FROM Alunos WHERE Idade < 18;
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 19</div>
+    <div class="slide-number" id="slideNumber">1 / 7</div>
 
     <script src="assets/js/script.js"></script>
 </body>

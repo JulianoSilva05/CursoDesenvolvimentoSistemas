@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dominando SQL JOINs</title>
+    <title>Dominando JOINs</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -17,295 +17,88 @@
         
         <!-- Slide 1: Capa -->
         <div class="slide active">
-            <h1>Dominando SQL JOINs</h1>
-            <p>Conectando tabelas como um profissional</p>
+            <h1>Dominando JOINs</h1>
+            <p>Conectando tabelas com SQL</p>
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p><strong>Duração:</strong> 2 Horas (Teoria + Prática Guiada)</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
         </div>
 
-        <!-- Slide 2: O Problema -->
+        <!-- Slide 2: O que é um JOIN? -->
         <div class="slide">
-            <h2>Por que precisamos de JOINs?</h2>
-            <p>Em um Banco de Dados Relacional, os dados são quebrados em várias tabelas para evitar repetição (Normalização).</p>
-            <p><strong>Exemplo:</strong> Temos clientes em uma tabela e pedidos em outra.</p>
-            <p>Como saber "Quem comprou o quê?" se as informações estão separadas?</p>
-            <p class="highlight">A resposta é: <strong>JOIN</strong> (Juntar).</p>
+            <h2>O que é um JOIN?</h2>
+            <p>É uma cláusula SQL usada para combinar linhas de duas ou mais tabelas, com base em uma coluna relacionada entre elas (geralmente PK e FK).</p>
+            <p>Sem JOINs, os bancos relacionais seriam apenas ilhas de dados isolados.</p>
         </div>
 
-        <!-- Slide 3: O Cenário -->
+        <!-- Slide 3: INNER JOIN -->
         <div class="slide">
-            <h2>Nosso Cenário de Exemplo</h2>
-            <div style="display: flex; gap: 50px; justify-content: center; width: 100%; max-width: 900px;">
-                <div>
-                    <h3>Tabela A: Clientes</h3>
-                    <table>
-                        <tr><th>ID</th><th>Nome</th></tr>
-                        <tr><td>1</td><td>Ana</td></tr>
-                        <tr><td>2</td><td>Beto</td></tr>
-                        <tr><td>3</td><td>Carla</td></tr>
-                    </table>
-                </div>
-                <div>
-                    <h3>Tabela B: Pedidos</h3>
-                    <table>
-                        <tr><th>ID_Ped</th><th>Valor</th><th>ID_Cli</th></tr>
-                        <tr><td>101</td><td>R$ 50</td><td>1</td></tr>
-                        <tr><td>102</td><td>R$ 30</td><td>1</td></tr>
-                        <tr><td>103</td><td>R$ 100</td><td>4</td></tr>
-                    </table>
-                </div>
-            </div>
-            <p style="margin-top: 20px; font-size: 1rem;">Note: <strong>Ana (1)</strong> tem pedidos. <strong>Beto (2)</strong> e <strong>Carla (3)</strong> não têm. O pedido <strong>103</strong> é de um cliente (4) que não existe na tabela Clientes.</p>
-        </div>
-
-        <!-- Slide 4: INNER JOIN -->
-        <div class="slide">
-            <h2>INNER JOIN (A Interseção)</h2>
-            <p>Retorna <strong>apenas</strong> os registros que têm correspondência em <strong>ambas</strong> as tabelas.</p>
-            
-            <!-- Venn Diagram SVG -->
-            <div class="venn-wrapper">
-                <svg class="venn-svg" viewBox="0 0 200 120">
-                    <circle cx="70" cy="60" r="40" fill="white" stroke="#333" stroke-width="2" />
-                    <circle cx="130" cy="60" r="40" fill="white" stroke="#333" stroke-width="2" />
-                    <path d="M 96.5,33 A 40,40 0 0,1 96.5,87 A 40,40 0 0,1 96.5,33" fill="#E32119" fill-opacity="0.7" />
-                    <text x="50" y="65" class="venn-text">A</text>
-                    <text x="140" y="65" class="venn-text">B</text>
-                </svg>
-            </div>
-
+            <h2>INNER JOIN</h2>
+            <p>Retorna apenas os registros que têm correspondência em <strong>AMBAS</strong> as tabelas.</p>
+            <p><i>"Mostre-me os clientes que fizeram pedidos."</i> (Se o cliente não fez pedido, não aparece).</p>
             <div class="code-block">
-SELECT Clientes.Nome, Pedidos.Valor
+SELECT Clientes.Nome, Pedidos.Data
 FROM Clientes
-INNER JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cli;
+INNER JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cliente;
             </div>
-
-            <p><strong>Resultado:</strong></p>
-            <table>
-                <tr><th>Nome</th><th>Valor</th></tr>
-                <tr class="highlight-row"><td>Ana</td><td>R$ 50</td></tr>
-                <tr class="highlight-row"><td>Ana</td><td>R$ 30</td></tr>
-            </table>
-            <p style="font-size: 1rem;">Beto, Carla e o Pedido 103 ficaram de fora.</p>
         </div>
 
-        <!-- Slide 5: LEFT JOIN -->
+        <!-- Slide 4: LEFT JOIN -->
         <div class="slide">
-            <h2>LEFT JOIN (Tudo da Esquerda)</h2>
-            <p>Retorna <strong>todos</strong> os registros da tabela da esquerda (A), e os correspondentes da direita (B). Se não houver correspondência, preenche com NULL.</p>
-            
-            <div class="venn-wrapper">
-                <svg class="venn-svg" viewBox="0 0 200 120">
-                    <circle cx="70" cy="60" r="40" fill="#E32119" fill-opacity="0.7" stroke="#333" stroke-width="2" />
-                    <circle cx="130" cy="60" r="40" fill="none" stroke="#333" stroke-width="2" />
-                    <text x="50" y="65" class="venn-text" fill="white">A</text>
-                    <text x="140" y="65" class="venn-text">B</text>
-                </svg>
-            </div>
-
+            <h2>LEFT JOIN</h2>
+            <p>Retorna todos os registros da tabela da <strong>ESQUERDA</strong> (primeira citada), e os correspondentes da direita. Se não houver correspondência, retorna NULL.</p>
+            <p><i>"Mostre-me TODOS os clientes, e seus pedidos se houver."</i></p>
             <div class="code-block">
-SELECT Clientes.Nome, Pedidos.Valor
+SELECT Clientes.Nome, Pedidos.Data
 FROM Clientes
-LEFT JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cli;
+LEFT JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cliente;
             </div>
-
-            <table>
-                <tr><th>Nome</th><th>Valor</th></tr>
-                <tr><td>Ana</td><td>R$ 50</td></tr>
-                <tr><td>Ana</td><td>R$ 30</td></tr>
-                <tr class="highlight-row"><td>Beto</td><td>NULL</td></tr>
-                <tr class="highlight-row"><td>Carla</td><td>NULL</td></tr>
-            </table>
         </div>
 
-        <!-- Slide 6: RIGHT JOIN -->
+        <!-- Slide 5: RIGHT JOIN -->
         <div class="slide">
-            <h2>RIGHT JOIN (Tudo da Direita)</h2>
-            <p>O inverso do LEFT. Retorna <strong>todos</strong> da tabela da direita (B), e os correspondentes da esquerda (A).</p>
-            
-            <div class="venn-wrapper">
-                <svg class="venn-svg" viewBox="0 0 200 120">
-                    <circle cx="70" cy="60" r="40" fill="none" stroke="#333" stroke-width="2" />
-                    <circle cx="130" cy="60" r="40" fill="#E32119" fill-opacity="0.7" stroke="#333" stroke-width="2" />
-                    <text x="50" y="65" class="venn-text">A</text>
-                    <text x="140" y="65" class="venn-text" fill="white">B</text>
-                </svg>
-            </div>
-
-            <div class="code-block">
-SELECT Clientes.Nome, Pedidos.Valor
-FROM Clientes
-RIGHT JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cli;
-            </div>
-
-            <table>
-                <tr><th>Nome</th><th>Valor</th></tr>
-                <tr><td>Ana</td><td>R$ 50</td></tr>
-                <tr><td>Ana</td><td>R$ 30</td></tr>
-                <tr class="highlight-row"><td>NULL</td><td>R$ 100</td></tr>
-            </table>
-            <p style="font-size: 1rem;">O pedido de R$ 100 (ID 103) aparece, mas sem nome de cliente.</p>
+            <h2>RIGHT JOIN</h2>
+            <p>O inverso do LEFT. Retorna tudo da tabela da <strong>DIREITA</strong>.</p>
+            <p>Pouco usado na prática, pois basta inverter a ordem das tabelas no LEFT JOIN.</p>
         </div>
 
-        <!-- Slide 7: FULL JOIN -->
+        <!-- Slide 6: FULL JOIN -->
         <div class="slide">
-            <h2>FULL OUTER JOIN (Tudo de Todos)</h2>
-            <p>Retorna registros quando há uma correspondência em <strong>qualquer</strong> uma das tabelas. Traz tudo de A e tudo de B.</p>
-            
-            <div class="venn-wrapper">
-                <svg class="venn-svg" viewBox="0 0 200 120">
-                    <circle cx="70" cy="60" r="40" fill="#E32119" fill-opacity="0.7" stroke="#333" stroke-width="2" />
-                    <circle cx="130" cy="60" r="40" fill="#E32119" fill-opacity="0.7" stroke="#333" stroke-width="2" />
-                    <text x="50" y="65" class="venn-text" fill="white">A</text>
-                    <text x="140" y="65" class="venn-text" fill="white">B</text>
-                </svg>
-            </div>
-
-            <div class="code-block">
--- MySQL não suporta FULL JOIN nativo, usamos UNION
-SELECT ... FROM A LEFT JOIN B
-UNION
-SELECT ... FROM A RIGHT JOIN B;
-            </div>
-
-            <table>
-                <tr><th>Nome</th><th>Valor</th></tr>
-                <tr><td>Ana</td><td>R$ 50</td></tr>
-                <tr><td>Beto</td><td>NULL</td></tr>
-                <tr><td>NULL</td><td>R$ 100</td></tr>
-            </table>
+            <h2>FULL JOIN</h2>
+            <p>Retorna registros quando há correspondência em <strong>UMA</strong> das tabelas.</p>
+            <p>Combina o resultado do LEFT e do RIGHT JOIN. (Alguns bancos como MySQL não suportam nativamente, usando UNION para simular).</p>
         </div>
 
-        <!-- Slide 8: CROSS JOIN -->
+        <!-- Slide 7: Diagrama de Venn -->
         <div class="slide">
-            <h2>CROSS JOIN (Produto Cartesiano)</h2>
-            <p>Combina <strong>cada linha</strong> da primeira tabela com <strong>todas as linhas</strong> da segunda tabela.</p>
-            <p><strong>Cuidado!</strong> Se Tabela A tem 100 linhas e Tabela B tem 100 linhas, o resultado terá 10.000 linhas!</p>
-            
-            <div class="code-block">
-SELECT * FROM Camisetas CROSS JOIN Cores;
-            </div>
-            <p>Útil para gerar combinações (ex: Todas as camisetas em todas as cores).</p>
-        </div>
-
-        <!-- Slide 9: Resumo Visual -->
-        <div class="slide">
-            <h2>Resumo Visual</h2>
-            <div style="display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;">
-                <div style="text-align: center;">
+            <h2>Visualizando (Venn)</h2>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
+                <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
                     <strong>INNER</strong><br>
-                    <svg width="300" height="180" viewBox="0 0 200 120">
-                        <circle cx="70" cy="60" r="40" fill="none" stroke="#333" />
-                        <circle cx="130" cy="60" r="40" fill="none" stroke="#333" />
-                        <path d="M 96.5,33 A 40,40 0 0,1 96.5,87 A 40,40 0 0,1 96.5,33" fill="#E32119" />
-                    </svg>
+                    ( A ∩ B )
                 </div>
-                <div style="text-align: center;">
+                <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
                     <strong>LEFT</strong><br>
-                    <svg width="300" height="180" viewBox="0 0 200 120">
-                        <circle cx="70" cy="60" r="40" fill="#E32119" stroke="#333" />
-                        <circle cx="130" cy="60" r="40" fill="none" stroke="#333" />
-                    </svg>
-                </div>
-                <div style="text-align: center;">
-                    <strong>RIGHT</strong><br>
-                    <svg width="300" height="180" viewBox="0 0 200 120">
-                        <circle cx="70" cy="60" r="40" fill="none" stroke="#333" />
-                        <circle cx="130" cy="60" r="40" fill="#E32119" stroke="#333" />
-                    </svg>
+                    ( A + (A ∩ B) )
                 </div>
             </div>
-            <p style="margin-top: 30px;">Prontos para praticar?</p>
         </div>
 
-        <!-- Slide 10: Atividade Prática Intro -->
+        <!-- Slide 8: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade Prática: Sistema de Loja</h2>
-            <p><strong>Objetivo:</strong> Criar um banco de dados simples e executar consultas JOIN.</p>
-            <p><strong>Tempo:</strong> 2 Horas.</p>
-            <p><strong>Passos:</strong></p>
-            <ol>
-                <li>Modelagem (Papel e Caneta)</li>
-                <li>Criação das Tabelas (SQL)</li>
-                <li>Inserção de Dados (SQL)</li>
-                <li>Consultas de Relatórios (JOINs)</li>
-            </ol>
-        </div>
-
-        <!-- Slide 11: Atividade Parte 1 -->
-        <div class="slide">
-            <h2>Parte 1: Criação (30 min)</h2>
+            <h2>Atividade: Escrevendo JOINs</h2>
             <div class="activity-box">
-                <span style="font-weight: bold; color: #d97706;">Tarefa 1:</span> Crie as tabelas abaixo no seu banco de dados.
+                <span class="activity-title">Sistema de RH</span>
+                <p>Tabelas: <code>Funcionarios</code> (ID, Nome, ID_Depto) e <code>Departamentos</code> (ID, NomeDepto).</p>
+                <ol>
+                    <li>Escreva uma query para listar o Nome do Funcionário e o Nome do seu Departamento (apenas para quem tem departamento).</li>
+                    <li>Escreva uma query para listar TODOS os Departamentos, inclusive os que não têm funcionários (Departamento vazio).</li>
+                </ol>
             </div>
             
-            <textarea id="sql-join-part1" class="code-input" placeholder="Cole seu código CREATE TABLE aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-join-part1">
+            <textarea id="join-code" class="code-input" placeholder="SELECT ... FROM ... JOIN ..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="join-code">
                 📧 Enviar Resposta
             </button>
-        </div>
-
-        <!-- Slide 12: Atividade Parte 2 -->
-        <div class="slide">
-            <h2>Parte 2: Dados (30 min)</h2>
-            <div class="activity-box">
-                <span style="font-weight: bold; color: #d97706;">Tarefa 2:</span> Insira os dados. 
-                <br><strong>Atenção:</strong> Insira um cliente SEM pedidos e um pedido para um cliente que não existe.
-            </div>
-            
-            <textarea id="sql-join-part2" class="code-input" placeholder="Cole seu código INSERT aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-join-part2">
-                📧 Enviar Resposta
-            </button>
-        </div>
-
-        <!-- Slide 13: Atividade Parte 3 -->
-        <div class="slide">
-            <h2>Parte 3: Relatórios (40 min)</h2>
-            <div class="activity-box">
-                <span style="font-weight: bold; color: #d97706;">Tarefa 3:</span> Escreva as Queries para responder:
-                <ul style="margin-top: 10px;">
-                    <li>1. Listar o nome de todos os clientes que fizeram pedidos e o valor de cada pedido (INNER).</li>
-                    <li>2. Listar TODOS os clientes e seus pedidos, mesmo quem não comprou nada (LEFT).</li>
-                    <li>3. Encontrar clientes que NUNCA compraram nada (Dica: LEFT JOIN + WHERE ... IS NULL).</li>
-                </ul>
-            </div>
-            
-            <textarea id="sql-join-part3" class="code-input" placeholder="Cole suas queries JOIN aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-join-part3">
-                📧 Enviar Resposta
-            </button>
-        </div>
-
-        <!-- Slide 14: Atividade Desafio -->
-        <div class="slide">
-            <h2>Parte 4: Desafio Final (20 min)</h2>
-            <div class="activity-box">
-                <span style="font-weight: bold; color: #d97706;">Desafio:</span>
-                <p>Adicione uma tabela de <strong>Produtos</strong> e uma tabela <strong>ItensPedido</strong>.</p>
-                <p>Tente fazer um SELECT que mostre: Nome do Cliente, Nome do Produto Comprado e Valor.</p>
-                <p>Isso exigirá múltiplos JOINs!</p>
-            </div>
-            
-            <textarea id="sql-join-challenge" class="code-input" placeholder="Cole seu desafio aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-join-challenge">
-                📧 Enviar Desafio
-            </button>
-        </div>
-        
-        <!-- Slide 15: Dicas de Ensino -->
-        <div class="slide">
-            <h2>Dicas de Ensino (Diferenciação)</h2>
-            <div style="display: flex; gap: 20px;">
-                <div style="flex: 1; padding: 20px; background: #eef; border-radius: 10px;">
-                    <strong>Alunos com Dificuldade:</strong>
-                    <p>Foque apenas no INNER JOIN e LEFT JOIN. Use os Diagramas de Venn impressos para eles pintarem as áreas.</p>
-                </div>
-                <div style="flex: 1; padding: 20px; background: #fffbe6; border-radius: 10px;">
-                    <strong>Alunos Avançados:</strong>
-                    <p>Desafie-os a usar <code>GROUP BY</code> com JOIN (ex: Qual cliente gastou mais no total?).</p>
-                </div>
-            </div>
         </div>
 
     </div>
@@ -316,7 +109,7 @@ SELECT * FROM Camisetas CROSS JOIN Cores;
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 15</div>
+    <div class="slide-number" id="slideNumber">1 / 8</div>
 
     <script src="assets/js/script.js"></script>
 </body>

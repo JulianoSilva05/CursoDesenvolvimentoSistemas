@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Criando Tabelas no SQL</title>
+    <title>Linguagem DDL</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
@@ -17,215 +17,115 @@
         
         <!-- Slide 1: Capa -->
         <div class="slide active">
-            <h1>Criando Tabelas no SQL</h1>
-            <p>DDL - Data Definition Language</p>
+            <h1>Linguagem DDL</h1>
+            <p>Data Definition Language - Definindo a Estrutura</p>
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
             <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
         </div>
 
-        <!-- Slide 2: O que é uma Tabela? -->
+        <!-- Slide 2: O que é DDL? -->
         <div class="slide">
-            <h2>O que é uma Tabela?</h2>
-            <p>A tabela é a estrutura fundamental de um Banco de Dados Relacional.</p>
-            <p>Ela define <strong>o que</strong> vamos guardar e <strong>como</strong> vamos guardar.</p>
-            
-            <div class="visual-table" style="border: 2px solid #333; border-radius: 5px; margin: 20px 0; width: 300px; background: white; box-shadow: 5px 5px 0px #ccc;">
-                <div class="visual-header" style="background: var(--senai-blue); color: white; padding: 10px; text-align: center; font-weight: bold; border-bottom: 2px solid #333;">Clientes</div>
-                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
-                    <span>ID</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">INT</span>
-                </div>
-                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
-                    <span>Nome</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">VARCHAR</span>
-                </div>
-                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
-                    <span>DataNasc</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">DATE</span>
-                </div>
-            </div>
-            
-            <p style="font-size: 1rem;">Antes de inserir dados (DML), precisamos definir a estrutura (DDL).</p>
-        </div>
-
-        <!-- Slide 3: Tipos de Dados Primitivos -->
-        <div class="slide">
-            <h2>Tipos de Dados (Data Types)</h2>
-            <p>Cada coluna precisa ter um tipo definido. Os mais comuns são:</p>
+            <h2>O que é DDL?</h2>
+            <p><strong>DDL (Data Definition Language)</strong> é a parte do SQL usada para criar e modificar a estrutura do banco de dados (esquema).</p>
+            <p>Principais comandos:</p>
             <ul>
-                <li><strong>INT:</strong> Números inteiros (ex: Idade, Quantidade).</li>
-                <li><strong>DECIMAL(10,2):</strong> Números com vírgula (ex: Preço, Salário).</li>
-                <li><strong>VARCHAR(n):</strong> Texto de tamanho variável (ex: Nome, Email).</li>
-                <li><strong>CHAR(n):</strong> Texto de tamanho fixo (ex: UF, Sexo 'M'/'F').</li>
-                <li><strong>DATE / DATETIME:</strong> Datas e Horas.</li>
-                <li><strong>BOOLEAN:</strong> Verdadeiro ou Falso (TinyInt em alguns bancos).</li>
+                <li><strong>CREATE:</strong> Cria objetos (tabelas, bancos, views).</li>
+                <li><strong>ALTER:</strong> Modifica objetos existentes.</li>
+                <li><strong>DROP:</strong> Exclui objetos.</li>
+                <li><strong>TRUNCATE:</strong> Limpa todos os dados de uma tabela (mantendo a estrutura).</li>
             </ul>
         </div>
 
-        <!-- Slide 4: O Comando CREATE TABLE -->
+        <!-- Slide 3: Tipos de Dados Comuns -->
+        <div class="slide">
+            <h2>Tipos de Dados Comuns</h2>
+            <ul>
+                <li><strong>INT / INTEGER:</strong> Números inteiros.</li>
+                <li><strong>DECIMAL(10,2) / FLOAT:</strong> Números decimais (dinheiro, medidas).</li>
+                <li><strong>VARCHAR(n):</strong> Texto de tamanho variável (até n caracteres).</li>
+                <li><strong>CHAR(n):</strong> Texto de tamanho fixo.</li>
+                <li><strong>DATE / DATETIME:</strong> Datas e horas.</li>
+                <li><strong>BOOLEAN:</strong> Verdadeiro ou Falso.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4: CREATE TABLE -->
         <div class="slide">
             <h2>CREATE TABLE</h2>
-            <p>A sintaxe básica é:</p>
+            <p>Cria uma nova tabela.</p>
             <div class="code-block">
-CREATE TABLE NomeDaTabela (
-    NomeColuna1 TipoDeDado [Regras],
-    NomeColuna2 TipoDeDado [Regras],
-    ...
-);
-            </div>
-            <p>Exemplo:</p>
-            <div class="code-block">
-CREATE TABLE Produtos (
-    Codigo INT,
-    Descricao VARCHAR(100),
-    Preco DECIMAL(10,2)
-);
-            </div>
-        </div>
-
-        <!-- Slide 5: Constraints (Regras) -->
-        <div class="slide">
-            <h2>Constraints (Restrições)</h2>
-            <p>São regras para garantir a qualidade dos dados.</p>
-            <ul>
-                <li><strong>PRIMARY KEY (PK):</strong> Identificador único (não repete, não nulo).</li>
-                <li><strong>NOT NULL:</strong> Obrigatório preencher.</li>
-                <li><strong>UNIQUE:</strong> Não pode repetir (mas aceita um nulo, dependendo do banco).</li>
-                <li><strong>DEFAULT:</strong> Valor padrão se nada for informado.</li>
-                <li><strong>FOREIGN KEY (FK):</strong> Liga com outra tabela.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 6: Exemplo Completo -->
-        <div class="slide">
-            <h2>Exemplo Completo</h2>
-            <div class="code-block">
-CREATE TABLE Funcionarios (
-    ID INT PRIMARY KEY AUTO_INCREMENT,
+CREATE TABLE Alunos (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
     Nome VARCHAR(100) NOT NULL,
-    CPF CHAR(11) UNIQUE NOT NULL,
-    DataAdmissao DATE DEFAULT CURRENT_DATE,
-    Salario DECIMAL(10,2),
-    Ativo BOOLEAN DEFAULT TRUE
+    DataNascimento DATE,
+    Email VARCHAR(100) UNIQUE
 );
             </div>
-            <div class="note">
-                <strong>AUTO_INCREMENT:</strong> O banco gera o número sozinho (1, 2, 3...).
-            </div>
+            <p><strong>Constraints (Restrições):</strong> PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT.</p>
         </div>
 
-        <!-- Slide 7: ALTER TABLE -->
+        <!-- Slide 5: ALTER TABLE -->
         <div class="slide">
-            <h2>ALTER TABLE (Alterando Estrutura)</h2>
-            <p>Esqueceu uma coluna? Precisa mudar o tipo? Use o ALTER.</p>
+            <h2>ALTER TABLE</h2>
+            <p>Altera a estrutura de uma tabela existente.</p>
             <div class="code-block">
--- Adicionar coluna
-ALTER TABLE Funcionarios ADD COLUMN Email VARCHAR(100);
+-- Adicionar uma coluna
+ALTER TABLE Alunos ADD Telefone VARCHAR(20);
 
--- Modificar tipo
-ALTER TABLE Funcionarios MODIFY COLUMN Salario DECIMAL(12,2);
+-- Modificar o tipo de uma coluna
+ALTER TABLE Alunos MODIFY Nome VARCHAR(150);
 
--- Excluir coluna
-ALTER TABLE Funcionarios DROP COLUMN Ativo;
+-- Excluir uma coluna
+ALTER TABLE Alunos DROP COLUMN DataNascimento;
             </div>
         </div>
 
-        <!-- Slide 8: DROP TABLE -->
+        <!-- Slide 6: DROP TABLE -->
         <div class="slide">
-            <h2>DROP TABLE (Excluindo Tudo)</h2>
-            <p>Apaga a tabela inteira e <strong>todos</strong> os dados dentro dela.</p>
+            <h2>DROP vs TRUNCATE</h2>
             <div class="code-block">
-DROP TABLE Funcionarios;
+-- Exclui a tabela INTEIRA (estrutura + dados)
+DROP TABLE Alunos;
+
+-- Exclui apenas os DADOS (mantém a estrutura zerada)
+TRUNCATE TABLE Alunos;
             </div>
-            <p style="color: var(--senai-red); font-weight: bold;">CUIDADO! Não tem "Lixeira" (Ctrl+Z) para isso em produção.</p>
-        </div>
-
-        <!-- Slide 9: Boas Práticas -->
-        <div class="slide">
-            <h2>Boas Práticas de Modelagem</h2>
-            <ul>
-                <li>Nomes de tabelas no Plural (Clientes, Pedidos) ou Singular (Cliente, Pedido) - <strong>Padronize!</strong></li>
-                <li>Evite acentos e espaços (use <code>snake_case</code> ou <code>CamelCase</code>).</li>
-                <li>Sempre defina uma Primary Key.</li>
-                <li>Use o tipo de dado correto (não use VARCHAR para datas!).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 10: Atividade Prática -->
-        <div class="slide">
-            <h2>Hora da Prática!</h2>
-            <p>Vamos aplicar o que aprendemos.</p>
-            <div class="activity-box">
-                <span class="activity-title">Objetivo:</span>
-                Criar a estrutura de um banco de dados para uma <strong>Escola</strong>.
+            <div class="note" style="color: red; border-color: red;">
+                Cuidado! O comando DROP não tem "Ctrl+Z". Apagou, já era (a menos que tenha backup).
             </div>
-            <p>Abra seu editor SQL (Workbench, DBeaver, etc) e prepare-se.</p>
         </div>
 
-        <!-- Slide 11: Lista de Exercícios (Básico) -->
+        <!-- Slide 7: Chaves Estrangeiras (FK) -->
         <div class="slide">
-            <h2>Exercícios - Parte 1 (Todos)</h2>
+            <h2>Definindo Chaves Estrangeiras</h2>
+            <div class="code-block">
+CREATE TABLE Pedidos (
+    ID INT PRIMARY KEY,
+    Valor DECIMAL(10,2),
+    ID_Cliente INT,
+    FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID)
+);
+            </div>
+            <p>Isso impede que um pedido seja criado para um cliente inexistente.</p>
+        </div>
+
+        <!-- Slide 8: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade: Criando Tabelas</h2>
             <div class="activity-box">
-                <span class="activity-title">1. Tabela Alunos</span>
-                <p>Crie uma tabela chamada <code>Alunos</code> com:</p>
+                <span class="activity-title">Sistema de Biblioteca</span>
+                <p>Escreva o comando SQL para criar as tabelas:</p>
                 <ul>
-                    <li>Matricula (Inteiro, PK, Auto Incremento)</li>
-                    <li>Nome (Texto 100, Obrigatório)</li>
-                    <li>DataNascimento (Data)</li>
-                    <li>Email (Texto 100, Único)</li>
+                    <li><strong>Livros:</strong> (ID, Titulo, Autor, AnoPublicacao, ISBN).</li>
+                    <li><strong>Emprestimos:</strong> (ID, DataEmprestimo, DataDevolucao, ID_Livro).</li>
                 </ul>
+                <p>Não esqueça de definir as Chaves Primárias (PK) e a Chave Estrangeira (FK) em Emprestimos!</p>
             </div>
             
-            <textarea id="sql-create-basic" class="code-input" placeholder="Cole seu código CREATE TABLE aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-create-basic">
+            <textarea id="ddl-code" class="code-input" placeholder="CREATE TABLE Livros..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="ddl-code">
                 📧 Enviar Resposta
             </button>
-        </div>
-
-        <!-- Slide 12: Lista de Exercícios (Intermediário) -->
-        <div class="slide">
-            <h2>Exercícios - Parte 2 (Todos)</h2>
-            <div class="activity-box">
-                <span class="activity-title">3. Alterações</span>
-                <p>Esquecemos do telefone dos alunos!</p>
-                <ul>
-                    <li>Adicione a coluna <code>Telefone</code> (VARCHAR 15) na tabela Alunos.</li>
-                    <li>Mude o tamanho do campo <code>Nome</code> dos Professores para 150 caracteres.</li>
-                </ul>
-            </div>
-            
-            <textarea id="sql-alter-code" class="code-input" placeholder="Cole seu código ALTER TABLE aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-alter-code">
-                📧 Enviar Resposta
-            </button>
-        </div>
-
-        <!-- Slide 13: Lista de Exercícios (Desafio) -->
-        <div class="slide">
-            <h2>Desafio (Para quem terminou)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Desafio: Sistema de Biblioteca</span>
-                <p>Modele e crie as tabelas para um sistema de biblioteca:</p>
-                <ul>
-                    <li><strong>Livros:</strong> ISBN (PK), Titulo, Ano, Editora.</li>
-                    <li><strong>Categorias:</strong> ID, Nome (ex: Ação, Terror).</li>
-                    <li><strong>Relacionamento:</strong> Adicione uma FK em Livros apontando para Categoria.</li>
-                    <li><strong>Empréstimos:</strong> Tabela que liga Aluno e Livro, com Data de Empréstimo e Data de Devolução.</li>
-                </ul>
-                <p style="font-size: 0.9rem; margin-top: 10px;">Dica: Empréstimos terá duas chaves estrangeiras!</p>
-            </div>
-            
-            <textarea id="sql-challenge-code" class="code-input" placeholder="Cole seu código do desafio aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-challenge-code">
-                📧 Enviar Desafio
-            </button>
-        </div>
-
-        <!-- Slide 14: Dicas para Professores -->
-        <div class="slide">
-            <h2>Dicas de Ensino (Turma Heterogênea)</h2>
-            <ul>
-                <li><strong>Alunos Lentos:</strong> Foque na sintaxe básica (CREATE TABLE). Faça eles desenharem a tabela no papel antes de codar.</li>
-                <li><strong>Alunos Rápidos:</strong> Peça para pesquisarem sobre <code>CONSTRAINT CHECK</code> (validar se salário > 0) e <code>INDEX</code>.</li>
-                <li><strong>Pair Programming:</strong> Coloque um aluno rápido com um mais lento para mentoria.</li>
-            </ul>
         </div>
 
     </div>
@@ -236,7 +136,7 @@ DROP TABLE Funcionarios;
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 14</div>
+    <div class="slide-number" id="slideNumber">1 / 8</div>
 
     <script src="assets/js/script.js"></script>
 </body>
