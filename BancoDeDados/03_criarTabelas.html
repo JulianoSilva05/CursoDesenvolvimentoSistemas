@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Criando Tabelas no SQL</title>
+    <style>
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #E32119;
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+            --code-bg: #2d2d2d;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s ease-in-out, visibility 0.5s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+            background: white;
+            z-index: 1;
+            overflow-y: auto;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 3rem;
+            color: var(--senai-blue);
+            margin-bottom: 20px;
+            text-align: center;
+            margin-top: 50px;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            color: var(--senai-blue);
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--senai-red);
+            padding-bottom: 5px;
+            width: 100%;
+            max-width: 900px;
+            text-align: center;
+        }
+
+        p, li {
+            font-size: 1.4rem;
+            line-height: 1.6;
+            max-width: 900px;
+            margin-bottom: 15px;
+        }
+
+        ul {
+            list-style-type: square;
+            margin-left: 40px;
+            max-width: 900px;
+        }
+
+        .code-block {
+            background-color: var(--code-bg);
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            width: 100%;
+            max-width: 800px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .highlight {
+            color: var(--senai-red);
+            font-weight: bold;
+        }
+
+        .note {
+            font-size: 1.1rem;
+            color: #555;
+            font-style: italic;
+            margin-top: 20px;
+            border-left: 4px solid var(--senai-blue);
+            padding-left: 10px;
+            background-color: #eef;
+            padding: 10px;
+            border-radius: 0 5px 5px 0;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        /* Activity Box */
+        .activity-box {
+            background-color: #fffbe6;
+            border: 2px dashed #fcd34d;
+            padding: 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        .activity-title {
+            color: #d97706;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Visual Table Representation */
+        .visual-table {
+            border: 2px solid #333;
+            border-radius: 5px;
+            margin: 20px 0;
+            width: 300px;
+            background: white;
+            box-shadow: 5px 5px 0px #ccc;
+        }
+        
+        .visual-header {
+            background: var(--senai-blue);
+            color: white;
+            padding: 10px;
+            text-align: center;
+            font-weight: bold;
+            border-bottom: 2px solid #333;
+        }
+        
+        .visual-row {
+            padding: 8px 15px;
+            border-bottom: 1px solid #ddd;
+            font-family: monospace;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .type-badge {
+            background: #eee;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            color: #666;
+        }
+
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 100;
+            display: flex;
+            gap: 20px;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+            background-color: var(--senai-blue);
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+
+        button:hover { background-color: #003366; }
+        button:disabled { background-color: #ccc; cursor: not-allowed; }
+
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 5px;
+            background-color: var(--senai-red);
+            width: 0%;
+            z-index: 101;
+            transition: width 0.3s ease;
+        }
+
+        .slide-number {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            font-size: 1rem;
+            color: #666;
+            z-index: 100;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Criando Tabelas no SQL</h1>
+            <p>DDL - Data Definition Language</p>
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p><strong>Duração:</strong> 2 Horas (Teoria + Prática)</p>
+        </div>
+
+        <!-- Slide 2: O que é uma Tabela? -->
+        <div class="slide">
+            <h2>O que é uma Tabela?</h2>
+            <p>A tabela é a estrutura fundamental de um Banco de Dados Relacional.</p>
+            <p>Ela define <strong>o que</strong> vamos guardar e <strong>como</strong> vamos guardar.</p>
+            
+            <div class="visual-table">
+                <div class="visual-header">Clientes</div>
+                <div class="visual-row">
+                    <span>ID</span> <span class="type-badge">INT</span>
+                </div>
+                <div class="visual-row">
+                    <span>Nome</span> <span class="type-badge">VARCHAR</span>
+                </div>
+                <div class="visual-row">
+                    <span>DataNasc</span> <span class="type-badge">DATE</span>
+                </div>
+            </div>
+            
+            <p style="font-size: 1rem;">Antes de inserir dados (DML), precisamos definir a estrutura (DDL).</p>
+        </div>
+
+        <!-- Slide 3: Tipos de Dados Primitivos -->
+        <div class="slide">
+            <h2>Tipos de Dados (Data Types)</h2>
+            <p>Cada coluna precisa ter um tipo definido. Os mais comuns são:</p>
+            <ul>
+                <li><strong>INT:</strong> Números inteiros (ex: Idade, Quantidade).</li>
+                <li><strong>DECIMAL(10,2):</strong> Números com vírgula (ex: Preço, Salário).</li>
+                <li><strong>VARCHAR(n):</strong> Texto de tamanho variável (ex: Nome, Email).</li>
+                <li><strong>CHAR(n):</strong> Texto de tamanho fixo (ex: UF, Sexo 'M'/'F').</li>
+                <li><strong>DATE / DATETIME:</strong> Datas e Horas.</li>
+                <li><strong>BOOLEAN:</strong> Verdadeiro ou Falso (TinyInt em alguns bancos).</li>
+            </ul>
+        </div>
+
+        <!-- Slide 4: O Comando CREATE TABLE -->
+        <div class="slide">
+            <h2>CREATE TABLE</h2>
+            <p>A sintaxe básica é:</p>
+            <div class="code-block">
+CREATE TABLE NomeDaTabela (
+    NomeColuna1 TipoDeDado [Regras],
+    NomeColuna2 TipoDeDado [Regras],
+    ...
+);
+            </div>
+            <p>Exemplo:</p>
+            <div class="code-block">
+CREATE TABLE Produtos (
+    Codigo INT,
+    Descricao VARCHAR(100),
+    Preco DECIMAL(10,2)
+);
+            </div>
+        </div>
+
+        <!-- Slide 5: Constraints (Regras) -->
+        <div class="slide">
+            <h2>Constraints (Restrições)</h2>
+            <p>São regras para garantir a qualidade dos dados.</p>
+            <ul>
+                <li><strong>PRIMARY KEY (PK):</strong> Identificador único (não repete, não nulo).</li>
+                <li><strong>NOT NULL:</strong> Obrigatório preencher.</li>
+                <li><strong>UNIQUE:</strong> Não pode repetir (mas aceita um nulo, dependendo do banco).</li>
+                <li><strong>DEFAULT:</strong> Valor padrão se nada for informado.</li>
+                <li><strong>FOREIGN KEY (FK):</strong> Liga com outra tabela.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: Exemplo Completo -->
+        <div class="slide">
+            <h2>Exemplo Completo</h2>
+            <div class="code-block">
+CREATE TABLE Funcionarios (
+    ID INT PRIMARY KEY AUTO_INCREMENT,
+    Nome VARCHAR(100) NOT NULL,
+    CPF CHAR(11) UNIQUE NOT NULL,
+    DataAdmissao DATE DEFAULT CURRENT_DATE,
+    Salario DECIMAL(10,2),
+    Ativo BOOLEAN DEFAULT TRUE
+);
+            </div>
+            <div class="note">
+                <strong>AUTO_INCREMENT:</strong> O banco gera o número sozinho (1, 2, 3...).
+            </div>
+        </div>
+
+        <!-- Slide 7: ALTER TABLE -->
+        <div class="slide">
+            <h2>ALTER TABLE (Alterando Estrutura)</h2>
+            <p>Esqueceu uma coluna? Precisa mudar o tipo? Use o ALTER.</p>
+            <div class="code-block">
+-- Adicionar coluna
+ALTER TABLE Funcionarios ADD COLUMN Email VARCHAR(100);
+
+-- Modificar tipo
+ALTER TABLE Funcionarios MODIFY COLUMN Salario DECIMAL(12,2);
+
+-- Excluir coluna
+ALTER TABLE Funcionarios DROP COLUMN Ativo;
+            </div>
+        </div>
+
+        <!-- Slide 8: DROP TABLE -->
+        <div class="slide">
+            <h2>DROP TABLE (Excluindo Tudo)</h2>
+            <p>Apaga a tabela inteira e <strong>todos</strong> os dados dentro dela.</p>
+            <div class="code-block">
+DROP TABLE Funcionarios;
+            </div>
+            <p style="color: var(--senai-red); font-weight: bold;">CUIDADO! Não tem "Lixeira" (Ctrl+Z) para isso em produção.</p>
+        </div>
+
+        <!-- Slide 9: Boas Práticas -->
+        <div class="slide">
+            <h2>Boas Práticas de Modelagem</h2>
+            <ul>
+                <li>Nomes de tabelas no Plural (Clientes, Pedidos) ou Singular (Cliente, Pedido) - <strong>Padronize!</strong></li>
+                <li>Evite acentos e espaços (use <code>snake_case</code> ou <code>CamelCase</code>).</li>
+                <li>Sempre defina uma Primary Key.</li>
+                <li>Use o tipo de dado correto (não use VARCHAR para datas!).</li>
+            </ul>
+        </div>
+
+        <!-- Slide 10: Atividade Prática -->
+        <div class="slide">
+            <h2>Hora da Prática!</h2>
+            <p>Vamos aplicar o que aprendemos.</p>
+            <div class="activity-box">
+                <span class="activity-title">Objetivo:</span>
+                Criar a estrutura de um banco de dados para uma <strong>Escola</strong>.
+            </div>
+            <p>Abra seu editor SQL (Workbench, DBeaver, etc) e prepare-se.</p>
+        </div>
+
+        <!-- Slide 11: Lista de Exercícios (Básico) -->
+        <div class="slide">
+            <h2>Exercícios - Parte 1 (Todos)</h2>
+            <div class="activity-box">
+                <span class="activity-title">1. Tabela Alunos</span>
+                <p>Crie uma tabela chamada <code>Alunos</code> com:</p>
+                <ul>
+                    <li>Matricula (Inteiro, PK, Auto Incremento)</li>
+                    <li>Nome (Texto 100, Obrigatório)</li>
+                    <li>DataNascimento (Data)</li>
+                    <li>Email (Texto 100, Único)</li>
+                </ul>
+            </div>
+            <div class="activity-box" style="margin-top: 10px;">
+                <span class="activity-title">2. Tabela Professores</span>
+                <p>Crie uma tabela <code>Professores</code> com ID, Nome e Especialidade.</p>
+            </div>
+        </div>
+
+        <!-- Slide 12: Lista de Exercícios (Intermediário) -->
+        <div class="slide">
+            <h2>Exercícios - Parte 2 (Todos)</h2>
+            <div class="activity-box">
+                <span class="activity-title">3. Alterações</span>
+                <p>Esquecemos do telefone dos alunos!</p>
+                <ul>
+                    <li>Adicione a coluna <code>Telefone</code> (VARCHAR 15) na tabela Alunos.</li>
+                    <li>Mude o tamanho do campo <code>Nome</code> dos Professores para 150 caracteres.</li>
+                </ul>
+            </div>
+            <div class="activity-box" style="margin-top: 10px;">
+                <span class="activity-title">4. Limpeza</span>
+                <p>Crie uma tabela de teste chamada <code>Lixo</code> e depois apague-a com DROP.</p>
+            </div>
+        </div>
+
+        <!-- Slide 13: Lista de Exercícios (Desafio) -->
+        <div class="slide">
+            <h2>Desafio (Para quem terminou)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Desafio: Sistema de Biblioteca</span>
+                <p>Modele e crie as tabelas para um sistema de biblioteca:</p>
+                <ul>
+                    <li><strong>Livros:</strong> ISBN (PK), Titulo, Ano, Editora.</li>
+                    <li><strong>Categorias:</strong> ID, Nome (ex: Ação, Terror).</li>
+                    <li><strong>Relacionamento:</strong> Adicione uma FK em Livros apontando para Categoria.</li>
+                    <li><strong>Empréstimos:</strong> Tabela que liga Aluno e Livro, com Data de Empréstimo e Data de Devolução.</li>
+                </ul>
+                <p style="font-size: 0.9rem; margin-top: 10px;">Dica: Empréstimos terá duas chaves estrangeiras!</p>
+            </div>
+        </div>
+
+        <!-- Slide 14: Dicas para Professores -->
+        <div class="slide">
+            <h2>Dicas de Ensino (Turma Heterogênea)</h2>
+            <ul>
+                <li><strong>Alunos Lentos:</strong> Foque na sintaxe básica (CREATE TABLE). Faça eles desenharem a tabela no papel antes de codar.</li>
+                <li><strong>Alunos Rápidos:</strong> Peça para pesquisarem sobre <code>CONSTRAINT CHECK</code> (validar se salário > 0) e <code>INDEX</code>.</li>
+                <li><strong>Pair Programming:</strong> Coloque um aluno rápido com um mais lento para mentoria.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <!-- Controles -->
+    <div class="controls">
+        <button onclick="prevSlide()" id="btnPrev">Anterior</button>
+        <button onclick="nextSlide()" id="btnNext">Próximo</button>
+    </div>
+
+    <div class="slide-number" id="slideNumber">1 / 14</div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progressBar = document.getElementById('progressBar');
+        const slideNumber = document.getElementById('slideNumber');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+
+        function showSlide(index) {
+            if (index < 0) index = 0;
+            if (index >= slides.length) index = slides.length - 1;
+
+            currentSlide = index;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            slides[currentSlide].classList.add('active');
+
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+
+            slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
+
+            btnPrev.disabled = currentSlide === 0;
+            btnNext.disabled = currentSlide === slides.length - 1;
+            
+            if (currentSlide === slides.length - 1) {
+                btnNext.textContent = "Fim";
+            } else {
+                btnNext.textContent = "Próximo";
+            }
+        }
+
+        function nextSlide() { showSlide(currentSlide + 1); }
+        function prevSlide() { showSlide(currentSlide - 1); }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
+            else if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        showSlide(0);
+    </script>
+</body>
+</html>
