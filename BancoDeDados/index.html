@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banco de Dados - Aulas</title>
+    <style>
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #E32119;
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 1.8rem;
+        }
+
+        .back-btn {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            border: 1px solid white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .back-btn:hover {
+            background-color: white;
+            color: var(--senai-blue);
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .lesson-list {
+            list-style: none;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .lesson-item {
+            border-bottom: 1px solid #eee;
+            transition: background 0.2s;
+        }
+
+        .lesson-item:last-child {
+            border-bottom: none;
+        }
+
+        .lesson-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .lesson-link {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            text-decoration: none;
+            color: var(--text-color);
+            font-size: 1.2rem;
+        }
+
+        .lesson-icon {
+            font-size: 1.5rem;
+            margin-right: 20px;
+            color: var(--senai-red);
+        }
+
+        .lesson-info {
+            flex: 1;
+        }
+
+        .lesson-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+            display: block;
+        }
+
+        .lesson-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Disciplina: Banco de Dados</h1>
+        <a href="../index.html" class="back-btn">← Voltar ao Início</a>
+    </header>
+
+    <main>
+        <ul class="lesson-list">
+            
+            <li class="lesson-item">
+                <a href="01_Introducao.html" class="lesson-link">
+                    <span class="lesson-icon">📄</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Aula 01: Introdução a Banco de Dados</span>
+                        <span class="lesson-desc">Conceitos fundamentais, SGBDs e Modelo Relacional.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="02_SQL.html" class="lesson-link">
+                    <span class="lesson-icon">💾</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Aula 02: Fundamentos de SQL</span>
+                        <span class="lesson-desc">Comandos básicos para manipulação de dados.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="10_join.html" class="lesson-link">
+                    <span class="lesson-icon">🔗</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Aula 10: Dominando JOINs</span>
+                        <span class="lesson-desc"> INNER, LEFT, RIGHT e FULL JOINs com exemplos visuais.</span>
+                    </div>
+                </a>
+            </li>
+
+        </ul>
+    </main>
+
+    <footer>
+        Curso Técnico em Desenvolvimento de Sistemas - SENAI
+    </footer>
+
+</body>
+</html>
