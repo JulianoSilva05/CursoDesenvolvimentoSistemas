@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Normalização de Dados</h1>
             <p>Organizando para evitar redundância e anomalias</p>
+            <img src="https://placehold.co/800x300?text=Normalizacao+de+Dados" alt="Normalização" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é Normalização? -->
         <div class="slide">
             <h2>O que é Normalização?</h2>
             <p>É um conjunto de regras aplicadas ao modelo de dados para garantir que ele esteja organizado, sem redundâncias desnecessárias e protegido contra anomalias.</p>
+            <img src="https://placehold.co/800x200?text=Dados+Organizados" alt="Organização" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p><strong>Objetivos:</strong></p>
             <ul>
                 <li>Economizar espaço (não repetir dados).</li>
@@ -55,6 +57,7 @@
                 <li>Não deve haver colunas repetidas para o mesmo fim (Tel1, Tel2, Tel3).</li>
                 <li>Deve haver uma Chave Primária.</li>
             </ol>
+            <img src="https://placehold.co/800x200?text=Exemplo+1FN" alt="Exemplo 1FN" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <div class="note">Solução para telefones múltiplos: Criar uma tabela separada `Telefones`.</div>
         </div>
 
@@ -84,16 +87,25 @@
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Normalizando uma Planilha</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Tabela Desnormalizada</span>
-                <p>Imagine uma tabela única <code>Vendas</code> com: (ID_Venda, Data, Cliente, Endereço_Cliente, Produto, Preço, Quantidade).</p>
-                <p>Aplique a normalização (1FN, 2FN, 3FN) e diga quais tabelas resultantes você criaria para organizar isso corretamente.</p>
+                <span class="activity-title">Normalizando uma Nota Fiscal</span>
+                <p>Considere uma tabela desnormalizada chamada <code>NotaFiscal</code> com os campos:</p>
+                <p><code>(Num_NF, Data, Cod_Cliente, Nome_Cliente, End_Cliente, Cod_Prod, Desc_Prod, Qtde, Valor_Unit, Valor_Total_Item)</code></p>
+                
+                <p><strong>Parte 1: 1FN (40 min)</strong></p>
+                <p>Identifique os problemas de atomicidade e repetição. Como resolver?</p>
+
+                <p><strong>Parte 2: 2FN (40 min)</strong></p>
+                <p>Identifique as dependências parciais (o que depende só do Produto? o que depende só da NF?). Separe em tabelas.</p>
+
+                <p><strong>Parte 3: 3FN (40 min)</strong></p>
+                <p>Identifique dependências transitivas (O endereço depende do Cliente, não da NF). Finalize o modelo com as tabelas resultantes.</p>
             </div>
             
-            <textarea id="norm-code" class="code-input" placeholder="Tabelas resultantes: ..."></textarea>
+            <textarea id="norm-code" class="code-input" style="height: 300px;" placeholder="Tabelas resultantes:&#10;1. Clientes (...)..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="norm-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

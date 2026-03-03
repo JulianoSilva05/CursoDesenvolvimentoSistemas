@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Segurança e Controle de Acesso</h1>
             <p>Protegendo os dados e gerenciando permissões</p>
+            <img src="https://placehold.co/800x300?text=Seguranca+de+Dados" alt="Segurança" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: Por que Segurança? -->
         <div class="slide">
             <h2>Por que Segurança?</h2>
             <p>O Banco de Dados é o ativo mais valioso de uma empresa. Ele contém dados de clientes, financeiro, segredos industriais.</p>
+            <img src="https://placehold.co/800x200?text=Confidencialidade+Integridade+Disponibilidade" alt="CIA" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p><strong>Pilares da Segurança da Informação (CIA):</strong></p>
             <ul>
                 <li><strong>Confidencialidade:</strong> Só quem tem permissão vê.</li>
@@ -54,6 +56,7 @@ REVOKE INSERT ON Loja.Pedidos FROM 'vendedor'@'localhost';
         <!-- Slide 4: Princípio do Menor Privilégio -->
         <div class="slide">
             <h2>Princípio do Menor Privilégio</h2>
+            <img src="https://placehold.co/800x200?text=Menor+Privilegio" alt="Privilégios" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>Um usuário deve ter APENAS as permissões estritamente necessárias para fazer seu trabalho. Nada mais.</p>
             <ul>
                 <li>O estagiário precisa deletar o banco? <strong>Não.</strong></li>
@@ -90,21 +93,28 @@ execute(query, userInput);
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Permissões</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Configurando Acesso</span>
-                <p>Cenário: Você tem um usuário <code>'estagiario'</code>.</p>
-                <p>Escreva os comandos SQL para:</p>
-                <ol>
-                    <li>Permitir que ele apenas CONSULTE (SELECT) a tabela <code>Produtos</code>.</li>
-                    <li>Permitir que ele CONSULTE e INSIRA na tabela <code>Clientes</code>.</li>
-                    <li>Bloquear (não dar permissão) para ele DELETAR qualquer coisa.</li>
-                </ol>
+                <span class="activity-title">Admin de Segurança</span>
+                
+                <p><strong>Parte 1: Criação de Roles (40 min)</strong></p>
+                <p>Você é o DBA de uma escola. Crie os comandos SQL para os seguintes usuários:</p>
+                <ul>
+                    <li><code>'diretor'</code>: Pode fazer TUDO no banco.</li>
+                    <li><code>'professor'</code>: Pode inserir e alterar Notas e Faltas, mas não pode deletar Alunos.</li>
+                    <li><code>'aluno'</code>: Pode apenas consultar (SELECT) suas próprias notas.</li>
+                </ul>
+
+                <p><strong>Parte 2: Auditoria (40 min)</strong></p>
+                <p>O usuário 'professor' foi demitido. Escreva os comandos para remover todas as permissões dele e bloquear o acesso.</p>
+
+                <p><strong>Parte 3: Hackeando (Ético) (40 min)</strong></p>
+                <p>Explique como um hacker poderia usar SQL Injection em um campo de login (Usuário/Senha) para entrar sem saber a senha. Dê um exemplo do que ele digitaria no campo "Senha".</p>
             </div>
             
-            <textarea id="sec-code" class="code-input" placeholder="GRANT ..."></textarea>
+            <textarea id="sec-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="sec-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

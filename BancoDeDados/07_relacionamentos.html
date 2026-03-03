@@ -19,8 +19,9 @@
         <div class="slide active">
             <h1>Relacionamentos e Chaves</h1>
             <p>PK, FK e Cardinalidade (1:1, 1:N, N:N)</p>
+            <img src="https://placehold.co/800x300?text=Relacionamentos" alt="Relacionamentos" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: Revisitando as Chaves -->
@@ -28,6 +29,7 @@
             <h2>Revisitando as Chaves</h2>
             <p><strong>Primary Key (PK):</strong> Identificador único. Ex: CPF, ID.</p>
             <p><strong>Foreign Key (FK):</strong> Referência a uma PK de outra tabela. É o elo de ligação.</p>
+            <img src="https://placehold.co/800x200?text=PK+e+FK" alt="Chaves" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p><strong>Candidate Key:</strong> Qualquer coluna que <i>poderia</i> ser uma PK (ex: E-mail, CPF).</p>
             <p><strong>Composite Key:</strong> Uma chave formada por duas ou mais colunas.</p>
         </div>
@@ -36,6 +38,7 @@
         <div class="slide">
             <h2>Cardinalidade</h2>
             <p>Define a regra numérica do relacionamento.</p>
+            <img src="https://placehold.co/800x200?text=Cardinalidade+1:N+N:N" alt="Cardinalidade" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>Perguntas a fazer:</p>
             <ul>
                 <li>"Um registro da tabela A se relaciona com quantos da tabela B?"</li>
@@ -83,20 +86,28 @@
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Modelando N:N</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Sistema de Eventos</span>
-                <p>Cenário: Temos <code>Palestrantes</code> e <code>Eventos</code>.</p>
+                <span class="activity-title">Modelando Cenários Complexos</span>
+                <p><strong>Parte 1: Sistema de Eventos (40 min)</strong></p>
+                <p>Cenário: Temos <code>Palestrantes</code> e <code>Eventos</code>. Um palestrante pode falar em vários eventos, e um evento tem vários palestrantes. Desenhe as tabelas e a tabela associativa necessária.</p>
+
+                <p><strong>Parte 2: Rede Social (40 min)</strong></p>
+                <p>Cenário: <code>Usuários</code> podem seguir outros <code>Usuários</code>. Como modelar esse relacionamento "Auto-Relacionamento" N:N? (Tabela Seguidores?).</p>
+
+                <p><strong>Parte 3: Hospital (40 min)</strong></p>
+                <p>Cenário: <code>Médicos</code> atendem <code>Pacientes</code> e prescrevem <code>Medicamentos</code>.
                 <ul>
-                    <li>Um palestrante pode falar em vários eventos.</li>
-                    <li>Um evento pode ter vários palestrantes.</li>
+                    <li>Médico atende N Pacientes.</li>
+                    <li>Paciente é atendido por N Médicos.</li>
+                    <li>Na consulta, são prescritos N Medicamentos.</li>
                 </ul>
-                <p>Desenhe (descreva) como ficariam as tabelas e onde estariam as Chaves Estrangeiras.</p>
+                <p>Defina as tabelas e chaves estrangeiras.</p>
             </div>
             
-            <textarea id="rel-code" class="code-input" placeholder="Tabela Palestrantes...&#10;Tabela Eventos...&#10;Tabela ???..."></textarea>
+            <textarea id="rel-code" class="code-input" style="height: 300px;" placeholder="Responda aqui..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="rel-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

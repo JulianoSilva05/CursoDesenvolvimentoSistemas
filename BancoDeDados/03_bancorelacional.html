@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Bancos Relacionais vs NoSQL</h1>
             <p>Quando usar cada um?</p>
+            <img src="https://placehold.co/800x300?text=SQL+vs+NoSQL" alt="SQL vs NoSQL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O Modelo Relacional (SQL) -->
         <div class="slide">
             <h2>O Modelo Relacional (SQL)</h2>
             <p>Baseado em tabelas, linhas e colunas. Estrutura rígida (esquema).</p>
+            <img src="https://placehold.co/800x200?text=Tabelas+Relacionais" alt="Tabelas" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <ul>
                 <li><strong>Principal característica:</strong> Consistência e Integridade.</li>
                 <li><strong>ACID:</strong> Atomicidade, Consistência, Isolamento, Durabilidade.</li>
@@ -39,6 +41,7 @@
         <div class="slide">
             <h2>O Modelo NoSQL</h2>
             <p>"Not Only SQL". Surgiu para lidar com Big Data e flexibilidade.</p>
+            <img src="https://placehold.co/800x200?text=Estruturas+NoSQL" alt="NoSQL" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <ul>
                 <li><strong>Principal característica:</strong> Alta disponibilidade e flexibilidade de esquema.</li>
                 <li><strong>BASE:</strong> Basic Availability, Soft state, Eventual consistency.</li>
@@ -62,6 +65,7 @@
         <div class="slide">
             <h2>Teorema CAP</h2>
             <p>Um sistema distribuído só pode garantir 2 de 3 propriedades:</p>
+            <img src="https://placehold.co/800x250?text=Teorema+CAP" alt="Teorema CAP" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <ul>
                 <li><strong>Consistência (C):</strong> Todos leem o dado mais recente.</li>
                 <li><strong>Disponibilidade (A):</strong> O sistema sempre responde, mesmo com falhas.</li>
@@ -95,20 +99,28 @@
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Escolha a Tecnologia</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
                 <span class="activity-title">Desafio de Arquitetura</span>
-                <p>Escolha o tipo de banco (SQL ou NoSQL) para cada cenário e justifique:</p>
+                <p><strong>Parte 1: Escolha da Tecnologia (40 min)</strong></p>
+                <p>Para cada cenário abaixo, escolha SQL ou NoSQL e o <strong>tipo</strong> (ex: NoSQL Documento, SQL Relacional). Justifique com base em ACID vs BASE e Escalabilidade.</p>
                 <ol>
-                    <li>Um sistema bancário que transfere dinheiro entre contas.</li>
-                    <li>Um catálogo de produtos de e-commerce onde cada produto tem atributos totalmente diferentes (ex: TV tem polegadas, Sapato tem tamanho).</li>
-                    <li>Um feed de rede social com milhões de acessos por segundo.</li>
+                    <li>Um sistema bancário internacional que transfere bilhões entre contas.</li>
+                    <li>Um catálogo de produtos de um marketplace global onde cada vendedor define os atributos do seu produto (ex: uns têm voltagem, outros têm validade, outros têm cor).</li>
+                    <li>O sistema de "Likes" e "Feed" do TikTok, com milhões de escritas por segundo.</li>
+                    <li>Um sistema de gestão de estoque de uma farmácia local.</li>
                 </ol>
+
+                <p><strong>Parte 2: Teorema CAP (40 min)</strong></p>
+                <p>Explique por que é impossível ter Consistência, Disponibilidade e Tolerância a Partição ao mesmo tempo em um sistema distribuído. Dê um exemplo de falha.</p>
+
+                <p><strong>Parte 3: Pesquisa de Ferramentas (40 min)</strong></p>
+                <p>Pesquise e descreva brevemente o que são: MongoDB, Redis, Neo4j e Cassandra. Para que cada um é "o melhor"?</p>
             </div>
             
-            <textarea id="nosql-code" class="code-input" placeholder="1. Banco... Por que...&#10;2. Banco... Por que..."></textarea>
+            <textarea id="nosql-code" class="code-input" style="height: 300px;" placeholder="Responda aqui..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="nosql-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

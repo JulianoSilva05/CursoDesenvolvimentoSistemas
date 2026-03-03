@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Modelagem de Dados</h1>
             <p>Conceitual, Lógico e Físico</p>
+            <img src="https://placehold.co/800x300?text=Modelagem+de+Dados" alt="Modelagem de Dados" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é Modelagem? -->
         <div class="slide">
             <h2>O que é Modelagem de Dados?</h2>
             <p>É o processo de criar uma representação visual e estruturada dos dados de um sistema.</p>
+            <img src="https://placehold.co/800x200?text=Blueprint+Banco+de+Dados" alt="Blueprint" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p><strong>Por que modelar?</strong></p>
             <ul>
                 <li>Facilita o entendimento das regras de negócio.</li>
@@ -38,6 +40,7 @@
         <!-- Slide 3: Níveis de Abstração -->
         <div class="slide">
             <h2>Níveis de Abstração</h2>
+            <img src="https://placehold.co/800x250?text=Conceitual+Logico+Fisico" alt="Níveis de Abstração" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <ul>
                 <li><strong>Modelo Conceitual:</strong> Visão de alto nível. Foca no "O QUE" será armazenado. Independente de tecnologia. (Público: Cliente/Analista).</li>
                 <li><strong>Modelo Lógico:</strong> Define chaves, tipos de dados básicos e relacionamentos. (Público: Desenvolvedor/DBA).</li>
@@ -65,6 +68,7 @@
             <ul>
                 <li><strong>Forte:</strong> Existe por si só (ex: Cliente, Produto).</li>
                 <li><strong>Fraca:</strong> Depende de outra para existir (ex: Dependente depende de Funcionário).</li>
+                <li><strong>Associativa:</strong> Surge de um relacionamento N:N (ex: Matrícula).</li>
             </ul>
         </div>
 
@@ -80,24 +84,36 @@
             </ul>
         </div>
 
-        <!-- Slide 7: Atividade Prática -->
+        <!-- Slide 7: Exemplos de DER -->
         <div class="slide">
-            <h2>Atividade: Criando um DER</h2>
+            <h2>Exemplo Prático</h2>
+            <img src="https://placehold.co/800x300?text=Exemplo+DER+Escola" alt="Exemplo DER Escola" style="width: 100%; border-radius: 8px;">
+            <p><strong>Escola:</strong></p>
+            <ul>
+                <li><strong>Aluno:</strong> Nome, Matrícula, DataNasc.</li>
+                <li><strong>Curso:</strong> Nome, CargaHorária.</li>
+                <li><strong>Professor:</strong> Nome, Especialidade.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 8: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Cenário: E-commerce Simplificado</span>
-                <p>Descreva as Entidades e Atributos para um sistema de vendas online.</p>
-                <p>Requisitos:</p>
-                <ul>
-                    <li>Clientes fazem Pedidos.</li>
-                    <li>Pedidos contêm Produtos.</li>
-                    <li>Produtos pertencem a uma Categoria.</li>
-                </ul>
-                <p>Liste as Entidades e seus principais atributos (indique a PK).</p>
+                <span class="activity-title">Desafio de Modelagem</span>
+                <p><strong>Parte 1: Biblioteca (40 min)</strong></p>
+                <p>Crie o Modelo Conceitual (Entidades e Atributos) para uma biblioteca. Considere: Livros, Autores, Editoras e Empréstimos.</p>
+                
+                <p><strong>Parte 2: Delivery de Comida (40 min)</strong></p>
+                <p>Identifique as entidades e relacionamentos para um app tipo iFood. Considere: Restaurante, Prato, Cliente, Pedido e Entregador.</p>
+                
+                <p><strong>Parte 3: Clínica Médica (40 min)</strong></p>
+                <p>Modele um sistema para clínica. Considere: Paciente, Médico, Consulta e Exame. Identifique atributos Chave (que identificam unicamente).</p>
             </div>
             
-            <textarea id="der-code" class="code-input" placeholder="Ex: Entidade Cliente (ID, Nome, CPF)..."></textarea>
+            <textarea id="der-code" class="code-input" style="height: 300px;" placeholder="1. Biblioteca: Entidades (Atr1, Atr2)...&#10;2. Delivery: ...&#10;3. Clínica: ..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="der-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 
@@ -109,7 +125,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 7</div>
+    <div class="slide-number" id="slideNumber">1 / 8</div>
 
     <script src="assets/js/script.js"></script>
 </body>

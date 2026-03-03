@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Índices e Otimização</h1>
             <p>Acelerando suas consultas SQL</p>
+            <img src="https://placehold.co/800x300?text=Indices+SQL" alt="Índices" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é um Índice? -->
         <div class="slide">
             <h2>O que é um Índice?</h2>
             <p>Imagine procurar um tópico num livro de 1000 páginas sem o índice remissivo. Você teria que ler página por página (Full Table Scan).</p>
+            <img src="https://placehold.co/800x200?text=Livro+com+Indice" alt="Índice de Livro" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>O índice é uma estrutura de dados auxiliar (geralmente B-Tree) que aponta onde está o dado.</p>
         </div>
 
@@ -95,21 +97,24 @@ DROP INDEX idx_cpf ON Clientes;
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Estratégia de Índices</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Otimizando o E-commerce</span>
-                <p>Tabela: <code>Produtos</code> (ID, Nome, Descricao, Preco, Categoria, Estoque, DataCadastro).</p>
-                <p>Consultas mais comuns:</p>
-                <ol>
-                    <li>Buscar produto pelo <strong>Nome</strong>.</li>
-                    <li>Listar produtos de uma <strong>Categoria</strong> ordenados pelo <strong>Preco</strong>.</li>
-                </ol>
-                <p>Quais índices você criaria para otimizar essas buscas? Justifique.</p>
+                <span class="activity-title">Consultor de Performance</span>
+                <p><strong>Cenário:</strong> O E-commerce "LojaX" está lento. A tabela <code>Produtos</code> tem 1 milhão de registros e as seguintes colunas: <code>ID, Nome, Descricao, Preco, Categoria, Estoque, DataCadastro</code>.</p>
+                
+                <p><strong>Parte 1: Diagnóstico (40 min)</strong></p>
+                <p>O cliente reclama que a busca por nome do produto demora 5 segundos. O que você faria? Escreva o comando SQL.</p>
+
+                <p><strong>Parte 2: Relatórios (40 min)</strong></p>
+                <p>Todo dia o gerente tira um relatório ordenado por <code>DataCadastro</code>. O relatório demora muito. Qual a solução? Escreva o comando.</p>
+
+                <p><strong>Parte 3: Análise Crítica (40 min)</strong></p>
+                <p>Um desenvolvedor júnior sugeriu criar índices em TODAS as colunas para "garantir que tudo fique rápido". Explique por que isso é uma má ideia, citando o impacto em INSERTs e UPDATEs.</p>
             </div>
             
-            <textarea id="index-code" class="code-input" placeholder="Criaria índice em..."></textarea>
+            <textarea id="index-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="index-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

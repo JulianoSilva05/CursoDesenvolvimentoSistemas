@@ -18,16 +18,18 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Fundamentos de SQL</h1>
-            <p>DML - Data Manipulation Language (SELECT, INSERT, UPDATE, DELETE)</p>
+            <p>DML - Data Manipulation Language</p>
+            <img src="https://placehold.co/800x300?text=SQL+Basico" alt="SQL Básico" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é SQL? -->
         <div class="slide">
             <h2>O que é SQL?</h2>
             <p><strong>SQL (Structured Query Language)</strong> é a linguagem padrão para interagir com bancos de dados relacionais.</p>
-            <p>Hoje vamos focar no <strong>DML (Data Manipulation Language)</strong>, ou seja, como manipular os dados dentro das tabelas.</p>
+            <img src="https://placehold.co/800x200?text=Comandos+SQL" alt="Comandos SQL" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>Foco de hoje: <strong>DML (Data Manipulation Language)</strong>.</p>
             <ul>
                 <li><strong>SELECT:</strong> Ler dados.</li>
                 <li><strong>INSERT:</strong> Criar dados.</li>
@@ -36,191 +38,119 @@
             </ul>
         </div>
 
-        <!-- Slide 3: INSERT (Criando Dados) -->
+        <!-- Slide 3: INSERT -->
         <div class="slide">
-            <h2>INSERT INTO (Inserindo Dados)</h2>
-            <p>O comando <code>INSERT</code> adiciona novas linhas (registros) a uma tabela.</p>
+            <h2>INSERT INTO</h2>
+            <p>Adiciona novos registros.</p>
             <div class="code-block">
--- Sintaxe Completa (Recomendada)
 INSERT INTO Clientes (Nome, Email, Idade) 
 VALUES ('João Silva', 'joao@email.com', 30);
-
--- Sintaxe Resumida (Cuidado: depende da ordem das colunas)
-INSERT INTO Clientes VALUES ('Maria Souza', 'maria@email.com', 25);
             </div>
             <div class="note">
-                Sempre prefira listar as colunas. Isso evita erros se a estrutura da tabela mudar no futuro.
+                Sempre liste as colunas para evitar erros futuros!
             </div>
         </div>
 
-        <!-- Slide 4: SELECT (Lendo Dados) - Básico -->
+        <!-- Slide 4: SELECT -->
         <div class="slide">
-            <h2>SELECT (Consultando Dados)</h2>
-            <p>É o comando mais utilizado. Permite recuperar dados de uma ou mais tabelas.</p>
+            <h2>SELECT (O Coração do SQL)</h2>
+            <p>Recupera dados de uma ou mais tabelas.</p>
             <div class="code-block">
--- Selecionar TUDO (todas as colunas e linhas)
+-- Selecionar tudo
 SELECT * FROM Clientes;
 
--- Selecionar colunas específicas (Melhor performance)
+-- Selecionar colunas específicas
 SELECT Nome, Email FROM Clientes;
             </div>
         </div>
 
-        <!-- Slide 5: WHERE (Filtrando Dados) -->
+        <!-- Slide 5: WHERE -->
         <div class="slide">
             <h2>WHERE (O Filtro)</h2>
-            <p>O <code>WHERE</code> define condições para filtrar os resultados. Funciona no SELECT, UPDATE e DELETE.</p>
+            <p>Essencial para não trazer (ou alterar) dados indesejados.</p>
             <div class="code-block">
--- Clientes com mais de 18 anos
 SELECT * FROM Clientes WHERE Idade > 18;
-
--- Clientes com nome específico
-SELECT * FROM Clientes WHERE Nome = 'João Silva';
-
--- Uso de Operadores Lógicos (AND, OR)
-SELECT * FROM Clientes WHERE Idade > 18 AND Cidade = 'São Paulo';
+SELECT * FROM Clientes WHERE Cidade = 'São Paulo' AND Ativo = TRUE;
             </div>
         </div>
 
-        <!-- Slide 6: ORDER BY (Ordenação) -->
+        <!-- Slide 6: ORDER BY -->
         <div class="slide">
-            <h2>ORDER BY (Ordenando Resultados)</h2>
-            <p>Organiza a saída dos dados.</p>
-            <ul>
-                <li><strong>ASC:</strong> Ascendente (A-Z, 0-9). Padrão se omitido.</li>
-                <li><strong>DESC:</strong> Descendente (Z-A, 9-0).</li>
-            </ul>
+            <h2>ORDER BY</h2>
+            <p>Organiza a bagunça.</p>
             <div class="code-block">
--- Ordenar por Nome (A-Z)
-SELECT * FROM Clientes ORDER BY Nome;
-
--- Ordenar por Idade (Mais velho para mais novo)
-SELECT * FROM Clientes ORDER BY Idade DESC;
+SELECT * FROM Produtos ORDER BY Preco ASC; -- Menor pro maior
+SELECT * FROM Produtos ORDER BY DataCadastro DESC; -- Mais recente primeiro
             </div>
         </div>
 
-        <!-- Slide 7: UPDATE (Atualizando Dados) -->
+        <!-- Slide 7: UPDATE -->
         <div class="slide">
-            <h2>UPDATE (Alterando Dados)</h2>
-            <p>Modifica registros existentes.</p>
+            <h2>UPDATE</h2>
+            <p>Atualiza registros.</p>
             <div class="code-block">
--- Mudar o email do João
 UPDATE Clientes 
-SET Email = 'joao.novo@email.com' 
-WHERE ID = 1;
-
--- Aumentar o preço de todos os produtos em 10%
-UPDATE Produtos SET Preco = Preco * 1.10;
+SET Email = 'novo@email.com', Telefone = '9999-8888'
+WHERE ID = 10;
             </div>
             <div class="note" style="color: red; border-color: red;">
-                <strong>PERIGO:</strong> Se você esquecer o <code>WHERE</code>, vai alterar TODOS os registros da tabela!
+                <strong>SEM WHERE = DEMISSÃO!</strong> (Atualiza a tabela toda).
             </div>
         </div>
 
-        <!-- Slide 8: DELETE (Apagando Dados) -->
+        <!-- Slide 8: DELETE -->
         <div class="slide">
-            <h2>DELETE (Removendo Dados)</h2>
-            <p>Remove registros da tabela.</p>
+            <h2>DELETE</h2>
+            <p>Remove registros.</p>
             <div class="code-block">
--- Apagar o cliente com ID 5
 DELETE FROM Clientes WHERE ID = 5;
-
--- Apagar todos os clientes inativos
-DELETE FROM Clientes WHERE Ativo = FALSE;
             </div>
             <div class="note" style="color: red; border-color: red;">
-                <strong>PERIGO EXTREMO:</strong> <code>DELETE FROM Clientes;</code> (sem WHERE) apaga a tabela inteira!
+                <strong>SEM WHERE = DEMISSÃO!</strong> (Apaga a tabela toda).
             </div>
         </div>
 
-        <!-- Slide 9: Exercícios Práticos (Básico) -->
+        <!-- Slide 9: LIKE -->
         <div class="slide">
-            <h2>Exercícios Práticos - Parte 1</h2>
-            <div class="activity-box">
-                <span class="activity-title">Contexto: Loja de Games</span>
-                <p>Tabela: <code>Jogos</code> (ID, Titulo, Preco, Plataforma)</p>
-                <ol>
-                    <li>Insira 3 jogos diferentes na tabela.</li>
-                    <li>Selecione todos os jogos de 'PC'.</li>
-                    <li>Atualize o preço de um jogo específico.</li>
-                    <li>Delete um jogo que você não gosta.</li>
-                </ol>
-            </div>
-            <textarea id="sql-basic-code" class="code-input" placeholder="Escreva seus comandos SQL aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-basic-code">
-                📧 Enviar Resposta
-            </button>
-        </div>
-
-        <!-- Slide 10: Funções de Agregação -->
-        <div class="slide">
-            <h2>Funções de Agregação</h2>
-            <p>SQL pode calcular coisas para nós:</p>
+            <h2>LIKE (Busca de Texto)</h2>
             <ul>
-                <li><strong>COUNT(*):</strong> Conta registros.</li>
-                <li><strong>SUM(coluna):</strong> Soma valores.</li>
-                <li><strong>AVG(coluna):</strong> Média aritmética.</li>
-                <li><strong>MAX(coluna) / MIN(coluna):</strong> Maior e menor valor.</li>
+                <li><code>%</code>: Qualquer coisa.</li>
+                <li><code>_</code>: Um caractere.</li>
             </ul>
             <div class="code-block">
--- Quantos clientes temos?
-SELECT COUNT(*) FROM Clientes;
-
--- Qual a média de preço dos produtos?
-SELECT AVG(Preco) FROM Produtos;
+SELECT * FROM Clientes WHERE Nome LIKE 'A%'; -- Começa com A
+SELECT * FROM Clientes WHERE Email LIKE '%@gmail.com'; -- Termina com gmail
             </div>
         </div>
 
-        <!-- Slide 11: LIKE (Busca por Padrão) -->
+        <!-- Slide 10: Atividade Prática -->
         <div class="slide">
-            <h2>LIKE (Busca Inteligente)</h2>
-            <p>Usado para buscar partes de um texto.</p>
-            <ul>
-                <li><strong>%</strong>: Representa qualquer sequência de caracteres.</li>
-                <li><strong>_</strong>: Representa um único caractere.</li>
-            </ul>
-            <div class="code-block">
--- Nomes que COMEÇAM com 'Ana' (Ana, Ana Paula, Anabel)
-SELECT * FROM Clientes WHERE Nome LIKE 'Ana%';
-
--- Nomes que TERMINAM com 'Silva'
-SELECT * FROM Clientes WHERE Nome LIKE '%Silva';
-
--- Nomes que CONTÉM 'Oliveira' em qualquer lugar
-SELECT * FROM Clientes WHERE Nome LIKE '%Oliveira%';
-            </div>
-        </div>
-
-        <!-- Slide 12: Desafio Avançado -->
-        <div class="slide">
-            <h2>Desafio para Avançados</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Análise de Dados</span>
-                <p>Considerando uma tabela <code>Vendas</code> (ID, Data, Valor, ID_Vendedor):</p>
+                <span class="activity-title">Gerenciando uma Locadora</span>
+                <p>Considere a tabela <code>Filmes</code> (ID, Titulo, Genero, Ano, PrecoAluguel, Disponivel).</p>
+                
+                <p><strong>Parte 1: Inserção (40 min)</strong></p>
+                <p>Escreva os comandos para inserir 5 filmes variados (Ação, Comédia, Terror).</p>
+
+                <p><strong>Parte 2: Consultas (40 min)</strong></p>
                 <ol>
-                    <li>Selecione o valor total vendido (Soma) por cada Vendedor. (Dica: Pesquise sobre <code>GROUP BY</code>).</li>
-                    <li>Selecione apenas os vendedores que venderam mais de R$ 5000,00 no total. (Dica: Pesquise sobre <code>HAVING</code>).</li>
+                    <li>Listar todos os filmes de 'Comédia'.</li>
+                    <li>Listar filmes lançados após 2020.</li>
+                    <li>Listar filmes com preço menor que 10.00, ordenados pelo título.</li>
+                </ol>
+
+                <p><strong>Parte 3: Alteração e Remoção (40 min)</strong></p>
+                <ol>
+                    <li>Aumentar o preço de todos os filmes de 'Ação' em 10%.</li>
+                    <li>Marcar como indisponível (Disponivel = FALSE) o filme de ID 3.</li>
+                    <li>Deleter todos os filmes anteriores a 1990.</li>
                 </ol>
             </div>
-            <textarea id="sql-advanced-code" class="code-input" placeholder="Escreva sua query avançada aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="sql-advanced-code">
-                📧 Enviar Desafio
+            <textarea id="sql-code" class="code-input" style="height: 300px;" placeholder="-- Parte 1: Inserção...&#10;INSERT INTO..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-code">
+                📧 Enviar Resposta Completa
             </button>
-        </div>
-
-        <!-- Slide 13: Diferenciação de Aprendizado -->
-        <div class="slide">
-            <h2>Dicas de Estudo</h2>
-            <div style="display: flex; gap: 20px; text-align: left;">
-                <div style="flex: 1; padding: 20px; background: #eef; border-radius: 10px;">
-                    <strong>Para quem está começando:</strong>
-                    <p>Foque em dominar o <code>SELECT ... WHERE</code>. É a base de tudo. Pratique filtrar dados de diferentes formas.</p>
-                </div>
-                <div style="flex: 1; padding: 20px; background: #fffbe6; border-radius: 10px;">
-                    <strong>Para quem quer ir além:</strong>
-                    <p>Explore <code>GROUP BY</code>, <code>HAVING</code> e Subqueries. Tente resolver problemas de relatórios complexos.</p>
-                </div>
-            </div>
         </div>
 
     </div>
@@ -231,7 +161,7 @@ SELECT * FROM Clientes WHERE Nome LIKE '%Oliveira%';
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 13</div>
+    <div class="slide-number" id="slideNumber">1 / 10</div>
 
     <script src="assets/js/script.js"></script>
 </body>

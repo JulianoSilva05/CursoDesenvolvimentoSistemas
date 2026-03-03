@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Transações e ACID</h1>
             <p>Garantindo a consistência dos dados</p>
+            <img src="https://placehold.co/800x300?text=Transacoes+ACID" alt="Transações" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é uma Transação? -->
         <div class="slide">
             <h2>O que é uma Transação?</h2>
             <p>É uma sequência de operações (inserts, updates, deletes) que deve ser tratada como um bloco único.</p>
+            <img src="https://placehold.co/800x200?text=Bloco+Unico+de+Execucao" alt="Bloco Único" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p><strong>Regra de Ouro:</strong> Ou TUDO acontece com sucesso, ou NADA acontece (All or Nothing).</p>
         </div>
 
@@ -45,6 +47,7 @@
         <!-- Slide 4: ACID -->
         <div class="slide">
             <h2>Propriedades ACID</h2>
+            <img src="https://placehold.co/800x250?text=A.C.I.D." alt="ACID" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <ul>
                 <li><strong>A (Atomicity - Atomicidade):</strong> A transação é indivisível. (Tudo ou nada).</li>
                 <li><strong>C (Consistency - Consistência):</strong> O banco sai de um estado válido para outro estado válido.</li>
@@ -84,21 +87,25 @@ ROLLBACK; -- Desfaz tudo o que foi feito desde o início da transação
 
         <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Simulando Erro</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">E-commerce</span>
-                <p>Imagine o processo de "Finalizar Compra":</p>
-                <ol>
-                    <li>Criar o pedido.</li>
-                    <li>Baixar o estoque.</li>
-                    <li>Registrar o pagamento.</li>
-                </ol>
-                <p>Descreva o que acontece se ocorrer um erro no passo 3 (pagamento recusado) em um banco COM transação e SEM transação.</p>
+                <span class="activity-title">Engenheiro de Confiabilidade</span>
+                
+                <p><strong>Parte 1: Compra Online (40 min)</strong></p>
+                <p>Processo: 1. Criar Pedido, 2. Baixar Estoque, 3. Debitar Cartão.</p>
+                <p>Descreva o passo a passo do que acontece se o "Debitar Cartão" falhar (cartão sem limite) em um sistema COM transação. Use os termos <code>START TRANSACTION</code> e <code>ROLLBACK</code>.</p>
+
+                <p><strong>Parte 2: Concorrência (40 min)</strong></p>
+                <p>Dois clientes tentam comprar o <strong>último</strong> iPhone ao mesmo tempo.</p>
+                <p>Sem isolamento de transação, o que poderia acontecer? (Venda Dupla). Como o banco evita isso?</p>
+
+                <p><strong>Parte 3: Implementação (40 min)</strong></p>
+                <p>Escreva o pseudocódigo SQL para uma transferência de pontos de fidelidade entre dois usuários (User A envia 500 pontos para User B).</p>
             </div>
             
-            <textarea id="trans-code" class="code-input" placeholder="Com transação: ...&#10;Sem transação: ..."></textarea>
+            <textarea id="trans-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="trans-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Dominando JOINs</h1>
             <p>Conectando tabelas com SQL</p>
+            <img src="https://placehold.co/800x300?text=SQL+Joins" alt="JOINs" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é um JOIN? -->
         <div class="slide">
             <h2>O que é um JOIN?</h2>
             <p>É uma cláusula SQL usada para combinar linhas de duas ou mais tabelas, com base em uma coluna relacionada entre elas (geralmente PK e FK).</p>
+            <img src="https://placehold.co/800x200?text=Tabelas+Conectadas" alt="Conexão" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>Sem JOINs, os bancos relacionais seriam apenas ilhas de dados isolados.</p>
         </div>
 
@@ -71,6 +73,7 @@ LEFT JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cliente;
         <!-- Slide 7: Diagrama de Venn -->
         <div class="slide">
             <h2>Visualizando (Venn)</h2>
+            <img src="https://placehold.co/800x250?text=Diagrama+de+Venn+Joins" alt="Venn" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <div style="display: flex; justify-content: center; gap: 20px; margin-top: 20px;">
                 <div style="border: 1px solid #ccc; padding: 10px; border-radius: 5px;">
                     <strong>INNER</strong><br>
@@ -85,19 +88,30 @@ LEFT JOIN Pedidos ON Clientes.ID = Pedidos.ID_Cliente;
 
         <!-- Slide 8: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Escrevendo JOINs</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Sistema de RH</span>
-                <p>Tabelas: <code>Funcionarios</code> (ID, Nome, ID_Depto) e <code>Departamentos</code> (ID, NomeDepto).</p>
+                <span class="activity-title">Mestre dos JOINs</span>
+                <p>Considere as tabelas: <code>Funcionarios</code> (ID, Nome, ID_Depto), <code>Departamentos</code> (ID, NomeDepto) e <code>Projetos</code> (ID, NomeProj, ID_Depto).</p>
+                
+                <p><strong>Parte 1: Básico (40 min)</strong></p>
                 <ol>
-                    <li>Escreva uma query para listar o Nome do Funcionário e o Nome do seu Departamento (apenas para quem tem departamento).</li>
-                    <li>Escreva uma query para listar TODOS os Departamentos, inclusive os que não têm funcionários (Departamento vazio).</li>
+                    <li>Liste o Nome do Funcionário e o Nome do seu Departamento (apenas para quem tem departamento).</li>
+                    <li>Liste TODOS os Departamentos, inclusive os que não têm funcionários.</li>
                 </ol>
+
+                <p><strong>Parte 2: Avançado (40 min)</strong></p>
+                <ol>
+                    <li>Liste os Funcionários e os Projetos do departamento deles. (Dica: Faça JOIN de Func com Depto, e depois Depto com Proj).</li>
+                    <li>Encontre departamentos que NÃO têm projetos (usando LEFT JOIN e verificando NULL).</li>
+                </ol>
+
+                <p><strong>Parte 3: Desafio (40 min)</strong></p>
+                <p>Escreva uma query que retorne: Nome do Funcionário, Nome do Departamento e Nome do Projeto. Se o funcionário não tiver departamento, mostre "Sem Depto".</p>
             </div>
             
-            <textarea id="join-code" class="code-input" placeholder="SELECT ... FROM ... JOIN ..."></textarea>
+            <textarea id="join-code" class="code-input" style="height: 300px;" placeholder="-- Parte 1...&#10;SELECT ..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="join-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 

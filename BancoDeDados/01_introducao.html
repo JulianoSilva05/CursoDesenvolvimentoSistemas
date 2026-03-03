@@ -19,13 +19,15 @@
         <div class="slide active">
             <h1>Introdução a Banco de Dados</h1>
             <p>Conceitos Fundamentais e SGBDs</p>
+            <img src="https://placehold.co/800x300?text=Introducao+BD" alt="Introdução Banco de Dados" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O Problema dos Dados -->
         <div class="slide">
             <h2>O Problema dos Dados</h2>
+            <img src="https://placehold.co/800x250?text=Arquivos+Fisicos+vs+Digitais" alt="Comparação Físico x Digital" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <p>Antes dos computadores, como guardávamos informações?</p>
             <ul>
                 <li>Arquivos físicos, pastas, gavetas.</li>
@@ -48,6 +50,7 @@
         <div class="slide">
             <h2>O SGBD</h2>
             <p><strong>Sistema Gerenciador de Banco de Dados</strong> (DBMS em inglês).</p>
+            <img src="https://placehold.co/800x200?text=SGBD+Exemplos" alt="Exemplos de SGBD" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>Funções principais:</p>
             <ul>
                 <li>Permitir a criação, leitura, atualização e exclusão de dados (CRUD).</li>
@@ -71,6 +74,7 @@
         <!-- Slide 6: Dado vs Informação -->
         <div class="slide">
             <h2>Dado vs Informação</h2>
+            <img src="https://placehold.co/800x250?text=Dado+vs+Informacao" alt="Dado vs Informação" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <ul>
                 <li><strong>Dado:</strong> Fato bruto, sem contexto. <br>Ex: "25", "Azul".</li>
                 <li><strong>Informação:</strong> Dado processado e com significado. <br>Ex: "A temperatura é 25 graus", "O carro é Azul".</li>
@@ -78,19 +82,41 @@
             </ul>
         </div>
 
-        <!-- Slide 7: Atividade Prática -->
+        <!-- Slide 7: Exemplos Reais -->
         <div class="slide">
-            <h2>Atividade: Dados no Dia a Dia</h2>
+            <h2>Exemplos Reais de Uso</h2>
+            <p>Onde os bancos de dados estão?</p>
+            <ul>
+                <li><strong>Bancos:</strong> Contas, transações, empréstimos.</li>
+                <li><strong>E-commerce:</strong> Produtos, clientes, pedidos, estoque.</li>
+                <li><strong>Escolas:</strong> Alunos, professores, notas, faltas.</li>
+                <li><strong>Redes Sociais:</strong> Perfis, posts, curtidas, comentários.</li>
+                <li><strong>Hospitais:</strong> Prontuários, exames, agendamentos.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 8: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Identificando Bancos de Dados</span>
-                <p>Pense em 3 aplicativos ou sistemas que você usa diariamente (ex: Instagram, Uber, Netflix).</p>
-                <p>Para cada um, liste <strong>3 tipos de dados</strong> que você acha que eles armazenam.</p>
-                <p>Exemplo: Spotify -> Músicas, Playlists, Usuários.</p>
+                <span class="activity-title">Análise de Dados no Mundo Real</span>
+                <p><strong>Parte 1: Identificação (30 min)</strong></p>
+                <p>Escolha 3 sistemas que você usa (ex: Instagram, iFood, Netflix). Para cada um, liste:</p>
+                <ul>
+                    <li>Quais dados principais eles armazenam? (ex: Nome, Foto, Preço).</li>
+                    <li>Quem são os usuários desses dados? (ex: Cliente, Entregador, Restaurante).</li>
+                </ul>
+                
+                <p><strong>Parte 2: Diferenciação (30 min)</strong></p>
+                <p>Dê 2 exemplos de "Dado" e transforme-os em "Informação" e depois em "Conhecimento".</p>
+                
+                <p><strong>Parte 3: Pesquisa (1 hora)</strong></p>
+                <p>Pesquise sobre os SGBDs mais usados no mundo atualmente (Ranking DB-Engines). Liste o TOP 3 e uma característica principal de cada um.</p>
             </div>
             
-            <textarea id="intro-code" class="code-input" placeholder="App 1: ... (Dados: ... , ... , ... )&#10;App 2: ..."></textarea>
+            <textarea id="intro-code" class="code-input" style="height: 300px;" placeholder="Responda aqui todas as partes da atividade..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="intro-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 
@@ -102,7 +128,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 7</div>
+    <div class="slide-number" id="slideNumber">1 / 8</div>
 
     <script src="assets/js/script.js"></script>
 </body>

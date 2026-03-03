@@ -19,14 +19,16 @@
         <div class="slide active">
             <h1>Linguagem DDL</h1>
             <p>Data Definition Language - Definindo a Estrutura</p>
+            <img src="https://placehold.co/800x300?text=Linguagem+DDL" alt="DDL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
         <!-- Slide 2: O que é DDL? -->
         <div class="slide">
             <h2>O que é DDL?</h2>
             <p><strong>DDL (Data Definition Language)</strong> é a parte do SQL usada para criar e modificar a estrutura do banco de dados (esquema).</p>
+            <img src="https://placehold.co/800x200?text=Estrutura+do+Banco" alt="Estrutura" style="width: 100%; margin: 15px 0; border-radius: 8px;">
             <p>Principais comandos:</p>
             <ul>
                 <li><strong>CREATE:</strong> Cria objetos (tabelas, bancos, views).</li>
@@ -39,6 +41,7 @@
         <!-- Slide 3: Tipos de Dados Comuns -->
         <div class="slide">
             <h2>Tipos de Dados Comuns</h2>
+            <p>Escolher o tipo certo economiza espaço e evita erros.</p>
             <ul>
                 <li><strong>INT / INTEGER:</strong> Números inteiros.</li>
                 <li><strong>DECIMAL(10,2) / FLOAT:</strong> Números decimais (dinheiro, medidas).</li>
@@ -111,20 +114,36 @@ CREATE TABLE Pedidos (
 
         <!-- Slide 8: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade: Criando Tabelas</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Sistema de Biblioteca</span>
-                <p>Escreva o comando SQL para criar as tabelas:</p>
+                <span class="activity-title">Construindo o Banco de Dados de uma Escola</span>
+                
+                <p><strong>Parte 1: Tabelas Básicas (40 min)</strong></p>
+                <p>Escreva o SQL para criar as tabelas:</p>
                 <ul>
-                    <li><strong>Livros:</strong> (ID, Titulo, Autor, AnoPublicacao, ISBN).</li>
-                    <li><strong>Emprestimos:</strong> (ID, DataEmprestimo, DataDevolucao, ID_Livro).</li>
+                    <li><code>Professores</code> (ID, Nome, Especialidade, Email).</li>
+                    <li><code>Disciplinas</code> (ID, Nome, CargaHoraria, ID_Professor_Responsavel).</li>
                 </ul>
-                <p>Não esqueça de definir as Chaves Primárias (PK) e a Chave Estrangeira (FK) em Emprestimos!</p>
+                
+                <p><strong>Parte 2: Tabela de Alunos e Matrículas (40 min)</strong></p>
+                <p>Escreva o SQL para criar:</p>
+                <ul>
+                    <li><code>Alunos</code> (ID, Nome, CPF, DataNascimento).</li>
+                    <li><code>Matriculas</code> (ID, DataMatricula, ID_Aluno, ID_Disciplina). *Atenção às Chaves Estrangeiras!*</li>
+                </ul>
+
+                <p><strong>Parte 3: Alterações (40 min)</strong></p>
+                <p>Você esqueceu algumas coisas! Escreva os comandos <code>ALTER</code> para:</p>
+                <ul>
+                    <li>Adicionar uma coluna <code>Telefone</code> na tabela Professores.</li>
+                    <li>Aumentar o tamanho do campo <code>Nome</code> dos Alunos para 200 caracteres.</li>
+                    <li>Adicionar uma coluna <code>NotaFinal</code> (Decimal) na tabela Matriculas.</li>
+                </ul>
             </div>
             
-            <textarea id="ddl-code" class="code-input" placeholder="CREATE TABLE Livros..."></textarea>
+            <textarea id="ddl-code" class="code-input" style="height: 300px;" placeholder="-- Parte 1:&#10;CREATE TABLE Professores..."></textarea>
             <button class="send-btn send-email-btn" data-input-id="ddl-code">
-                📧 Enviar Resposta
+                📧 Enviar Resposta Completa
             </button>
         </div>
 
