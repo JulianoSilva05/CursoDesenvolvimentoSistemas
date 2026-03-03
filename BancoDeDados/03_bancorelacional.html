@@ -5,6 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bancos Relacionais vs NoSQL</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        .grid-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .concept-card {
+            border-left: 5px solid var(--senai-blue);
+            padding: 15px;
+            background: #eef;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 1.1rem;
+        }
+        .comparison-table th, .comparison-table td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .comparison-table th {
+            background-color: var(--senai-blue);
+            color: white;
+        }
+        .slide img {
+            max-height: 300px;
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,110 +59,257 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Bancos Relacionais vs NoSQL</h1>
-            <p>Quando usar cada um?</p>
-            <img src="https://placehold.co/800x300?text=SQL+vs+NoSQL" alt="SQL vs NoSQL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
+            <h2>O Grande Duelo das Tecnologias</h2>
+            <img src="https://placehold.co/800x350/004587/FFFFFF?text=SQL+vs+NoSQL" alt="SQL vs NoSQL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática (Desafios de Arquitetura)</p>
+            </div>
         </div>
 
         <!-- Slide 2: O Modelo Relacional (SQL) -->
         <div class="slide">
-            <h2>O Modelo Relacional (SQL)</h2>
-            <p>Baseado em tabelas, linhas e colunas. Estrutura rígida (esquema).</p>
-            <img src="https://placehold.co/800x200?text=Tabelas+Relacionais" alt="Tabelas" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <ul>
-                <li><strong>Principal característica:</strong> Consistência e Integridade.</li>
-                <li><strong>ACID:</strong> Atomicidade, Consistência, Isolamento, Durabilidade.</li>
-                <li><strong>Escalabilidade:</strong> Vertical (Servidores mais potentes).</li>
-                <li><strong>Exemplos:</strong> MySQL, PostgreSQL, Oracle, SQL Server.</li>
-            </ul>
+            <h2>O Mundo Relacional (SQL)</h2>
+            <p>Dominante há 40 anos. Baseado em <strong>Tabelas</strong> e <strong>Esquemas Rígidos</strong>.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Características</h3>
+                    <ul>
+                        <li>Dados estruturados (linhas/colunas).</li>
+                        <li>Esquema definido antes de inserir dados.</li>
+                        <li>Relacionamentos fortes (FK).</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Onde brilha?</h3>
+                    <ul>
+                        <li>Sistemas Financeiros (Bancos).</li>
+                        <li>ERP / CRM.</li>
+                        <li>Onde a integridade é vital.</li>
+                    </ul>
+                </div>
+            </div>
+            <img src="https://placehold.co/800x200/28a745/FFFFFF?text=Tabela+A+<--JOIN-->+Tabela+B" alt="Relacional" style="width: 100%; margin-top: 20px; border-radius: 8px;">
         </div>
 
-        <!-- Slide 3: O Modelo NoSQL -->
+        <!-- Slide 3: ACID (A Alma do Relacional) -->
         <div class="slide">
-            <h2>O Modelo NoSQL</h2>
-            <p>"Not Only SQL". Surgiu para lidar com Big Data e flexibilidade.</p>
-            <img src="https://placehold.co/800x200?text=Estruturas+NoSQL" alt="NoSQL" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <ul>
-                <li><strong>Principal característica:</strong> Alta disponibilidade e flexibilidade de esquema.</li>
-                <li><strong>BASE:</strong> Basic Availability, Soft state, Eventual consistency.</li>
-                <li><strong>Escalabilidade:</strong> Horizontal (Mais servidores baratos em cluster).</li>
-                <li><strong>Exemplos:</strong> MongoDB, Redis, Cassandra, Neo4j.</li>
-            </ul>
+            <h2>ACID: A Garantia de Segurança</h2>
+            <p>Todo banco relacional sério segue estas 4 regras para transações:</p>
+            
+            <div class="concept-card">
+                <strong>A - Atomicidade:</strong> Tudo ou nada. Se uma parte da transação falhar, tudo é desfeito (Rollback).
+            </div>
+            <div class="concept-card">
+                <strong>C - Consistência:</strong> O banco vai de um estado válido para outro estado válido.
+            </div>
+            <div class="concept-card">
+                <strong>I - Isolamento:</strong> Uma transação não interfere na outra enquanto acontece.
+            </div>
+            <div class="concept-card">
+                <strong>D - Durabilidade:</strong> Se o banco disse "salvo", está salvo no disco, mesmo que a energia caia.
+            </div>
         </div>
 
-        <!-- Slide 4: Tipos de NoSQL -->
+        <!-- Slide 4: O Mundo NoSQL -->
         <div class="slide">
-            <h2>Tipos de NoSQL</h2>
-            <ul>
-                <li><strong>Documentos:</strong> JSON/BSON. Flexível. (MongoDB).</li>
-                <li><strong>Chave-Valor:</strong> Simples e rápido. Cache. (Redis).</li>
-                <li><strong>Colunar:</strong> Para grandes volumes de análise. (Cassandra).</li>
-                <li><strong>Grafos:</strong> Relacionamentos complexos. Redes sociais. (Neo4j).</li>
-            </ul>
+            <h2>O Mundo NoSQL (Not Only SQL)</h2>
+            <p>Surgiu nos anos 2000 com a Web 2.0 (Google, Amazon, Facebook). O Relacional não aguentava o volume.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Características</h3>
+                    <ul>
+                        <li>Schema-less (Sem esquema fixo).</li>
+                        <li>Alta performance de leitura/escrita.</li>
+                        <li>Escalabilidade Horizontal fácil.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Onde brilha?</h3>
+                    <ul>
+                        <li>Big Data / IoT.</li>
+                        <li>Redes Sociais.</li>
+                        <li>Catálogos de produtos variáveis.</li>
+                        <li>Jogos em tempo real.</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <!-- Slide 5: Teorema CAP -->
+        <!-- Slide 5: Escala Vertical vs Horizontal -->
         <div class="slide">
-            <h2>Teorema CAP</h2>
-            <p>Um sistema distribuído só pode garantir 2 de 3 propriedades:</p>
-            <img src="https://placehold.co/800x250?text=Teorema+CAP" alt="Teorema CAP" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
-            <ul>
-                <li><strong>Consistência (C):</strong> Todos leem o dado mais recente.</li>
-                <li><strong>Disponibilidade (A):</strong> O sistema sempre responde, mesmo com falhas.</li>
-                <li><strong>Partição (P):</strong> O sistema continua funcionando se a rede falhar.</li>
-            </ul>
-            <p>SQL foca em CA. NoSQL foca em AP ou CP.</p>
+            <h2>Escalabilidade: O Grande Diferencial</h2>
+            <p>Como crescer quando o sistema fica lento?</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Vertical (SQL)</h3>
+                    <p>Comprar um servidor MAIOR (Mais RAM, Mais CPU).</p>
+                    <p><em>Limite: Custo altíssimo e limite físico da máquina.</em></p>
+                    <img src="https://placehold.co/300x150/004587/FFFFFF?text=Servidor+Monstro" alt="Vertical" style="width: 100%; margin-top: 10px;">
+                </div>
+                <div class="grid-item">
+                    <h3>Horizontal (NoSQL)</h3>
+                    <p>Comprar MAIS servidores pequenos e ligá-los em Cluster.</p>
+                    <p><em>Vantagem: Infinito e barato.</em></p>
+                    <img src="https://placehold.co/300x150/E32119/FFFFFF?text=Cluster+de+Máquinas" alt="Horizontal" style="width: 100%; margin-top: 10px;">
+                </div>
+            </div>
         </div>
 
-        <!-- Slide 6: Quando usar? -->
+        <!-- Slide 6: Tipos de NoSQL - Documentos (MongoDB) -->
         <div class="slide">
-            <h2>Quando usar?</h2>
-            <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
-                <tr style="background: #eee;">
-                    <th style="padding: 10px; border: 1px solid #ccc;">SQL</th>
-                    <th style="padding: 10px; border: 1px solid #ccc;">NoSQL</th>
+            <h2>Tipo 1: Orientado a Documentos</h2>
+            <p>Armazena dados em JSON (BSON). Flexível e hierárquico.</p>
+            <p><strong>Principal Player: MongoDB</strong></p>
+            
+            <div class="code-block" style="background: #1e1e1e; color: #d4d4d4;">
+// Coleção: Usuarios
+{
+    "_id": "user123",
+    "nome": "Carlos",
+    "enderecos": [  // Array dentro do registro!
+        { "tipo": "casa", "rua": "Av Paulista" },
+        { "tipo": "trabalho", "rua": "Faria Lima" }
+    ]
+}
+            </div>
+            <p><em>No SQL, isso exigiria duas tabelas e um JOIN.</em></p>
+        </div>
+
+        <!-- Slide 7: Tipos de NoSQL - Chave-Valor (Redis) -->
+        <div class="slide">
+            <h2>Tipo 2: Chave-Valor</h2>
+            <p>O mais simples e rápido. É um grande dicionário (Hash Map). Geralmente em memória (RAM).</p>
+            <p><strong>Principal Player: Redis</strong></p>
+            
+            <div class="code-block" style="background: #1e1e1e; color: #d4d4d4;">
+SET sessao:usuario:123 "{ 'logado': true, 'token': 'xyz' }"
+GET sessao:usuario:123
+> "{ 'logado': true, 'token': 'xyz' }"
+            </div>
+            <p><em>Uso ideal: Cache, Sessão de usuário, Carrinho de compras, Placar de jogos.</em></p>
+        </div>
+
+        <!-- Slide 8: Tipos de NoSQL - Outros -->
+        <div class="slide">
+            <h2>Outros Tipos de NoSQL</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Colunar (Wide-Column)</h3>
+                    <p>Armazena dados em colunas, não linhas. Ótimo para ler poucas colunas de bilhões de registros.</p>
+                    <p><strong>Ex: Cassandra, HBase.</strong> (Usado pelo Facebook/Netflix).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Grafos</h3>
+                    <p>Focado em RELACIONAMENTOS. Nós e Arestas.</p>
+                    <p><strong>Ex: Neo4j.</strong> (Redes Sociais, Detecção de Fraude, Recomendação).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 9: Teorema CAP -->
+        <div class="slide">
+            <h2>O Teorema CAP (Brewer)</h2>
+            <p>Em sistemas distribuídos, escolha 2 de 3:</p>
+            <img src="https://placehold.co/800x250/555/FFFFFF?text=Consistência+-+Disponibilidade+-+Partição" alt="Teorema CAP" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
+            <ul>
+                <li><strong>C (Consistency):</strong> Todos veem o mesmo dado ao mesmo tempo.</li>
+                <li><strong>A (Availability):</strong> O sistema sempre responde (não cai).</li>
+                <li><strong>P (Partition Tolerance):</strong> O sistema funciona se a rede cortar.</li>
+            </ul>
+            <p class="highlight">SQL foca em CA (Forte Consistência). NoSQL foca em AP (Alta Disponibilidade) ou CP.</p>
+        </div>
+
+        <!-- Slide 10: Comparativo Final -->
+        <div class="slide">
+            <h2>Resumo: Quando usar qual?</h2>
+            <table class="comparison-table">
+                <tr>
+                    <th>Critério</th>
+                    <th>SQL (Relacional)</th>
+                    <th>NoSQL</th>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Dados estruturados e relacionais.</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Dados não estruturados ou variáveis.</td>
+                    <td>Estrutura</td>
+                    <td>Rígida (Schema)</td>
+                    <td>Flexível (Schema-less)</td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Transações financeiras (ACID).</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Redes sociais, Logs, IoT, Catálogos.</td>
+                    <td>Consistência</td>
+                    <td>Forte (ACID)</td>
+                    <td>Eventual (BASE)</td>
                 </tr>
                 <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Consultas complexas (JOINs).</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Velocidade extrema e escala global.</td>
+                    <td>Escalabilidade</td>
+                    <td>Vertical (Difícil)</td>
+                    <td>Horizontal (Fácil)</td>
+                </tr>
+                <tr>
+                    <td>Melhor para</td>
+                    <td>Transações, Dados complexos interligados</td>
+                    <td>Big Data, Logs, Catálogos, Analytics</td>
                 </tr>
             </table>
         </div>
 
-        <!-- Slide 7: Atividade Prática -->
+        <!-- Slide 11: Atividade Prática - Parte 1 -->
         <div class="slide">
-            <h2>Atividade Prática (2 Horas)</h2>
+            <h2>Atividade 1: Arquiteto de Soluções (40 min)</h2>
             <div class="activity-box">
-                <span class="activity-title">Desafio de Arquitetura</span>
-                <p><strong>Parte 1: Escolha da Tecnologia (40 min)</strong></p>
-                <p>Para cada cenário abaixo, escolha SQL ou NoSQL e o <strong>tipo</strong> (ex: NoSQL Documento, SQL Relacional). Justifique com base em ACID vs BASE e Escalabilidade.</p>
+                <span class="activity-title">Escolha a Tecnologia</span>
+                <p>Para cada cenário, diga se usaria SQL ou NoSQL e JUSTIFIQUE:</p>
                 <ol>
-                    <li>Um sistema bancário internacional que transfere bilhões entre contas.</li>
-                    <li>Um catálogo de produtos de um marketplace global onde cada vendedor define os atributos do seu produto (ex: uns têm voltagem, outros têm validade, outros têm cor).</li>
-                    <li>O sistema de "Likes" e "Feed" do TikTok, com milhões de escritas por segundo.</li>
-                    <li>Um sistema de gestão de estoque de uma farmácia local.</li>
+                    <li>Um sistema de transferência bancária entre contas (PIX).</li>
+                    <li>Um blog onde os posts podem ter campos variados (vídeo, texto, galeria).</li>
+                    <li>Um sistema de monitoramento de sensores IoT (milhões de leituras/segundo).</li>
                 </ol>
-
-                <p><strong>Parte 2: Teorema CAP (40 min)</strong></p>
-                <p>Explique por que é impossível ter Consistência, Disponibilidade e Tolerância a Partição ao mesmo tempo em um sistema distribuído. Dê um exemplo de falha.</p>
-
-                <p><strong>Parte 3: Pesquisa de Ferramentas (40 min)</strong></p>
-                <p>Pesquise e descreva brevemente o que são: MongoDB, Redis, Neo4j e Cassandra. Para que cada um é "o melhor"?</p>
             </div>
-            
-            <textarea id="nosql-code" class="code-input" style="height: 300px;" placeholder="Responda aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="nosql-code">
-                📧 Enviar Resposta Completa
-            </button>
+            <textarea id="resp-parte1" class="code-input" placeholder="1. Banco: SQL porque...&#10;2. Blog: ...&#10;3. IoT: ..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
+        </div>
+
+        <!-- Slide 12: Atividade Prática - Parte 2 -->
+        <div class="slide">
+            <h2>Atividade 2: Modelando NoSQL (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Pensando em Documentos</span>
+                <p>Imagine um produto de e-commerce (Celular). Ele tem atributos específicos (Tela, Bateria). Uma Camiseta tem outros (Tamanho, Cor).</p>
+                <p>Escreva como seria o JSON desses dois produtos em um banco como MongoDB.</p>
+            </div>
+            <div class="code-block">
+{
+  "nome": "iPhone 15",
+  "detalhes": { ... }
+}
+            </div>
+            <textarea id="resp-parte2" class="code-input" placeholder="Escreva os JSONs aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
+        </div>
+
+        <!-- Slide 13: Atividade Prática - Parte 3 -->
+        <div class="slide">
+            <h2>Atividade 3: Pesquisa CAP (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">O Dilema do CAP</span>
+                <p>Pesquise um caso real de falha em grandes empresas (Netflix, Facebook, Amazon) relacionado a banco de dados ou disponibilidade.</p>
+                <p>Explique como eles lidam com a "Consistência Eventual" (ex: você curte a foto, mas seu amigo só vê 1 min depois).</p>
+            </div>
+            <textarea id="resp-parte3" class="code-input" placeholder="Sua pesquisa aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
+        </div>
+
+        <!-- Slide 14: Encerramento -->
+        <div class="slide">
+            <h1>Módulo Concluído!</h1>
+            <h2>SQL vs NoSQL</h2>
+            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Você+agora+é+um+Arquiteto!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px;">Você já entende as ferramentas. Na próxima aula, vamos botar a mão na massa com SQL puro!</p>
+            <p><strong>Próxima Aula: Comandos SQL (DML e DDL).</strong></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
         </div>
 
     </div>
@@ -132,7 +320,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 7</div>
+    <div class="slide-number" id="slideNumber">1 / 14</div>
 
     <script src="assets/js/script.js"></script>
 </body>

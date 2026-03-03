@@ -5,6 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Introdução a Banco de Dados</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        /* Estilos adicionais para melhorar a apresentação */
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        .grid-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .concept-card {
+            border-left: 5px solid var(--senai-blue);
+            padding: 15px;
+            background: #eef;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .sql-keyword { color: #007bff; font-weight: bold; }
+        .sql-string { color: #28a745; }
+        .sql-comment { color: #6c757d; font-style: italic; }
+        
+        /* Ajuste para imagens */
+        .slide img {
+            max-height: 350px;
+            object-fit: cover;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,106 +50,257 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Introdução a Banco de Dados</h1>
-            <p>Conceitos Fundamentais e SGBDs</p>
-            <img src="https://placehold.co/800x300?text=Introducao+BD" alt="Introdução Banco de Dados" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
-        </div>
-
-        <!-- Slide 2: O Problema dos Dados -->
-        <div class="slide">
-            <h2>O Problema dos Dados</h2>
-            <img src="https://placehold.co/800x250?text=Arquivos+Fisicos+vs+Digitais" alt="Comparação Físico x Digital" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
-            <p>Antes dos computadores, como guardávamos informações?</p>
-            <ul>
-                <li>Arquivos físicos, pastas, gavetas.</li>
-                <li>Problemas: Espaço físico, deterioração, dificuldade de busca, redundância (cópias desatualizadas).</li>
-            </ul>
-            <p class="highlight">O Banco de Dados surgiu para resolver a <strong>organização</strong>, <strong>segurança</strong> e <strong>acesso rápido</strong> à informação.</p>
-        </div>
-
-        <!-- Slide 3: O que é um Banco de Dados? -->
-        <div class="slide">
-            <h2>O que é um Banco de Dados?</h2>
-            <p>Um <strong>Banco de Dados (BD)</strong> é uma coleção organizada de informações estruturadas, armazenadas eletronicamente.</p>
-            <div class="note" style="border-left: 4px solid var(--senai-blue); padding-left: 10px; background-color: #eef; padding: 10px; border-radius: 0 5px 5px 0; max-width: 800px; margin-top: 20px; width: 100%;">
-                Não confunda o "BD" (os dados em si) com o "SGBD" (o software que gerencia).
+            <h2>Fundamentos, História e Prática</h2>
+            <img src="https://placehold.co/800x350/004587/FFFFFF?text=Introdução+ao+Mundo+dos+Dados" alt="Capa Introdução BD" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria (Conceitos) + 2h Prática (Mão na Massa)</p>
             </div>
-            <p><strong>Analogia:</strong> O BD é como uma biblioteca gigante. O SGBD é o bibliotecário que sabe onde está cada livro e controla quem pode pegar emprestado.</p>
         </div>
 
-        <!-- Slide 4: O SGBD -->
+        <!-- Slide 2: A Era dos Dados -->
         <div class="slide">
-            <h2>O SGBD</h2>
-            <p><strong>Sistema Gerenciador de Banco de Dados</strong> (DBMS em inglês).</p>
-            <img src="https://placehold.co/800x200?text=SGBD+Exemplos" alt="Exemplos de SGBD" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <p>Funções principais:</p>
-            <ul>
-                <li>Permitir a criação, leitura, atualização e exclusão de dados (CRUD).</li>
-                <li>Controlar acesso (segurança/login).</li>
-                <li>Garantir consistência (evitar dados corrompidos).</li>
-                <li>Backup e recuperação.</li>
-            </ul>
-            <p>Exemplos: MySQL, PostgreSQL, Oracle, SQL Server, MariaDB.</p>
-        </div>
-
-        <!-- Slide 5: Quem trabalha com BD? -->
-        <div class="slide">
-            <h2>Quem trabalha com BD?</h2>
-            <ul>
-                <li><strong>DBA (Database Administrator):</strong> Responsável pela infraestrutura, desempenho, segurança e backups. O "guardião".</li>
-                <li><strong>Desenvolvedor de Software:</strong> Cria as aplicações que consomem e gravam dados no BD. Projeta o esquema lógico.</li>
-                <li><strong>Analista de Dados / Cientista de Dados:</strong> Extrai informações e insights dos dados armazenados para tomada de decisão (Business Intelligence).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 6: Dado vs Informação -->
-        <div class="slide">
-            <h2>Dado vs Informação</h2>
-            <img src="https://placehold.co/800x250?text=Dado+vs+Informacao" alt="Dado vs Informação" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
-            <ul>
-                <li><strong>Dado:</strong> Fato bruto, sem contexto. <br>Ex: "25", "Azul".</li>
-                <li><strong>Informação:</strong> Dado processado e com significado. <br>Ex: "A temperatura é 25 graus", "O carro é Azul".</li>
-                <li><strong>Conhecimento:</strong> Informação aplicada. <br>Ex: "Se está 25 graus, não preciso de casaco."</li>
-            </ul>
-        </div>
-
-        <!-- Slide 7: Exemplos Reais -->
-        <div class="slide">
-            <h2>Exemplos Reais de Uso</h2>
-            <p>Onde os bancos de dados estão?</p>
-            <ul>
-                <li><strong>Bancos:</strong> Contas, transações, empréstimos.</li>
-                <li><strong>E-commerce:</strong> Produtos, clientes, pedidos, estoque.</li>
-                <li><strong>Escolas:</strong> Alunos, professores, notas, faltas.</li>
-                <li><strong>Redes Sociais:</strong> Perfis, posts, curtidas, comentários.</li>
-                <li><strong>Hospitais:</strong> Prontuários, exames, agendamentos.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 8: Atividade Prática -->
-        <div class="slide">
-            <h2>Atividade Prática (2 Horas)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Análise de Dados no Mundo Real</span>
-                <p><strong>Parte 1: Identificação (30 min)</strong></p>
-                <p>Escolha 3 sistemas que você usa (ex: Instagram, iFood, Netflix). Para cada um, liste:</p>
-                <ul>
-                    <li>Quais dados principais eles armazenam? (ex: Nome, Foto, Preço).</li>
-                    <li>Quem são os usuários desses dados? (ex: Cliente, Entregador, Restaurante).</li>
-                </ul>
-                
-                <p><strong>Parte 2: Diferenciação (30 min)</strong></p>
-                <p>Dê 2 exemplos de "Dado" e transforme-os em "Informação" e depois em "Conhecimento".</p>
-                
-                <p><strong>Parte 3: Pesquisa (1 hora)</strong></p>
-                <p>Pesquise sobre os SGBDs mais usados no mundo atualmente (Ranking DB-Engines). Liste o TOP 3 e uma característica principal de cada um.</p>
-            </div>
+            <h2>A Era dos Dados</h2>
+            <p>Vivemos em um mundo movido a dados. Eles são o "novo petróleo".</p>
             
-            <textarea id="intro-code" class="code-input" style="height: 300px;" placeholder="Responda aqui todas as partes da atividade..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="intro-code">
-                📧 Enviar Resposta Completa
-            </button>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Volume Explosivo</h3>
+                    <p>Geramos 2.5 quintilhões de bytes de dados por dia (IoT, Redes Sociais, Sensores).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Valor Estratégico</h3>
+                    <p>Empresas usam dados para entender clientes, prever tendências e tomar decisões.</p>
+                </div>
+            </div>
+
+            <img src="https://placehold.co/800x250/E32119/FFFFFF?text=Big+Data+&+Crescimento+Exponencial" alt="Crescimento de Dados" style="width: 100%; margin-top: 20px; border-radius: 8px;">
+            
+            <p class="highlight" style="margin-top: 20px; text-align: center;">Mas como organizar tudo isso de forma eficiente?</p>
+        </div>
+
+        <!-- Slide 3: O Problema dos Arquivos (O Passado) -->
+        <div class="slide">
+            <h2>Antes dos Bancos de Dados</h2>
+            <p>Imagine uma empresa guardando tudo em arquivos de texto ou planilhas soltas (Sistema de Arquivos).</p>
+            
+            <div class="concept-card">
+                <strong>Problema 1: Redundância</strong><br>
+                O mesmo dado (ex: endereço do cliente) repetido em vários arquivos. Se mudar, tem que atualizar em todos.
+            </div>
+            <div class="concept-card">
+                <strong>Problema 2: Inconsistência</strong><br>
+                O arquivo de "Vendas" diz que o cliente mora na Rua A, o de "Entregas" diz Rua B. Em quem confiar?
+            </div>
+            <div class="concept-card">
+                <strong>Problema 3: Isolamento e Segurança</strong><br>
+                Difícil cruzar dados de arquivos diferentes. Difícil controlar quem pode ler ou editar cada linha.
+            </div>
+        </div>
+
+        <!-- Slide 4: A Solução: SGBD -->
+        <div class="slide">
+            <h2>O Que é um SGBD?</h2>
+            <p><strong>S</strong>istema <strong>G</strong>erenciador de <strong>B</strong>anco de <strong>D</strong>ados (DBMS).</p>
+            <p>É o software que atua como intermediário entre o usuário/aplicação e os dados armazenados.</p>
+            
+            <img src="https://placehold.co/800x200/004587/FFFFFF?text=Usuário+<->+Aplicação+<->+SGBD+<->+Dados" alt="Arquitetura SGBD" style="width: 100%; margin: 20px 0; border-radius: 8px;">
+
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <strong>Abstração</strong><br>
+                    O usuário não precisa saber como o dado é gravado no disco (bits/bytes). Ele pede "Traga o Cliente X".
+                </div>
+                <div class="grid-item">
+                    <strong>Segurança (ACID)</strong><br>
+                    Atomicidade, Consistência, Isolamento e Durabilidade. Garante que transações não corrompam o sistema.
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Evolução Histórica -->
+        <div class="slide">
+            <h2>Evolução dos Bancos de Dados</h2>
+            <ul style="font-size: 1.2rem;">
+                <li><strong>Anos 60:</strong> Modelos Hierárquicos (Árvore) e em Rede (Grafo). Complexos e rígidos.</li>
+                <li><strong>Anos 70 (A Revolução):</strong> Edgar F. Codd propõe o <strong>Modelo Relacional</strong>. Baseado em tabelas e matemática (álgebra relacional).</li>
+                <li><strong>Anos 80:</strong> Padronização da linguagem <strong>SQL</strong>. Surgimento do Oracle, DB2.</li>
+                <li><strong>Anos 90/00:</strong> BDs Orientados a Objeto e Open Source (MySQL, PostgreSQL).</li>
+                <li><strong>Anos 2010+:</strong> <strong>NoSQL</strong> (Not Only SQL) para Big Data e flexibilidade (MongoDB, Cassandra).</li>
+                <li><strong>Atualmente:</strong> NewSQL, BDs na Nuvem (DBaaS), Vector DBs (para IA).</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: O Modelo Relacional (O Padrão) -->
+        <div class="slide">
+            <h2>O Modelo Relacional</h2>
+            <p>Ainda é o mais utilizado no mundo corporativo. Baseia-se em <strong>Tabelas</strong> (Relações).</p>
+            
+            <div class="code-block">
+TABELA: Clientes
++----+--------------+-------------------+
+| ID | Nome         | Email             |  <-- Colunas (Atributos)
++----+--------------+-------------------+
+| 1  | Ana Silva    | ana@email.com     |  <-- Linha (Tupla/Registro)
+| 2  | João Souza   | joao@email.com    |
++----+--------------+-------------------+
+            </div>
+
+            <p style="margin-top: 20px;">
+                <strong>Entidade:</strong> O objeto do mundo real (ex: Cliente).<br>
+                <strong>Atributo:</strong> As características (ex: Nome, Email).<br>
+                <strong>Tupla:</strong> Uma instância única (ex: A Ana Silva).
+            </p>
+        </div>
+
+        <!-- Slide 7: Chaves (Identificadores) -->
+        <div class="slide">
+            <h2>Chaves: O Segredo das Relações</h2>
+            <p>Como garantimos que cada registro é único e como ligamos tabelas?</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Chave Primária (PK)</h3>
+                    <p>Identificador ÚNICO de cada linha. Não pode repetir e não pode ser vazio.</p>
+                    <p><em>Ex: CPF, Matrícula, ID Automático.</em></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Chave Estrangeira (FK)</h3>
+                    <p>Um campo que aponta para a PK de outra tabela. Cria o RELACIONAMENTO.</p>
+                    <p><em>Ex: O campo "id_cliente" na tabela de "Pedidos".</em></p>
+                </div>
+            </div>
+            <img src="https://placehold.co/800x150/E32119/FFFFFF?text=PK+(Tabela+A)+----liga---->+FK+(Tabela+B)" alt="Relacionamento PK FK" style="width: 100%; margin-top: 20px; border-radius: 8px;">
+        </div>
+
+        <!-- Slide 8: SQL (Structured Query Language) -->
+        <div class="slide">
+            <h2>SQL: A Linguagem Universal</h2>
+            <p>É a linguagem usada para conversar com bancos relacionais.</p>
+            
+            <div class="code-block">
+<span class="sql-comment">-- DDL (Data Definition Language): Criando a estrutura</span>
+<span class="sql-keyword">CREATE TABLE</span> clientes (
+    id <span class="sql-keyword">INT PRIMARY KEY</span>,  <span class="sql-comment">-- Inteiro e Chave Primária</span>
+    nome <span class="sql-keyword">VARCHAR</span>(100),     <span class="sql-comment">-- Texto até 100 caracteres</span>
+    email <span class="sql-keyword">VARCHAR</span>(100)
+);
+
+<span class="sql-comment">-- DML (Data Manipulation Language): Manipulando dados</span>
+<span class="sql-keyword">INSERT INTO</span> clientes (id, nome, email) 
+<span class="sql-keyword">VALUES</span> (1, <span class="sql-string">'Ana Silva'</span>, <span class="sql-string">'ana@email.com'</span>);
+
+<span class="sql-comment">-- DQL (Data Query Language): Consultando</span>
+<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes <span class="sql-keyword">WHERE</span> id = 1;
+            </div>
+            <p style="font-size: 1rem;">O código acima cria uma "gaveta", guarda uma "pasta" e depois busca essa pasta.</p>
+        </div>
+
+        <!-- Slide 9: NoSQL (Visão Geral) -->
+        <div class="slide">
+            <h2>NoSQL: Flexibilidade Moderna</h2>
+            <p>Surgiu quando o modelo relacional (rígido) não aguentou a escala da Web (Google, Amazon, Facebook).</p>
+            <p><strong>Exemplo: Modelo de Documentos (JSON)</strong></p>
+            
+            <div class="code-block" style="background: #1e1e1e; color: #d4d4d4;">
+{
+  <span style="color: #9cdcfe;">"_id"</span>: <span style="color: #b5cea8;">1</span>,
+  <span style="color: #9cdcfe;">"nome"</span>: <span style="color: #ce9178;">"Ana Silva"</span>,
+  <span style="color: #9cdcfe;">"contatos"</span>: {  <span style="color: #6a9955;">// Estrutura aninhada (difícil em tabelas)</span>
+    <span style="color: #9cdcfe;">"email"</span>: <span style="color: #ce9178;">"ana@email.com"</span>,
+    <span style="color: #9cdcfe;">"twitter"</span>: <span style="color: #ce9178;">"@ana_dev"</span>
+  },
+  <span style="color: #9cdcfe;">"interesses"</span>: [<span style="color: #ce9178;">"Java"</span>, <span style="color: #ce9178;">"SQL"</span>, <span style="color: #ce9178;">"Docker"</span>] <span style="color: #6a9955;">// Lista flexível</span>
+}
+            </div>
+            <p>SGBDs Famosos: <strong>MongoDB</strong> (Documento), <strong>Redis</strong> (Chave-Valor), <strong>Cassandra</strong> (Colunar).</p>
+        </div>
+
+        <!-- Slide 10: Modelagem de Dados (MER) -->
+        <div class="slide">
+            <h2>Modelagem de Dados (MER)</h2>
+            <p>Antes de criar tabelas, desenhamos o <strong>Modelo Entidade-Relacionamento</strong>.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item" style="text-align: center;">
+                    <div style="border: 2px solid #333; padding: 10px; display: inline-block; margin-bottom: 5px;">Retângulo</div>
+                    <p>Representa a <strong>Entidade</strong> (Ex: Aluno)</p>
+                </div>
+                <div class="grid-item" style="text-align: center;">
+                    <div style="border: 2px solid #333; border-radius: 50%; padding: 10px; display: inline-block; margin-bottom: 5px;">Elipse</div>
+                    <p>Representa o <strong>Atributo</strong> (Ex: Nome)</p>
+                </div>
+                <div class="grid-item" style="text-align: center; grid-column: span 2;">
+                    <div style="transform: rotate(45deg); border: 2px solid #333; width: 50px; height: 50px; margin: 0 auto 25px auto;"></div>
+                    <p>Representa o <strong>Relacionamento</strong> (Losango)</p>
+                </div>
+            </div>
+            <p style="text-align: center; margin-top: 15px;">Exemplo: <strong>Aluno</strong> (Entidade) <em>assiste</em> (Relacionamento) <strong>Aula</strong> (Entidade).</p>
+        </div>
+
+        <!-- Slide 11: Atividade Prática - Parte 1 -->
+        <div class="slide">
+            <h2>Atividade Prática 1: Conceitos (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Reflexão Teórica</span>
+                <p>Responda com suas palavras:</p>
+                <ol>
+                    <li>Qual a principal diferença entre guardar dados em uma planilha Excel e em um Banco de Dados Relacional?</li>
+                    <li>O que significa a sigla CRUD? Dê um exemplo prático de cada operação em um sistema de E-commerce.</li>
+                    <li>Por que a Chave Primária é tão importante? O que aconteceria se tivéssemos dois produtos com o mesmo ID?</li>
+                </ol>
+            </div>
+            <textarea id="resp-parte1" class="code-input" placeholder="Digite suas respostas aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
+        </div>
+
+        <!-- Slide 12: Atividade Prática - Parte 2 -->
+        <div class="slide">
+            <h2>Atividade Prática 2: Modelagem (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Cenário: Locadora de Veículos</span>
+                <p>Imagine que você foi contratado para criar o sistema de uma locadora.</p>
+                <ul>
+                    <li>Identifique 3 Entidades principais (ex: Carro...).</li>
+                    <li>Para cada entidade, liste 3 atributos importantes (ex: Placa, Modelo...).</li>
+                    <li>Descreva um relacionamento entre elas (ex: Cliente aluga Carro).</li>
+                </ul>
+            </div>
+            <textarea id="resp-parte2" class="code-input" placeholder="Descreva suas entidades e relacionamentos..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
+        </div>
+
+        <!-- Slide 13: Atividade Prática - Parte 3 -->
+        <div class="slide">
+            <h2>Atividade Prática 3: SQL e Pesquisa (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Primeiros Passos no SQL</span>
+                <p>Baseado no cenário da Locadora (Slide anterior), tente escrever o comando SQL para criar a tabela de <strong>Carros</strong>.</p>
+                <p><em>Dica: Use CREATE TABLE, defina tipos (INT, VARCHAR) e a PRIMARY KEY.</em></p>
+                <hr style="margin: 10px 0;">
+                <p><strong>Pesquisa Rápida:</strong> Procure no Google o que é "SQL Injection" e escreva uma frase sobre como evitar.</p>
+            </div>
+            <div class="code-block">
+Exemplo de estrutura esperada:
+CREATE TABLE carros (
+   id INT PRIMARY KEY,
+   modelo VARCHAR(50),
+   ...
+);
+            </div>
+            <textarea id="resp-parte3" class="code-input" placeholder="Escreva seu código SQL e a resposta da pesquisa..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
+        </div>
+
+        <!-- Slide 14: Encerramento -->
+        <div class="slide">
+            <h1>Parabéns!</h1>
+            <h2>Você concluiu a Introdução a Banco de Dados</h2>
+            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Módulo+1+Concluído!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px;">Próxima Aula: <strong>Modelagem de Dados Avançada e Normalização</strong>.</p>
+            <p>Certifique-se de ter enviado todas as 3 partes da atividade prática.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
         </div>
 
     </div>
@@ -128,7 +311,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 8</div>
+    <div class="slide-number" id="slideNumber">1 / 14</div>
 
     <script src="assets/js/script.js"></script>
 </body>

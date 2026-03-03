@@ -5,6 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modelagem de Dados</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        .grid-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .concept-card {
+            border-left: 5px solid var(--senai-blue);
+            padding: 15px;
+            background: #eef;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .slide img {
+            max-height: 350px;
+            object-fit: contain;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,103 +44,225 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Modelagem de Dados</h1>
-            <p>Conceitual, Lógico e Físico</p>
-            <img src="https://placehold.co/800x300?text=Modelagem+de+Dados" alt="Modelagem de Dados" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
+            <h2>Conceitual, Lógico e Físico</h2>
+            <img src="https://placehold.co/800x350/004587/FFFFFF?text=A+Arte+de+Projetar+Bancos+de+Dados" alt="Capa Modelagem" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática (Desafios de Modelagem)</p>
+            </div>
         </div>
 
-        <!-- Slide 2: O que é Modelagem? -->
+        <!-- Slide 2: Por que Modelar? -->
         <div class="slide">
-            <h2>O que é Modelagem de Dados?</h2>
-            <p>É o processo de criar uma representação visual e estruturada dos dados de um sistema.</p>
-            <img src="https://placehold.co/800x200?text=Blueprint+Banco+de+Dados" alt="Blueprint" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <p><strong>Por que modelar?</strong></p>
-            <ul>
-                <li>Facilita o entendimento das regras de negócio.</li>
-                <li>Evita erros de estrutura no futuro.</li>
-                <li>Serve como "planta baixa" para a construção do banco.</li>
-            </ul>
+            <h2>Por que Modelar Dados?</h2>
+            <p>Construir um banco sem modelar é como construir um prédio sem planta.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Comunicação</h3>
+                    <p>O modelo serve para alinhar o entendimento entre o Cliente (que conhece o negócio) e o Desenvolvedor (que conhece a técnica).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Prevenção de Erros</h3>
+                    <p>Corrigir um erro no papel (modelo) custa R$ 1. Corrigir depois que o sistema está pronto custa R$ 100.</p>
+                </div>
+            </div>
+            <img src="https://placehold.co/800x200/E32119/FFFFFF?text=Custo+do+Erro:+Fase+de+Projeto+vs+Produção" alt="Custo do Erro" style="width: 100%; margin-top: 20px; border-radius: 8px;">
         </div>
 
         <!-- Slide 3: Níveis de Abstração -->
         <div class="slide">
-            <h2>Níveis de Abstração</h2>
-            <img src="https://placehold.co/800x250?text=Conceitual+Logico+Fisico" alt="Níveis de Abstração" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
-            <ul>
-                <li><strong>Modelo Conceitual:</strong> Visão de alto nível. Foca no "O QUE" será armazenado. Independente de tecnologia. (Público: Cliente/Analista).</li>
-                <li><strong>Modelo Lógico:</strong> Define chaves, tipos de dados básicos e relacionamentos. (Público: Desenvolvedor/DBA).</li>
-                <li><strong>Modelo Físico:</strong> Scripts SQL específicos para o SGBD escolhido (MySQL, Oracle). (Público: DBA/Sistema).</li>
-            </ul>
+            <h2>Os 3 Níveis de Abstração</h2>
+            <p>A modelagem acontece em etapas, do mais abstrato ao mais detalhado.</p>
+            
+            <div class="concept-card">
+                <strong>1. Modelo Conceitual (O QUE?)</strong><br>
+                Focado no negócio. Independente de tecnologia. Usa retângulos e losangos (MER).<br>
+                <em>Público: Cliente e Analista.</em>
+            </div>
+            <div class="concept-card">
+                <strong>2. Modelo Lógico (COMO?)</strong><br>
+                Define a estrutura. Introduz Chaves Primárias (PK) e Estrangeiras (FK). Normalização.<br>
+                <em>Público: Desenvolvedor e Arquiteto.</em>
+            </div>
+            <div class="concept-card">
+                <strong>3. Modelo Físico (ONDE?)</strong><br>
+                O código SQL específico para o SGBD (Oracle, MySQL, SQL Server). Tipos de dados exatos (VARCHAR(50), INT).<br>
+                <em>Público: DBA e SGBD.</em>
+            </div>
         </div>
 
-        <!-- Slide 4: MER e DER -->
+        <!-- Slide 4: O Modelo Conceitual (MER) -->
         <div class="slide">
-            <h2>MER e DER</h2>
-            <p><strong>MER (Modelo Entidade-Relacionamento):</strong> O conceito teórico.</p>
-            <p><strong>DER (Diagrama Entidade-Relacionamento):</strong> A representação gráfica (desenho).</p>
-            <p>Componentes principais:</p>
-            <ul>
-                <li><strong>Entidade:</strong> Retângulo.</li>
-                <li><strong>Atributo:</strong> Elipse (ou lista).</li>
-                <li><strong>Relacionamento:</strong> Losango (ou linha com cardinais).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 5: Entidades -->
-        <div class="slide">
-            <h2>Entidades</h2>
-            <p>Representam objetos do mundo real ou conceitos abstratos.</p>
-            <ul>
-                <li><strong>Forte:</strong> Existe por si só (ex: Cliente, Produto).</li>
-                <li><strong>Fraca:</strong> Depende de outra para existir (ex: Dependente depende de Funcionário).</li>
-                <li><strong>Associativa:</strong> Surge de um relacionamento N:N (ex: Matrícula).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 6: Atributos -->
-        <div class="slide">
-            <h2>Atributos</h2>
-            <p>Características das entidades.</p>
-            <ul>
-                <li><strong>Simples:</strong> Um único valor (ex: Nome).</li>
-                <li><strong>Composto:</strong> Subdivisível (ex: Endereço -> Rua, Num, Bairro).</li>
-                <li><strong>Multivalorado:</strong> Vários valores para o mesmo campo (ex: Telefones).</li>
-                <li><strong>Derivado:</strong> Calculado a partir de outros (ex: Idade, derivado de DataNasc).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 7: Exemplos de DER -->
-        <div class="slide">
-            <h2>Exemplo Prático</h2>
-            <img src="https://placehold.co/800x300?text=Exemplo+DER+Escola" alt="Exemplo DER Escola" style="width: 100%; border-radius: 8px;">
-            <p><strong>Escola:</strong></p>
-            <ul>
-                <li><strong>Aluno:</strong> Nome, Matrícula, DataNasc.</li>
-                <li><strong>Curso:</strong> Nome, CargaHorária.</li>
-                <li><strong>Professor:</strong> Nome, Especialidade.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 8: Atividade Prática -->
-        <div class="slide">
-            <h2>Atividade Prática (2 Horas)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Desafio de Modelagem</span>
-                <p><strong>Parte 1: Biblioteca (40 min)</strong></p>
-                <p>Crie o Modelo Conceitual (Entidades e Atributos) para uma biblioteca. Considere: Livros, Autores, Editoras e Empréstimos.</p>
-                
-                <p><strong>Parte 2: Delivery de Comida (40 min)</strong></p>
-                <p>Identifique as entidades e relacionamentos para um app tipo iFood. Considere: Restaurante, Prato, Cliente, Pedido e Entregador.</p>
-                
-                <p><strong>Parte 3: Clínica Médica (40 min)</strong></p>
-                <p>Modele um sistema para clínica. Considere: Paciente, Médico, Consulta e Exame. Identifique atributos Chave (que identificam unicamente).</p>
+            <h2>Modelo Entidade-Relacionamento (MER)</h2>
+            <p>Criado por Peter Chen. É a base de tudo.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item" style="text-align: center;">
+                    <div style="border: 2px solid #333; padding: 10px; margin-bottom: 5px; font-weight: bold;">ENTIDADE</div>
+                    <p>Retângulo</p>
+                    <p style="font-size: 1rem;">Objeto do mundo real (Cliente, Produto).</p>
+                </div>
+                <div class="grid-item" style="text-align: center;">
+                    <div style="border: 2px solid #333; border-radius: 50%; padding: 10px; margin-bottom: 5px; font-weight: bold;">ATRIBUTO</div>
+                    <p>Elipse</p>
+                    <p style="font-size: 1rem;">Característica (Nome, Preço).</p>
+                </div>
             </div>
             
-            <textarea id="der-code" class="code-input" style="height: 300px;" placeholder="1. Biblioteca: Entidades (Atr1, Atr2)...&#10;2. Delivery: ...&#10;3. Clínica: ..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="der-code">
-                📧 Enviar Resposta Completa
-            </button>
+            <div style="margin-top: 20px; text-align: center;">
+                <div style="transform: rotate(45deg); border: 2px solid #333; width: 60px; height: 60px; margin: 0 auto 30px auto; display: flex; align-items: center; justify-content: center;">
+                    <span style="transform: rotate(-45deg); font-weight: bold;">REL</span>
+                </div>
+                <p><strong>Relacionamento (Losango):</strong> A ação que liga entidades (ex: Compra, Pertence).</p>
+            </div>
+        </div>
+
+        <!-- Slide 5: Tipos de Atributos -->
+        <div class="slide">
+            <h2>Tipos de Atributos</h2>
+            <p>Nem todo atributo é igual.</p>
+            <ul>
+                <li><strong>Simples (Atômico):</strong> Indivisível. Ex: <em>Sexo (M/F)</em>.</li>
+                <li><strong>Composto:</strong> Pode ser dividido. Ex: <em>Endereço (Rua, Bairro, CEP)</em>.</li>
+                <li><strong>Multivalorado:</strong> Pode ter vários valores. Ex: <em>Telefone (Celular, Fixo, Trabalho)</em>. Representado com elipse dupla.</li>
+                <li><strong>Derivado:</strong> Calculado a partir de outro. Ex: <em>Idade (calculado da Data de Nascimento)</em>. Representado com elipse tracejada.</li>
+                <li><strong>Identificador (Chave):</strong> Identifica a entidade. Ex: <em>CPF</em>. Atributo sublinhado.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: Cardinalidade (1:1, 1:N, N:N) -->
+        <div class="slide">
+            <h2>Cardinalidade: A Regra do Jogo</h2>
+            <p>Define quantas ocorrências de uma entidade se relacionam com a outra.</p>
+            
+            <div class="concept-card">
+                <strong>1:1 (Um para Um)</strong><br>
+                Um marido tem uma esposa (na lei brasileira). Um funcionário tem um CPF.
+            </div>
+            <div class="concept-card">
+                <strong>1:N (Um para Muitos) - O MAIS COMUM</strong><br>
+                Um cliente faz <strong>vários</strong> pedidos. Um pedido pertence a <strong>um</strong> cliente.
+            </div>
+            <div class="concept-card">
+                <strong>N:N (Muitos para Muitos)</strong><br>
+                Um aluno cursa <strong>várias</strong> disciplinas. Uma disciplina tem <strong>vários</strong> alunos.<br>
+                <em>(Gera uma tabela associativa no modelo lógico).</em>
+            </div>
+        </div>
+
+        <!-- Slide 7: Entidades Fortes e Fracas -->
+        <div class="slide">
+            <h2>Entidades Fortes e Fracas</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Entidade Forte</h3>
+                    <p>Existe independente de qualquer outra.</p>
+                    <p><em>Ex: Cliente. Se deletar todos os pedidos, o cliente ainda existe.</em></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entidade Fraca</h3>
+                    <p>Sua existência depende de uma entidade forte.</p>
+                    <p><em>Ex: Dependente (Filho). Se o Funcionário for demitido/excluído, o Dependente perde o sentido no sistema.</em></p>
+                </div>
+            </div>
+            <img src="https://placehold.co/800x200/004587/FFFFFF?text=Forte+(Retângulo+Simples)+vs+Fraca+(Retângulo+Duplo)" alt="Entidade Fraca" style="width: 100%; margin-top: 20px; border-radius: 8px;">
+        </div>
+
+        <!-- Slide 8: Do Conceitual ao Lógico -->
+        <div class="slide">
+            <h2>Transformando em Tabelas (Modelo Lógico)</h2>
+            <p>Quando passamos para o modelo lógico, as regras mudam um pouco:</p>
+            <ul>
+                <li>Entidades viram <strong>Tabelas</strong>.</li>
+                <li>Atributos viram <strong>Colunas</strong>.</li>
+                <li>Relacionamentos 1:N viram <strong>Chave Estrangeira (FK)</strong> no lado N.</li>
+                <li>Relacionamentos N:N viram uma <strong>Nova Tabela</strong> (Associativa).</li>
+            </ul>
+            <div class="code-block" style="font-size: 1rem;">
+Exemplo N:N (Aluno <-> Disciplina):
+Tabela Alunos (id, nome)
+Tabela Disciplinas (id, nome)
+Tabela Matriculas (id_aluno, id_disciplina, data) <-- Associativa
+            </div>
+        </div>
+
+        <!-- Slide 9: Exemplo Prático Completo -->
+        <div class="slide">
+            <h2>Exemplo: Sistema de Biblioteca</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <strong>Conceitual (Narrativa)</strong>
+                    <p>Um Leitor pega emprestado Livros. Um Livro é escrito por Autores.</p>
+                </div>
+                <div class="grid-item">
+                    <strong>Análise de Cardinalidade</strong>
+                    <p>Leitor <-> Empréstimo (1:N)</p>
+                    <p>Livro <-> Autor (N:N - Um livro pode ter 2 autores, um autor escreve vários livros)</p>
+                </div>
+            </div>
+            <img src="https://placehold.co/800x250/28a745/FFFFFF?text=Diagrama+Biblioteca" alt="Diagrama Biblioteca" style="width: 100%; margin-top: 15px; border-radius: 8px;">
+        </div>
+
+        <!-- Slide 10: Atividade Prática - Parte 1 -->
+        <div class="slide">
+            <h2>Atividade 1: Modelo Conceitual (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Cenário: App de Delivery (iFood)</span>
+                <p>Identifique as Entidades e os Relacionamentos (com cardinalidade) para:</p>
+                <ul>
+                    <li>Restaurante, Prato, Cliente, Pedido, Entregador.</li>
+                </ul>
+                <p><em>Ex: Restaurante "tem" Pratos (1:N).</em></p>
+            </div>
+            <textarea id="resp-parte1" class="code-input" placeholder="Descreva as entidades e relacionamentos..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
+        </div>
+
+        <!-- Slide 11: Atividade Prática - Parte 2 -->
+        <div class="slide">
+            <h2>Atividade 2: Regras de Negócio (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Análise de Clínica Médica</span>
+                <p>Leia as regras e desenhe (descreva) o modelo:</p>
+                <ol>
+                    <li>Um médico pode ter várias especialidades.</li>
+                    <li>Uma consulta envolve 1 médico e 1 paciente.</li>
+                    <li>Uma consulta pode gerar vários exames.</li>
+                </ol>
+                <p>Quais tabelas precisariam de Chave Estrangeira?</p>
+            </div>
+            <textarea id="resp-parte2" class="code-input" placeholder="Sua análise aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
+        </div>
+
+        <!-- Slide 12: Atividade Prática - Parte 3 -->
+        <div class="slide">
+            <h2>Atividade 3: Transformação Lógica (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Do Papel para a Estrutura</span>
+                <p>Pegue o caso da <strong>Biblioteca</strong> (Slide 9) e escreva como ficariam as tabelas (quais colunas cada uma teria).</p>
+                <p>Não esqueça da tabela associativa entre Livro e Autor!</p>
+            </div>
+            <div class="code-block">
+Exemplo:
+Tabela Livros (ID, Titulo, ISBN)
+Tabela Autores (ID, Nome)
+Tabela Livro_Autor (ID_Livro, ID_Autor)
+            </div>
+            <textarea id="resp-parte3" class="code-input" placeholder="Estrutura das tabelas..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
+        </div>
+
+        <!-- Slide 13: Encerramento -->
+        <div class="slide">
+            <h1>Módulo Concluído!</h1>
+            <h2>Modelagem de Dados</h2>
+            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Pronto+para+o+SQL!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px;">Agora que sabemos desenhar o banco, na próxima aula vamos aprender a construí-lo com SQL.</p>
+            <p><strong>Próxima Aula: Banco Relacional e Normalização.</strong></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
         </div>
 
     </div>
@@ -125,7 +273,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 8</div>
+    <div class="slide-number" id="slideNumber">1 / 13</div>
 
     <script src="assets/js/script.js"></script>
 </body>

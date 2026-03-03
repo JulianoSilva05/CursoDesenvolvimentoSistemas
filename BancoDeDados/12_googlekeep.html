@@ -5,6 +5,42 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Google Keep</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 20px;
+            max-width: 900px;
+        }
+        .grid-item {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .concept-card {
+            border-left: 5px solid #FFD700; /* Amarelo Keep */
+            padding: 15px;
+            background: #fff9c4;
+            margin-bottom: 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .slide img {
+            max-height: 300px;
+            object-fit: contain;
+        }
+        
+        .note-simulation {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.24);
+            margin-bottom: 10px;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,95 +54,175 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Google Keep</h1>
-            <p>Produtividade e Organização Pessoal</p>
-            <img src="https://placehold.co/800x300?text=Google+Keep" alt="Google Keep" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
-        </div>
-
-        <!-- Slide 2: O que é? -->
-        <div class="slide">
-            <h2>O que é o Google Keep?</h2>
-            <p>É uma ferramenta gratuita de criação de notas do Google.</p>
-            <img src="https://placehold.co/800x200?text=Notas+e+Listas" alt="Notas" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <p><strong>Funcionalidades:</strong></p>
-            <ul>
-                <li>Criar notas rápidas (texto, áudio, foto).</li>
-                <li>Criar listas de tarefas (checklists).</li>
-                <li>Definir lembretes (baseados em hora ou localização!).</li>
-                <li>Sincronização na nuvem (PC, Android, iOS).</li>
-            </ul>
-        </div>
-
-        <!-- Slide 3: Por que usar? -->
-        <div class="slide">
-            <h2>Por que usar?</h2>
-            <p>A memória humana é falha. O Keep serve como um "segundo cérebro" para captura rápida.</p>
-            <ul>
-                <li>Teve uma ideia no ônibus? Anote.</li>
-                <li>Lista de compras? Checklist.</li>
-                <li>Precisa lembrar de algo ao chegar na escola? Lembrete por local.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 4: Organização -->
-        <div class="slide">
-            <h2>Organizando suas Notas</h2>
-            <p>Para não virar bagunça:</p>
-            <img src="https://placehold.co/800x200?text=Cores+e+Etiquetas" alt="Organização" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <ul>
-                <li><strong>Cores:</strong> Use cores para categorias (ex: Vermelho para Urgente, Verde para Pessoal).</li>
-                <li><strong>Marcadores (Labels):</strong> Tags como #Estudos, #Trabalho, #Projetos.</li>
-                <li><strong>Fixar:</strong> Mantenha as notas mais importantes no topo.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 5: Colaboração -->
-        <div class="slide">
-            <h2>Colaboração</h2>
-            <p>Você pode compartilhar notas com outras pessoas.</p>
-            <p>Útil para:</p>
-            <ul>
-                <li>Listas de tarefas em grupo.</li>
-                <li>Brainstorming de projetos.</li>
-                <li>Lista de compras compartilhada com a família.</li>
-            </ul>
-        </div>
-
-        <!-- Slide 6: Integração -->
-        <div class="slide">
-            <h2>Integração com Google Docs</h2>
-            <p>Você pode arrastar suas notas do Keep diretamente para um documento do Google Docs.</p>
-            <img src="https://placehold.co/800x200?text=Keep+para+Docs" alt="Integração" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <p>Isso é ótimo para transformar rascunhos rápidos em trabalhos formais.</p>
-        </div>
-
-        <!-- Slide 7: Atividade Prática -->
-        <div class="slide">
-            <h2>Atividade Prática (2 Horas)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Organização Total</span>
-                
-                <p><strong>Parte 1: Plano de Estudos (40 min)</strong></p>
-                <p>Crie uma nota tipo "Checklist" no Google Keep chamada "Plano de Estudos - Banco de Dados".</p>
-                <p>Liste 10 tópicos que aprendemos (ex: JOIN, DDL, Normalização) e marque os que você já domina.</p>
-
-                <p><strong>Parte 2: Lembretes Inteligentes (40 min)</strong></p>
-                <p>Crie uma nota com lembrete de localização: "Revisar SQL ao chegar em casa". (Simule ou descreva como fez).</p>
-
-                <p><strong>Parte 3: Kanban Pessoal (40 min)</strong></p>
-                <p>Use o sistema de cores para criar um Kanban simples no Keep:</p>
-                <ul>
-                    <li>Nota Vermelha: "A Fazer" (Liste 3 tarefas pendentes).</li>
-                    <li>Nota Amarela: "Fazendo" (O que está estudando agora).</li>
-                    <li>Nota Verde: "Feito" (O que já concluiu).</li>
-                </ul>
+            <h2>O Seu Segundo Cérebro</h2>
+            <img src="https://placehold.co/800x350/FFD700/000000?text=Produtividade+e+Organização" alt="Google Keep" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática (Kanban Pessoal e Gestão de Tarefas)</p>
             </div>
+        </div>
+
+        <!-- Slide 2: O Que é o Google Keep? -->
+        <div class="slide">
+            <h2>O Que é o Google Keep?</h2>
+            <p>É uma ferramenta gratuita do Google para captura rápida de informações.</p>
+            <p>Não é um editor de texto (como o Docs), é um bloco de notas digital inteligente.</p>
             
-            <textarea id="keep-code" class="code-input" style="height: 300px;" placeholder="Cole aqui os links ou descreva o que você criou..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="keep-code">
-                📧 Enviar Resposta Completa
-            </button>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Simplicidade</h3>
+                    <p>Feito para ser rápido. Abriu, anotou.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Multiplataforma</h3>
+                    <p>Sincroniza instantaneamente entre Celular (Android/iOS) e PC.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Funcionalidades Principais -->
+        <div class="slide">
+            <h2>O Canivete Suíço das Notas</h2>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <div class="note-simulation">
+                        <strong>Lista de Compras</strong>
+                        <ul>
+                            <li>[x] Leite</li>
+                            <li>[ ] Pão</li>
+                        </ul>
+                    </div>
+                    <p>Checklists interativos.</p>
+                </div>
+                <div class="grid-item">
+                    <div class="note-simulation" style="background-color: #f28b82;">
+                        <strong>Ideia Urgente!</strong><br>
+                        Gravar áudio da reunião...
+                    </div>
+                    <p>Notas coloridas e Gravação de Voz.</p>
+                </div>
+                <div class="grid-item">
+                    <div class="note-simulation">
+                        <img src="https://placehold.co/100x50?text=Foto" style="width: 50px;">
+                        <br>Foto do quadro branco.
+                    </div>
+                    <p>Captura de Imagens (OCR - Extrai texto da imagem!).</p>
+                </div>
+                <div class="grid-item">
+                    <div class="note-simulation">
+                        <strong>Lembrete 📍</strong><br>
+                        Ao chegar no SENAI.
+                    </div>
+                    <p>Lembretes por Localização (Geofencing).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Organização com Cores e Labels -->
+        <div class="slide">
+            <h2>Organizando o Caos</h2>
+            <p>O Keep não tem pastas. Ele usa <strong>Marcadores (Tags)</strong> e <strong>Cores</strong>.</p>
+            
+            <div class="concept-card">
+                <strong>Sistema de Cores (Exemplo):</strong><br>
+                🔴 Vermelho: Urgente / Importante.<br>
+                🟡 Amarelo: Em andamento / Estudos.<br>
+                🟢 Verde: Pessoal / Lazer.<br>
+                ⚪ Branco: Rascunhos gerais.
+            </div>
+            <p>Isso permite criar um visual "Kanban" (A Fazer, Fazendo, Feito) facilmente.</p>
+        </div>
+
+        <!-- Slide 5: Colaboração em Tempo Real -->
+        <div class="slide">
+            <h2>Trabalho em Equipe</h2>
+            <p>Você pode compartilhar uma nota com qualquer pessoa que tenha conta Google.</p>
+            <img src="https://placehold.co/800x200/4285F4/FFFFFF?text=Edição+Simultânea" alt="Colaboração" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <ul>
+                <li>Ótimo para listas de compras compartilhadas.</li>
+                <li>Brainstorming de projetos em grupo.</li>
+                <li>Divisão de tarefas rápidas.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 6: Integração com o Ecossistema -->
+        <div class="slide">
+            <h2>Integração Google</h2>
+            <p>O Keep mora na barra lateral do Gmail, Calendar e Docs.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>No Gmail</h3>
+                    <p>Transforme um email em nota/tarefa com um clique.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>No Docs</h3>
+                    <p>Arraste suas notas do Keep para dentro do documento para começar a escrever um relatório.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Atividade Prática - Parte 1 -->
+        <div class="slide">
+            <h2>Atividade 1: O Organizador (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Criando seu Sistema</span>
+                <ol>
+                    <li>Acesse o <a href="https://keep.google.com" target="_blank">Google Keep</a>.</li>
+                    <li>Crie 3 Marcadores: <code>#Escola</code>, <code>#Trabalho</code>, <code>#Pessoal</code>.</li>
+                    <li>Crie uma nota de Checklist chamada "Tarefas de Hoje" e adicione 5 itens.</li>
+                    <li>Defina a cor dessa nota como Amarelo.</li>
+                </ol>
+                <p><strong>Descreva aqui como foi a experiência.</strong></p>
+            </div>
+            <textarea id="resp-parte1" class="code-input" placeholder="Minha experiência..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
+        </div>
+
+        <!-- Slide 8: Atividade Prática - Parte 2 -->
+        <div class="slide">
+            <h2>Atividade 2: O Lembrete Inteligente (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Lembrete Geográfico</span>
+                <p>O Keep permite lembretes baseados em lugar.</p>
+                <ol>
+                    <li>Crie uma nota "Comprar Cartolina".</li>
+                    <li>Adicione um lembrete de <strong>Local</strong>.</li>
+                    <li>Digite o endereço de uma papelaria ou do próprio SENAI.</li>
+                </ol>
+                <p><em>(O celular vai vibrar quando você chegar perto do local!)</em></p>
+                <p><strong>Para que outro cenário isso seria útil?</strong></p>
+            </div>
+            <textarea id="resp-parte2" class="code-input" placeholder="Seria útil para..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
+        </div>
+
+        <!-- Slide 9: Atividade Prática - Parte 3 -->
+        <div class="slide">
+            <h2>Atividade 3: Extraindo Texto de Imagem (OCR) (40 min)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Mágica do OCR</span>
+                <ol>
+                    <li>Tire um print de algum slide com texto desta aula.</li>
+                    <li>Cole (Ctrl+V) em uma nova nota do Keep.</li>
+                    <li>Clique nos 3 pontinhos da nota e selecione "Capturar texto da imagem".</li>
+                </ol>
+                <p><strong>Cole abaixo o texto que o Keep extraiu da imagem.</strong></p>
+            </div>
+            <textarea id="resp-parte3" class="code-input" placeholder="Texto extraído..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
+        </div>
+
+        <!-- Slide 10: Encerramento -->
+        <div class="slide">
+            <h1>Curso Concluído!</h1>
+            <h2>Parabéns!</h2>
+            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Você+é+um+Desenvolvedor+Organizado!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 30px;">Você finalizou o módulo de Banco de Dados e Ferramentas de Produtividade.</p>
+            <p><strong>Boa sorte na sua jornada!</strong></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Curso</button>
         </div>
 
     </div>
@@ -117,7 +233,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 7</div>
+    <div class="slide-number" id="slideNumber">1 / 10</div>
 
     <script src="assets/js/script.js"></script>
 </body>

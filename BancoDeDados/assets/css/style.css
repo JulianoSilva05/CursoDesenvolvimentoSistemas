@@ -153,18 +153,22 @@ ul {
     font-weight: bold;
 }
 
+
 /* Input for Exercises */
 .code-input {
     width: 100%;
     max-width: 800px;
-    height: 200px;
+    height: 35vh; /* Usa 35% da altura da tela */
+    min-height: 250px; /* Garante um tamanho mínimo decente */
     background: #f4f4f4;
     border: 1px solid #ccc;
-    padding: 10px;
-    font-family: monospace;
-    font-size: 1rem;
-    margin-top: 10px;
-    resize: vertical;
+    padding: 15px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-top: 15px;
+    resize: vertical; /* Permite redimensionar */
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .send-btn {
@@ -196,7 +200,67 @@ ul {
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
 }
 
-/* Controls */
+
+.nav-btn {
+    background: var(--senai-blue);
+    color: white;
+    padding: 8px 15px; /* Menor padding */
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem; /* Fonte menor */
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.nav-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+/* F11 Suggestion Popup */
+.f11-popup {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(0,0,0,0.8);
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    animation: fadeInOut 5s forwards; /* Sumir depois de 5s */
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-20px); }
+    10% { opacity: 1; transform: translateY(0); }
+    90% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; transform: translateY(-20px); pointer-events: none; }
+}
+
+.finish-btn {
+    background: var(--senai-red);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.finish-btn:hover {
+    background: #c01c15;
+}
+
+/* Controls (Navigation) */
 .controls {
     position: fixed;
     bottom: 20px;

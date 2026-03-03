@@ -8,12 +8,35 @@ document.addEventListener('DOMContentLoaded', () => {
         console.log(`Aluno identificado: ${studentName}`);
     }
 
-    // 2. Slideshow Logic
+    // 2. F11 Suggestion Popup
+    showF11Popup();
+
+    // 3. Slideshow Logic
     initSlideshow();
 
-    // 3. Email Sending Logic
+    // 4. Email Sending Logic
     initEmailSender();
+
+    // 5. Finish Lesson Logic (Wait for DOM to load potentially dynamic buttons)
+    initFinishButton();
 });
+
+function showF11Popup() {
+    // Check if not already in fullscreen
+    if (!document.fullscreenElement) {
+        const popup = document.createElement('div');
+        popup.className = 'f11-popup';
+        popup.innerHTML = `
+            <span>🖥️ Pressione <strong>F11</strong> para Tela Cheia</span>
+        `;
+        document.body.appendChild(popup);
+        
+        // Remove after 5 seconds (handled by CSS animation, but good to clean DOM)
+        setTimeout(() => {
+            if (popup.parentNode) popup.remove();
+        }, 6000);
+    }
+}
 
 function showIdentificationModal() {
     const modal = document.createElement('div');
@@ -83,8 +106,10 @@ function initSlideshow() {
         btnNext.disabled = currentSlide === slides.length - 1;
         
         if (currentSlide === slides.length - 1) {
-            btnNext.textContent = "Fim";
+            // Last slide behavior
+            btnNext.style.display = 'none'; // Hide "Next" on last slide
         } else {
+            btnNext.style.display = 'inline-block';
             btnNext.textContent = "Próximo";
         }
     }
@@ -122,24 +147,30 @@ function initEmailSender() {
                 return;
             }
 
+            // Find the question/activity title
+            // Strategy: Look for the closest .activity-box and find .activity-title or just take the previous H2
+            const slide = btn.closest('.slide');
+            const activityTitleElement = slide.querySelector('.activity-title') || slide.querySelector('h2');
+            const questionText = activityTitleElement ? activityTitleElement.innerText : "Atividade";
+
             // Disable button to prevent double submission
             const originalText = btn.innerHTML;
             btn.disabled = true;
             btn.innerHTML = '⏳ Enviando...';
 
-            // Data to send via FormSubmit (Works without backend on Vercel/Github Pages)
+            // Data to send via FormSubmit
+            // We use dynamic keys to make the email look better
             const formData = {
                 _subject: `${lessonTitle} - ${studentName}`,
-                _template: "table", // Format the email nicely
-                _captcha: "false",  // Disable captcha to prevent issues
+                _template: "table", 
+                _captcha: "false",
                 Nome_Aluno: studentName,
                 Aula: lessonTitle,
-                Codigo_Resposta: codeContent
+                [questionText]: codeContent // Key is the question text
             };
 
             try {
                 // Using FormSubmit.co AJAX API
-                // First submission requires email confirmation by the owner (julianoqm@gmail.com)
                 const response = await fetch("https://formsubmit.co/ajax/julianoqm@gmail.com", {
                     method: "POST",
                     headers: { 
@@ -152,8 +183,6 @@ function initEmailSender() {
                 if (response.ok) {
                     alert('✅ Resposta enviada com sucesso para o professor!');
                     btn.innerHTML = '✅ Enviado!';
-                    // Optional: Clear input
-                    // codeInput.value = '';
                 } else {
                     throw new Error('Erro na resposta do servidor de email.');
                 }
@@ -165,4 +194,19 @@ function initEmailSender() {
             }
         });
     });
+}
+
+function initFinishButton() {
+    // This function looks for a button with id="finishLessonBtn"
+    // It can be added dynamically or exist in HTML
+    const finishBtn = document.getElementById('finishLessonBtn');
+    if (finishBtn) {
+        finishBtn.addEventListener('click', () => {
+            if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais.')) {
+                localStorage.removeItem('studentName');
+                alert('Aula finalizada! Obrigado.');
+                location.reload(); // Reloads the page, which triggers the modal again
+            }
+        });
+    }
 }
