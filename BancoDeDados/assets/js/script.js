@@ -139,8 +139,8 @@ function initEmailSender() {
 
             try {
                 // Using FormSubmit.co AJAX API
-                // First submission requires email confirmation by the owner (09113363@senaimgdocente.com.br)
-                const response = await fetch("https://formsubmit.co/ajax/09113363@senaimgdocente.com.br", {
+                // First submission requires email confirmation by the owner (julianoqm@gmail.com)
+                const response = await fetch("https://formsubmit.co/ajax/julianoqm@gmail.com", {
                     method: "POST",
                     headers: { 
                         'Content-Type': 'application/json',
