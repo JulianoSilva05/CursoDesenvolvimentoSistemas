@@ -4,224 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criando Tabelas no SQL</title>
-    <style>
-        :root {
-            --senai-blue: #004587;
-            --senai-red: #E32119;
-            --bg-color: #f4f4f4;
-            --text-color: #333;
-            --code-bg: #2d2d2d;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .slide-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px;
-            background: white;
-            z-index: 1;
-            overflow-y: auto;
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 2;
-        }
-
-        h1 {
-            font-size: 3rem;
-            color: var(--senai-blue);
-            margin-bottom: 20px;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        h2 {
-            font-size: 2.2rem;
-            color: var(--senai-blue);
-            margin-bottom: 20px;
-            border-bottom: 3px solid var(--senai-red);
-            padding-bottom: 5px;
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-        }
-
-        p, li {
-            font-size: 1.4rem;
-            line-height: 1.6;
-            max-width: 900px;
-            margin-bottom: 15px;
-        }
-
-        ul {
-            list-style-type: square;
-            margin-left: 40px;
-            max-width: 900px;
-        }
-
-        .code-block {
-            background-color: var(--code-bg);
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            width: 100%;
-            max-width: 800px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        .highlight {
-            color: var(--senai-red);
-            font-weight: bold;
-        }
-
-        .note {
-            font-size: 1.1rem;
-            color: #555;
-            font-style: italic;
-            margin-top: 20px;
-            border-left: 4px solid var(--senai-blue);
-            padding-left: 10px;
-            background-color: #eef;
-            padding: 10px;
-            border-radius: 0 5px 5px 0;
-            max-width: 800px;
-            width: 100%;
-        }
-
-        /* Activity Box */
-        .activity-box {
-            background-color: #fffbe6;
-            border: 2px dashed #fcd34d;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            max-width: 900px;
-            width: 100%;
-        }
-        
-        .activity-title {
-            color: #d97706;
-            font-weight: bold;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        /* Visual Table Representation */
-        .visual-table {
-            border: 2px solid #333;
-            border-radius: 5px;
-            margin: 20px 0;
-            width: 300px;
-            background: white;
-            box-shadow: 5px 5px 0px #ccc;
-        }
-        
-        .visual-header {
-            background: var(--senai-blue);
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-            border-bottom: 2px solid #333;
-        }
-        
-        .visual-row {
-            padding: 8px 15px;
-            border-bottom: 1px solid #ddd;
-            font-family: monospace;
-            display: flex;
-            justify-content: space-between;
-        }
-        
-        .type-badge {
-            background: #eee;
-            padding: 2px 5px;
-            border-radius: 3px;
-            font-size: 0.8rem;
-            color: #666;
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            display: flex;
-            gap: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: var(--senai-blue);
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-
-        button:hover { background-color: #003366; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 5px;
-            background-color: var(--senai-red);
-            width: 0%;
-            z-index: 101;
-            transition: width 0.3s ease;
-        }
-
-        .slide-number {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-size: 1rem;
-            color: #666;
-            z-index: 100;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
     <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Logo SENAI (Fixo) -->
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
 
     <div class="slide-container">
         
@@ -230,7 +20,7 @@
             <h1>Criando Tabelas no SQL</h1>
             <p>DDL - Data Definition Language</p>
             <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <p><strong>Duração:</strong> 2 Horas (Teoria + Prática)</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 2 horas</p>
         </div>
 
         <!-- Slide 2: O que é uma Tabela? -->
@@ -239,16 +29,16 @@
             <p>A tabela é a estrutura fundamental de um Banco de Dados Relacional.</p>
             <p>Ela define <strong>o que</strong> vamos guardar e <strong>como</strong> vamos guardar.</p>
             
-            <div class="visual-table">
-                <div class="visual-header">Clientes</div>
-                <div class="visual-row">
-                    <span>ID</span> <span class="type-badge">INT</span>
+            <div class="visual-table" style="border: 2px solid #333; border-radius: 5px; margin: 20px 0; width: 300px; background: white; box-shadow: 5px 5px 0px #ccc;">
+                <div class="visual-header" style="background: var(--senai-blue); color: white; padding: 10px; text-align: center; font-weight: bold; border-bottom: 2px solid #333;">Clientes</div>
+                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
+                    <span>ID</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">INT</span>
                 </div>
-                <div class="visual-row">
-                    <span>Nome</span> <span class="type-badge">VARCHAR</span>
+                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
+                    <span>Nome</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">VARCHAR</span>
                 </div>
-                <div class="visual-row">
-                    <span>DataNasc</span> <span class="type-badge">DATE</span>
+                <div class="visual-row" style="padding: 8px 15px; border-bottom: 1px solid #ddd; font-family: monospace; display: flex; justify-content: space-between;">
+                    <span>DataNasc</span> <span class="type-badge" style="background: #eee; padding: 2px 5px; border-radius: 3px; font-size: 0.8rem; color: #666;">DATE</span>
                 </div>
             </div>
             
@@ -382,10 +172,11 @@ DROP TABLE Funcionarios;
                     <li>Email (Texto 100, Único)</li>
                 </ul>
             </div>
-            <div class="activity-box" style="margin-top: 10px;">
-                <span class="activity-title">2. Tabela Professores</span>
-                <p>Crie uma tabela <code>Professores</code> com ID, Nome e Especialidade.</p>
-            </div>
+            
+            <textarea id="sql-create-basic" class="code-input" placeholder="Cole seu código CREATE TABLE aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-create-basic">
+                📧 Enviar Resposta
+            </button>
         </div>
 
         <!-- Slide 12: Lista de Exercícios (Intermediário) -->
@@ -399,10 +190,11 @@ DROP TABLE Funcionarios;
                     <li>Mude o tamanho do campo <code>Nome</code> dos Professores para 150 caracteres.</li>
                 </ul>
             </div>
-            <div class="activity-box" style="margin-top: 10px;">
-                <span class="activity-title">4. Limpeza</span>
-                <p>Crie uma tabela de teste chamada <code>Lixo</code> e depois apague-a com DROP.</p>
-            </div>
+            
+            <textarea id="sql-alter-code" class="code-input" placeholder="Cole seu código ALTER TABLE aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-alter-code">
+                📧 Enviar Resposta
+            </button>
         </div>
 
         <!-- Slide 13: Lista de Exercícios (Desafio) -->
@@ -419,6 +211,11 @@ DROP TABLE Funcionarios;
                 </ul>
                 <p style="font-size: 0.9rem; margin-top: 10px;">Dica: Empréstimos terá duas chaves estrangeiras!</p>
             </div>
+            
+            <textarea id="sql-challenge-code" class="code-input" placeholder="Cole seu código do desafio aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-challenge-code">
+                📧 Enviar Desafio
+            </button>
         </div>
 
         <!-- Slide 14: Dicas para Professores -->
@@ -435,53 +232,12 @@ DROP TABLE Funcionarios;
 
     <!-- Controles -->
     <div class="controls">
-        <button onclick="prevSlide()" id="btnPrev">Anterior</button>
-        <button onclick="nextSlide()" id="btnNext">Próximo</button>
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
     <div class="slide-number" id="slideNumber">1 / 14</div>
 
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const progressBar = document.getElementById('progressBar');
-        const slideNumber = document.getElementById('slideNumber');
-        const btnPrev = document.getElementById('btnPrev');
-        const btnNext = document.getElementById('btnNext');
-
-        function showSlide(index) {
-            if (index < 0) index = 0;
-            if (index >= slides.length) index = slides.length - 1;
-
-            currentSlide = index;
-
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[currentSlide].classList.add('active');
-
-            const progress = ((currentSlide + 1) / slides.length) * 100;
-            progressBar.style.width = `${progress}%`;
-
-            slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
-
-            btnPrev.disabled = currentSlide === 0;
-            btnNext.disabled = currentSlide === slides.length - 1;
-            
-            if (currentSlide === slides.length - 1) {
-                btnNext.textContent = "Fim";
-            } else {
-                btnNext.textContent = "Próximo";
-            }
-        }
-
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
-            else if (e.key === 'ArrowLeft') prevSlide();
-        });
-
-        showSlide(0);
-    </script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>

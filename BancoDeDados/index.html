@@ -98,6 +98,8 @@
             font-size: 1.5rem;
             margin-right: 20px;
             color: var(--senai-red);
+            min-width: 40px;
+            text-align: center;
         }
 
         .lesson-info {
@@ -135,41 +137,121 @@
         <ul class="lesson-list">
             
             <li class="lesson-item">
-                <a href="01_Introducao.html" class="lesson-link">
-                    <span class="lesson-icon">📄</span>
+                <a href="01_introducao.html" class="lesson-link">
+                    <span class="lesson-icon">1️⃣</span>
                     <div class="lesson-info">
-                        <span class="lesson-title">Aula 01: Introdução a Banco de Dados</span>
-                        <span class="lesson-desc">Conceitos fundamentais, SGBDs e Modelo Relacional.</span>
+                        <span class="lesson-title">Introdução a Banco de Dados</span>
+                        <span class="lesson-desc">Conceitos fundamentais, SGBDs e Tipos.</span>
                     </div>
                 </a>
             </li>
 
             <li class="lesson-item">
-                <a href="02_SQL.html" class="lesson-link">
-                    <span class="lesson-icon">💾</span>
+                <a href="02_modelagem.html" class="lesson-link">
+                    <span class="lesson-icon">2️⃣</span>
                     <div class="lesson-info">
-                        <span class="lesson-title">Aula 02: Fundamentos de SQL</span>
-                        <span class="lesson-desc">Comandos básicos para manipulação de dados.</span>
+                        <span class="lesson-title">Modelagem de Dados</span>
+                        <span class="lesson-desc">Modelo Conceitual e Entidade-Relacionamento (DER).</span>
                     </div>
                 </a>
             </li>
 
             <li class="lesson-item">
-                <a href="03_criarTabelas.html" class="lesson-link">
-                    <span class="lesson-icon">🛠️</span>
+                <a href="03_bancorelacional.html" class="lesson-link">
+                    <span class="lesson-icon">3️⃣</span>
                     <div class="lesson-info">
-                        <span class="lesson-title">Aula 03: Criando Tabelas</span>
-                        <span class="lesson-desc">DDL, Tipos de Dados e Constraints (PK, FK).</span>
+                        <span class="lesson-title">Bancos Relacionais vs NoSQL</span>
+                        <span class="lesson-desc">Diferenças, vantagens e casos de uso.</span>
                     </div>
                 </a>
             </li>
 
             <li class="lesson-item">
-                <a href="10_join.html" class="lesson-link">
-                    <span class="lesson-icon">🔗</span>
+                <a href="04_sql.html" class="lesson-link">
+                    <span class="lesson-icon">4️⃣</span>
                     <div class="lesson-info">
-                        <span class="lesson-title">Aula 10: Dominando JOINs</span>
-                        <span class="lesson-desc"> INNER, LEFT, RIGHT e FULL JOINs com exemplos visuais.</span>
+                        <span class="lesson-title">Linguagem SQL (DML)</span>
+                        <span class="lesson-desc">SELECT, INSERT, UPDATE, DELETE.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="05_ddl.html" class="lesson-link">
+                    <span class="lesson-icon">5️⃣</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Linguagem DDL</span>
+                        <span class="lesson-desc">CREATE, ALTER, DROP - Criando Estruturas.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="06_normalizacao.html" class="lesson-link">
+                    <span class="lesson-icon">6️⃣</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Normalização de Dados</span>
+                        <span class="lesson-desc">Formas Normais (1FN, 2FN, 3FN).</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="07_relacionamentos.html" class="lesson-link">
+                    <span class="lesson-icon">7️⃣</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Relacionamentos e Chaves</span>
+                        <span class="lesson-desc">PK, FK e Cardinalidade (1:1, 1:N, N:N).</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="08_joins.html" class="lesson-link">
+                    <span class="lesson-icon">8️⃣</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Dominando JOINs</span>
+                        <span class="lesson-desc">INNER, LEFT, RIGHT e FULL JOIN.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="09_indices.html" class="lesson-link">
+                    <span class="lesson-icon">9️⃣</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Índices e Otimização</span>
+                        <span class="lesson-desc">Melhorando a performance das consultas.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="10_transacoes.html" class="lesson-link">
+                    <span class="lesson-icon">🔟</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Transações e ACID</span>
+                        <span class="lesson-desc">Atomicidade, Consistência, Isolamento e Durabilidade.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="11_seguranca.html" class="lesson-link">
+                    <span class="lesson-icon">🔒</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Segurança e Controle de Acesso</span>
+                        <span class="lesson-desc">Usuários, Permissões (GRANT/REVOKE) e Backups.</span>
+                    </div>
+                </a>
+            </li>
+
+            <li class="lesson-item">
+                <a href="12_googlekeep.html" class="lesson-link">
+                    <span class="lesson-icon">📝</span>
+                    <div class="lesson-info">
+                        <span class="lesson-title">Google Keep</span>
+                        <span class="lesson-desc">Organização e produtividade.</span>
                     </div>
                 </a>
             </li>

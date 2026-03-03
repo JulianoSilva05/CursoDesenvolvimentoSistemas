@@ -4,257 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dominando SQL JOINs</title>
-    <style>
-        :root {
-            --senai-blue: #004587;
-            --senai-red: #E32119;
-            --bg-color: #f4f4f4;
-            --text-color: #333;
-            --code-bg: #2d2d2d;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            height: 100vh;
-            overflow: hidden;
-        }
-
-        .slide-container {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
-
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease-in-out, visibility 0.5s;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 40px;
-            background: white;
-            z-index: 1;
-            overflow-y: auto; /* Allow scrolling if content is too long */
-        }
-
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-            z-index: 2;
-        }
-
-        h1 {
-            font-size: 3rem;
-            color: var(--senai-blue);
-            margin-bottom: 20px;
-            text-align: center;
-            margin-top: 50px;
-        }
-
-        h2 {
-            font-size: 2.2rem;
-            color: var(--senai-blue);
-            margin-bottom: 20px;
-            border-bottom: 3px solid var(--senai-red);
-            padding-bottom: 5px;
-            width: 100%;
-            max-width: 900px;
-            text-align: center;
-        }
-
-        p, li {
-            font-size: 1.4rem;
-            line-height: 1.6;
-            max-width: 900px;
-            margin-bottom: 15px;
-        }
-
-        ul {
-            list-style-type: square;
-            margin-left: 40px;
-            max-width: 900px;
-        }
-
-        .code-block {
-            background-color: var(--code-bg);
-            color: #f8f8f2;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 1.2rem;
-            width: 100%;
-            max-width: 800px;
-            margin-top: 20px;
-            white-space: pre-wrap;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-
-        /* VENN DIAGRAM CSS */
-        .venn-container {
-            position: relative;
-            width: 300px;
-            height: 200px;
-            margin: 20px auto;
-        }
-
-        .circle {
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 3px solid #333;
-            opacity: 0.8;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: #333;
-        }
-
-        .circle-left {
-            left: 20px;
-            background-color: transparent;
-            z-index: 1;
-        }
-        
-        .circle-right {
-            right: 20px;
-            background-color: transparent;
-            z-index: 1;
-        }
-
-        /* Specific Join Highlights */
-        .inner-join .circle-left { background: linear-gradient(90deg, transparent 50%, rgba(227, 33, 25, 0.6) 50%); }
-        .inner-join .circle-right { background: linear-gradient(-90deg, transparent 50%, rgba(227, 33, 25, 0.6) 50%); }
-        
-        /* Better Inner Join Implementation via Overlay */
-        .intersection {
-            position: absolute;
-            left: 95px; /* Adjust based on circle position */
-            top: 0;
-            width: 150px; /* Same as circle */
-            height: 150px;
-            border-radius: 50%;
-            background-color: rgba(227, 33, 25, 0.8); /* Red */
-            clip-path: circle(75px at 0 75px); /* Creating the lens shape roughly */
-            /* This is tricky in pure CSS without SVGs. Let's use a simpler background color approach on circles */
-        }
-
-        /* Simplified CSS Venn Approach */
-        .venn-wrapper {
-            display: flex;
-            justify-content: center;
-            margin: 20px;
-        }
-        
-        .venn-svg {
-            width: 300px;
-            height: 200px;
-        }
-        
-        .venn-text {
-            fill: #333;
-            font-family: sans-serif;
-            font-weight: bold;
-        }
-
-        /* Table Styling */
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            max-width: 800px;
-            margin-top: 20px;
-            font-size: 1.1rem;
-            background: white;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: center;
-        }
-        th {
-            background-color: var(--senai-blue);
-            color: white;
-        }
-        tr:nth-child(even) {background-color: #f2f2f2;}
-        
-        .highlight-row {
-            background-color: #ffeb3b !important; /* Yellow highlight for matching rows */
-        }
-
-        /* Activity Box */
-        .activity-box {
-            background-color: #fffbe6;
-            border: 2px dashed #fcd34d;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-            max-width: 900px;
-            width: 100%;
-        }
-
-        .controls {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 100;
-            display: flex;
-            gap: 20px;
-        }
-
-        button {
-            padding: 10px 20px;
-            font-size: 1rem;
-            cursor: pointer;
-            background-color: var(--senai-blue);
-            color: white;
-            border: none;
-            border-radius: 5px;
-        }
-
-        button:hover { background-color: #003366; }
-        button:disabled { background-color: #ccc; cursor: not-allowed; }
-
-        .progress-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 5px;
-            background-color: var(--senai-red);
-            width: 0%;
-            z-index: 101;
-            transition: width 0.3s ease;
-        }
-
-        .slide-number {
-            position: fixed;
-            bottom: 20px;
-            left: 20px;
-            font-size: 1rem;
-            color: #666;
-            z-index: 100;
-        }
-    </style>
+    <link rel="stylesheet" href="assets/css/style.css">
 </head>
 <body>
 
     <div class="progress-bar" id="progressBar"></div>
+
+    <!-- Logo SENAI (Fixo) -->
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
 
     <div class="slide-container">
         
@@ -481,21 +238,11 @@ SELECT * FROM Camisetas CROSS JOIN Cores;
             <div class="activity-box">
                 <span style="font-weight: bold; color: #d97706;">Tarefa 1:</span> Crie as tabelas abaixo no seu banco de dados.
             </div>
-            <div class="code-block">
-CREATE TABLE Clientes (
-    ID INT PRIMARY KEY,
-    Nome VARCHAR(100),
-    Email VARCHAR(100)
-);
-
-CREATE TABLE Pedidos (
-    ID_Pedido INT PRIMARY KEY,
-    Data DATE,
-    Valor DECIMAL(10,2),
-    ID_Cliente INT,
-    FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID)
-);
-            </div>
+            
+            <textarea id="sql-join-part1" class="code-input" placeholder="Cole seu código CREATE TABLE aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-join-part1">
+                📧 Enviar Resposta
+            </button>
         </div>
 
         <!-- Slide 12: Atividade Parte 2 -->
@@ -503,15 +250,13 @@ CREATE TABLE Pedidos (
             <h2>Parte 2: Dados (30 min)</h2>
             <div class="activity-box">
                 <span style="font-weight: bold; color: #d97706;">Tarefa 2:</span> Insira os dados. 
-                <br><strong>Atenção:</strong> Insira um cliente SEM pedidos e um pedido para um cliente que não existe (se a FK permitir, ou remova a FK temporariamente para teste).
+                <br><strong>Atenção:</strong> Insira um cliente SEM pedidos e um pedido para um cliente que não existe.
             </div>
-            <div class="code-block">
-INSERT INTO Clientes VALUES (1, 'João', 'joao@email.com');
-INSERT INTO Clientes VALUES (2, 'Maria', 'maria@email.com'); -- Sem pedido
-
-INSERT INTO Pedidos VALUES (10, '2023-10-01', 100.00, 1);
-INSERT INTO Pedidos VALUES (11, '2023-10-02', 50.00, 1);
-            </div>
+            
+            <textarea id="sql-join-part2" class="code-input" placeholder="Cole seu código INSERT aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-join-part2">
+                📧 Enviar Resposta
+            </button>
         </div>
 
         <!-- Slide 13: Atividade Parte 3 -->
@@ -525,6 +270,11 @@ INSERT INTO Pedidos VALUES (11, '2023-10-02', 50.00, 1);
                     <li>3. Encontrar clientes que NUNCA compraram nada (Dica: LEFT JOIN + WHERE ... IS NULL).</li>
                 </ul>
             </div>
+            
+            <textarea id="sql-join-part3" class="code-input" placeholder="Cole suas queries JOIN aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-join-part3">
+                📧 Enviar Resposta
+            </button>
         </div>
 
         <!-- Slide 14: Atividade Desafio -->
@@ -536,59 +286,38 @@ INSERT INTO Pedidos VALUES (11, '2023-10-02', 50.00, 1);
                 <p>Tente fazer um SELECT que mostre: Nome do Cliente, Nome do Produto Comprado e Valor.</p>
                 <p>Isso exigirá múltiplos JOINs!</p>
             </div>
+            
+            <textarea id="sql-join-challenge" class="code-input" placeholder="Cole seu desafio aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-join-challenge">
+                📧 Enviar Desafio
+            </button>
+        </div>
+        
+        <!-- Slide 15: Dicas de Ensino -->
+        <div class="slide">
+            <h2>Dicas de Ensino (Diferenciação)</h2>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1; padding: 20px; background: #eef; border-radius: 10px;">
+                    <strong>Alunos com Dificuldade:</strong>
+                    <p>Foque apenas no INNER JOIN e LEFT JOIN. Use os Diagramas de Venn impressos para eles pintarem as áreas.</p>
+                </div>
+                <div style="flex: 1; padding: 20px; background: #fffbe6; border-radius: 10px;">
+                    <strong>Alunos Avançados:</strong>
+                    <p>Desafie-os a usar <code>GROUP BY</code> com JOIN (ex: Qual cliente gastou mais no total?).</p>
+                </div>
+            </div>
         </div>
 
     </div>
 
     <!-- Controles -->
     <div class="controls">
-        <button onclick="prevSlide()" id="btnPrev">Anterior</button>
-        <button onclick="nextSlide()" id="btnNext">Próximo</button>
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 14</div>
+    <div class="slide-number" id="slideNumber">1 / 15</div>
 
-    <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const progressBar = document.getElementById('progressBar');
-        const slideNumber = document.getElementById('slideNumber');
-        const btnPrev = document.getElementById('btnPrev');
-        const btnNext = document.getElementById('btnNext');
-
-        function showSlide(index) {
-            if (index < 0) index = 0;
-            if (index >= slides.length) index = slides.length - 1;
-
-            currentSlide = index;
-
-            slides.forEach(slide => slide.classList.remove('active'));
-            slides[currentSlide].classList.add('active');
-
-            const progress = ((currentSlide + 1) / slides.length) * 100;
-            progressBar.style.width = `${progress}%`;
-
-            slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
-
-            btnPrev.disabled = currentSlide === 0;
-            btnNext.disabled = currentSlide === slides.length - 1;
-            
-            if (currentSlide === slides.length - 1) {
-                btnNext.textContent = "Fim";
-            } else {
-                btnNext.textContent = "Próximo";
-            }
-        }
-
-        function nextSlide() { showSlide(currentSlide + 1); }
-        function prevSlide() { showSlide(currentSlide - 1); }
-
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight' || e.key === 'Space') nextSlide();
-            else if (e.key === 'ArrowLeft') prevSlide();
-        });
-
-        showSlide(0);
-    </script>
+    <script src="assets/js/script.js"></script>
 </body>
 </html>
