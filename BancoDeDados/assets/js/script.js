@@ -131,6 +131,7 @@ function initEmailSender() {
             const formData = {
                 _subject: `${lessonTitle} - ${studentName}`,
                 _template: "table", // Format the email nicely
+                _captcha: "false",  // Disable captcha to prevent issues
                 Nome_Aluno: studentName,
                 Aula: lessonTitle,
                 Codigo_Resposta: codeContent
