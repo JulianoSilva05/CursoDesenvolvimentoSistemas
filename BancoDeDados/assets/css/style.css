@@ -88,10 +88,23 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px;
-    background: white;
+    padding: 80px 60px 40px 60px; /* Mais espaço no topo */
+    /* Caminho corrigido: subindo um nível para sair de 'css' e entrar em 'img' */
+    background: white url('../img/slide_bg.png') no-repeat center center; 
+    background-size: 100% 100%; /* Estica para cobrir tudo */
     z-index: 1;
     overflow-y: auto;
+}
+
+.senai-logo {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 150px;
+    height: auto;
+    z-index: 100;
+    filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    display: block; /* Força a exibição novamente */
 }
 
 .slide.active {
