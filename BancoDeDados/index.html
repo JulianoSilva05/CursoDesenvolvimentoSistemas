@@ -270,7 +270,10 @@
     </main>
 
     <footer>
-        Curso Técnico em Desenvolvimento de Sistemas - SENAI
+        <p>&copy; <span id="currentYear"></span> SENAI - Serviço Nacional de Aprendizagem Industrial</p>
+        <script>
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        </script>
     </footer>
 
 </body>
