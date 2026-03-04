@@ -5,50 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Índices e Otimização</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-type { color: #d63384; font-weight: bold; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-        
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-        .comparison-table th, .comparison-table td {
-            border: 1px solid #ddd;
-            padding: 10px;
-            text-align: center;
-        }
-        .comparison-table th {
-            background-color: var(--senai-blue);
-            color: white;
-        }
-    </style>
 </head>
 <body>
 
@@ -62,185 +18,104 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Índices e Otimização</h1>
-            <h2>Acelerando suas Consultas SQL</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=Velocidade+Máxima" alt="Índices" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Diagnóstico de Performance)</p>
-            </div>
+            <p>Acelerando suas consultas SQL</p>
+            <img src="https://placehold.co/800x300?text=Indices+SQL" alt="Índices" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Problema da Lentidão -->
+        <!-- Slide 2: O que é um Índice? -->
         <div class="slide">
-            <h2>O Problema: Full Table Scan</h2>
-            <p>Imagine procurar um nome em uma lista telefônica desordenada. Você teria que ler nome por nome até achar.</p>
-            <p>Isso é o <strong>Full Table Scan</strong>: O banco lê a tabela inteira para achar um registro.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Sem Índice</h3>
-                    <p>Busca em 1 milhão de linhas = 1 milhão de leituras.</p>
-                    <p>Tempo: 5 segundos 🐢</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Com Índice</h3>
-                    <p>Busca binária (B-Tree).</p>
-                    <p>Tempo: 0.01 segundo 🚀</p>
-                </div>
-            </div>
+            <h2>O que é um Índice?</h2>
+            <p>Imagine procurar um tópico num livro de 1000 páginas sem o índice remissivo. Você teria que ler página por página (Full Table Scan).</p>
+            <img src="https://placehold.co/800x200?text=Livro+com+Indice" alt="Índice de Livro" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>O índice é uma estrutura de dados auxiliar (geralmente B-Tree) que aponta onde está o dado.</p>
         </div>
 
-        <!-- Slide 3: O Que é um Índice? -->
+        <!-- Slide 3: Vantagens e Desvantagens -->
         <div class="slide">
-            <h2>O Que é um Índice?</h2>
-            <p>É uma estrutura de dados auxiliar (geralmente Árvore B+) que guarda o valor da coluna e um ponteiro para onde o dado está no disco.</p>
-            <img src="https://placehold.co/800x200/28a745/FFFFFF?text=Índice+do+Livro" alt="Analogia Livro" style="width: 100%; margin: 15px 0; border-radius: 8px;">
-            <p>Funciona exatamente como o índice remissivo no final de um livro.</p>
-        </div>
-
-        <!-- Slide 4: Vantagens e Desvantagens (Trade-off) -->
-        <div class="slide">
-            <h2>Nem tudo são flores...</h2>
-            <p>Se índices são tão bons, por que não criar em todas as colunas?</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item" style="background: #e6fffa;">
-                    <h3>Vantagens (Leitura)</h3>
+            <h2>Vantagens e Desvantagens</h2>
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1; background: #eeffee; padding: 15px; border-radius: 10px;">
+                    <h3>Vantagens</h3>
                     <ul>
-                        <li>SELECT muito rápido (WHERE).</li>
-                        <li>Ordenação instantânea (ORDER BY).</li>
-                        <li>Agrupamento rápido (GROUP BY).</li>
+                        <li>Consultas (SELECT) muito mais rápidas.</li>
+                        <li>Ordenação (ORDER BY) instantânea.</li>
                     </ul>
                 </div>
-                <div class="grid-item" style="background: #ffe6e6;">
-                    <h3>Desvantagens (Escrita)</h3>
+                <div style="flex: 1; background: #ffeeee; padding: 15px; border-radius: 10px;">
+                    <h3>Desvantagens</h3>
                     <ul>
-                        <li>Ocupa espaço em disco.</li>
-                        <li>Deixa INSERT, UPDATE e DELETE mais lentos (o banco precisa atualizar a tabela E o índice).</li>
+                        <li>Ocupa espaço extra em disco.</li>
+                        <li>Deixa a escrita (INSERT, UPDATE, DELETE) mais lenta (pois precisa atualizar o índice também).</li>
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <!-- Slide 4: Quando criar índices? -->
+        <div class="slide">
+            <h2>Quando criar índices?</h2>
+            <p>✅ Crie em colunas que:</p>
+            <ul>
+                <li>São usadas frequentemente no <code>WHERE</code>.</li>
+                <li>São usadas em <code>JOINs</code> (Chaves Estrangeiras).</li>
+                <li>São usadas em <code>ORDER BY</code>.</li>
+            </ul>
+            <p>❌ Evite em colunas que:</p>
+            <ul>
+                <li>Têm poucos valores únicos (ex: Gênero M/F, Status Ativo/Inativo).</li>
+                <li>São atualizadas com frequência extrema.</li>
+            </ul>
         </div>
 
         <!-- Slide 5: Tipos de Índices -->
         <div class="slide">
             <h2>Tipos de Índices</h2>
-            <table class="comparison-table">
-                <tr>
-                    <th>Tipo</th>
-                    <th>Descrição</th>
-                    <th>Exemplo</th>
-                </tr>
-                <tr>
-                    <td><strong>PRIMARY</strong></td>
-                    <td>O rei dos índices. Único e Não Nulo.</td>
-                    <td>ID, CPF</td>
-                </tr>
-                <tr>
-                    <td><strong>UNIQUE</strong></td>
-                    <td>Garante unicidade, mas permite NULL (depende do SGBD).</td>
-                    <td>Email, Login</td>
-                </tr>
-                <tr>
-                    <td><strong>INDEX</strong></td>
-                    <td>Índice comum. Acelera busca, permite repetidos.</td>
-                    <td>Nome, Data</td>
-                </tr>
-                <tr>
-                    <td><strong>FULLTEXT</strong></td>
-                    <td>Busca em textos longos (como Google).</td>
-                    <td>Descrição, Artigo</td>
-                </tr>
-            </table>
+            <ul>
+                <li><strong>PRIMARY:</strong> Criado automaticamente na Chave Primária. Único e não nulo.</li>
+                <li><strong>UNIQUE:</strong> Garante que não haja valores repetidos (ex: CPF, Email).</li>
+                <li><strong>INDEX (Comum):</strong> Apenas acelera a busca. Permite repetidos.</li>
+                <li><strong>FULLTEXT:</strong> Para busca em textos longos (como Google).</li>
+            </ul>
         </div>
 
-        <!-- Slide 6: Como Criar e Apagar -->
+        <!-- Slide 6: Comando CREATE INDEX -->
         <div class="slide">
-            <h2>Comandos DDL para Índices</h2>
+            <h2>Criando Índices</h2>
             <div class="code-block">
-<span class="sql-comment">-- Criar índice simples</span>
-<span class="sql-keyword">CREATE INDEX</span> idx_nome_cliente <span class="sql-keyword">ON</span> clientes(nome);
+-- Criar um índice no CPF do cliente
+CREATE INDEX idx_cpf ON Clientes(CPF);
 
-<span class="sql-comment">-- Criar índice composto (Melhora busca por Estado E Cidade)</span>
-<span class="sql-keyword">CREATE INDEX</span> idx_localizacao <span class="sql-keyword">ON</span> enderecos(estado, cidade);
+-- Criar um índice composto (Nome + Sobrenome)
+CREATE INDEX idx_nome_completo ON Clientes(Nome, Sobrenome);
 
-<span class="sql-comment">-- Apagar índice (Se estiver atrapalhando a escrita)</span>
-<span class="sql-keyword">DROP INDEX</span> idx_nome_cliente <span class="sql-keyword">ON</span> clientes;
+-- Apagar um índice
+DROP INDEX idx_cpf ON Clientes;
             </div>
         </div>
 
-        <!-- Slide 7: Cardinalidade e Seletividade -->
+        <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Onde Criar Índices?</h2>
-            <p>O segredo é a <strong>Seletividade</strong>.</p>
+            <h2>Atividade Prática (2 Horas)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Consultor de Performance</span>
+                <p><strong>Cenário:</strong> O E-commerce "LojaX" está lento. A tabela <code>Produtos</code> tem 1 milhão de registros e as seguintes colunas: <code>ID, Nome, Descricao, Preco, Categoria, Estoque, DataCadastro</code>.</p>
+                
+                <p><strong>Parte 1: Diagnóstico (40 min)</strong></p>
+                <p>O cliente reclama que a busca por nome do produto demora 5 segundos. O que você faria? Escreva o comando SQL.</p>
+
+                <p><strong>Parte 2: Relatórios (40 min)</strong></p>
+                <p>Todo dia o gerente tira um relatório ordenado por <code>DataCadastro</code>. O relatório demora muito. Qual a solução? Escreva o comando.</p>
+
+                <p><strong>Parte 3: Análise Crítica (40 min)</strong></p>
+                <p>Um desenvolvedor júnior sugeriu criar índices em TODAS as colunas para "garantir que tudo fique rápido". Explique por que isso é uma má ideia, citando o impacto em INSERTs e UPDATEs.</p>
+            </div>
             
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Alta Seletividade (BOM)</h3>
-                    <p>Muitos valores diferentes.</p>
-                    <p>Ex: CPF, Email, Data de Nascimento.</p>
-                    <p><em>O índice consegue filtrar muito bem.</em></p>
-                </div>
-                <div class="grid-item">
-                    <h3>Baixa Seletividade (RUIM)</h3>
-                    <p>Poucos valores repetidos.</p>
-                    <p>Ex: Sexo (M/F), Status (Ativo/Inativo).</p>
-                    <p><em>O índice não ajuda muito, o banco prefere ler tudo.</em></p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 8: Atividade Prática - Parte 1 -->
-        <div class="slide">
-            <h2>Atividade 1: O Diagnóstico (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Loja Lenta</span>
-                <p>Cenário: Uma tabela <code>Produtos</code> com 5 milhões de linhas.</p>
-                <p>A busca <code>SELECT * FROM produtos WHERE nome = 'iPhone 15'</code> está demorando 8 segundos.</p>
-                <ol>
-                    <li>Qual o problema provável?</li>
-                    <li>Escreva o comando SQL para resolver definitivamente.</li>
-                </ol>
-            </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="O problema é...&#10;CREATE INDEX..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
-        </div>
-
-        <!-- Slide 9: Atividade Prática - Parte 2 -->
-        <div class="slide">
-            <h2>Atividade 2: Índice Composto (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Filtrando Relatórios</span>
-                <p>O gerente busca sempre por Categoria E Faixa de Preço:</p>
-                <p><code>SELECT * FROM produtos WHERE categoria = 'Eletrônicos' AND preco < 1000;</code></p>
-                <p>Criar um índice só em Categoria ajuda? Como criar um índice que cubra os dois campos?</p>
-            </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="CREATE INDEX..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
-        </div>
-
-        <!-- Slide 10: Atividade Prática - Parte 3 -->
-        <div class="slide">
-            <h2>Atividade 3: O Estagiário Empolgado (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Estudo de Caso</span>
-                <p>Um estagiário sugeriu: <em>"Já que índices são rápidos, vou criar um índice para CADA coluna da tabela de Logs do sistema!"</em>.</p>
-                <p>A tabela de Logs recebe 1000 INSERTs por segundo.</p>
-                <p><strong>Explique tecnicamente por que isso vai derrubar o servidor.</strong></p>
-            </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="Sua explicação técnica..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
-
-        <!-- Slide 11: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Índices e Otimização</h2>
-            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Performance+Tunada!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Seu banco agora voa baixo.</p>
-            <p><strong>Próxima Aula: Transações e ACID (Garantindo que o dinheiro não suma).</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            <textarea id="index-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="index-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -251,7 +126,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 11</div>
+    <div class="slide-number" id="slideNumber">1 / 7</div>
 
     <script src="assets/js/script.js"></script>
 </body>

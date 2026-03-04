@@ -5,45 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Linguagem DDL</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .danger-zone {
-            border: 2px solid var(--senai-red);
-            background-color: #ffe6e6;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-type { color: #d63384; font-weight: bold; }
-        .sql-comment { color: #6c757d; font-style: italic; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-    </style>
 </head>
 <body>
 
@@ -57,217 +18,133 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Linguagem DDL</h1>
-            <h2>Data Definition Language - Definindo a Estrutura</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=O+Arquiteto+do+Banco" alt="Capa DDL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Criando e Alterando Tabelas)</p>
-            </div>
+            <p>Data Definition Language - Definindo a Estrutura</p>
+            <img src="https://placehold.co/800x300?text=Linguagem+DDL" alt="DDL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Que é DDL? -->
+        <!-- Slide 2: O que é DDL? -->
         <div class="slide">
-            <h2>O Que é DDL?</h2>
-            <p><strong>DDL (Data Definition Language)</strong> é o conjunto de comandos que define a ESTRUTURA (o esqueleto) do banco de dados.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Não lida com dados!</h3>
-                    <p>Ao contrário do DML (Insert, Update...), o DDL não mexe no conteúdo (João, Maria), mas sim nos recipientes (Tabela Clientes, Coluna Nome).</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Principais Comandos</h3>
-                    <ul>
-                        <li><span class="sql-keyword">CREATE</span>: Cria objetos.</li>
-                        <li><span class="sql-keyword">ALTER</span>: Modifica objetos.</li>
-                        <li><span class="sql-keyword">DROP</span>: Exclui objetos.</li>
-                        <li><span class="sql-keyword">TRUNCATE</span>: Esvazia objetos.</li>
-                    </ul>
-                </div>
-            </div>
+            <h2>O que é DDL?</h2>
+            <p><strong>DDL (Data Definition Language)</strong> é a parte do SQL usada para criar e modificar a estrutura do banco de dados (esquema).</p>
+            <img src="https://placehold.co/800x200?text=Estrutura+do+Banco" alt="Estrutura" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>Principais comandos:</p>
+            <ul>
+                <li><strong>CREATE:</strong> Cria objetos (tabelas, bancos, views).</li>
+                <li><strong>ALTER:</strong> Modifica objetos existentes.</li>
+                <li><strong>DROP:</strong> Exclui objetos.</li>
+                <li><strong>TRUNCATE:</strong> Limpa todos os dados de uma tabela (mantendo a estrutura).</li>
+            </ul>
         </div>
 
-        <!-- Slide 3: Tipos de Dados (Data Types) -->
+        <!-- Slide 3: Tipos de Dados Comuns -->
         <div class="slide">
-            <h2>Tipos de Dados Essenciais</h2>
-            <p>Antes de criar tabelas, precisamos saber o que vamos guardar.</p>
-            
-            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
-                <tr style="background: var(--senai-blue); color: white;">
-                    <th style="padding: 10px;">Tipo SQL</th>
-                    <th style="padding: 10px;">Descrição</th>
-                    <th style="padding: 10px;">Exemplo</th>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">INT / INTEGER</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Números inteiros</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">10, 500, -5</td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">DECIMAL(10,2)</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Dinheiro / Exatos</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">199.90</td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">VARCHAR(N)</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Texto variável (até N)</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">'Ana Silva'</td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">DATE / DATETIME</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Data e Hora</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">'2024-12-31'</td>
-                </tr>
-                <tr>
-                    <td style="padding: 10px; border: 1px solid #ccc;">BOOLEAN</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">Verdadeiro/Falso</td>
-                    <td style="padding: 10px; border: 1px solid #ccc;">TRUE, FALSE</td>
-                </tr>
-            </table>
+            <h2>Tipos de Dados Comuns</h2>
+            <p>Escolher o tipo certo economiza espaço e evita erros.</p>
+            <ul>
+                <li><strong>INT / INTEGER:</strong> Números inteiros.</li>
+                <li><strong>DECIMAL(10,2) / FLOAT:</strong> Números decimais (dinheiro, medidas).</li>
+                <li><strong>VARCHAR(n):</strong> Texto de tamanho variável (até n caracteres).</li>
+                <li><strong>CHAR(n):</strong> Texto de tamanho fixo.</li>
+                <li><strong>DATE / DATETIME:</strong> Datas e horas.</li>
+                <li><strong>BOOLEAN:</strong> Verdadeiro ou Falso.</li>
+            </ul>
         </div>
 
         <!-- Slide 4: CREATE TABLE -->
         <div class="slide">
-            <h2>CREATE TABLE: O Começo de Tudo</h2>
-            <p>Sintaxe para criar uma nova tabela.</p>
-            
+            <h2>CREATE TABLE</h2>
+            <p>Cria uma nova tabela.</p>
             <div class="code-block">
-<span class="sql-keyword">CREATE TABLE</span> funcionarios (
-    id <span class="sql-type">INT PRIMARY KEY AUTO_INCREMENT</span>,
-    nome <span class="sql-type">VARCHAR</span>(100) <span class="sql-keyword">NOT NULL</span>,
-    salario <span class="sql-type">DECIMAL</span>(10,2),
-    data_admissao <span class="sql-type">DATE</span>,
-    ativo <span class="sql-type">BOOLEAN DEFAULT</span> <span class="sql-keyword">TRUE</span>
+CREATE TABLE Alunos (
+    ID INT AUTO_INCREMENT PRIMARY KEY,
+    Nome VARCHAR(100) NOT NULL,
+    DataNascimento DATE,
+    Email VARCHAR(100) UNIQUE
 );
             </div>
-            
-            <div class="concept-card" style="margin-top: 15px;">
-                <strong>Constraints (Regras):</strong><br>
-                <code>PRIMARY KEY</code>: Identificador único.<br>
-                <code>NOT NULL</code>: Obrigatório preencher.<br>
-                <code>DEFAULT</code>: Valor padrão se ninguém informar nada.
-            </div>
+            <p><strong>Constraints (Restrições):</strong> PRIMARY KEY, NOT NULL, UNIQUE, DEFAULT.</p>
         </div>
 
-        <!-- Slide 5: ALTER TABLE (Ajustes) -->
+        <!-- Slide 5: ALTER TABLE -->
         <div class="slide">
-            <h2>ALTER TABLE: Corrigindo o Projeto</h2>
-            <p>Esqueceu uma coluna? Errou o tipo? O ALTER resolve.</p>
-            
+            <h2>ALTER TABLE</h2>
+            <p>Altera a estrutura de uma tabela existente.</p>
             <div class="code-block">
-<span class="sql-comment">-- Adicionar nova coluna</span>
-<span class="sql-keyword">ALTER TABLE</span> funcionarios <span class="sql-keyword">ADD</span> email <span class="sql-type">VARCHAR</span>(100);
+-- Adicionar uma coluna
+ALTER TABLE Alunos ADD Telefone VARCHAR(20);
 
-<span class="sql-comment">-- Modificar coluna existente (Aumentar tamanho)</span>
-<span class="sql-keyword">ALTER TABLE</span> funcionarios <span class="sql-keyword">MODIFY</span> nome <span class="sql-type">VARCHAR</span>(200);
+-- Modificar o tipo de uma coluna
+ALTER TABLE Alunos MODIFY Nome VARCHAR(150);
 
-<span class="sql-comment">-- Renomear coluna (Depende do SGBD, ex: MySQL 8)</span>
-<span class="sql-keyword">ALTER TABLE</span> funcionarios <span class="sql-keyword">RENAME COLUMN</span> salario <span class="sql-keyword">TO</span> remuneracao;
-
-<span class="sql-comment">-- Excluir coluna (Cuidado! Perde os dados da coluna)</span>
-<span class="sql-keyword">ALTER TABLE</span> funcionarios <span class="sql-keyword">DROP COLUMN</span> ativo;
+-- Excluir uma coluna
+ALTER TABLE Alunos DROP COLUMN DataNascimento;
             </div>
         </div>
 
-        <!-- Slide 6: DROP e TRUNCATE (Destruição) -->
+        <!-- Slide 6: DROP TABLE -->
         <div class="slide">
-            <h2>DROP vs TRUNCATE: Cuidado Extremo</h2>
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>DROP TABLE</h3>
-                    <p>Apaga a tabela INTEIRA. Estrutura e dados somem do mapa.</p>
-                    <div class="code-block" style="font-size: 0.9rem;">
-<span class="sql-keyword">DROP TABLE</span> funcionarios;
-                    </div>
-                </div>
-                <div class="grid-item">
-                    <h3>TRUNCATE TABLE</h3>
-                    <p>Esvazia a tabela (apaga todos os dados), mas mantém a estrutura pronta para reuso. É mais rápido que DELETE sem where.</p>
-                    <div class="code-block" style="font-size: 0.9rem;">
-<span class="sql-keyword">TRUNCATE TABLE</span> funcionarios;
-                    </div>
-                </div>
+            <h2>DROP vs TRUNCATE</h2>
+            <div class="code-block">
+-- Exclui a tabela INTEIRA (estrutura + dados)
+DROP TABLE Alunos;
+
+-- Exclui apenas os DADOS (mantém a estrutura zerada)
+TRUNCATE TABLE Alunos;
             </div>
-            <div class="danger-zone">
-                ⚠️ Não existe "Lixeira" para DROP TABLE. Executou, perdeu.
+            <div class="note" style="color: red; border-color: red;">
+                Cuidado! O comando DROP não tem "Ctrl+Z". Apagou, já era (a menos que tenha backup).
             </div>
         </div>
 
         <!-- Slide 7: Chaves Estrangeiras (FK) -->
         <div class="slide">
-            <h2>Relacionando Tabelas (Foreign Key)</h2>
-            <p>Como ligar uma tabela na outra?</p>
-            
+            <h2>Definindo Chaves Estrangeiras</h2>
             <div class="code-block">
-<span class="sql-keyword">CREATE TABLE</span> pedidos (
-    id <span class="sql-type">INT PRIMARY KEY</span>,
-    valor <span class="sql-type">DECIMAL</span>(10,2),
-    id_cliente <span class="sql-type">INT</span>,
-    <span class="sql-comment">-- Definindo a relação:</span>
-    <span class="sql-keyword">FOREIGN KEY</span> (id_cliente) <span class="sql-keyword">REFERENCES</span> clientes(id)
+CREATE TABLE Pedidos (
+    ID INT PRIMARY KEY,
+    Valor DECIMAL(10,2),
+    ID_Cliente INT,
+    FOREIGN KEY (ID_Cliente) REFERENCES Clientes(ID)
 );
             </div>
-            <p>Isso garante a <strong>Integridade Referencial</strong>: Você não consegue criar um pedido para um cliente que não existe.</p>
+            <p>Isso impede que um pedido seja criado para um cliente inexistente.</p>
         </div>
 
-        <!-- Slide 8: Atividade Prática - Parte 1 -->
+        <!-- Slide 8: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade 1: Criando o Banco (40 min)</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Sistema Escolar - Criação</span>
-                <p>Escreva o SQL para criar as seguintes tabelas (defina os tipos de dados adequados e PKs):</p>
-                <ol>
-                    <li><code>Professores</code> (id, nome, especialidade, email).</li>
-                    <li><code>Disciplinas</code> (id, nome, carga_horaria, id_professor_responsavel).</li>
-                </ol>
-                <p><em>Dica: Não se preocupe com a FK agora, faremos no ALTER.</em></p>
-            </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="CREATE TABLE..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
-        </div>
+                <span class="activity-title">Construindo o Banco de Dados de uma Escola</span>
+                
+                <p><strong>Parte 1: Tabelas Básicas (40 min)</strong></p>
+                <p>Escreva o SQL para criar as tabelas:</p>
+                <ul>
+                    <li><code>Professores</code> (ID, Nome, Especialidade, Email).</li>
+                    <li><code>Disciplinas</code> (ID, Nome, CargaHoraria, ID_Professor_Responsavel).</li>
+                </ul>
+                
+                <p><strong>Parte 2: Tabela de Alunos e Matrículas (40 min)</strong></p>
+                <p>Escreva o SQL para criar:</p>
+                <ul>
+                    <li><code>Alunos</code> (ID, Nome, CPF, DataNascimento).</li>
+                    <li><code>Matriculas</code> (ID, DataMatricula, ID_Aluno, ID_Disciplina). *Atenção às Chaves Estrangeiras!*</li>
+                </ul>
 
-        <!-- Slide 9: Atividade Prática - Parte 2 -->
-        <div class="slide">
-            <h2>Atividade 2: Relacionamentos (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Sistema Escolar - Relacionando</span>
-                <p>Agora crie as tabelas de Alunos e Matrículas:</p>
-                <ol>
-                    <li><code>Alunos</code> (id, nome, cpf, data_nascimento). CPF deve ser texto e UNIQUE.</li>
-                    <li><code>Matriculas</code> (id, data_matricula, id_aluno, id_disciplina).</li>
-                </ol>
-                <p><em>Desafio: Tente adicionar a CONSTRAINT de Foreign Key na tabela Matriculas apontando para Alunos.</em></p>
+                <p><strong>Parte 3: Alterações (40 min)</strong></p>
+                <p>Você esqueceu algumas coisas! Escreva os comandos <code>ALTER</code> para:</p>
+                <ul>
+                    <li>Adicionar uma coluna <code>Telefone</code> na tabela Professores.</li>
+                    <li>Aumentar o tamanho do campo <code>Nome</code> dos Alunos para 200 caracteres.</li>
+                    <li>Adicionar uma coluna <code>NotaFinal</code> (Decimal) na tabela Matriculas.</li>
+                </ul>
             </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="CREATE TABLE..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
-        </div>
-
-        <!-- Slide 10: Atividade Prática - Parte 3 -->
-        <div class="slide">
-            <h2>Atividade 3: Alterações (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Sistema Escolar - Ajustes</span>
-                <p>O diretor pediu mudanças! Use <code>ALTER TABLE</code> para:</p>
-                <ol>
-                    <li>Adicionar coluna <code>telefone</code> na tabela Professores.</li>
-                    <li>Aumentar o tamanho do <code>nome</code> dos Alunos para 200 caracteres.</li>
-                    <li>Adicionar coluna <code>nota_final</code> (DECIMAL) na tabela Matriculas.</li>
-                    <li>(Extra) Adicionar a FK em Disciplinas ligando ao Professor.</li>
-                </ol>
-            </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="ALTER TABLE..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
-
-        <!-- Slide 11: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Linguagem DDL</h2>
-            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Estrutura+Pronta!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Agora você sabe construir a casa. O próximo passo é organizar melhor esses quartos com a Normalização.</p>
-            <p><strong>Próxima Aula: Normalização de Dados.</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            
+            <textarea id="ddl-code" class="code-input" style="height: 300px;" placeholder="-- Parte 1:&#10;CREATE TABLE Professores..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="ddl-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -278,7 +155,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 11</div>
+    <div class="slide-number" id="slideNumber">1 / 8</div>
 
     <script src="assets/js/script.js"></script>
 </body>

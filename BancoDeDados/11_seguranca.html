@@ -5,45 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Segurança e Controle de Acesso</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-type { color: #d63384; font-weight: bold; }
-        .sql-string { color: #28a745; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-        
-        .hacker-terminal {
-            background-color: #000;
-            color: #0f0;
-            font-family: 'Courier New', Courier, monospace;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-    </style>
 </head>
 <body>
 
@@ -57,174 +18,104 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Segurança e Controle de Acesso</h1>
-            <h2>Protegendo o Ativo Mais Valioso</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=Segurança+de+Dados" alt="Segurança" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Hacking Ético e Permissões)</p>
-            </div>
+            <p>Protegendo os dados e gerenciando permissões</p>
+            <img src="https://placehold.co/800x300?text=Seguranca+de+Dados" alt="Segurança" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Triângulo CIA -->
+        <!-- Slide 2: Por que Segurança? -->
         <div class="slide">
-            <h2>Segurança da Informação (CIA)</h2>
-            <p>Três pilares fundamentais:</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Confidencialidade</h3>
-                    <p>Só quem tem permissão pode ver. (Sigilo).</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Integridade</h3>
-                    <p>O dado não pode ser alterado indevidamente (Corrupção).</p>
-                </div>
-                <div class="grid-item" style="grid-column: span 2;">
-                    <h3>Disponibilidade</h3>
-                    <p>O sistema deve estar no ar quando necessário. (Backup/Redundância).</p>
-                </div>
-            </div>
+            <h2>Por que Segurança?</h2>
+            <p>O Banco de Dados é o ativo mais valioso de uma empresa. Ele contém dados de clientes, financeiro, segredos industriais.</p>
+            <img src="https://placehold.co/800x200?text=Confidencialidade+Integridade+Disponibilidade" alt="CIA" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p><strong>Pilares da Segurança da Informação (CIA):</strong></p>
+            <ul>
+                <li><strong>Confidencialidade:</strong> Só quem tem permissão vê.</li>
+                <li><strong>Integridade:</strong> O dado não é alterado indevidamente.</li>
+                <li><strong>Disponibilidade:</strong> O dado está acessível quando necessário.</li>
+            </ul>
         </div>
 
-        <!-- Slide 3: DCL - Data Control Language -->
+        <!-- Slide 3: Gerenciamento de Usuários (DCL) -->
         <div class="slide">
-            <h2>Gerenciando Usuários (DCL)</h2>
-            <p>Comandos para criar usuários e dar poderes.</p>
-            <div class="concept-card">
-                <strong>Regra de Ouro:</strong> Nunca use o usuário <code>root</code> na sua aplicação Java/PHP/Node!
-            </div>
-            
+            <h2>Gerenciamento de Usuários (DCL)</h2>
+            <p>Nunca use o usuário <code>root</code> (admin) para conectar sua aplicação!</p>
             <div class="code-block">
-<span class="sql-comment">-- 1. Criar Usuário</span>
-<span class="sql-keyword">CREATE USER</span> 'vendedor'@'localhost' <span class="sql-keyword">IDENTIFIED BY</span> 'senha123';
+-- Criar um usuário
+CREATE USER 'vendedor'@'localhost' IDENTIFIED BY 'senha123';
 
-<span class="sql-comment">-- 2. Dar Permissão (GRANT)</span>
-<span class="sql-keyword">GRANT SELECT, INSERT ON</span> loja.pedidos <span class="sql-keyword">TO</span> 'vendedor'@'localhost';
+-- Dar permissão (GRANT)
+GRANT SELECT, INSERT ON Loja.Pedidos TO 'vendedor'@'localhost';
 
-<span class="sql-comment">-- 3. Tirar Permissão (REVOKE)</span>
-<span class="sql-keyword">REVOKE DELETE ON</span> loja.pedidos <span class="sql-keyword">FROM</span> 'vendedor'@'localhost';
+-- Tirar permissão (REVOKE)
+REVOKE INSERT ON Loja.Pedidos FROM 'vendedor'@'localhost';
             </div>
         </div>
 
         <!-- Slide 4: Princípio do Menor Privilégio -->
         <div class="slide">
             <h2>Princípio do Menor Privilégio</h2>
-            <p>Um usuário deve ter APENAS as permissões necessárias para fazer seu trabalho. Nem mais, nem menos.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Cenário Ruim</h3>
-                    <p>Usuário 'App' tem permissão de <code>DROP TABLE</code>.</p>
-                    <p>Se um hacker invadir a app, ele apaga o banco.</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Cenário Bom</h3>
-                    <p>Usuário 'App' só tem <code>SELECT, INSERT, UPDATE</code>.</p>
-                    <p>O hacker não consegue destruir a estrutura.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: SQL Injection (O Pesadelo) -->
-        <div class="slide">
-            <h2>SQL Injection: A Falha #1</h2>
-            <p>Quando o programador concatena o texto do usuário direto na query.</p>
-            
-            <div class="hacker-terminal">
--- Query no Código (PHP/Java):
-"SELECT * FROM users WHERE user = '" + input + "'";
-
--- O Hacker digita no campo de usuário:
-' OR '1'='1
-
--- A Query vira:
-SELECT * FROM users WHERE user = '' OR '1'='1';
-            </div>
-            <p style="margin-top: 10px;">Como <code>'1'='1'</code> é sempre VERDADE, o banco retorna TODOS os usuários e loga o hacker como Admin.</p>
-        </div>
-
-        <!-- Slide 6: Prevenção (Prepared Statements) -->
-        <div class="slide">
-            <h2>A Vacina: Prepared Statements</h2>
-            <p>Nunca concatene strings! Use parâmetros.</p>
-            
-            <div class="code-block">
-<span class="sql-comment">-- Correto (Java/JDBC):</span>
-String sql = "SELECT * FROM users WHERE user = ?";
-stmt = conn.prepareStatement(sql);
-stmt.setString(1, userInput);
-            </div>
-            <p>O banco entende que o input é apenas um <strong>texto literal</strong>, e não um comando executável.</p>
-        </div>
-
-        <!-- Slide 7: Backup e Recuperação -->
-        <div class="slide">
-            <h2>Backup é Vida</h2>
-            <p>Existem dois tipos principais de backup:</p>
+            <img src="https://placehold.co/800x200?text=Menor+Privilegio" alt="Privilégios" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>Um usuário deve ter APENAS as permissões estritamente necessárias para fazer seu trabalho. Nada mais.</p>
             <ul>
-                <li><strong>Dump Lógico (Export):</strong> Gera um arquivo <code>.sql</code> com os comandos CREATE e INSERT para recriar tudo. (Lento para restaurar).</li>
-                <li><strong>Backup Físico:</strong> Copia os arquivos binários do banco. (Rápido, mas complexo).</li>
+                <li>O estagiário precisa deletar o banco? <strong>Não.</strong></li>
+                <li>O sistema de relatórios precisa alterar dados? <strong>Não (só SELECT).</strong></li>
             </ul>
-            <div class="concept-card">
-                <strong>Dica:</strong> Backup que não foi testado (Restore) não existe.
+        </div>
+
+        <!-- Slide 5: SQL Injection -->
+        <div class="slide">
+            <h2>SQL Injection (Injeção de SQL)</h2>
+            <p>É a falha de segurança mais comum em bancos de dados.</p>
+            <p>Ocorre quando o sistema concatena o texto do usuário diretamente na query.</p>
+            <div class="code-block" style="background: #330000; color: #ffcccc;">
+-- Código vulnerável (PHP/Java/C#)
+query = "SELECT * FROM Users WHERE name = '" + userInput + "'";
+
+-- Se o usuário digitar: ' OR '1'='1
+-- A query vira:
+SELECT * FROM Users WHERE name = '' OR '1'='1'; -- Retorna TUDO!
             </div>
         </div>
 
-        <!-- Slide 8: Atividade Prática - Parte 1 -->
+        <!-- Slide 6: Como evitar SQL Injection? -->
         <div class="slide">
-            <h2>Atividade 1: Criando Papéis (Roles) (40 min)</h2>
+            <h2>Como evitar SQL Injection?</h2>
+            <p>Use <strong>Prepared Statements</strong> (Consultas Preparadas).</p>
+            <p>O banco trata o input do usuário como TEXTO puro, jamais como comando.</p>
+            <div class="code-block" style="background: #003300; color: #ccffcc;">
+-- Código seguro
+query = "SELECT * FROM Users WHERE name = ?";
+execute(query, userInput);
+            </div>
+        </div>
+
+        <!-- Slide 7: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">O DBA da Escola</span>
-                <p>Escreva os comandos SQL para criar os usuários e dar as permissões corretas:</p>
-                <ol>
-                    <li>Usuário <code>'diretor'</code>: Acesso total (ALL PRIVILEGES) no banco <code>Escola</code>.</li>
-                    <li>Usuário <code>'professor'</code>: Pode ver (SELECT) e lançar notas (INSERT/UPDATE) na tabela <code>Notas</code>, mas NÃO pode deletar nada.</li>
-                    <li>Usuário <code>'aluno'</code>: Só pode ver (SELECT) a tabela <code>Notas</code>.</li>
-                </ol>
-            </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="CREATE USER... GRANT..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
-        </div>
+                <span class="activity-title">Admin de Segurança</span>
+                
+                <p><strong>Parte 1: Criação de Roles (40 min)</strong></p>
+                <p>Você é o DBA de uma escola. Crie os comandos SQL para os seguintes usuários:</p>
+                <ul>
+                    <li><code>'diretor'</code>: Pode fazer TUDO no banco.</li>
+                    <li><code>'professor'</code>: Pode inserir e alterar Notas e Faltas, mas não pode deletar Alunos.</li>
+                    <li><code>'aluno'</code>: Pode apenas consultar (SELECT) suas próprias notas.</li>
+                </ul>
 
-        <!-- Slide 9: Atividade Prática - Parte 2 -->
-        <div class="slide">
-            <h2>Atividade 2: Hacker Ético (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Entendendo a Falha</span>
-                <p>Imagine um sistema de login com a query:</p>
-                <p><code>SELECT * FROM users WHERE email = '$email' AND senha = '$senha';</code></p>
-                <p>Se você sabe o email da vítima (<code>admin@empresa.com</code>), o que você digitaria no campo <strong>SENHA</strong> para logar sem saber a senha real?</p>
-                <p><em>Dica: Use o truque do comentário de SQL (-- ou #) para ignorar o resto da query.</em></p>
-            </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="Eu digitaria na senha: ..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
-        </div>
+                <p><strong>Parte 2: Auditoria (40 min)</strong></p>
+                <p>O usuário 'professor' foi demitido. Escreva os comandos para remover todas as permissões dele e bloquear o acesso.</p>
 
-        <!-- Slide 10: Atividade Prática - Parte 3 -->
-        <div class="slide">
-            <h2>Atividade 3: Auditoria (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Limpando a Casa</span>
-                <p>O professor 'João' foi demitido e virou hacker. Precisamos revogar o acesso dele imediatamente.</p>
-                <ol>
-                    <li>Escreva o comando para tirar TODAS as permissões do usuário <code>'joao'</code>.</li>
-                    <li>Escreva o comando para apagar o usuário <code>'joao'</code> do sistema.</li>
-                    <li>Qual comando você usaria para mudar a senha do usuário <code>'diretor'</code> por segurança?</li>
-                </ol>
+                <p><strong>Parte 3: Hackeando (Ético) (40 min)</strong></p>
+                <p>Explique como um hacker poderia usar SQL Injection em um campo de login (Usuário/Senha) para entrar sem saber a senha. Dê um exemplo do que ele digitaria no campo "Senha".</p>
             </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="REVOKE... DROP... ALTER USER..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
-
-        <!-- Slide 11: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Segurança e Controle de Acesso</h2>
-            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Sistema+Blindado!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Você aprendeu a proteger os dados contra erros internos e ataques externos.</p>
-            <p><strong>Próxima Aula: Google Keep (Ferramenta de Organização).</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            
+            <textarea id="sec-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sec-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -235,7 +126,7 @@ stmt.setString(1, userInput);
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 11</div>
+    <div class="slide-number" id="slideNumber">1 / 7</div>
 
     <script src="assets/js/script.js"></script>
 </body>

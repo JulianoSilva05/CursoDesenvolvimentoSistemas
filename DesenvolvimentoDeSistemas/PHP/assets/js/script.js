@@ -29,15 +29,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 6. Focus Mode (Proctoring) - Blocks access to other sites (deterrent)
     initFocusMode();
-    
     // 7. Time Tracking (Time on Page)
     startTime = Date.now();
 
     // 8. Image Preview Modal Logic
     initImagePreview();
-
-    // 9. Maximize Textarea Logic (Docked Mode)
-    initMaximizeTextarea();
 
     // Check fullscreen on initial load if student is already identified (skipped modal)
     if (studentName && !document.fullscreenElement) {
@@ -61,20 +57,25 @@ function getFormattedTime() {
     return `${hours}h ${minutes}m ${seconds}s`;
 }
 
+/* 
+function initFullscreenTextarea() {
+    // ... Function removed to allow viewing slides while typing ...
+}
+*/
+
 // --- Focus Mode Logic ---
 function initFocusMode() {
     let infractionCount = parseInt(localStorage.getItem('infractionCount') || '0');
     const maxInfractions = 5; 
     const studentName = localStorage.getItem('studentName') || 'Aluno';
     let isBlocked = false;
-    let isSystemAlert = false; // Flag to ignore blur events caused by system alerts
 
     // Create blocking overlay (hidden by default)
     const overlay = document.createElement('div');
     overlay.id = 'focus-overlay';
     overlay.style.cssText = `
         position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(255, 0, 0, 0.95); z-index: 20000;
+        background: rgba(255, 0, 0, 0.95); z-index: 9999;
         display: none; flex-direction: column; justify-content: center; align-items: center;
         color: white; font-family: sans-serif; text-align: center;
     `;
@@ -107,7 +108,7 @@ function initFocusMode() {
             overlay.style.display = 'none';
             passInput.value = ''; // Clear password field
             
-            // Maximize Screen immediately
+            // Maximize Screen
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
                     console.log("Fullscreen denied:", err);
@@ -133,6 +134,8 @@ function initFocusMode() {
             }, 200);
         }
     });
+
+    let isSystemAlert = false; // Flag to ignore blur events caused by system alerts
 
     // ... (inside handleInfraction)
     function handleInfraction(reason) {
@@ -182,14 +185,14 @@ function initFocusMode() {
 
     // Function to force fullscreen when returning
     function forceFullscreenReentry() {
-        if (!document.fullscreenElement && !document.getElementById('resume-overlay')) {
+        if (!document.fullscreenElement) {
             // We cannot requestFullscreen automatically without user gesture.
             // Show a modal that requires a click to dismiss, which triggers fullscreen.
             const resumeOverlay = document.createElement('div');
             resumeOverlay.id = 'resume-overlay';
             resumeOverlay.style.cssText = `
                 position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0, 0, 0, 0.9); z-index: 20001;
+                background: rgba(0, 0, 0, 0.9); z-index: 10000;
                 display: flex; flex-direction: column; justify-content: center; align-items: center;
                 color: white; font-family: sans-serif; text-align: center; cursor: pointer;
             `;
@@ -387,22 +390,21 @@ function initSlideshow() {
         showSlide(currentSlide + 1);
     });
 
-    // Keyboard Navigation (Improved to respect textarea focus)
+    // Keyboard Navigation REMOVED as requested
+    /*
     document.addEventListener('keydown', (e) => {
-        // Do not navigate if user is typing in a textarea or input
-        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
-            return;
+        const activeSlide = slides[currentSlide];
+        
+        // Next Action (ArrowRight, Space, PageDown)
+        if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) {
+            // Removed logic
         }
-
-        if (e.key === 'ArrowRight' || e.key === 'Space') {
-            checkAndEnforceFullscreen();
-            showSlide(currentSlide + 1);
-        }
-        else if (e.key === 'ArrowLeft') {
-            checkAndEnforceFullscreen();
-            showSlide(currentSlide - 1);
+        // Prev Action (ArrowLeft, PageUp)
+        else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+            // Removed logic
         }
     });
+    */
 
     // Initialize
     showSlide(0);
@@ -466,54 +468,15 @@ function initEmailSender() {
                 });
 
                 if (response.ok) {
-                    // Success!
+                    alert('✅ Resposta enviada com sucesso para o professor!');
                     btn.innerHTML = '✅ Enviado!';
                     btn.style.backgroundColor = '#28a745';
-                    
-                    // Create a non-intrusive toast notification instead of alert() to prevent fullscreen exit
-                    const toast = document.createElement('div');
-                    toast.innerText = '✅ Resposta enviada com sucesso!';
-                    toast.style.cssText = `
-                        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-                        background: #28a745; color: white; padding: 15px 30px; border-radius: 50px;
-                        box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.2rem; z-index: 20000;
-                        animation: fadeInOut 3s forwards;
-                    `;
-                    document.body.appendChild(toast);
-                    
-                    // Add animation keyframes if not exists
-                    if (!document.getElementById('toast-style')) {
-                        const style = document.createElement('style');
-                        style.id = 'toast-style';
-                        style.innerHTML = `
-                            @keyframes fadeInOut {
-                                0% { opacity: 0; transform: translate(-50%, 20px); }
-                                10% { opacity: 1; transform: translate(-50%, 0); }
-                                90% { opacity: 1; transform: translate(-50%, 0); }
-                                100% { opacity: 0; transform: translate(-50%, -20px); }
-                            }
-                        `;
-                        document.head.appendChild(style);
-                    }
-                    
-                    setTimeout(() => toast.remove(), 3000);
-
                 } else {
                     throw new Error('Erro na resposta do servidor de email.');
                 }
             } catch (error) {
                 console.error(error);
-                // Use toast for error too
-                const toast = document.createElement('div');
-                toast.innerText = '❌ Erro ao enviar. Verifique sua internet.';
-                toast.style.cssText = `
-                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
-                    background: #dc3545; color: white; padding: 15px 30px; border-radius: 50px;
-                    box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.2rem; z-index: 20000;
-                `;
-                document.body.appendChild(toast);
-                setTimeout(() => toast.remove(), 3000);
-                
+                alert('❌ Erro ao enviar. Verifique sua internet.');
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
@@ -560,141 +523,6 @@ function initImagePreview() {
     modal.addEventListener('click', () => {
         modal.style.display = 'none';
         img.src = ''; // Clear source
-    });
-}
-
-function initMaximizeTextarea() {
-    const textareas = document.querySelectorAll('textarea.code-input');
-    
-    textareas.forEach(textarea => {
-        // Create wrapper if not exists or insert button directly
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.justifyContent = 'flex-end';
-        container.style.marginBottom = '5px';
-        
-        const maxBtn = document.createElement('button');
-        maxBtn.innerHTML = '📝 Abrir Modo Resposta (Lateral)';
-        maxBtn.style.cssText = `
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            background: #004587;
-            color: white;
-            border: none;
-            border-radius: 4px;
-        `;
-        
-        container.appendChild(maxBtn);
-        
-        // Insert container before the textarea
-        textarea.parentNode.insertBefore(container, textarea);
-        
-        // --- Logic for Docking/Undocking ---
-        let isDocked = false;
-        let placeholder = document.createElement('div'); // Keeps the space in the slide
-        
-        maxBtn.addEventListener('click', () => {
-            if (isDocked) return; // Already docked
-            isDocked = true;
-
-            // 1. Setup Placeholder
-            placeholder.style.width = textarea.offsetWidth + 'px';
-            placeholder.style.height = textarea.offsetHeight + 'px';
-            textarea.parentNode.insertBefore(placeholder, textarea);
-
-            // 2. Setup Dock Container
-            const dockContainer = document.createElement('div');
-            dockContainer.id = 'dock-container';
-            dockContainer.style.cssText = `
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 40%;
-                height: 100%;
-                background: white;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
-                z-index: 15000;
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                border-left: 5px solid #004587;
-                transition: transform 0.3s ease;
-            `;
-
-            // Adjust Layout for Responsiveness (Slide Content shouldn't be covered)
-            document.body.style.transition = 'width 0.3s ease';
-            document.body.style.width = '60%';
-            
-            // Adjust Fixed Elements (Controls and Logo)
-            const controls = document.querySelector('.controls');
-            const logo = document.querySelector('.senai-logo');
-            
-            if (controls) {
-                controls.style.transition = 'left 0.3s ease';
-                controls.style.left = '30%'; // Center in the 60% area
-            }
-            if (logo) {
-                logo.style.transition = 'right 0.3s ease';
-                logo.style.right = '42%'; // Move to left of dock
-            }
-
-            // Header for Dock
-            const dockHeader = document.createElement('div');
-            dockHeader.style.cssText = `
-                display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-            `;
-            dockHeader.innerHTML = `
-                <h3 style="margin:0; color: #004587;">Sua Resposta</h3>
-            `;
-            
-            const minBtn = document.createElement('button');
-            minBtn.innerHTML = '✖ Fechar / Minimizar';
-            minBtn.style.cssText = `
-                padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;
-            `;
-
-            dockHeader.appendChild(minBtn);
-            dockContainer.appendChild(dockHeader);
-
-            // 3. Move Textarea and its original Button Container to Dock
-            dockContainer.appendChild(textarea);
-            
-            // Append Dock to Body (so it persists across slides)
-            document.body.appendChild(dockContainer);
-
-            // Adjust textarea style for dock
-            textarea.dataset.originalStyle = textarea.style.cssText;
-            textarea.style.cssText = `
-                width: 100%;
-                flex: 1;
-                resize: none;
-                font-size: 1.1rem;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            `;
-            
-            // Focus
-            textarea.focus();
-
-            // 4. Minimize Logic
-            minBtn.addEventListener('click', () => {
-                isDocked = false;
-                // Restore Layout
-                document.body.style.width = '';
-                const controls = document.querySelector('.controls');
-                const logo = document.querySelector('.senai-logo');
-                if (controls) controls.style.left = '';
-                if (logo) logo.style.right = '';
-
-                // Move textarea back
-                textarea.style.cssText = textarea.dataset.originalStyle || '';
-                placeholder.parentNode.insertBefore(textarea, placeholder);
-                placeholder.remove();
-                dockContainer.remove();
-            });
-        });
     });
 }
 

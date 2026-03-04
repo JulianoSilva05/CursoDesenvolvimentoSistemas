@@ -5,58 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Transações e ACID</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-type { color: #d63384; font-weight: bold; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-        
-        .timeline {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-top: 15px;
-        }
-        .timeline-step {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        .step-number {
-            background: var(--senai-blue);
-            color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body>
 
@@ -70,171 +18,95 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Transações e ACID</h1>
-            <h2>Garantindo a Integridade dos Dados</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=O+Guardião+dos+Dados" alt="Transações" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Simulação de Cenários de Erro)</p>
-            </div>
+            <p>Garantindo a consistência dos dados</p>
+            <img src="https://placehold.co/800x300?text=Transacoes+ACID" alt="Transações" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Que é uma Transação? -->
+        <!-- Slide 2: O que é uma Transação? -->
         <div class="slide">
-            <h2>O Que é uma Transação?</h2>
-            <p>Uma transação é um conjunto de operações SQL que deve ser executado como se fosse <strong>uma única operação</strong>.</p>
-            <p><strong>Lema:</strong> "Um por todos, todos por um". Ou tudo dá certo, ou nada acontece.</p>
-            
-            <div class="concept-card">
-                <strong>Exemplo Clássico: Transferência Bancária</strong><br>
-                1. Tirar R$ 100 da conta A.<br>
-                2. Colocar R$ 100 na conta B.
-            </div>
-            <p style="margin-top: 10px;">Se o sistema travar entre o passo 1 e 2, o dinheiro some? <strong>Não se usarmos Transações!</strong></p>
+            <h2>O que é uma Transação?</h2>
+            <p>É uma sequência de operações (inserts, updates, deletes) que deve ser tratada como um bloco único.</p>
+            <img src="https://placehold.co/800x200?text=Bloco+Unico+de+Execucao" alt="Bloco Único" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p><strong>Regra de Ouro:</strong> Ou TUDO acontece com sucesso, ou NADA acontece (All or Nothing).</p>
         </div>
 
-        <!-- Slide 3: Os Comandos Mágicos -->
+        <!-- Slide 3: O Exemplo Clássico -->
         <div class="slide">
-            <h2>Controlando a Transação</h2>
-            <div class="code-block">
-<span class="sql-keyword">START TRANSACTION</span>; <span class="sql-comment">-- Começa a gravar "a lápis"</span>
-
-<span class="sql-keyword">UPDATE</span> contas <span class="sql-keyword">SET</span> saldo = saldo - 100 <span class="sql-keyword">WHERE</span> id = 1;
-<span class="sql-keyword">UPDATE</span> contas <span class="sql-keyword">SET</span> saldo = saldo + 100 <span class="sql-keyword">WHERE</span> id = 2;
-
-<span class="sql-comment">-- Se tudo correu bem:</span>
-<span class="sql-keyword">COMMIT</span>; <span class="sql-comment">-- Grava "a caneta" (Definitivo)</span>
-
-<span class="sql-comment">-- Se deu erro no meio:</span>
-<span class="sql-keyword">ROLLBACK</span>; <span class="sql-comment">-- Apaga o que foi feito a lápis e volta como era antes</span>
-            </div>
+            <h2>O Exemplo Clássico: Transferência Bancária</h2>
+            <p>João transfere R$ 100 para Maria.</p>
+            <ol>
+                <li>Subtrair 100 da conta de João.</li>
+                <li>Somar 100 na conta de Maria.</li>
+            </ol>
+            <p style="color: red;">E se a luz acabar depois do passo 1 e antes do passo 2? O dinheiro some?</p>
+            <p>Com transações, o passo 1 é desfeito automaticamente!</p>
         </div>
 
-        <!-- Slide 4: ACID - A Alma do Negócio -->
+        <!-- Slide 4: ACID -->
         <div class="slide">
-            <h2>As 4 Leis: ACID</h2>
-            <p>Para um banco ser confiável, ele deve respeitar o ACID:</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>A - Atomicidade</h3>
-                    <p>Indivisível. Tudo ou nada. Não existe "meia transação".</p>
-                </div>
-                <div class="grid-item">
-                    <h3>C - Consistência</h3>
-                    <p>O banco não quebra regras (constraints) durante a transação. O saldo não pode ficar negativo se houver regra.</p>
-                </div>
-                <div class="grid-item">
-                    <h3>I - Isolamento</h3>
-                    <p>O que acontece em Vegas, fica em Vegas. Uma transação não vê os dados "sujos" de outra que ainda não terminou.</p>
-                </div>
-                <div class="grid-item">
-                    <h3>D - Durabilidade</h3>
-                    <p>Confirmou (Commit)? Está salvo no HD. Pode puxar o cabo da tomada que o dado estará lá na volta.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: Cenário de Erro (Rollback) -->
-        <div class="slide">
-            <h2>O Poder do ROLLBACK</h2>
-            <p>Imagine um sistema de E-commerce:</p>
-            <div class="timeline">
-                <div class="timeline-step">
-                    <div class="step-number">1</div>
-                    <div>Criar Pedido (INSERT) -> OK</div>
-                </div>
-                <div class="timeline-step">
-                    <div class="step-number">2</div>
-                    <div>Baixar Estoque (UPDATE) -> OK</div>
-                </div>
-                <div class="timeline-step">
-                    <div class="step-number">3</div>
-                    <div>Cobrar Cartão -> <strong>ERRO: Cartão Recusado!</strong></div>
-                </div>
-            </div>
-            <p style="margin-top: 20px; color: var(--senai-red); font-weight: bold;">Solução:</p>
-            <p>O sistema captura o erro e executa <code>ROLLBACK</code>. O Pedido some e o Estoque volta ao normal, como se nada tivesse acontecido.</p>
-        </div>
-
-        <!-- Slide 6: Concorrência (Isolamento) -->
-        <div class="slide">
-            <h2>O Problema da Concorrência</h2>
-            <p>Dois usuários tentam comprar o ÚLTIMO ingresso do show ao mesmo tempo.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Usuário A</h3>
-                    <p>Lê estoque: 1</p>
-                    <p>Compra...</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Usuário B</h3>
-                    <p>Lê estoque: 1 (Antes do A terminar)</p>
-                    <p>Compra...</p>
-                </div>
-            </div>
-            <p><strong>Resultado sem Isolamento:</strong> Venda Dupla (Estoque -1). O banco precisa bloquear (Lock) o registro para o Usuário B esperar o A terminar.</p>
-        </div>
-
-        <!-- Slide 7: Níveis de Isolamento (Curiosidade) -->
-        <div class="slide">
-            <h2>Níveis de Isolamento</h2>
-            <p>Podemos configurar o quão "paranoico" o banco é.</p>
+            <h2>Propriedades ACID</h2>
+            <img src="https://placehold.co/800x250?text=A.C.I.D." alt="ACID" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
             <ul>
-                <li><strong>Read Uncommitted:</strong> Vale-tudo. Lê dados não salvos (rápido, mas perigoso).</li>
-                <li><strong>Read Committed:</strong> Só lê dados confirmados (Padrão).</li>
-                <li><strong>Serializable:</strong> Fila indiana. Ninguém faz nada em paralelo (Lento, mas 100% seguro).</li>
+                <li><strong>A (Atomicity - Atomicidade):</strong> A transação é indivisível. (Tudo ou nada).</li>
+                <li><strong>C (Consistency - Consistência):</strong> O banco sai de um estado válido para outro estado válido.</li>
+                <li><strong>I (Isolation - Isolamento):</strong> Uma transação não pode interferir na outra enquanto não terminar.</li>
+                <li><strong>D (Durability - Durabilidade):</strong> Se confirmou (Commit), está salvo para sempre, mesmo que o servidor pegue fogo.</li>
             </ul>
         </div>
 
-        <!-- Slide 8: Atividade Prática - Parte 1 -->
+        <!-- Slide 5: Comandos de Controle -->
         <div class="slide">
-            <h2>Atividade 1: O Banqueiro (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Transferência Segura</span>
-                <p>Tabela: <code>Contas (id, titular, saldo)</code>.</p>
-                <p>Escreva o bloco de código SQL (Transaction) para transferir R$ 500,00 da conta do "Pedro" (ID 1) para a "Ana" (ID 2).</p>
-                <p>Inclua os comandos <code>START TRANSACTION</code> e <code>COMMIT</code>.</p>
+            <h2>Comandos de Controle</h2>
+            <div class="code-block">
+START TRANSACTION; -- Inicia o bloco
+
+UPDATE Contas SET Saldo = Saldo - 100 WHERE ID = 1;
+UPDATE Contas SET Saldo = Saldo + 100 WHERE ID = 2;
+
+-- Se tudo deu certo:
+COMMIT; -- Salva permanentemente
+
+-- Se algo deu errado (antes do Commit):
+ROLLBACK; -- Desfaz tudo o que foi feito desde o início da transação
             </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="START TRANSACTION;..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
         </div>
 
-        <!-- Slide 9: Atividade Prática - Parte 2 -->
+        <!-- Slide 6: Níveis de Isolamento (Avançado) -->
         <div class="slide">
-            <h2>Atividade 2: Simulando Falha (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Desfazendo a Bagunça</span>
-                <p>Imagine que você começou a deletar usuários inativos:</p>
-                <p><code>DELETE FROM usuarios WHERE ativo = 0;</code></p>
-                <p>Mas percebeu que deletou o CEO da empresa por engano!</p>
-                <p>Se você tivesse usado <code>START TRANSACTION</code> antes, qual comando salvaria seu emprego agora? Explique o que ele faz.</p>
-            </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="O comando é..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
+            <h2>Níveis de Isolamento</h2>
+            <p>Controlam como transações simultâneas enxergam os dados umas das outras.</p>
+            <ul>
+                <li><strong>Read Uncommitted:</strong> Leitura suja (vê dados não salvos). Rápido, mas perigoso.</li>
+                <li><strong>Read Committed:</strong> Só lê o que já foi "Commitado". (Padrão na maioria).</li>
+                <li><strong>Repeatable Read:</strong> Garante que se você ler a mesma linha 2 vezes, o valor será o mesmo.</li>
+                <li><strong>Serializable:</strong> Mais rigoroso. Executa um por um (lento, mas 100% seguro).</li>
+            </ul>
         </div>
 
-        <!-- Slide 10: Atividade Prática - Parte 3 -->
+        <!-- Slide 7: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade 3: Análise de ACID (40 min)</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Estudo de Caso</span>
-                <p>Um sistema de reservas de hotel permitiu que dois hóspedes reservassem o mesmo quarto 101 na mesma data.</p>
-                <p>Qual letra do ACID (A, C, I, D) falhou ou foi mal configurada nesse banco de dados? Justifique.</p>
-            </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="Foi a letra..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
+                <span class="activity-title">Engenheiro de Confiabilidade</span>
+                
+                <p><strong>Parte 1: Compra Online (40 min)</strong></p>
+                <p>Processo: 1. Criar Pedido, 2. Baixar Estoque, 3. Debitar Cartão.</p>
+                <p>Descreva o passo a passo do que acontece se o "Debitar Cartão" falhar (cartão sem limite) em um sistema COM transação. Use os termos <code>START TRANSACTION</code> e <code>ROLLBACK</code>.</p>
 
-        <!-- Slide 11: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Transações e ACID</h2>
-            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Dados+Seguros!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Agora você sabe como proteger a integridade do sistema.</p>
-            <p><strong>Próxima Aula: Segurança e Controle de Acesso (Quem pode ver o quê?).</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+                <p><strong>Parte 2: Concorrência (40 min)</strong></p>
+                <p>Dois clientes tentam comprar o <strong>último</strong> iPhone ao mesmo tempo.</p>
+                <p>Sem isolamento de transação, o que poderia acontecer? (Venda Dupla). Como o banco evita isso?</p>
+
+                <p><strong>Parte 3: Implementação (40 min)</strong></p>
+                <p>Escreva o pseudocódigo SQL para uma transferência de pontos de fidelidade entre dois usuários (User A envia 500 pontos para User B).</p>
+            </div>
+            
+            <textarea id="trans-code" class="code-input" style="height: 300px;" placeholder="Parte 1: ...&#10;Parte 2: ..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="trans-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -245,7 +117,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 11</div>
+    <div class="slide-number" id="slideNumber">1 / 7</div>
 
     <script src="assets/js/script.js"></script>
 </body>

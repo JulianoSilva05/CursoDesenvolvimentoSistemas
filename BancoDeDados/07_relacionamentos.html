@@ -5,44 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Relacionamentos e Chaves</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .relationship-diagram {
-            font-family: monospace;
-            background: #2d2d2d;
-            color: #fff;
-            padding: 15px;
-            border-radius: 5px;
-            white-space: pre-wrap;
-            margin-top: 10px;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-type { color: #d63384; font-weight: bold; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-    </style>
 </head>
 <body>
 
@@ -56,187 +18,97 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Relacionamentos e Chaves</h1>
-            <h2>PK, FK e Cardinalidade (1:1, 1:N, N:N)</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=Conectando+Tabelas" alt="Relacionamentos" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Modelagem de Cenários Complexos)</p>
-            </div>
+            <p>PK, FK e Cardinalidade (1:1, 1:N, N:N)</p>
+            <img src="https://placehold.co/800x300?text=Relacionamentos" alt="Relacionamentos" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Poder das Chaves -->
+        <!-- Slide 2: Revisitando as Chaves -->
         <div class="slide">
             <h2>Revisitando as Chaves</h2>
-            <p>Sem chaves, não há banco relacional.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Primary Key (PK)</h3>
-                    <p>Identidade única do registro. CPF, ID, Matrícula.</p>
-                    <p><em>Regra: Única e Não Nula.</em></p>
-                </div>
-                <div class="grid-item">
-                    <h3>Foreign Key (FK)</h3>
-                    <p>O elo de ligação. Aponta para a PK de outra tabela.</p>
-                    <p><em>Regra: Deve existir na tabela de origem.</em></p>
-                </div>
-            </div>
-            <div class="concept-card" style="margin-top: 15px;">
-                <strong>Chave Composta:</strong> Quando uma única coluna não basta (ex: Dia + Hora + Sala), usamos duas ou mais colunas juntas como PK.
-            </div>
+            <p><strong>Primary Key (PK):</strong> Identificador único. Ex: CPF, ID.</p>
+            <p><strong>Foreign Key (FK):</strong> Referência a uma PK de outra tabela. É o elo de ligação.</p>
+            <img src="https://placehold.co/800x200?text=PK+e+FK" alt="Chaves" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p><strong>Candidate Key:</strong> Qualquer coluna que <i>poderia</i> ser uma PK (ex: E-mail, CPF).</p>
+            <p><strong>Composite Key:</strong> Uma chave formada por duas ou mais colunas.</p>
         </div>
 
         <!-- Slide 3: Cardinalidade -->
         <div class="slide">
-            <h2>Cardinalidade: A Regra do Jogo</h2>
-            <p>Quantos "lá" se relacionam com quantos "cá"?</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <strong>1:1 (Um para Um)</strong><br>
-                    Ex: Pessoa <-> CPF.
-                </div>
-                <div class="grid-item">
-                    <strong>1:N (Um para Muitos)</strong><br>
-                    Ex: Cliente <-> Pedidos.
-                </div>
-                <div class="grid-item" style="grid-column: span 2;">
-                    <strong>N:N (Muitos para Muitos)</strong><br>
-                    Ex: Aluno <-> Disciplina.
-                </div>
-            </div>
-            <p style="margin-top: 20px;">Vamos ver como implementar cada um no SQL.</p>
+            <h2>Cardinalidade</h2>
+            <p>Define a regra numérica do relacionamento.</p>
+            <img src="https://placehold.co/800x200?text=Cardinalidade+1:N+N:N" alt="Cardinalidade" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>Perguntas a fazer:</p>
+            <ul>
+                <li>"Um registro da tabela A se relaciona com quantos da tabela B?"</li>
+                <li>"Um registro da tabela B se relaciona com quantos da tabela A?"</li>
+            </ul>
         </div>
 
-        <!-- Slide 4: Implementando 1:1 -->
+        <!-- Slide 4: Um para Um (1:1) -->
         <div class="slide">
             <h2>Um para Um (1:1)</h2>
-            <p>Cada registro da tabela A tem apenas um correspondente em B.</p>
-            <p><strong>Exemplo:</strong> Gerente e Departamento (Supondo que um gerente só gerencia 1 depto).</p>
-            
-            <div class="relationship-diagram">
-Tabela Gerentes (ID, Nome)
-Tabela Departamentos (ID, Nome, ID_Gerente UNIQUE)
-            </div>
-            <p><strong>Regra:</strong> A FK pode ficar em qualquer lado, mas deve ter a restrição <code>UNIQUE</code> para garantir que não se repita (ninguém gerencia 2 deptos).</p>
+            <p>Cada registro da tabela A tem apenas um correspondente em B, e vice-versa.</p>
+            <p><strong>Exemplo:</strong> <code>Presidente</code> e <code>País</code>.</p>
+            <ul>
+                <li>Um país tem 1 presidente.</li>
+                <li>Um presidente governa 1 país.</li>
+            </ul>
+            <p><strong>Implementação:</strong> A FK pode ficar em qualquer uma das tabelas (com restrição UNIQUE).</p>
         </div>
 
-        <!-- Slide 5: Implementando 1:N (O Clássico) -->
+        <!-- Slide 5: Um para Muitos (1:N) -->
         <div class="slide">
             <h2>Um para Muitos (1:N)</h2>
-            <p>O relacionamento mais comum do mundo.</p>
-            <p><strong>Exemplo:</strong> Cliente e Pedido.</p>
-            
-            <div class="relationship-diagram">
-Tabela Clientes (ID [PK], Nome)
-       |
-       | 1
-       |
-      / \ N
-Tabela Pedidos (ID, Data, ID_Cliente [FK])
-            </div>
-            <p class="highlight"><strong>Regra de Ouro:</strong> A FK sempre vai para o lado do "Muitos" (N).</p>
-            <p><em>Por que? Porque um pedido só tem 1 cliente (cabe na linha). Um cliente tem N pedidos (não caberia numa célula).</em></p>
+            <p>É o relacionamento mais comum.</p>
+            <p><strong>Exemplo:</strong> <code>Cliente</code> e <code>Pedido</code>.</p>
+            <ul>
+                <li>Um cliente faz N pedidos.</li>
+                <li>Um pedido pertence a 1 cliente.</li>
+            </ul>
+            <p><strong>Implementação:</strong> A FK <strong>SEMPRE</strong> vai para o lado do "Muitos" (N). (A tabela `Pedidos` recebe o `ID_Cliente`).</p>
         </div>
 
-        <!-- Slide 6: Implementando N:N (O Desafio) -->
+        <!-- Slide 6: Muitos para Muitos (N:N) -->
         <div class="slide">
             <h2>Muitos para Muitos (N:N)</h2>
-            <p><strong>Exemplo:</strong> Aluno e Disciplina.</p>
+            <p><strong>Exemplo:</strong> <code>Aluno</code> e <code>Disciplina</code>.</p>
             <ul>
-                <li>Um aluno faz várias matérias.</li>
-                <li>Uma matéria tem vários alunos.</li>
+                <li>Um aluno cursa N disciplinas.</li>
+                <li>Uma disciplina tem N alunos.</li>
             </ul>
-            <p><strong>Problema:</strong> Se colocar FK em Aluno, ele só pode ter 1 matéria. Se colocar em Disciplina, ela só pode ter 1 aluno.</p>
+            <p><strong>Implementação:</strong> Bancos relacionais NÃO suportam N:N direto.</p>
+            <div class="note">
+                Solução: Criar uma <strong>Tabela Associativa</strong> (ou Junção) intermediária. Ex: `Matriculas` (ID_Aluno, ID_Disciplina).
+            </div>
+        </div>
+
+        <!-- Slide 7: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (2 Horas)</h2>
+            <div class="activity-box">
+                <span class="activity-title">Modelando Cenários Complexos</span>
+                <p><strong>Parte 1: Sistema de Eventos (40 min)</strong></p>
+                <p>Cenário: Temos <code>Palestrantes</code> e <code>Eventos</code>. Um palestrante pode falar em vários eventos, e um evento tem vários palestrantes. Desenhe as tabelas e a tabela associativa necessária.</p>
+
+                <p><strong>Parte 2: Rede Social (40 min)</strong></p>
+                <p>Cenário: <code>Usuários</code> podem seguir outros <code>Usuários</code>. Como modelar esse relacionamento "Auto-Relacionamento" N:N? (Tabela Seguidores?).</p>
+
+                <p><strong>Parte 3: Hospital (40 min)</strong></p>
+                <p>Cenário: <code>Médicos</code> atendem <code>Pacientes</code> e prescrevem <code>Medicamentos</code>.
+                <ul>
+                    <li>Médico atende N Pacientes.</li>
+                    <li>Paciente é atendido por N Médicos.</li>
+                    <li>Na consulta, são prescritos N Medicamentos.</li>
+                </ul>
+                <p>Defina as tabelas e chaves estrangeiras.</p>
+            </div>
             
-            <div class="concept-card">
-                <strong>Solução: Tabela Associativa (Pivot Table)</strong><br>
-                Criamos uma terceira tabela só para guardar os pares.
-            </div>
-        </div>
-
-        <!-- Slide 7: A Tabela Associativa -->
-        <div class="slide">
-            <h2>A Tabela Associativa na Prática</h2>
-            <div class="relationship-diagram">
-Tabela Alunos (ID, Nome)
-      |
-      | 1
-     / \ N
-Tabela Matriculas (ID_Aluno [FK], ID_Disciplina [FK])
-     \ / N
-      |
-      | 1
-Tabela Disciplinas (ID, Nome)
-            </div>
-            <div class="code-block" style="font-size: 0.9rem;">
-<span class="sql-keyword">CREATE TABLE</span> matriculas (
-    id_aluno <span class="sql-type">INT</span>,
-    id_disciplina <span class="sql-type">INT</span>,
-    <span class="sql-keyword">PRIMARY KEY</span> (id_aluno, id_disciplina),
-    <span class="sql-keyword">FOREIGN KEY</span> (id_aluno) <span class="sql-keyword">REFERENCES</span> alunos(id),
-    <span class="sql-keyword">FOREIGN KEY</span> (id_disciplina) <span class="sql-keyword">REFERENCES</span> disciplinas(id)
-);
-            </div>
-        </div>
-
-        <!-- Slide 8: Atividade Prática - Parte 1 -->
-        <div class="slide">
-            <h2>Atividade 1: Eventos e Palestrantes (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Modelagem N:N</span>
-                <p>Cenário: Uma conferência de tecnologia.</p>
-                <ul>
-                    <li>Temos a tabela <code>Palestrantes</code> (id, nome).</li>
-                    <li>Temos a tabela <code>Eventos</code> (id, tema, data).</li>
-                    <li>Um palestrante pode falar em vários eventos. Um evento pode ter vários palestrantes (painel).</li>
-                </ul>
-                <p><strong>Desenhe (escreva o SQL) das 3 tabelas necessárias.</strong></p>
-            </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="CREATE TABLE Palestrantes...&#10;CREATE TABLE Eventos...&#10;CREATE TABLE ??? ..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
-        </div>
-
-        <!-- Slide 9: Atividade Prática - Parte 2 -->
-        <div class="slide">
-            <h2>Atividade 2: Auto-Relacionamento (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Rede Social (Seguidores)</span>
-                <p>No Instagram, um Usuário segue outro Usuário. É um relacionamento N:N de uma tabela com ela mesma!</p>
-                <p>Tabela: <code>Usuarios (id, @arroba)</code>.</p>
-                <p>Como criar a tabela <code>Seguidores</code>? Quem é o seguidor e quem é o seguido?</p>
-                <p><strong>Escreva o SQL da tabela de Seguidores com as FKs corretas.</strong></p>
-            </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="CREATE TABLE Seguidores..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
-        </div>
-
-        <!-- Slide 10: Atividade Prática - Parte 3 -->
-        <div class="slide">
-            <h2>Atividade 3: O Hospital (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Sistema Médico Complexo</span>
-                <p>Modele o seguinte cenário:</p>
-                <ul>
-                    <li><code>Médicos</code> atendem <code>Pacientes</code> (N:N, pois gera uma Consulta).</li>
-                    <li>Na <code>Consulta</code> (Tabela Associativa), o médico prescreve <code>Medicamentos</code>.</li>
-                    <li>Uma consulta pode ter vários medicamentos, e um medicamento pode estar em várias consultas (Outro N:N).</li>
-                </ul>
-                <p><strong>Liste todas as tabelas e FKs envolvidas.</strong></p>
-            </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="Sua modelagem..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
-
-        <!-- Slide 11: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Relacionamentos e Chaves</h2>
-            <img src="https://placehold.co/800x300/004587/FFFFFF?text=Tudo+Conectado!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Agora seu banco não é mais um monte de tabelas soltas.</p>
-            <p><strong>Próxima Aula: Dominando JOINs (Consultando essas ligações).</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            <textarea id="rel-code" class="code-input" style="height: 300px;" placeholder="Responda aqui..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="rel-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -247,7 +119,7 @@ Tabela Disciplinas (ID, Nome)
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 11</div>
+    <div class="slide-number" id="slideNumber">1 / 7</div>
 
     <script src="assets/js/script.js"></script>
 </body>

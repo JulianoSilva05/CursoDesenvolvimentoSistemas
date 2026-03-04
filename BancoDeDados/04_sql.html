@@ -5,45 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fundamentos de SQL</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <style>
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-top: 20px;
-            max-width: 900px;
-        }
-        .grid-item {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .concept-card {
-            border-left: 5px solid var(--senai-blue);
-            padding: 15px;
-            background: #eef;
-            margin-bottom: 15px;
-            border-radius: 0 8px 8px 0;
-        }
-        .danger-zone {
-            border: 2px solid var(--senai-red);
-            background-color: #ffe6e6;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-        .sql-keyword { color: #007bff; font-weight: bold; }
-        .sql-string { color: #28a745; }
-        .sql-comment { color: #6c757d; font-style: italic; }
-        
-        .slide img {
-            max-height: 300px;
-            object-fit: contain;
-        }
-    </style>
 </head>
 <body>
 
@@ -57,278 +18,139 @@
         <!-- Slide 1: Capa -->
         <div class="slide active">
             <h1>Fundamentos de SQL</h1>
-            <h2>Manipulando Dados (DML)</h2>
-            <img src="https://placehold.co/800x350/004587/FFFFFF?text=SELECT+*+FROM+Conhecimento" alt="Capa SQL" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
-            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Total:</strong> 4 Horas</p>
-                <p>2h Teoria + 2h Prática (Consultas e Operações)</p>
-            </div>
+            <p>DML - Data Manipulation Language</p>
+            <img src="https://placehold.co/800x300?text=SQL+Basico" alt="SQL Básico" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <p style="margin-top: 50px; font-style: italic;">Curso de Desenvolvimento de Sistemas - SENAI</p>
+            <p style="font-size: 1rem; margin-top: 20px;">Duração estimada: 4 horas (2h Teoria + 2h Prática)</p>
         </div>
 
-        <!-- Slide 2: O Que é DML? -->
+        <!-- Slide 2: O que é SQL? -->
         <div class="slide">
-            <h2>DML - Data Manipulation Language</h2>
-            <p>São os comandos usados para interagir com os DADOS dentro das tabelas, não com a estrutura (DDL).</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>CRUD Básico</h3>
-                    <ul>
-                        <li><strong>C</strong>reate -> <span class="sql-keyword">INSERT</span></li>
-                        <li><strong>R</strong>ead -> <span class="sql-keyword">SELECT</span></li>
-                        <li><strong>U</strong>pdate -> <span class="sql-keyword">UPDATE</span></li>
-                        <li><strong>D</strong>elete -> <span class="sql-keyword">DELETE</span></li>
-                    </ul>
-                </div>
-                <div class="grid-item">
-                    <h3>Anatomia de uma Tabela</h3>
-                    <p>Imagine uma planilha Excel:</p>
-                    <p><strong>Colunas:</strong> Campos (Nome, Idade).</p>
-                    <p><strong>Linhas:</strong> Registros (João, 25).</p>
-                </div>
-            </div>
+            <h2>O que é SQL?</h2>
+            <p><strong>SQL (Structured Query Language)</strong> é a linguagem padrão para interagir com bancos de dados relacionais.</p>
+            <img src="https://placehold.co/800x200?text=Comandos+SQL" alt="Comandos SQL" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            <p>Foco de hoje: <strong>DML (Data Manipulation Language)</strong>.</p>
+            <ul>
+                <li><strong>SELECT:</strong> Ler dados.</li>
+                <li><strong>INSERT:</strong> Criar dados.</li>
+                <li><strong>UPDATE:</strong> Atualizar dados.</li>
+                <li><strong>DELETE:</strong> Apagar dados.</li>
+            </ul>
         </div>
 
-        <!-- Slide 3: SELECT (Leitura) -->
+        <!-- Slide 3: INSERT -->
         <div class="slide">
-            <h2>SELECT: A Arte de Perguntar</h2>
-            <p>O comando mais usado. Serve para recuperar dados.</p>
-            
+            <h2>INSERT INTO</h2>
+            <p>Adiciona novos registros.</p>
             <div class="code-block">
-<span class="sql-comment">-- Traz TODAS as colunas (Cuidado com performance!)</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes;
-
-<span class="sql-comment">-- Traz apenas colunas específicas (Recomendado)</span>
-<span class="sql-keyword">SELECT</span> nome, email <span class="sql-keyword">FROM</span> clientes;
-
-<span class="sql-comment">-- Renomeando a coluna na saída (Alias)</span>
-<span class="sql-keyword">SELECT</span> nome <span class="sql-keyword">AS</span> 'Nome do Cliente', email <span class="sql-keyword">FROM</span> clientes;
+INSERT INTO Clientes (Nome, Email, Idade) 
+VALUES ('João Silva', 'joao@email.com', 30);
+            </div>
+            <div class="note">
+                Sempre liste as colunas para evitar erros futuros!
             </div>
         </div>
 
-        <!-- Slide 4: WHERE (Filtrando) -->
+        <!-- Slide 4: SELECT -->
         <div class="slide">
-            <h2>WHERE: Filtrando Resultados</h2>
-            <p>Sem o WHERE, o banco traz tudo. Use operadores lógicos.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Operadores Básicos</h3>
-                    <ul>
-                        <li><code>=</code> Igual</li>
-                        <li><code>&lt;&gt;</code> Diferente (ou <code>!=</code>)</li>
-                        <li><code>&gt;</code> Maior</li>
-                        <li><code>&lt;</code> Menor</li>
-                        <li><code>&gt;=</code> Maior ou Igual</li>
-                    </ul>
-                </div>
-                <div class="grid-item">
-                    <h3>Exemplos</h3>
-                    <div class="code-block" style="font-size: 0.9rem; margin-top: 0;">
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> produtos 
-<span class="sql-keyword">WHERE</span> preco &gt; 100;
-
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> alunos 
-<span class="sql-keyword">WHERE</span> turma = <span class="sql-string">'1A'</span>;
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 5: Operadores Lógicos (AND, OR, NOT) -->
-        <div class="slide">
-            <h2>Lógica Booleana: AND, OR, NOT</h2>
-            <p>Combinando múltiplas condições.</p>
-            
+            <h2>SELECT (O Coração do SQL)</h2>
+            <p>Recupera dados de uma ou mais tabelas.</p>
             <div class="code-block">
-<span class="sql-comment">-- E (AND): As duas condições devem ser verdadeiras</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> funcionarios 
-<span class="sql-keyword">WHERE</span> setor = <span class="sql-string">'TI'</span> <span class="sql-keyword">AND</span> salario > 5000;
+-- Selecionar tudo
+SELECT * FROM Clientes;
 
-<span class="sql-comment">-- OU (OR): Pelo menos uma deve ser verdadeira</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> produtos 
-<span class="sql-keyword">WHERE</span> cor = <span class="sql-string">'Azul'</span> <span class="sql-keyword">OR</span> cor = <span class="sql-string">'Vermelho'</span>;
-
-<span class="sql-comment">-- NÃO (NOT): Inverte a condição</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes 
-<span class="sql-keyword">WHERE</span> <span class="sql-keyword">NOT</span> cidade = <span class="sql-string">'São Paulo'</span>;
+-- Selecionar colunas específicas
+SELECT Nome, Email FROM Clientes;
             </div>
         </div>
 
-        <!-- Slide 6: INSERT (Criando) -->
+        <!-- Slide 5: WHERE -->
         <div class="slide">
-            <h2>INSERT: Adicionando Dados</h2>
-            <p>Insere novas linhas na tabela.</p>
-            
+            <h2>WHERE (O Filtro)</h2>
+            <p>Essencial para não trazer (ou alterar) dados indesejados.</p>
             <div class="code-block">
-<span class="sql-comment">-- Sintaxe Completa (Mais segura)</span>
-<span class="sql-keyword">INSERT INTO</span> clientes (id, nome, email) 
-<span class="sql-keyword">VALUES</span> (1, <span class="sql-string">'Ana Silva'</span>, <span class="sql-string">'ana@email.com'</span>);
-
-<span class="sql-comment">-- Inserindo Múltiplos</span>
-<span class="sql-keyword">INSERT INTO</span> categorias (nome) 
-<span class="sql-keyword">VALUES</span> (<span class="sql-string">'Eletrônicos'</span>), (<span class="sql-string">'Livros'</span>), (<span class="sql-string">'Roupas'</span>);
-            </div>
-            <div class="concept-card">
-                <strong>Dica:</strong> Se a coluna for <code>AUTO_INCREMENT</code> (como ID), você não precisa (e nem deve) passar o valor dela no INSERT.
+SELECT * FROM Clientes WHERE Idade > 18;
+SELECT * FROM Clientes WHERE Cidade = 'São Paulo' AND Ativo = TRUE;
             </div>
         </div>
 
-        <!-- Slide 7: UPDATE (Atualizando - PERIGO!) -->
+        <!-- Slide 6: ORDER BY -->
         <div class="slide">
-            <h2>UPDATE: Atualizando Dados</h2>
-            <p>Modifica registros existentes.</p>
-            
+            <h2>ORDER BY</h2>
+            <p>Organiza a bagunça.</p>
             <div class="code-block">
-<span class="sql-keyword">UPDATE</span> clientes 
-<span class="sql-keyword">SET</span> email = <span class="sql-string">'novo@email.com'</span>, telefone = <span class="sql-string">'9999-0000'</span>
-<span class="sql-keyword">WHERE</span> id = 10;
-            </div>
-            
-            <div class="danger-zone">
-                ⚠️ ATENÇÃO MÁXIMA!<br>
-                Se você esquecer o <code>WHERE</code>, vai atualizar TODOS os registros da tabela.<br>
-                Ex: Todos os clientes passarão a ter o mesmo email. Isso causa demissão!
+SELECT * FROM Produtos ORDER BY Preco ASC; -- Menor pro maior
+SELECT * FROM Produtos ORDER BY DataCadastro DESC; -- Mais recente primeiro
             </div>
         </div>
 
-        <!-- Slide 8: DELETE (Apagando - PERIGO!) -->
+        <!-- Slide 7: UPDATE -->
         <div class="slide">
-            <h2>DELETE: Removendo Dados</h2>
-            <p>Apaga linhas da tabela.</p>
-            
+            <h2>UPDATE</h2>
+            <p>Atualiza registros.</p>
             <div class="code-block">
-<span class="sql-keyword">DELETE FROM</span> clientes 
-<span class="sql-keyword">WHERE</span> id = 5;
+UPDATE Clientes 
+SET Email = 'novo@email.com', Telefone = '9999-8888'
+WHERE ID = 10;
             </div>
-            
-            <div class="danger-zone">
-                ⚠️ PERIGO!<br>
-                <code>DELETE FROM clientes;</code> (sem WHERE) apaga TODOS os clientes.<br>
-                Sempre faça um <code>SELECT</code> com o mesmo <code>WHERE</code> antes para ter certeza do que está apagando.
+            <div class="note" style="color: red; border-color: red;">
+                <strong>SEM WHERE = DEMISSÃO!</strong> (Atualiza a tabela toda).
             </div>
         </div>
 
-        <!-- Slide 9: LIKE e Wildcards -->
+        <!-- Slide 8: DELETE -->
         <div class="slide">
-            <h2>LIKE: Buscando Padrões</h2>
-            <p>Quando você não sabe o valor exato.</p>
-            
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>Wildcards (Curingas)</h3>
-                    <ul>
-                        <li><code>%</code>: Substitui zero ou mais caracteres.</li>
-                        <li><code>_</code>: Substitui EXATAMENTE um caractere.</li>
-                    </ul>
-                </div>
-                <div class="grid-item">
-                    <div class="code-block" style="font-size: 0.9rem; margin-top: 0;">
-<span class="sql-comment">-- Começa com 'A'</span>
-<span class="sql-keyword">WHERE</span> nome <span class="sql-keyword">LIKE</span> <span class="sql-string">'A%'</span>;
-
-<span class="sql-comment">-- Termina com 'Silva'</span>
-<span class="sql-keyword">WHERE</span> nome <span class="sql-keyword">LIKE</span> <span class="sql-string">'%Silva'</span>;
-
-<span class="sql-comment">-- Contém 'Maria' em qualquer lugar</span>
-<span class="sql-keyword">WHERE</span> nome <span class="sql-keyword">LIKE</span> <span class="sql-string">'%Maria%'</span>;
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Slide 10: Ordenação e Limite -->
-        <div class="slide">
-            <h2>Organizando a Casa</h2>
-            <p>Ninguém gosta de dados bagunçados.</p>
-            
+            <h2>DELETE</h2>
+            <p>Remove registros.</p>
             <div class="code-block">
-<span class="sql-comment">-- ORDER BY: Ordena (Padrão ASC - Crescente)</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> produtos 
-<span class="sql-keyword">ORDER BY</span> preco <span class="sql-keyword">DESC</span>; <span class="sql-comment">-- Do maior para o menor</span>
-
-<span class="sql-comment">-- LIMIT (MySQL/Postgres) ou TOP (SQL Server): Limita a quantidade</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> logs 
-<span class="sql-keyword">ORDER BY</span> data_hora <span class="sql-keyword">DESC</span> 
-<span class="sql-keyword">LIMIT</span> 10; <span class="sql-comment">-- Traz apenas os 10 últimos</span>
+DELETE FROM Clientes WHERE ID = 5;
+            </div>
+            <div class="note" style="color: red; border-color: red;">
+                <strong>SEM WHERE = DEMISSÃO!</strong> (Apaga a tabela toda).
             </div>
         </div>
 
-        <!-- Slide 11: O Perigo do NULL -->
+        <!-- Slide 9: LIKE -->
         <div class="slide">
-            <h2>Lidando com NULL</h2>
-            <p>NULL não é zero, nem string vazia. NULL é "ausência de valor" ou "desconhecido".</p>
-            <p><strong>Regra de Ouro:</strong> Nunca use <code>= NULL</code>. Use <code>IS NULL</code>.</p>
-            
+            <h2>LIKE (Busca de Texto)</h2>
+            <ul>
+                <li><code>%</code>: Qualquer coisa.</li>
+                <li><code>_</code>: Um caractere.</li>
+            </ul>
             <div class="code-block">
-<span class="sql-comment">-- ERRADO (Não retorna nada)</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes <span class="sql-keyword">WHERE</span> telefone = <span class="sql-keyword">NULL</span>;
-
-<span class="sql-comment">-- CORRETO</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes <span class="sql-keyword">WHERE</span> telefone <span class="sql-keyword">IS NULL</span>;
-
-<span class="sql-comment">-- Negativa</span>
-<span class="sql-keyword">SELECT</span> * <span class="sql-keyword">FROM</span> clientes <span class="sql-keyword">WHERE</span> telefone <span class="sql-keyword">IS NOT NULL</span>;
+SELECT * FROM Clientes WHERE Nome LIKE 'A%'; -- Começa com A
+SELECT * FROM Clientes WHERE Email LIKE '%@gmail.com'; -- Termina com gmail
             </div>
         </div>
 
-        <!-- Slide 12: Atividade Prática - Parte 1 -->
+        <!-- Slide 10: Atividade Prática -->
         <div class="slide">
-            <h2>Atividade 1: Inserção e Leitura (40 min)</h2>
+            <h2>Atividade Prática (2 Horas)</h2>
             <div class="activity-box">
-                <span class="activity-title">Loja de Games</span>
-                <p>Considere a tabela: <code>Jogos (id, titulo, console, preco, ano)</code>.</p>
+                <span class="activity-title">Gerenciando uma Locadora</span>
+                <p>Considere a tabela <code>Filmes</code> (ID, Titulo, Genero, Ano, PrecoAluguel, Disponivel).</p>
+                
+                <p><strong>Parte 1: Inserção (40 min)</strong></p>
+                <p>Escreva os comandos para inserir 5 filmes variados (Ação, Comédia, Terror).</p>
+
+                <p><strong>Parte 2: Consultas (40 min)</strong></p>
                 <ol>
-                    <li>Escreva o comando para inserir 3 jogos diferentes (ex: Mario, Zelda, Halo).</li>
-                    <li>Escreva o comando para listar APENAS o <code>titulo</code> e o <code>preco</code> de todos os jogos.</li>
+                    <li>Listar todos os filmes de 'Comédia'.</li>
+                    <li>Listar filmes lançados após 2020.</li>
+                    <li>Listar filmes com preço menor que 10.00, ordenados pelo título.</li>
+                </ol>
+
+                <p><strong>Parte 3: Alteração e Remoção (40 min)</strong></p>
+                <ol>
+                    <li>Aumentar o preço de todos os filmes de 'Ação' em 10%.</li>
+                    <li>Marcar como indisponível (Disponivel = FALSE) o filme de ID 3.</li>
+                    <li>Deleter todos os filmes anteriores a 1990.</li>
                 </ol>
             </div>
-            <textarea id="resp-parte1" class="code-input" placeholder="-- Seus comandos aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
-        </div>
-
-        <!-- Slide 13: Atividade Prática - Parte 2 -->
-        <div class="slide">
-            <h2>Atividade 2: Filtros Avançados (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Detetive de Dados</span>
-                <p>Usando a mesma tabela de Jogos, escreva as consultas:</p>
-                <ol>
-                    <li>Listar jogos que custam MAIS de 100 reais E sejam do console 'PlayStation'.</li>
-                    <li>Listar jogos que tenham 'Super' no nome (Use LIKE).</li>
-                    <li>Listar os 5 jogos mais caros da loja (ORDER BY + LIMIT).</li>
-                </ol>
-            </div>
-            <textarea id="resp-parte2" class="code-input" placeholder="-- Seus comandos aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
-        </div>
-
-        <!-- Slide 14: Atividade Prática - Parte 3 -->
-        <div class="slide">
-            <h2>Atividade 3: Modificação Segura (40 min)</h2>
-            <div class="activity-box">
-                <span class="activity-title">Manutenção do Sistema</span>
-                <ol>
-                    <li>Escreva um comando para dar 10% de desconto (multiplicar preco por 0.9) em todos os jogos anteriores ao ano 2020.</li>
-                    <li>Escreva um comando para APAGAR todos os jogos onde o preço seja NULL (erro de cadastro).</li>
-                </ol>
-            </div>
-            <div class="danger-zone" style="font-size: 0.9rem; padding: 10px;">
-                Lembre-se do WHERE!
-            </div>
-            <textarea id="resp-parte3" class="code-input" placeholder="-- Seus comandos aqui..."></textarea>
-            <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
-        </div>
-
-        <!-- Slide 15: Encerramento -->
-        <div class="slide">
-            <h1>Módulo Concluído!</h1>
-            <h2>Fundamentos de SQL</h2>
-            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Level+Up+no+SQL!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
-            <p style="margin-top: 30px;">Agora você sabe manipular os dados. O próximo passo é aprender a criar e alterar a ESTRUTURA das tabelas (DDL).</p>
-            <p><strong>Próxima Aula: DDL (CREATE, ALTER, DROP).</strong></p>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            <textarea id="sql-code" class="code-input" style="height: 300px;" placeholder="-- Parte 1: Inserção...&#10;INSERT INTO..."></textarea>
+            <button class="send-btn send-email-btn" data-input-id="sql-code">
+                📧 Enviar Resposta Completa
+            </button>
         </div>
 
     </div>
@@ -339,7 +161,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 15</div>
+    <div class="slide-number" id="slideNumber">1 / 10</div>
 
     <script src="assets/js/script.js"></script>
 </body>
