@@ -17,10 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Email Sending Logic
     initEmailSender();
 
-    // 5. Maximize Textarea Logic (Docked Mode)
-    initMaximizeTextarea();
-
-    // 6. Finish Lesson Logic
+    // 5. Finish Lesson Logic (Wait for DOM to load potentially dynamic buttons)
     initFinishButton();
     
     // 7. Time Tracking
@@ -260,42 +257,15 @@ function initSlideshow() {
         }
     }
 
-    // Check and Enforce Fullscreen on Navigation
-    function checkAndEnforceFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log("Fullscreen request failed:", err);
-            });
-        }
-    }
+    btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
+    btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
 
-    btnPrev.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide - 1);
-    });
-    
-    btnNext.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide + 1);
-    });
-
-    // Keyboard Navigation (Improved to respect textarea focus)
     document.addEventListener('keydown', (e) => {
-        // Do not navigate if user is typing in a textarea or input
-        if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') {
-            return;
-        }
-
-        if (e.key === 'ArrowRight' || e.key === 'Space') {
-            checkAndEnforceFullscreen();
-            showSlide(currentSlide + 1);
-        }
-        else if (e.key === 'ArrowLeft') {
-            checkAndEnforceFullscreen();
-            showSlide(currentSlide - 1);
-        }
+        if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
+        else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
     });
 
+    // Initialize
     showSlide(0);
 }
 
@@ -361,145 +331,6 @@ function initEmailSender() {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
-        });
-    });
-}
-
-function initMaximizeTextarea() {
-    const textareas = document.querySelectorAll('textarea.code-input');
-    
-    textareas.forEach(textarea => {
-        // Create wrapper if not exists or insert button directly
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.justifyContent = 'flex-end';
-        container.style.marginBottom = '5px';
-        
-        const maxBtn = document.createElement('button');
-        maxBtn.innerHTML = '📝 Abrir Modo Resposta (Lateral)';
-        maxBtn.style.cssText = `
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            background: #004587;
-            color: white;
-            border: none;
-            border-radius: 4px;
-        `;
-        
-        container.appendChild(maxBtn);
-        
-        // Insert container before the textarea
-        textarea.parentNode.insertBefore(container, textarea);
-        
-        // --- Logic for Docking/Undocking ---
-        let isDocked = false;
-        let placeholder = document.createElement('div'); // Keeps the space in the slide
-        
-        maxBtn.addEventListener('click', () => {
-            if (isDocked) return; // Already docked
-            isDocked = true;
-
-            // 1. Setup Placeholder
-            placeholder.style.width = textarea.offsetWidth + 'px';
-            placeholder.style.height = textarea.offsetHeight + 'px';
-            textarea.parentNode.insertBefore(placeholder, textarea);
-
-            // 2. Setup Dock Container
-            const dockContainer = document.createElement('div');
-            dockContainer.id = 'dock-container';
-            dockContainer.style.cssText = `
-                position: fixed;
-                top: 0;
-                right: 0;
-                width: 40%;
-                height: 100%;
-                background: white;
-                box-shadow: -5px 0 15px rgba(0,0,0,0.2);
-                z-index: 15000;
-                padding: 20px;
-                display: flex;
-                flex-direction: column;
-                border-left: 5px solid #004587;
-                transition: transform 0.3s ease;
-            `;
-
-            // Adjust Layout for Responsiveness (Slide Content shouldn't be covered)
-            document.body.style.transition = 'width 0.3s ease';
-            document.body.style.width = '60%';
-            
-            // Adjust Fixed Elements (Controls and Logo)
-            const controls = document.querySelector('.controls');
-            const logo = document.querySelector('.senai-logo');
-            
-            if (controls) {
-                controls.style.transition = 'left 0.3s ease';
-                controls.style.left = '30%'; // Center in the 60% area
-            }
-            if (logo) {
-                logo.style.transition = 'right 0.3s ease';
-                logo.style.right = '42%'; // Move to left of dock
-            }
-
-            // Header for Dock
-            const dockHeader = document.createElement('div');
-            dockHeader.style.cssText = `
-                display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;
-            `;
-            dockHeader.innerHTML = `
-                <h3 style="margin:0; color: #004587;">Sua Resposta</h3>
-            `;
-            
-            const minBtn = document.createElement('button');
-            minBtn.innerHTML = '✖ Fechar / Minimizar';
-            minBtn.style.cssText = `
-                padding: 5px 10px; background: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;
-            `;
-
-            dockHeader.appendChild(minBtn);
-            dockContainer.appendChild(dockHeader);
-
-            // 3. Move Textarea and its original Button Container to Dock
-            // We clone the textarea to preserve value? No, moving it preserves value.
-            // We move the container (which has the "Maximize" button) + textarea?
-            // Actually, we want to hide the "Maximize" button inside the dock, or just move the textarea.
-            // Let's move the textarea.
-            dockContainer.appendChild(textarea);
-            
-            // Append Dock to Body (so it persists across slides)
-            document.body.appendChild(dockContainer);
-
-            // Adjust textarea style for dock
-            textarea.dataset.originalStyle = textarea.style.cssText;
-            textarea.style.cssText = `
-                width: 100%;
-                flex: 1;
-                resize: none;
-                font-size: 1.1rem;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-            `;
-            
-            // Focus
-            textarea.focus();
-
-            // 4. Minimize Logic
-            minBtn.addEventListener('click', () => {
-                isDocked = false;
-                // Restore Layout
-                document.body.style.width = '';
-                const controls = document.querySelector('.controls');
-                const logo = document.querySelector('.senai-logo');
-                if (controls) controls.style.left = '';
-                if (logo) logo.style.right = '';
-
-                // Move textarea back
-                textarea.style.cssText = textarea.dataset.originalStyle || '';
-                placeholder.parentNode.insertBefore(textarea, placeholder);
-                placeholder.remove();
-                dockContainer.remove();
-            });
         });
     });
 }
