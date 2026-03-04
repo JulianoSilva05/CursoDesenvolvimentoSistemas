@@ -332,15 +332,54 @@ function initEmailSender() {
                 });
 
                 if (response.ok) {
-                    alert('✅ Resposta enviada com sucesso para o professor!');
+                    // Success!
                     btn.innerHTML = '✅ Enviado!';
                     btn.style.backgroundColor = '#28a745';
+                    
+                    // Create a non-intrusive toast notification instead of alert() to prevent fullscreen exit
+                    const toast = document.createElement('div');
+                    toast.innerText = '✅ Resposta enviada com sucesso!';
+                    toast.style.cssText = `
+                        position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                        background: #28a745; color: white; padding: 15px 30px; border-radius: 50px;
+                        box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.2rem; z-index: 20000;
+                        animation: fadeInOut 3s forwards;
+                    `;
+                    document.body.appendChild(toast);
+                    
+                    // Add animation keyframes if not exists
+                    if (!document.getElementById('toast-style')) {
+                        const style = document.createElement('style');
+                        style.id = 'toast-style';
+                        style.innerHTML = `
+                            @keyframes fadeInOut {
+                                0% { opacity: 0; transform: translate(-50%, 20px); }
+                                10% { opacity: 1; transform: translate(-50%, 0); }
+                                90% { opacity: 1; transform: translate(-50%, 0); }
+                                100% { opacity: 0; transform: translate(-50%, -20px); }
+                            }
+                        `;
+                        document.head.appendChild(style);
+                    }
+                    
+                    setTimeout(() => toast.remove(), 3000);
+
                 } else {
                     throw new Error('Erro na resposta do servidor de email.');
                 }
             } catch (error) {
                 console.error(error);
-                alert('❌ Erro ao enviar. Tente novamente.');
+                // Use toast for error too
+                const toast = document.createElement('div');
+                toast.innerText = '❌ Erro ao enviar. Tente novamente.';
+                toast.style.cssText = `
+                    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+                    background: #dc3545; color: white; padding: 15px 30px; border-radius: 50px;
+                    box-shadow: 0 4px 15px rgba(0,0,0,0.3); font-size: 1.2rem; z-index: 20000;
+                `;
+                document.body.appendChild(toast);
+                setTimeout(() => toast.remove(), 3000);
+                
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
