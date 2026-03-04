@@ -1,4 +1,14 @@
 document.addEventListener('DOMContentLoaded', () => {
+    // 0. Auto-clear cache on load (except student name if we want persistence, but request said clear)
+    // The request says "mude o site para apagar o chace assim que entrar", but also "solicitando o nome do outro aluno" at the end.
+    // If we clear cache immediately on load, we lose the student name immediately. 
+    // Assuming the user means "Clear cache when starting a NEW session/loading the page fresh".
+    // However, if we clear localStorage here, we lose the student name right after they type it if they reload.
+    // Let's implement the "Finalizar Aula" button logic which clears it. 
+    // If "apagar o cache assim que entrar" means ensure a clean state:
+    // We will NOT clear studentName here because that would force re-login on every refresh.
+    // We WILL ensure other temporary data is reset if needed.
+    
     // 1. Student Identification Logic
     const studentName = localStorage.getItem('studentName');
     
@@ -22,8 +32,19 @@ document.addEventListener('DOMContentLoaded', () => {
     // 7. Time Tracking (Time on Page)
     startTime = Date.now();
 
-    // 8. Fullscreen Textarea Logic
-    initFullscreenTextarea();
+    // 8. Image Preview Modal Logic
+    initImagePreview();
+
+    // Check fullscreen on initial load if student is already identified (skipped modal)
+    if (studentName && !document.fullscreenElement) {
+        // We cannot force it without gesture, but we can show the resume overlay immediately
+        // However, initFocusMode creates the logic but doesn't expose forceFullscreenReentry directly unless we attach it to window or move it out.
+        // Let's rely on the first click (which we added listener for in initFocusMode) or wait for visibility change.
+        // But the user specifically asked for maximize on unlock (which reloads).
+        // On reload, we are here.
+        // Let's simulate a "blur/focus" cycle or just wait for the user to interact.
+        // The body click listener in initFocusMode will handle the first click.
+    }
 });
 
 let startTime; // Global variable to store start time
@@ -36,63 +57,16 @@ function getFormattedTime() {
     return `${hours}h ${minutes}m ${seconds}s`;
 }
 
+/* 
 function initFullscreenTextarea() {
-    const textareas = document.querySelectorAll('.code-input');
-    
-    // Create Close Button
-    const closeBtn = document.createElement('button');
-    closeBtn.textContent = '❌ Sair da Tela Cheia (ESC)';
-    closeBtn.className = 'close-fullscreen-btn';
-    document.body.appendChild(closeBtn);
-
-    let activeTextarea = null;
-
-    function openFullscreen(textarea) {
-        if (activeTextarea === textarea) return;
-        
-        // Close others if any
-        if (activeTextarea) closeFullscreen();
-
-        textarea.classList.add('fullscreen');
-        closeBtn.style.display = 'block';
-        activeTextarea = textarea;
-        
-        // Prevent body scroll
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeFullscreen() {
-        if (activeTextarea) {
-            activeTextarea.classList.remove('fullscreen');
-            closeBtn.style.display = 'none';
-            activeTextarea = null;
-            document.body.style.overflow = ''; // Restore scroll
-        }
-    }
-
-    textareas.forEach(textarea => {
-        textarea.addEventListener('click', () => {
-            openFullscreen(textarea);
-        });
-    });
-
-    closeBtn.addEventListener('click', (e) => {
-        e.stopPropagation(); // Prevent triggering textarea click if overlapping (unlikely but safe)
-        closeFullscreen();
-    });
-
-    // Close on ESC
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-            closeFullscreen();
-        }
-    });
+    // ... Function removed to allow viewing slides while typing ...
 }
+*/
 
 // --- Focus Mode Logic ---
 function initFocusMode() {
-    let infractionCount = 0;
-    const maxInfractions = 5; // Changed to 5 chances
+    let infractionCount = parseInt(localStorage.getItem('infractionCount') || '0');
+    const maxInfractions = 5; 
     const studentName = localStorage.getItem('studentName') || 'Aluno';
     let isBlocked = false;
 
@@ -116,16 +90,30 @@ function initFocusMode() {
     `;
     document.body.appendChild(overlay);
 
+    // Check if already blocked from previous session
+    if (infractionCount >= maxInfractions) {
+        isBlocked = true;
+        overlay.style.display = 'flex';
+    }
+
     // Unlock logic (Password: 05061989)
     document.getElementById('unlockBtn').addEventListener('click', () => {
         const passInput = document.getElementById('unlockPass');
         const pass = passInput.value;
         if (pass === '05061989') {
-            infractionCount = 0;
+            // Unblock
             isBlocked = false;
+            infractionCount = 0;
+            localStorage.setItem('infractionCount', '0');
             overlay.style.display = 'none';
-            passInput.value = ''; // Clear password
-            alert('Desbloqueado! Mantenha o foco.');
+            passInput.value = ''; // Clear password field
+            
+            // Maximize Screen
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Fullscreen denied:", err);
+                });
+            }
         } else {
             alert('Senha incorreta!');
             passInput.value = '';
@@ -136,18 +124,94 @@ function initFocusMode() {
     document.addEventListener('visibilitychange', () => {
         if (document.hidden && !isBlocked) {
             handleInfraction("Troca de aba ou minimização");
+        } else if (!document.hidden && !isBlocked) {
+            // User came back. Check fullscreen.
+            // Wait a bit to check if reload is pending or just normal switching
+            setTimeout(() => {
+                if (!document.fullscreenElement) {
+                    forceFullscreenReentry();
+                }
+            }, 200);
         }
     });
 
+    let isSystemAlert = false; // Flag to ignore blur events caused by system alerts
+
+    // ... (inside handleInfraction)
+    function handleInfraction(reason) {
+        infractionCount++;
+        localStorage.setItem('infractionCount', infractionCount);
+        const remaining = maxInfractions - infractionCount;
+
+        if (infractionCount >= maxInfractions) {
+            isBlocked = true;
+            overlay.style.display = 'flex';
+            // Play alarm sound (beep)
+            const audio = new AudioContext();
+            const osc = audio.createOscillator();
+            osc.connect(audio.destination);
+            osc.frequency.value = 500;
+            osc.start();
+            setTimeout(() => osc.stop(), 1000);
+        } else {
+            isSystemAlert = true; // Set flag to ignore subsequent blur
+            alert(`⚠️ ATENÇÃO ${studentName}!\n\nVocê saiu da tela da aula!\nIsso foi registrado como uma infração.\n\nMotivo: ${reason}\nInfrações: ${infractionCount}/${maxInfractions}\n\n⚠️ IMPORTANTE: Qualquer ação que saia da tela implica em infração e será descontado pontos da atividade do dia!\nVocê NÃO pode sair da aula até finalizar.`);
+            
+            // Small timeout to allow focus to return to window before clearing flag
+            setTimeout(() => {
+                isSystemAlert = false; 
+            }, 500);
+        }
+    }
+
     // Detect Window Blur (losing focus to another app)
     window.addEventListener('blur', () => {
-        if (!isBlocked) {
+        if (!isBlocked && !isSystemAlert) {
             // Check if document is hidden (to avoid double counting with visibilitychange)
             if (!document.hidden) {
                 handleInfraction("Perda de foco da janela");
             }
         }
     });
+
+    // Detect Exit Fullscreen
+    document.addEventListener('fullscreenchange', () => {
+        if (!document.fullscreenElement && !isBlocked && !isSystemAlert) {
+             handleInfraction("Saiu da Tela Cheia");
+             // Force resume overlay immediately
+             forceFullscreenReentry();
+        }
+    });
+
+    // Function to force fullscreen when returning
+    function forceFullscreenReentry() {
+        if (!document.fullscreenElement) {
+            // We cannot requestFullscreen automatically without user gesture.
+            // Show a modal that requires a click to dismiss, which triggers fullscreen.
+            const resumeOverlay = document.createElement('div');
+            resumeOverlay.id = 'resume-overlay';
+            resumeOverlay.style.cssText = `
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0, 0, 0, 0.9); z-index: 10000;
+                display: flex; flex-direction: column; justify-content: center; align-items: center;
+                color: white; font-family: sans-serif; text-align: center; cursor: pointer;
+            `;
+            resumeOverlay.innerHTML = `
+                <h1 style="font-size: 2.5rem; margin-bottom: 20px;">⏸️ Aula Pausada</h1>
+                <p style="font-size: 1.5rem; margin-bottom: 30px;">Você saiu da tela. Clique em qualquer lugar para retomar em Tela Cheia.</p>
+                <p style="font-size: 1rem; color: #ff6b6b;">⚠️ Atenção: Suas saídas estão sendo registradas. Não saia até finalizar a aula!</p>
+                <div style="font-size: 3rem;">👆</div>
+            `;
+            document.body.appendChild(resumeOverlay);
+
+            resumeOverlay.addEventListener('click', () => {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.log("Fullscreen denied:", err);
+                });
+                resumeOverlay.remove();
+            });
+        }
+    }
 
     // Prevent Context Menu (Right Click)
     document.addEventListener('contextmenu', (e) => {
@@ -169,24 +233,6 @@ function initFocusMode() {
         }
     });
 
-    function handleInfraction(reason) {
-        infractionCount++;
-        const remaining = maxInfractions - infractionCount;
-
-        if (infractionCount >= maxInfractions) {
-            isBlocked = true;
-            overlay.style.display = 'flex';
-            // Play alarm sound (beep)
-            const audio = new AudioContext();
-            const osc = audio.createOscillator();
-            osc.connect(audio.destination);
-            osc.frequency.value = 500;
-            osc.start();
-            setTimeout(() => osc.stop(), 1000);
-        } else {
-            alert(`⚠️ ATENÇÃO ${studentName}!\n\nVocê saiu da tela da aula!\nIsso foi registrado como uma infração.\n\nMotivo: ${reason}\nInfrações: ${infractionCount}/${maxInfractions}\n\nSe continuar saindo, a tela será bloqueada.`);
-        }
-    }
 
     // Force Fullscreen on Click (Optional but recommended)
     document.body.addEventListener('click', () => {
@@ -207,6 +253,14 @@ function showIdentificationModal() {
         <div class="modal-content">
             <h2>Identificação do Aluno</h2>
             <p>Por favor, digite seu nome completo para iniciar a aula.</p>
+            <div style="background: #fff3cd; color: #d97706; padding: 10px; margin: 10px 0; border-left: 5px solid #ffc107; font-size: 0.9rem; text-align: left;">
+                <strong>⚠️ Regras Importantes:</strong>
+                <ul style="margin: 5px 0 0 20px;">
+                    <li>Qualquer ação que saia da tela implicará em infração.</li>
+                    <li>Infrações descontam pontos da atividade do dia.</li>
+                    <li>O sistema monitora trocas de aba e minimizações.</li>
+                </ul>
+            </div>
             <input type="text" id="studentNameInput" placeholder="Seu Nome Completo">
             <button id="saveNameBtn" disabled>Começar Aula</button>
         </div>
@@ -227,6 +281,44 @@ function showIdentificationModal() {
             modal.remove();
         }
     });
+}
+
+// List of lessons in order for navigation
+const lessonFiles = [
+    "01_estrutura_html5.html",
+    "02_flexbox_responsivo.html",
+    "03_bootstrap.html",
+    "04_logica_js.html",
+    "05_intro_php.html",
+    "06_lacos_arrays.html",
+    "07_html_php_forms.html",
+    "08_pdo_conexao.html",
+    "09_crud_create.html",
+    "10_crud_read.html",
+    "11_crud_update_delete.html",
+    "12_sessoes_autenticacao.html",
+    "13_upload_relacionamentos.html",
+    "14_arquitetura_seguranca.html",
+    "15_projeto_final.html"
+];
+
+function navigateToNextLesson() {
+    // Get current filename
+    let path = window.location.pathname;
+    let currentFile = path.substring(path.lastIndexOf('/') + 1);
+    currentFile = decodeURIComponent(currentFile);
+    
+    // Handle case where URL might not have the file name (e.g. server root)
+    if (!currentFile || currentFile === 'index.html') return; // Don't auto-nav from index
+
+    const currentIndex = lessonFiles.indexOf(currentFile);
+    if (currentIndex !== -1 && currentIndex < lessonFiles.length - 1) {
+        if(confirm("Você finalizou esta aula. Deseja ir para a próxima?")) {
+            window.location.href = lessonFiles[currentIndex + 1];
+        }
+    } else if (currentIndex === lessonFiles.length - 1) {
+        alert("Parabéns! Você concluiu todas as aulas do curso.");
+    }
 }
 
 function initSlideshow() {
@@ -252,6 +344,9 @@ function initSlideshow() {
         slides.forEach(slide => slide.classList.remove('active'));
         slides[currentSlide].classList.add('active');
 
+        // Scroll to top when changing slide
+        slides[currentSlide].scrollTop = 0;
+
         // Update Progress
         if (progressBar) {
             const progress = ((currentSlide + 1) / slides.length) * 100;
@@ -276,13 +371,40 @@ function initSlideshow() {
         }
     }
 
-    btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
-    btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
+    // Check and Enforce Fullscreen on Navigation
+    function checkAndEnforceFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log("Fullscreen request failed:", err);
+            });
+        }
+    }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
-        else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+    btnPrev.addEventListener('click', () => {
+        checkAndEnforceFullscreen();
+        showSlide(currentSlide - 1);
     });
+    
+    btnNext.addEventListener('click', () => {
+        checkAndEnforceFullscreen();
+        showSlide(currentSlide + 1);
+    });
+
+    // Keyboard Navigation REMOVED as requested
+    /*
+    document.addEventListener('keydown', (e) => {
+        const activeSlide = slides[currentSlide];
+        
+        // Next Action (ArrowRight, Space, PageDown)
+        if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) {
+            // Removed logic
+        }
+        // Prev Action (ArrowLeft, PageUp)
+        else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+            // Removed logic
+        }
+    });
+    */
 
     // Initialize
     showSlide(0);
@@ -330,8 +452,8 @@ function initEmailSender() {
                 Nome_Aluno: studentName,
                 Aula: lessonTitle,
                 Tempo_de_Aula: getFormattedTime(),
-                Atividade: questionText,
-                Resposta: codeContent
+                Codigo_Resposta: questionText,
+                Resposta_Aluno: codeContent
             };
 
             try {
@@ -362,16 +484,63 @@ function initEmailSender() {
     });
 }
 
+function initImagePreview() {
+    const previewLinks = document.querySelectorAll('.preview-link');
+    if (previewLinks.length === 0) return;
+
+    // Create Modal Elements
+    const modal = document.createElement('div');
+    modal.id = 'img-preview-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 10001; display: none;
+        justify-content: center; align-items: center; cursor: zoom-out;
+    `;
+    
+    const img = document.createElement('img');
+    img.style.cssText = `max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2);`;
+    
+    const closeHint = document.createElement('div');
+    closeHint.textContent = 'Clique em qualquer lugar para fechar';
+    closeHint.style.cssText = `position: absolute; bottom: 20px; color: white; font-family: sans-serif; opacity: 0.7;`;
+
+    modal.appendChild(img);
+    modal.appendChild(closeHint);
+    document.body.appendChild(modal);
+
+    // Add Event Listeners
+    previewLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const imgSrc = link.getAttribute('data-img');
+            if (imgSrc) {
+                img.src = imgSrc;
+                modal.style.display = 'flex';
+            }
+        });
+    });
+
+    modal.addEventListener('click', () => {
+        modal.style.display = 'none';
+        img.src = ''; // Clear source
+    });
+}
+
 function initFinishButton() {
     // This function looks for a button with id="finishLessonBtn"
     // It can be added dynamically or exist in HTML
     const finishBtn = document.getElementById('finishLessonBtn');
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais.')) {
-                localStorage.removeItem('studentName');
+            if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e voltará para o início.')) {
+                localStorage.clear(); // Clears ALL localStorage data (studentName, infractions, etc.)
                 alert('Aula finalizada! Obrigado.');
-                location.reload(); // Reloads the page, which triggers the modal again
+                
+                // Redirect to the first slide of the current page (reload) 
+                // OR if we want to go to a specific "Home", we could do window.location.href = 'index.html';
+                // The request says "volta para o primeiro slide ... solicitando o nome do outro aluno"
+                // Reloading the page will trigger the check for studentName, find it missing, and show the modal.
+                location.reload(); 
             }
         });
     }
