@@ -229,6 +229,44 @@ function showIdentificationModal() {
     });
 }
 
+// List of lessons in order for navigation
+const lessonFiles = [
+    "01_estrutura_html5.html",
+    "02_flexbox_responsivo.html",
+    "03_bootstrap.html",
+    "04_logica_js.html",
+    "05_intro_php.html",
+    "06_lacos_arrays.html",
+    "07_html_php_forms.html",
+    "08_pdo_conexao.html",
+    "09_crud_create.html",
+    "10_crud_read.html",
+    "11_crud_update_delete.html",
+    "12_sessoes_autenticacao.html",
+    "13_upload_relacionamentos.html",
+    "14_arquitetura_seguranca.html",
+    "15_projeto_final.html"
+];
+
+function navigateToNextLesson() {
+    // Get current filename
+    let path = window.location.pathname;
+    let currentFile = path.substring(path.lastIndexOf('/') + 1);
+    currentFile = decodeURIComponent(currentFile);
+    
+    // Handle case where URL might not have the file name (e.g. server root)
+    if (!currentFile || currentFile === 'index.html') return; // Don't auto-nav from index
+
+    const currentIndex = lessonFiles.indexOf(currentFile);
+    if (currentIndex !== -1 && currentIndex < lessonFiles.length - 1) {
+        if(confirm("Você finalizou esta aula. Deseja ir para a próxima?")) {
+            window.location.href = lessonFiles[currentIndex + 1];
+        }
+    } else if (currentIndex === lessonFiles.length - 1) {
+        alert("Parabéns! Você concluiu todas as aulas do curso.");
+    }
+}
+
 function initSlideshow() {
     let currentSlide = 0;
     const slides = document.querySelectorAll('.slide');
@@ -251,6 +289,9 @@ function initSlideshow() {
 
         slides.forEach(slide => slide.classList.remove('active'));
         slides[currentSlide].classList.add('active');
+
+        // Scroll to top when changing slide
+        slides[currentSlide].scrollTop = 0;
 
         // Update Progress
         if (progressBar) {
@@ -279,9 +320,46 @@ function initSlideshow() {
     btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
     btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
 
+    // Keyboard Navigation for Presenters (Clickers)
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
-        else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+        const activeSlide = slides[currentSlide];
+        
+        // Next Action (ArrowRight, Space, PageDown)
+        if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) {
+            e.preventDefault(); // Take control
+            
+            // Check if we are at the bottom of the slide
+            // tolerance of 5px
+            const isAtBottom = (activeSlide.scrollTop + activeSlide.clientHeight) >= (activeSlide.scrollHeight - 5);
+            
+            if (!isAtBottom) {
+                // Scroll down (simulate reading flow)
+                // Scroll amount: 300px or roughly half screen
+                activeSlide.scrollBy({ top: 300, behavior: 'smooth' });
+            } else {
+                // We are at the bottom, move to next slide or next lesson
+                if (currentSlide < slides.length - 1) {
+                    showSlide(currentSlide + 1);
+                } else {
+                    // End of slides, go to next lesson
+                    navigateToNextLesson();
+                }
+            }
+        }
+        // Prev Action (ArrowLeft, PageUp)
+        else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
+            e.preventDefault();
+            
+            const isAtTop = activeSlide.scrollTop <= 0;
+            
+            if (!isAtTop) {
+                // Scroll up
+                activeSlide.scrollBy({ top: -300, behavior: 'smooth' });
+            } else {
+                // Move to prev slide
+                showSlide(currentSlide - 1);
+            }
+        }
     });
 
     // Initialize
