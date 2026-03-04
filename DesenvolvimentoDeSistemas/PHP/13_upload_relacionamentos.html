@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload de Arquivos e Relacionamentos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Upload de Arquivos e Relacionamentos</h1>
+            <h2>Imagens e Chaves Estrangeiras</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 13</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>Formulário Multipart:</strong> <code>enctype="multipart/form-data"</code>.</li>
+                <li><strong>$_FILES:</strong> O array de arquivos enviados.</li>
+                <li><strong>Upload:</strong> <code>move_uploaded_file()</code>. Movendo da pasta temporária para o destino.</li>
+                <li><strong>Relacionamentos SQL:</strong> Tabelas relacionadas (ex: Produtos pertencem a Categorias).</li>
+                <li><strong>JOIN:</strong> Consultando dados de múltiplas tabelas.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Upload Simples</h2>
+            <pre><code>
+// Form: &lt;input type="file" name="foto"&gt;
+
+if (isset($_FILES['foto'])) {
+    $arquivo = $_FILES['foto'];
+    $destino = 'uploads/' . $arquivo['name'];
+    
+    if (move_uploaded_file($arquivo['tmp_name'], $destino)) {
+        echo "Upload realizado!";
+    }
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um formulário simples que permite ao usuário enviar uma imagem (JPG/PNG). Salve a imagem em uma pasta "uploads" e exiba a imagem na tela após o envio.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Integre isso ao cadastro de produtos. Adicione um campo de foto. Salve o <strong>caminho</strong> da foto no banco de dados e exiba a imagem do produto na listagem (tabela).</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula13" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 13</h1>
+            <h2>Próxima Aula: Segurança e Arquitetura</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

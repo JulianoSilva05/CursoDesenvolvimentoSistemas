@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD PHP: Create</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>CRUD PHP: Create</h1>
+            <h2>Inserindo Registros</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 09</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>CRUD:</strong> Create, Read, Update, Delete.</li>
+                <li><strong>SQL INSERT:</strong> Revisão (<code>INSERT INTO tabela (col1, col2) VALUES (v1, v2)</code>).</li>
+                <li><strong>Prepared Statements:</strong> Usando placeholders (<code>:nome</code>, <code>:email</code>) para segurança.</li>
+                <li><strong>Bind Value:</strong> Vinculando os valores reais aos placeholders.</li>
+                <li><strong>Execute:</strong> Rodando a query e verificando erros.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Inserindo Usuário</h2>
+            <pre><code>
+$sql = "INSERT INTO usuarios (nome, email) VALUES (:n, :e)";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':n', $_POST['nome']);
+$stmt->bindValue(':e', $_POST['email']);
+
+if ($stmt->execute()) {
+    echo "Usuário cadastrado!";
+} else {
+    echo "Erro ao cadastrar.";
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie uma tabela <code>produtos</code> (id, nome, preco). Crie um formulário HTML e um script PHP que recebe os dados e insere um novo produto no banco usando PDO e Prepared Statements.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Antes de inserir, verifique se já existe um produto com o mesmo nome no banco. Se existir, exiba um erro: "Produto já cadastrado". Se não, insira normalmente.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula9" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 09</h1>
+            <h2>Próxima Aula: CRUD - Read</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

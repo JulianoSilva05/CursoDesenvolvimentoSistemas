@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lógica de Programação com JS</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Lógica de Programação com JS</h1>
+            <h2>DOM e Eventos</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 04</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>JavaScript no Navegador:</strong> Onde colocar o script?</li>
+                <li><strong>Lógica Básica:</strong> Variáveis (<code>let</code>, <code>const</code>), Tipos de dados, Operações matemáticas.</li>
+                <li><strong>Funções:</strong> Criando blocos de código reutilizáveis.</li>
+                <li><strong>DOM (Document Object Model):</strong> Acessando o HTML pelo JS (<code>document.querySelector</code>, <code>getElementById</code>).</li>
+                <li><strong>Eventos:</strong> Interagindo com o usuário (<code>onclick</code>, <code>addEventListener</code>).</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Interatividade</h2>
+            <pre><code>
+&lt;h1 id="titulo"&gt;Olá Mundo&lt;/h1&gt;
+&lt;button onclick="mudarTexto()"&gt;Clique&lt;/button&gt;
+
+&lt;script&gt;
+function mudarTexto() {
+    let elemento = document.querySelector("#titulo");
+    elemento.innerText = "Texto Alterado!";
+    elemento.style.color = "blue";
+}
+&lt;/script&gt;
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um <strong>Contador Simples</strong>. A tela deve mostrar um número (iniciando em 0) e ter dois botões: "Aumentar" e "Diminuir". Ao clicar, o número na tela deve atualizar.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Crie uma <strong>Calculadora de IMC</strong>. Dois campos de input (peso e altura), um botão "Calcular". Ao clicar, mostre o IMC e a classificação (ex: "Obesidade") em uma div abaixo, mudando a cor do texto conforme a gravidade.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula4" class="code-input" placeholder="Digite seu código aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 04</h1>
+            <h2>Próxima Aula: Introdução ao PHP</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

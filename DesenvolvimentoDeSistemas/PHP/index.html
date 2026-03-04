@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aulas de PHP</title>
+    <style>
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #E32119;
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .lesson-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s, border-left 0.2s;
+            border-left: 5px solid transparent;
+        }
+
+        .lesson-item:hover {
+            transform: translateX(5px);
+            border-left: 5px solid var(--senai-red);
+        }
+
+        .lesson-info h3 {
+            margin-bottom: 5px;
+            color: var(--senai-blue);
+        }
+
+        .lesson-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .btn-start {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h1>Módulo de PHP</h1>
+        <p>Desenvolvimento Web com Banco de Dados</p>
+    </header>
+
+    <main>
+        <div class="lesson-list">
+            
+            <a href="01_estrutura_html5.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 01: Estrutura HTML5 e CSS3</h3>
+                    <p>Semântica, Box Model e Introdução ao CSS.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="02_flexbox_responsivo.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 02: Flexbox e Responsividade</h3>
+                    <p>Layouts flexíveis e Mobile First.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="03_bootstrap.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 03: Bootstrap</h3>
+                    <p>Grid System, Componentes e Utilidades.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="04_logica_js.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 04: Lógica com JavaScript</h3>
+                    <p>DOM, Eventos e Interatividade.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="05_intro_php.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 05: Introdução ao PHP</h3>
+                    <p>Variáveis, Tipos e Estruturas de Controle.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="06_lacos_arrays.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 06: Laços e Arrays</h3>
+                    <p>Manipulação de dados e repetições.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="07_html_php_forms.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 07: Integração HTML e PHP</h3>
+                    <p>Formulários, GET/POST e Validação.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="08_pdo_conexao.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 08: Conexão com Banco de Dados</h3>
+                    <p>PDO, Segurança e SQL Injection.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="09_crud_create.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 09: CRUD - Create</h3>
+                    <p>Inserção de registros no banco.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="10_crud_read.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 10: CRUD - Read</h3>
+                    <p>Listagem e Consulta de dados.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="11_crud_update_delete.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 11: CRUD - Update e Delete</h3>
+                    <p>Edição e Exclusão de registros.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="12_sessoes_autenticacao.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 12: Sessões e Autenticação</h3>
+                    <p>Login, Cookies e Segurança.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="13_upload_relacionamentos.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 13: Upload e Relacionamentos</h3>
+                    <p>Imagens e Chaves Estrangeiras.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="14_arquitetura_seguranca.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 14: Arquitetura e Segurança</h3>
+                    <p>Organização de projeto e Hash de Senhas.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="15_projeto_final.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 15: Projeto Final</h3>
+                    <p>Finalização e Deploy.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 SENAI - Serviço Nacional de Aprendizagem Industrial</p>
+    </footer>
+
+</body>
+</html>

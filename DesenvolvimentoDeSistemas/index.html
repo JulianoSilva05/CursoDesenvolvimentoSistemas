@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Curso de Desenvolvimento de Sistemas - SENAI</title>
+    <title>Desenvolvimento de Aplicativos</title>
     <style>
         :root {
             --senai-blue: #004587;
@@ -40,9 +40,13 @@
             margin-bottom: 10px;
         }
 
-        header p {
-            font-size: 1.2rem;
-            opacity: 0.9;
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 20px;
         }
 
         main {
@@ -55,7 +59,7 @@
 
         .grid-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 30px;
             margin-top: 30px;
         }
@@ -106,6 +110,11 @@
         .card:hover .btn {
             background-color: #003366;
         }
+        
+        .icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
 
         footer {
             background-color: #333;
@@ -114,43 +123,49 @@
             padding: 20px;
             margin-top: auto;
         }
-        
-        .logo-placeholder {
-            font-size: 3rem;
-            color: var(--senai-red);
-            margin-bottom: 20px;
-        }
-
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Curso Técnico em Desenvolvimento de Sistemas</h1>
-        <p>Portal de Acesso às Disciplinas</p>
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h1>Desenvolvimento de Aplicativos</h1>
+        <p>Escolha a tecnologia para acessar o conteúdo</p>
     </header>
 
     <main>
         <div class="grid-container">
             
-            <!-- Card Banco de Dados -->
-            <a href="BancoDeDados/index.html" class="card">
-                <div>
-                    <div class="logo-placeholder">🗄️</div>
-                    <h2>Banco de Dados</h2>
-                    <p>Fundamentos, Modelagem, SQL e NoSQL.</p>
-                </div>
-                <span class="btn">Acessar Aulas</span>
+            <!-- PHP -->
+            <a href="PHP/index.html" class="card">
+                <div class="icon">🐘</div>
+                <h2>PHP</h2>
+                <p>Web Backend com Banco de Dados</p>
+                <span class="btn">Acessar</span>
             </a>
 
-            <!-- Card Desenvolvimento de Aplicativos -->
-            <a href="DesenvolvimentoDeSistemas/index.html" class="card">
-                <div>
-                    <div class="logo-placeholder">💻</div>
-                    <h2>Desenvolvimento de Aplicativos</h2>
-                    <p>Java, PHP, Python e Mobile.</p>
-                </div>
-                <span class="btn">Acessar Módulos</span>
+            <!-- Java -->
+            <a href="Java/index.html" class="card">
+                <div class="icon">☕</div>
+                <h2>Java</h2>
+                <p>Orientação a Objetos e Desktop</p>
+                <span class="btn">Acessar</span>
+            </a>
+
+            <!-- Python -->
+            <a href="Python/index.html" class="card">
+                <div class="icon">🐍</div>
+                <h2>Python</h2>
+                <p>Scripts e Automação</p>
+                <span class="btn">Acessar</span>
+            </a>
+
+            <!-- Mobile -->
+            <a href="Mobile/index.html" class="card">
+                <div class="icon">📱</div>
+                <h2>Mobile</h2>
+                <p>Android e Desenvolvimento Híbrido</p>
+                <span class="btn">Acessar</span>
             </a>
 
         </div>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laços de Repetição e Arrays</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Laços de Repetição e Arrays</h1>
+            <h2>Estruturas de Dados</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 06</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>Laços (Loops):</strong> Repetindo ações. <code>for</code>, <code>while</code>.</li>
+                <li><strong>Arrays:</strong> Listas de dados. Indexados (0, 1, 2...) e Associativos (chaves nomeadas).</li>
+                <li><strong>Foreach:</strong> O laço perfeito para Arrays.</li>
+                <li><strong>Funções:</strong> <code>function nome() { ... }</code>. Parâmetros e Retorno.</li>
+                <li><strong>Manipulação de Arrays:</strong> <code>count()</code>, <code>array_push()</code>, <code>implode()</code>.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Foreach</h2>
+            <pre><code>
+$produtos = [
+    ["nome" => "Notebook", "preco" => 3000],
+    ["nome" => "Mouse", "preco" => 50]
+];
+
+foreach ($produtos as $prod) {
+    echo "Produto: " . $prod['nome'] . " - R$ " . $prod['preco'];
+    echo "<br>";
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um array com nomes de 5 filmes. Use um laço <code>foreach</code> para exibir cada nome dentro de uma lista HTML (<code>&lt;ul&gt;&lt;li&gt;...</code>).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Crie uma função chamada <code>tabuada($numero)</code>. Ela deve receber um número e imprimir a tabuada dele de 1 a 10 usando um laço <code>for</code>. Chame a função para os números 5 e 9.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula6" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 06</h1>
+            <h2>Próxima Aula: Integração HTML e PHP</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

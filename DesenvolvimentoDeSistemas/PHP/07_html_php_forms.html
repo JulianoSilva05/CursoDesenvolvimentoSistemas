@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Integração HTML e PHP</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Integração HTML e PHP</h1>
+            <h2>Formulários e Validação</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 07</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>Formulários HTML:</strong> A porta de entrada de dados.</li>
+                <li><strong>Métodos HTTP:</strong> <code>GET</code> (URL, visível) vs <code>POST</code> (Body, oculto).</li>
+                <li><strong>Superglobais:</strong> <code>$_GET</code> e <code>$_POST</code>.</li>
+                <li><strong>Validação no Back-end:</strong> Nunca confie no usuário! Usando <code>empty()</code>, <code>isset()</code>, <code>filter_var()</code>.</li>
+                <li><strong>XSS Básico:</strong> Protegendo a saída com <code>htmlspecialchars()</code>.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Recebendo Dados</h2>
+            <pre><code>
+&lt;!-- index.php --&gt;
+&lt;form method="POST" action="recebe.php"&gt;
+    &lt;input type="text" name="nome"&gt;
+    &lt;button&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+
+&lt;!-- recebe.php --&gt;
+&lt;?php
+if (isset($_POST['nome'])) {
+    $nome = htmlspecialchars($_POST['nome']);
+    echo "Olá, $nome!";
+}
+?&gt;
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um formulário simples com campos para "Nome" e "Idade". Ao clicar em enviar, o script PHP deve mostrar uma mensagem: "Olá [Nome], você tem [Idade] anos.".</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Crie um formulário de "Contato" (Nome, Email, Mensagem). Valide no PHP: Todos os campos são obrigatórios e o Email deve ser válido (use <code>filter_var($email, FILTER_VALIDATE_EMAIL)</code>). Se passar, exiba "Mensagem enviada!". Se não, exiba os erros.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula7" class="code-input" placeholder="Digite seu código aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 07</h1>
+            <h2>Próxima Aula: Banco de Dados</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

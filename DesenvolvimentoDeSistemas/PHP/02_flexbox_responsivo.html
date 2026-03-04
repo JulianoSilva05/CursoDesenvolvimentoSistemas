@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flexbox e Layouts Responsivos</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Flexbox e Layouts Responsivos</h1>
+            <h2>Mobile First</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 02</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Introdução ao Flexbox</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>O que é?</h3>
+                    <p>O <strong>Flexbox</strong> (Flexible Box Layout) é um modelo de layout unidimensional projetado para distribuir espaço entre itens em uma interface e alinhavá-los de forma poderosa.</p>
+                    <p>Ele resolve problemas antigos do CSS, como centralizar elementos verticalmente ou fazer colunas terem a mesma altura.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Quando Usar?</h3>
+                    <ul style="text-align: left;">
+                        <li>✅ <strong>Menus de Navegação:</strong> Alinhar links lado a lado.</li>
+                        <li>✅ <strong>Centralização:</strong> Colocar algo exatamente no meio da tela.</li>
+                        <li>✅ <strong>Cards e Listas:</strong> Fazer itens se ajustarem ao tamanho da tela.</li>
+                        <li>❌ <strong>Layouts de Página Inteira (Complexos):</strong> Para isso, prefira o <strong>CSS Grid</strong> (que veremos depois).</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="margin-top: 20px; background: #e6fffa; padding: 15px; border-radius: 8px; border-left: 5px solid #004587;">
+                <p><strong>Analogia:</strong> Pense no Flexbox como um colar de pérolas. Você pode esticar o fio (espaçar as pérolas), empurrá-las todas para um canto ou deixá-las soltas no meio.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Guia Visual do Flexbox (CSS-Tricks)</h2>
+            <p>Usando como referência o melhor guia da internet: <a href="https://css-tricks.com/snippets/css/a-guide-to-flexbox/" target="_blank" style="color: #ff9800; font-weight: bold;">CSS-Tricks Flexbox Guide</a></p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Container (Pai)</h3>
+                    <img src="https://css-tricks.com/wp-content/uploads/2018/10/01-container.svg" alt="Flex Container" style="width: 100%; margin-bottom: 10px; background: white; padding: 5px; border-radius: 5px;">
+                    <p><strong>display: flex;</strong><br>Transforma o elemento em um container flexível. Seus filhos viram itens flex.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Direção (flex-direction)</h3>
+                    <img src="https://css-tricks.com/wp-content/uploads/2018/10/flex-direction.svg" alt="Flex Direction" style="width: 100%; margin-bottom: 10px; background: white; padding: 5px; border-radius: 5px;">
+                    <p>Define o <strong>Eixo Principal</strong>.<br>
+                    <code>row</code> (linha - padrão)<br>
+                    <code>column</code> (coluna - ideal para mobile)</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Alinhamento (A Mágica)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Justify Content (Eixo Principal)</h3>
+                    <img src="https://css-tricks.com/wp-content/uploads/2018/10/justify-content.svg" alt="Justify Content" style="width: 100%; margin-bottom: 10px; background: white; padding: 5px; border-radius: 5px;">
+                    <p>Alinha os itens horizontalmente (se estiver em row).</p>
+                    <ul style="font-size: 0.8rem; text-align: left;">
+                        <li><code>flex-start</code>: Início (Esquerda)</li>
+                        <li><code>center</code>: Centro</li>
+                        <li><code>space-between</code>: Espaço igual entre eles</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Align Items (Eixo Transversal)</h3>
+                    <img src="https://css-tricks.com/wp-content/uploads/2018/10/align-items.svg" alt="Align Items" style="width: 100%; margin-bottom: 10px; background: white; padding: 5px; border-radius: 5px;">
+                    <p>Alinha os itens verticalmente (se estiver em row).</p>
+                    <ul style="font-size: 0.8rem; text-align: left;">
+                        <li><code>stretch</code>: Estica (Padrão)</li>
+                        <li><code>center</code>: Centraliza no meio da altura</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Flex Wrap (Quebra de Linha)</h2>
+            <div style="display: flex; gap: 20px; align-items: center;">
+                <div style="flex: 1;">
+                    <p>Por padrão, o Flexbox tenta colocar tudo na mesma linha, espremendo os itens se necessário.</p>
+                    <p>O <code>flex-wrap: wrap;</code> permite que os itens "quebrem" para a linha de baixo se não houver espaço.</p>
+                    <pre style="margin-top: 10px;"><code>.galeria {
+  display: flex;
+  flex-wrap: wrap;
+}</code></pre>
+                </div>
+                <div style="flex: 1;">
+                    <img src="https://css-tricks.com/wp-content/uploads/2018/10/flex-wrap.svg" alt="Flex Wrap" style="width: 100%; background: white; padding: 10px; border-radius: 5px;">
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Como criar Links (Tag &lt;a&gt;)</h2>
+            <p>Links são a base da internet. Eles conectam páginas. A tag usada é a <code>&lt;a&gt;</code> (Anchor/Âncora).</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Estrutura Básica</h3>
+                    <pre style="background: #2d2d2d; color: white; padding: 10px; border-radius: 5px;"><code>
+&lt;a href="destino.html"&gt;Clique Aqui&lt;/a&gt;
+                    </code></pre>
+                    <p><strong>href:</strong> O endereço para onde o link vai (pode ser um site externo ou um arquivo local).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Atributos Úteis</h3>
+                    <ul>
+                        <li><code>target="_blank"</code>: Abre em nova aba.</li>
+                        <li><code>class="botao"</code>: Para estilizar como botão no CSS.</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Exemplo Visual:</strong></p>
+                    <a href="#" style="display: inline-block; padding: 10px 20px; background: #E32119; color: white; text-decoration: none; border-radius: 5px;">Sou um Link com cara de Botão</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Responsividade e Mobile First</h2>
+            <p><strong>Mobile First</strong> significa criar o site pensando primeiro na tela pequena do celular e depois ajustar para telas grandes.</p>
+            <pre><code>
+/* 1. Estilo padrão (Celular) */
+.container {
+    flex-direction: column; /* Um item embaixo do outro */
+}
+
+/* 2. Media Query (Tablet/PC - Telas acima de 768px) */
+@media (min-width: 768px) {
+    .container {
+        flex-direction: row; /* Um item ao lado do outro */
+    }
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Dica de Mestre: Usando IA (Trae)</h2>
+            <p>A Inteligência Artificial é sua co-piloto. Use o <strong>Trae</strong> para gerar ideias de CSS, mas <strong>sempre entenda o código</strong>.</p>
+            
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>✅ O que pedir (Simples)</h3>
+                    <p><em>"Trae, crie um CSS para deixar este botão com bordas arredondadas, cor azul e sombra suave quando passar o mouse."</em></p>
+                    <p>Isso ajuda você a aprender novas propriedades como <code>border-radius</code>, <code>box-shadow</code> e <code>:hover</code>.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>❌ O que evitar (Agora)</h3>
+                    <p><em>"Trae, faça o site inteiro pra mim."</em></p>
+                    <p>Se você fizer isso, não vai treinar sua lógica. Use a IA para <strong>estilizar</strong> e <strong>tirar dúvidas</strong> de sintaxe.</p>
+                </div>
+            </div>
+            <div style="background: #e6fffa; padding: 15px; border-radius: 8px; margin-top: 15px; border-left: 5px solid #004587;">
+                <p><strong>Exercício com IA:</strong> Tente pedir ao Trae: <em>"Gere um gradiente de fundo bonito usando azul e roxo para o meu body."</em> e aplique no seu código!</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um menu de navegação com 4 links. No celular (telas pequenas), os links devem ficar um abaixo do outro (coluna). No computador (telas grandes), devem ficar lado a lado (linha).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Recrie o layout de "Feed do Instagram" (Cards com foto e botões de ação). Use Flexbox para alinhar o avatar e nome no topo, e os ícones de like/comentário abaixo da foto. Deve ser totalmente responsivo.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula2" class="code-input" placeholder="Digite seu código aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 02</h1>
+            <h2>Próxima Aula: Bootstrap</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

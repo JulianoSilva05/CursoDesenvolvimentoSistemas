@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conexão com Banco de Dados</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Conexão com Banco de Dados</h1>
+            <h2>PDO e Segurança</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 08</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>Extensões PHP:</strong> MySQLi vs PDO. Por que usar PDO? (Suporte a múltiplos bancos).</li>
+                <li><strong>DSN (Data Source Name):</strong> Configurando host, dbname e charset.</li>
+                <li><strong>Conexão:</strong> Usando <code>try...catch</code> para capturar falhas.</li>
+                <li><strong>Segurança:</strong> O que é SQL Injection? Como hackers invadem sistemas mal feitos.</li>
+                <li><strong>Prepared Statements:</strong> A vacina contra SQL Injection.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Conectando</h2>
+            <pre><code>
+$host = 'localhost';
+$db   = 'escola';
+$user = 'root';
+$pass = '';
+
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$db", $user, $pass);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Conectado!";
+} catch(PDOException $e) {
+    echo "Erro de conexão: " . $e->getMessage();
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie um banco de dados chamado <code>loja_virtual</code> no MySQL (phpMyAdmin). Crie um script <code>conexao.php</code> que se conecta a ele. Se der certo, mostre "Sucesso". Se a senha estiver errada, mostre uma mensagem de erro amigável.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Implemente a conexão usando o padrão <strong>Singleton</strong> (Classe estática que retorna sempre a mesma instância da conexão), evitando abrir múltiplas conexões desnecessárias.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula8" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 08</h1>
+            <h2>Próxima Aula: CRUD - Create</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

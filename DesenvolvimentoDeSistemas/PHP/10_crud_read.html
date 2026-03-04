@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD PHP: Read</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>CRUD PHP: Read</h1>
+            <h2>Listagem de Dados</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 10</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>SQL SELECT:</strong> Revisão (<code>SELECT * FROM tabela</code>).</li>
+                <li><strong>Query vs Prepare:</strong> <code>query()</code> para consultas simples sem parâmetros.</li>
+                <li><strong>Fetch All:</strong> Trazendo todos os resultados de uma vez (<code>fetchAll</code>).</li>
+                <li><strong>Fetch Assoc:</strong> Trazendo como array associativo (nomes das colunas).</li>
+                <li><strong>Renderização:</strong> Misturando HTML e PHP para criar tabelas dinâmicas.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Listar Usuários</h2>
+            <pre><code>
+$sql = "SELECT * FROM usuarios";
+$stmt = $pdo->query($sql);
+$lista = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+foreach ($lista as $u) {
+    echo $u['nome'] . " - " . $u['email'] . "&lt;br&gt;";
+}
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie uma página <code>listar_produtos.php</code>. Conecte ao banco e exiba todos os produtos cadastrados na aula anterior dentro de uma <code>&lt;table&gt;</code> HTML bonita (use CSS/Bootstrap).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Adicione um formulário de busca no topo da página. Ao digitar um nome e filtrar, a lista deve exibir apenas os produtos que contenham aquele termo (Use <code>WHERE nome LIKE :termo</code>).</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula10" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 10</h1>
+            <h2>Próxima Aula: CRUD - Update e Delete</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estrutura HTML5 e CSS3 Essencial</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .css-type {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .css-type h4 { margin-top: 0; color: #004587; }
+        .tag-explain {
+            background: #eee;
+            padding: 5px;
+            border-radius: 3px;
+            font-family: monospace;
+            color: #d63384;
+        }
+    </style>
+</head>
+<body>
+    <!-- Logo SENAI -->
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Estrutura HTML5 e CSS3 Essencial</h1>
+            <h2>Semântica e Box Model</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 01</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria (Conceitos) + 2h Prática (Mão na Massa)</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Como Funciona a Web -->
+        <div class="slide">
+            <h2>Como Funciona a Web?</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>O Fluxo Básico</h3>
+                    <p>1. <strong>Cliente (Browser):</strong> Você digita o endereço (URL) no Chrome, Edge, etc.</p>
+                    <p>2. <strong>Servidor:</strong> Computador conectado 24h na internet que guarda os arquivos do site.</p>
+                    <p>3. <strong>Resposta:</strong> O servidor envia o código HTML, CSS e JS para o seu navegador montar a página.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Colocando no Ar (Deploy)</h3>
+                    <p>Para seu site ser visto pelo mundo, ele precisa sair do seu computador (Localhost) e ir para um Servidor de Hospedagem (Host).</p>
+                    <p>Isso é feito enviando os arquivos via <strong>FTP</strong> (File Transfer Protocol) ou <strong>Git</strong> (Versionamento).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: A Estrutura Básica Detalhada -->
+        <div class="slide">
+            <h2>A Estrutura Básica Detalhada</h2>
+            <p>Todo arquivo HTML deve seguir essa receita de bolo:</p>
+            <div style="background: #2d2d2d; color: #fff; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+                <span style="color: #888;">&lt;!-- Linha 1: Declaração do Tipo de Documento --&gt;</span><br>
+                <span style="color: #569cd6;">&lt;!DOCTYPE html&gt;</span> <span style="color: #6a9955;">// Avisa ao navegador: "Sou HTML5 moderno!"</span><br><br>
+                
+                <span style="color: #888;">&lt;!-- Linha 2: Raiz do Documento --&gt;</span><br>
+                <span style="color: #569cd6;">&lt;html lang="pt-br"&gt;</span> <span style="color: #6a9955;">// Todo o site fica aqui dentro. Define o idioma para o Google/Tradutor.</span><br><br>
+                
+                <span style="color: #888;">&lt;!-- Cabeçalho (Invisível na página, visível pro navegador) --&gt;</span><br>
+                <span style="color: #569cd6;">&lt;head&gt;</span><br>
+                &nbsp;&nbsp;<span style="color: #569cd6;">&lt;meta charset="UTF-8"&gt;</span> <span style="color: #6a9955;">// Permite acentos (ç, ã, é). Sem isso, vira "coração" -> "cora��o".</span><br>
+                &nbsp;&nbsp;<span style="color: #569cd6;">&lt;meta name="viewport" content="..."&gt;</span> <span style="color: #6a9955;">// Essencial para funcionar bem no celular (Zoom correto).</span><br>
+                &nbsp;&nbsp;<span style="color: #569cd6;">&lt;title&gt;</span>Nome na Aba<span style="color: #569cd6;">&lt;/title&gt;</span><br>
+                <span style="color: #569cd6;">&lt;/head&gt;</span><br><br>
+
+                <span style="color: #888;">&lt;!-- Corpo (Visível para o usuário) --&gt;</span><br>
+                <span style="color: #569cd6;">&lt;body&gt;</span><br>
+                &nbsp;&nbsp;<span style="color: #569cd6;">&lt;h1&gt;</span>Título Principal<span style="color: #569cd6;">&lt;/h1&gt;</span><br>
+                &nbsp;&nbsp;<span style="color: #569cd6;">&lt;p&gt;</span>Parágrafo de texto.<span style="color: #569cd6;">&lt;/p&gt;</span><br>
+                <span style="color: #569cd6;">&lt;/body&gt;</span><br>
+                <span style="color: #569cd6;">&lt;/html&gt;</span>
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplo de Página Semântica -->
+        <div class="slide">
+            <h2>Exemplo de Página Semântica</h2>
+            <p>Semântica é usar a tag certa para o conteúdo certo. Melhora o SEO (Google) e Acessibilidade.</p>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <pre style="font-size: 0.8rem; margin: 0;"><code>
+&lt;body&gt;
+  &lt;header&gt; &lt;!-- Cabeçalho do Site --&gt;
+    &lt;h1&gt;Meu Blog de Receitas&lt;/h1&gt;
+    &lt;nav&gt; &lt;!-- Navegação/Menu --&gt;
+      &lt;ul&gt;
+        &lt;li&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/li&gt;
+        &lt;li&gt;&lt;a href="#"&gt;Salgados&lt;/a&gt;&lt;/li&gt;
+      &lt;/ul&gt;
+    &lt;/nav&gt;
+  &lt;/header&gt;
+
+  &lt;main&gt; &lt;!-- Conteúdo Principal --&gt;
+    &lt;section&gt; &lt;!-- Seção de Artigos --&gt;
+      &lt;article&gt;
+        &lt;h2&gt;Bolo de Cenoura&lt;/h2&gt;
+        &lt;p&gt;Receita deliciosa...&lt;/p&gt;
+        &lt;button&gt;Ler mais&lt;/button&gt;
+      &lt;/article&gt;
+    &lt;/section&gt;
+    
+    &lt;aside&gt; &lt;!-- Barra Lateral --&gt;
+      &lt;h3&gt;Publicidade&lt;/h3&gt;
+      &lt;img src="ad.jpg" alt="Propaganda"&gt;
+    &lt;/aside&gt;
+  &lt;/main&gt;
+
+  &lt;footer&gt; &lt;!-- Rodapé --&gt;
+    &lt;p&gt;&copy; 2026 - Todos os direitos reservados&lt;/p&gt;
+  &lt;/footer&gt;
+&lt;/body&gt;
+                    </code></pre>
+                </div>
+                <div class="grid-item">
+                    <h3>Tags Explicadas</h3>
+                    <ul>
+                        <li><span class="tag-explain">&lt;header&gt;</span>: Topo do site ou de uma seção.</li>
+                        <li><span class="tag-explain">&lt;nav&gt;</span>: Área de links de navegação.</li>
+                        <li><span class="tag-explain">&lt;main&gt;</span>: O "recheio" principal da página. Só deve ter um por página.</li>
+                        <li><span class="tag-explain">&lt;section&gt;</span>: Agrupa conteúdos relacionados.</li>
+                        <li><span class="tag-explain">&lt;article&gt;</span>: Conteúdo independente (Notícia, Post, Produto).</li>
+                        <li><span class="tag-explain">&lt;aside&gt;</span>: Conteúdo lateral (Relacionado, mas não essencial).</li>
+                        <li><span class="tag-explain">&lt;footer&gt;</span>: Rodapé (Copyright, Contato).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: O Que é CSS? -->
+        <div class="slide">
+            <h2>O Que é CSS?</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Definição</h3>
+                    <p><strong>C</strong>ascading <strong>S</strong>tyle <strong>S</strong>heets (Folhas de Estilo em Cascata).</p>
+                    <p>É a linguagem responsável pela <strong>apresentação</strong> visual do site.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>A Analogia da Arara</h3>
+                    <div style="display: flex; gap: 10px; text-align: center;">
+                        <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <img src="assets/img/01_html/peladineo_grande.webp" alt="HTML - Estrutura" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                            <p style="margin-top: 10px; color: #E32119;"><strong>HTML</strong></p>
+                            <p style="font-size: 0.8rem;">A Estrutura (O Esqueleto)</p>
+                        </div>
+                        <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <img src="assets/img/01_html/ararahtml.jpg" alt="CSS - Estilo" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                            <p style="margin-top: 10px; color: #004587;"><strong>CSS</strong></p>
+                            <p style="font-size: 0.8rem;">A Aparência (As Penas)</p>
+                        </div>
+                        <div style="flex: 1; background: white; padding: 10px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                            <img src="assets/img/01_html/araraMagestade.jpg" alt="JS - Comportamento" style="width: 100%; height: 200px; object-fit: cover; border-radius: 5px;">
+                            <p style="margin-top: 10px; color: #28a745;"><strong>JS</strong></p>
+                            <p style="font-size: 0.8rem;">O Comportamento (A Vida)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="margin-top: 20px; background: #f0f0f0; padding: 15px; border-radius: 8px;">
+                <h3>Sintaxe Básica</h3>
+                <p>O CSS funciona com regras simples: <strong>QUEM</strong> eu quero alterar e <strong>O QUE</strong> eu quero alterar.</p>
+                <pre style="background: #2d2d2d; color: white; padding: 10px; border-radius: 5px;"><code>
+/* Seletor { Propriedade: Valor; } */
+
+p {
+    color: red;          /* Cor do texto */
+    font-size: 16px;     /* Tamanho da fonte */
+    text-align: center;  /* Alinhamento */
+}
+                </code></pre>
+            </div>
+        </div>
+
+        <!-- Slide 6: Seletores: Class vs ID -->
+        <div class="slide">
+            <h2>Seletores: Class vs ID</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Class (Classe) <span style="color: #d63384;">.nome-da-classe</span></h3>
+                    <p><strong>Símbolo:</strong> Ponto (<code>.</code>)</p>
+                    <p><strong>Uso:</strong> Reutilizável. Pode ser usado em VÁRIOS elementos na mesma página.</p>
+                    <p><em>Exemplo:</em> Botões, cards, textos destacados.</p>
+                    <pre style="background: #2d2d2d; color: white; padding: 10px; border-radius: 5px;"><code>
+HTML: &lt;button class="btn-azul"&gt;Salvar&lt;/button&gt;
+      &lt;button class="btn-azul"&gt;Enviar&lt;/button&gt;
+
+CSS:  .btn-azul { background-color: blue; }
+                    </code></pre>
+                </div>
+                <div class="grid-item">
+                    <h3>ID (Identificador) <span style="color: #007bff;">#nome-do-id</span></h3>
+                    <p><strong>Símbolo:</strong> Cerquilha/Hashtag (<code>#</code>)</p>
+                    <p><strong>Uso:</strong> Único. Só pode existir UM elemento com esse ID na página.</p>
+                    <p><em>Exemplo:</em> Cabeçalho principal, Rodapé, Menu lateral, Formulário de Login.</p>
+                    <pre style="background: #2d2d2d; color: white; padding: 10px; border-radius: 5px;"><code>
+HTML: &lt;header id="topo-site"&gt;...&lt;/header&gt;
+
+CSS:  #topo-site { height: 100px; }
+                    </code></pre>
+                </div>
+            </div>
+            <div style="margin-top: 20px; text-align: center; background: #eef; padding: 10px; border-radius: 5px;">
+                <p><strong>Dica de Ouro:</strong> Na dúvida, use <strong>Class</strong>. Use <strong>ID</strong> apenas para elementos estruturais únicos ou para manipulação via JavaScript (ex: <code>getElementById</code>).</p>
+            </div>
+        </div>
+
+        <!-- Slide 7: Formas de usar CSS -->
+        <div class="slide">
+            <h2>3 Formas de usar CSS</h2>
+            
+            <div class="css-type">
+                <h4>1. Inline (Na linha) <span style="color: red; font-size: 0.8em;">(NÃO RECOMENDADO)</span></h4>
+                <code>&lt;p style="color: blue; font-size: 20px;"&gt;Texto&lt;/p&gt;</code>
+                <p><strong>Por que evitar?</strong> Difícil manutenção. Se quiser mudar a cor de todos os parágrafos, terá que editar um por um. Suja o HTML.</p>
+            </div>
+
+            <div class="css-type">
+                <h4>2. Incorporado (Interno) <span style="color: orange; font-size: 0.8em;">(MÉDIO)</span></h4>
+                <p>Usa a tag <code>&lt;style&gt;</code> dentro do <code>&lt;head&gt;</code>.</p>
+                <p><strong>Uso:</strong> Bom para páginas únicas (Landing Pages simples) ou e-mails marketing. Ruim para sites grandes (não compartilha estilo entre páginas).</p>
+            </div>
+
+            <div class="css-type" style="border-left: 5px solid green;">
+                <h4>3. Externo (Arquivo .css) <span style="color: green; font-size: 0.8em;">(RECOMENDADO)</span></h4>
+                <code>&lt;link rel="stylesheet" href="style.css"&gt;</code>
+                <p><strong>Vantagem:</strong> Separação total (HTML limpo). Um único arquivo controla o visual do site inteiro. O navegador salva em cache (carrega mais rápido na segunda visita).</p>
+            </div>
+        </div>
+
+        <!-- Slide 6: Melhores Práticas -->
+        <div class="slide">
+            <h2>Melhores Práticas (Boas Maneiras)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Organização e Clareza</h3>
+                    <ul>
+                        <li><strong>Indentação:</strong> Mantenha o código alinhado (filho dentro do pai). Facilita a leitura e evita erros de fechamento de tags.</li>
+                        <li><strong>Comentários:</strong> Use <code>&lt;!-- Explicação --&gt;</code> para documentar partes complexas. Ajuda seu "eu do futuro".</li>
+                        <li><strong>Nomes em Inglês (Opcional mas Bom):</strong> Padrão mundial (ex: class="header-container" em vez de "topo-caixa").</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Técnicas</h3>
+                    <ul>
+                        <li><strong>Semântica Sempre:</strong> Evite "Divite" (Uso excessivo de div). Use <code>&lt;button&gt;</code> para botões, não <code>&lt;div onclick&gt;</code>.</li>
+                        <li><strong>Separation of Concerns:</strong> HTML é Estrutura. CSS é Estilo. JS é Comportamento. Não misture!</li>
+                        <li><strong>Acessibilidade:</strong> Sempre use o atributo <code>alt="descrição"</code> em imagens para cegos e SEO.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Box Model (Mantido) -->
+        <div class="slide">
+            <h2>Box Model: O Conceito Fundamental</h2>
+            <p>Todo elemento HTML é uma caixa retangular.</p>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <pre><code>
+.caixa {
+  width: 200px;      /* Largura do conteúdo */
+  padding: 20px;     /* Espaço interno (engorda a caixa) */
+  border: 5px solid; /* Borda (engorda a caixa) */
+  margin: 30px;      /* Espaço externo (empurra os vizinhos) */
+}
+                    </code></pre>
+                </div>
+                <div class="grid-item" style="display: flex; align-items: center; justify-content: center;">
+                    <div style="background: orange; padding: 20px; border: 5px solid black; margin: 10px;">
+                        Margem (Fora)
+                        <div style="background: lightblue; padding: 20px; border: 2px dashed blue;">
+                            Padding (Dentro)
+                            <div style="background: white; padding: 10px;">
+                                Conteúdo
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Atividades Práticas -->
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Crie uma página "Sobre Mim" utilizando tags semânticas (header, section, footer). Crie um arquivo CSS externo e linke na página. Aplique cores de fundo diferentes para cada seção e use <strong>padding</strong> para que o texto não cole nas bordas.</p>
+                    <p style="margin-top: 10px;"><a href="assets/img/01_html/01.01_sobreMim.html" target="_blank" style="color: #004587; font-weight: bold; text-decoration: underline;">👉 Ver Exemplo Pronto (Código Fonte)</a></p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Crie um layout de "Card de Hobbies" (imagem, título e categoria: ex: Pesca, Natação, Música). Use apenas <strong>margin</strong> e <strong>padding</strong> para espaçamentos e alinhe o conteúdo centralizado.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula1" class="code-input" placeholder="Digite seu código HTML/CSS aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <!-- Slide 9: Encerramento -->
+        <div class="slide">
+            <h1>Fim da Aula 01</h1>
+            <h2>O que aprendemos?</h2>
+            <p>Estruturamos páginas com significado (Semântica), entendemos o Box Model e as boas práticas de CSS.</p>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

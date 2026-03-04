@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD PHP: Update e Delete</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>CRUD PHP: Update e Delete</h1>
+            <h2>Editando e Excluindo</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 11</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Total:</strong> 4 Horas</p>
+                <p>2h Teoria + 2h Prática</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tópicos da Aula</h2>
+            <ul>
+                <li><strong>SQL UPDATE:</strong> Atualizando registros existentes (Cuidado com o WHERE!).</li>
+                <li><strong>SQL DELETE:</strong> Removendo registros (Cuidado redobrado!).</li>
+                <li><strong>Passagem de ID:</strong> Usando links como <code>excluir.php?id=10</code>.</li>
+                <li><strong>$_GET['id']:</strong> Recuperando qual registro alterar/excluir.</li>
+                <li><strong>Preenchimento:</strong> Carregar dados atuais no formulário de edição.</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Exclusão</h2>
+            <pre><code>
+// excluir.php
+$id = $_GET['id'];
+$sql = "DELETE FROM usuarios WHERE id = :id";
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':id', $id);
+$stmt->execute();
+
+header("Location: lista.php"); // Redireciona de volta
+            </code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática (2h)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Para Todos (Essencial)</h3>
+                    <p>Na listagem de produtos, adicione um link "Excluir" ao lado de cada item. Ao clicar, deve chamar <code>excluir.php</code>, remover o item do banco e voltar para a lista.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (Avançado)</h3>
+                    <p>Crie a funcionalidade de "Editar". Link "Editar" leva para <code>editar.php?id=X</code>. O formulário deve vir preenchido com os dados atuais. Ao salvar, faz um UPDATE no banco.</p>
+                </div>
+            </div>
+            <div style="margin-top: 20px;">
+                <textarea id="resp-aula11" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 11</h1>
+            <h2>Próxima Aula: Login e Sessões</h2>
+            <button id="finishLessonBtn" class="nav-btn" style="margin-top: 20px; background-color: #E32119;">🏁 Finalizar Aula</button>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
