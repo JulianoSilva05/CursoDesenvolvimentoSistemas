@@ -17,10 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // 4. Email Sending Logic
     initEmailSender();
 
-    // 5. Maximize Textarea Logic
-    initMaximizeTextarea();
-
-    // 6. Finish Lesson Logic
+    // 5. Finish Lesson Logic (Wait for DOM to load potentially dynamic buttons)
     initFinishButton();
     
     // 7. Time Tracking
@@ -260,25 +257,15 @@ function initSlideshow() {
         }
     }
 
-    // Check and Enforce Fullscreen on Navigation
-    function checkAndEnforceFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log("Fullscreen request failed:", err);
-            });
-        }
-    }
+    btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
+    btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
 
-    btnPrev.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide - 1);
-    });
-    
-    btnNext.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide + 1);
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
+        else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
     });
 
+    // Initialize
     showSlide(0);
 }
 
@@ -383,89 +370,6 @@ function initEmailSender() {
                 btn.disabled = false;
                 btn.innerHTML = originalText;
             }
-        });
-    });
-}
-
-function initMaximizeTextarea() {
-    const textareas = document.querySelectorAll('textarea.code-input');
-    
-    textareas.forEach(textarea => {
-        // Create wrapper if not exists or insert button directly
-        const container = document.createElement('div');
-        container.style.display = 'flex';
-        container.style.justifyContent = 'flex-end';
-        container.style.marginBottom = '5px';
-        
-        const maxBtn = document.createElement('button');
-        maxBtn.innerHTML = '⛶ Maximizar Área de Texto';
-        maxBtn.style.cssText = `
-            padding: 5px 10px;
-            font-size: 0.8rem;
-            cursor: pointer;
-            background: #004587;
-            color: white;
-            border: none;
-            border-radius: 4px;
-        `;
-        
-        container.appendChild(maxBtn);
-        
-        // Insert container before the textarea
-        textarea.parentNode.insertBefore(container, textarea);
-        
-        // Maximize Logic
-        maxBtn.addEventListener('click', () => {
-            // Create a backdrop for focus
-            const backdrop = document.createElement('div');
-            backdrop.id = 'textarea-backdrop';
-            backdrop.style.cssText = `
-                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-                background: rgba(0,0,0,0.8); z-index: 9998;
-            `;
-            document.body.appendChild(backdrop);
-
-            // Save original styles
-            textarea.dataset.originalStyle = textarea.style.cssText;
-            
-            // Apply Fixed Styles
-            textarea.style.cssText = `
-                position: fixed;
-                top: 5%;
-                left: 5%;
-                width: 90%;
-                height: 85%;
-                z-index: 10000;
-                padding: 20px;
-                font-size: 1.2rem;
-                box-shadow: 0 0 20px rgba(0,0,0,0.5);
-                border-radius: 8px;
-            `;
-
-            // Create Minimize Button
-            const minBtn = document.createElement('button');
-            minBtn.innerHTML = '✖ Minimizar';
-            minBtn.style.cssText = `
-                position: fixed;
-                top: 6%;
-                right: 6%;
-                z-index: 10001;
-                padding: 10px 15px;
-                background: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 4px;
-                cursor: pointer;
-                font-weight: bold;
-            `;
-            document.body.appendChild(minBtn);
-
-            minBtn.addEventListener('click', () => {
-                // Restore
-                textarea.style.cssText = textarea.dataset.originalStyle || '';
-                minBtn.remove();
-                backdrop.remove();
-            });
         });
     });
 }
