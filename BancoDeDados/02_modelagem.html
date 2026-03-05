@@ -28,7 +28,56 @@
         <div class="slide">
             <h2>O que é Modelagem de Dados?</h2>
             <p>É o processo de criar uma representação visual e estruturada dos dados de um sistema.</p>
-            <img src="https://placehold.co/800x200?text=Blueprint+Banco+de+Dados" alt="Blueprint" style="width: 100%; margin: 15px 0; border-radius: 8px;">
+            
+            <!-- SVG Blueprint Diagram -->
+            <div style="width: 100%; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <svg viewBox="0 0 640 260" preserveAspectRatio="xMidYMid meet" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background-color: #0056b3; font-family: 'Courier New', monospace; display: block;">
+                    <!-- Grid Background -->
+                    <defs>
+                        <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                            <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+                        </pattern>
+                    </defs>
+                    <rect width="640" height="260" fill="url(#grid)" />
+                    
+                    <!-- Title -->
+                    <text x="320" y="35" text-anchor="middle" fill="rgba(255,255,255,0.8)" font-size="22" font-weight="bold">BLUEPRINT: ESTRUTURA DO SISTEMA</text>
+                    
+                    <!-- Table: CLIENTES (Left) -->
+                    <g transform="translate(40, 70)">
+                        <rect x="0" y="0" width="220" height="160" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="2" rx="4" />
+                        <line x1="0" y1="40" x2="220" y2="40" stroke="white" stroke-width="2" />
+                        <text x="110" y="28" text-anchor="middle" fill="white" font-weight="bold" font-size="18">CLIENTES</text>
+                        
+                        <text x="15" y="70" fill="white" font-size="16">• ID (PK)</text>
+                        <text x="15" y="95" fill="white" font-size="16">• Nome</text>
+                        <text x="15" y="120" fill="white" font-size="16">• CPF</text>
+                        <text x="15" y="145" fill="white" font-size="16">• Endereco</text>
+                    </g>
+
+                    <!-- Table: PEDIDOS (Right) -->
+                    <g transform="translate(380, 70)">
+                        <rect x="0" y="0" width="220" height="160" fill="rgba(255,255,255,0.1)" stroke="white" stroke-width="2" rx="4" />
+                        <line x1="0" y1="40" x2="220" y2="40" stroke="white" stroke-width="2" />
+                        <text x="110" y="28" text-anchor="middle" fill="white" font-weight="bold" font-size="18">PEDIDOS</text>
+                        
+                        <text x="15" y="70" fill="white" font-size="16">• ID (PK)</text>
+                        <text x="15" y="95" fill="white" font-size="16">• Data</text>
+                        <text x="15" y="120" fill="white" font-size="16">• Valor_Total</text>
+                        <text x="15" y="145" fill="#ffcc00" font-size="16" font-weight="bold">• ID_Cliente (FK)</text>
+                    </g>
+
+                    <!-- Relationship Line -->
+                    <path d="M 260 150 L 380 150" stroke="white" stroke-width="2" stroke-dasharray="6,6" />
+                    <circle cx="260" cy="150" r="6" fill="white" />
+                    <text x="320" y="140" text-anchor="middle" fill="white" font-size="16" font-style="italic">1:N (Realiza)</text>
+                    
+                    <!-- Crow's Foot Notation at Pedidos side -->
+                    <line x1="370" y1="140" x2="380" y2="150" stroke="white" stroke-width="2" />
+                    <line x1="370" y1="160" x2="380" y2="150" stroke="white" stroke-width="2" />
+                </svg>
+            </div>
+
             <p><strong>Por que modelar?</strong></p>
             <ul>
                 <li>Facilita o entendimento das regras de negócio.</li>
@@ -40,12 +89,73 @@
         <!-- Slide 3: Níveis de Abstração -->
         <div class="slide">
             <h2>Níveis de Abstração</h2>
-            <img src="https://placehold.co/800x250?text=Conceitual+Logico+Fisico" alt="Níveis de Abstração" style="width: 100%; margin-bottom: 15px; border-radius: 8px;">
-            <ul>
-                <li><strong>Modelo Conceitual:</strong> Visão de alto nível. Foca no "O QUE" será armazenado. Independente de tecnologia. (Público: Cliente/Analista).</li>
-                <li><strong>Modelo Lógico:</strong> Define chaves, tipos de dados básicos e relacionamentos. (Público: Desenvolvedor/DBA).</li>
-                <li><strong>Modelo Físico:</strong> Scripts SQL específicos para o SGBD escolhido (MySQL, Oracle). (Público: DBA/Sistema).</li>
-            </ul>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px; margin-top: 10px; width: 100%; max-width: 1000px;">
+                
+                <!-- Modelo Conceitual -->
+                <div style="background: #eef; padding: 15px; border-radius: 8px; text-align: center; border-top: 5px solid #007bff; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style="color: #007bff; font-size: 1.4rem;">1. Conceitual</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 10px; color: #555;">Visão de Negócio (Cliente)</p>
+                    
+                    <!-- SVG Conceitual -->
+                    <svg width="180" height="100" viewBox="0 0 180 100" style="background: white; border: 1px solid #ccc; border-radius: 4px;">
+                        <!-- Entidade 1: Aluno -->
+                        <rect x="10" y="35" width="50" height="30" fill="white" stroke="#333" stroke-width="2"/>
+                        <text x="35" y="55" text-anchor="middle" font-size="8" font-family="Arial" font-weight="bold">Aluno</text>
+                        
+                        <!-- Entidade 2: Curso -->
+                        <rect x="120" y="35" width="50" height="30" fill="white" stroke="#333" stroke-width="2"/>
+                        <text x="145" y="55" text-anchor="middle" font-size="8" font-family="Arial" font-weight="bold">Curso</text>
+                        
+                        <!-- Relacionamento (Losango): Cursa -->
+                        <path d="M 90 35 L 110 50 L 90 65 L 70 50 Z" fill="#fff3cd" stroke="#d97706" stroke-width="2"/>
+                        <text x="90" y="53" text-anchor="middle" font-size="6" font-family="Arial" fill="#d97706" font-weight="bold">Cursa</text>
+
+                        <!-- Linhas de conexão -->
+                        <line x1="60" y1="50" x2="70" y2="50" stroke="#333" stroke-width="1"/>
+                        <line x1="110" y1="50" x2="120" y2="50" stroke="#333" stroke-width="1"/>
+                        
+                        <!-- Cardinalidade (Opcional, mas bom para conceitual) -->
+                        <text x="65" y="45" text-anchor="middle" font-size="6" font-family="Arial">N</text>
+                        <text x="115" y="45" text-anchor="middle" font-size="6" font-family="Arial">N</text>
+                    </svg>
+
+                    <p style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Foca no <strong>O QUE</strong>. Representa entidades e relações sem detalhes técnicos. Independente de software.</p>
+                </div>
+
+                <!-- Modelo Lógico -->
+                <div style="background: #eef; padding: 15px; border-radius: 8px; text-align: center; border-top: 5px solid #28a745; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style="color: #28a745; font-size: 1.4rem;">2. Lógico</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 10px; color: #555;">Estrutura (Desenvolvedor)</p>
+                    
+                    <!-- HTML Visual Lógico -->
+                    <div style="background: white; border: 1px solid #ccc; width: 150px; height: 100px; padding: 5px; font-size: 0.6rem; text-align: left; font-family: monospace; overflow: hidden;">
+                        <div style="border-bottom: 1px solid #ddd; margin-bottom: 2px;">TB_ALUNO</div>
+                        <div>PK ID_ALUNO (INT)</div>
+                        <div>Nome (VARCHAR)</div>
+                        <div style="color: #28a745;">FK ID_CURSO (INT)</div>
+                    </div>
+
+                    <p style="font-size: 0.9rem; text-align: left; margin-top: 10px;">Define <strong>COMO</strong>. Especifica chaves (PK, FK), tipos de dados e cardinalidade. Próximo do real.</p>
+                </div>
+
+                <!-- Modelo Físico -->
+                <div style="background: #eef; padding: 15px; border-radius: 8px; text-align: center; border-top: 5px solid #dc3545; display: flex; flex-direction: column; align-items: center;">
+                    <h3 style="color: #dc3545; font-size: 1.4rem;">3. Físico</h3>
+                    <p style="font-size: 0.9rem; margin-bottom: 10px; color: #555;">Implementação (DBA)</p>
+                    
+                    <!-- HTML Visual Físico -->
+                    <div style="background: #2d2d2d; color: #eee; width: 150px; height: 100px; padding: 5px; font-size: 0.5rem; text-align: left; font-family: monospace; overflow: hidden; border-radius: 4px;">
+                        <span style="color: #ff79c6;">CREATE TABLE</span> Aluno (<br>
+                        &nbsp;&nbsp;id <span style="color: #8be9fd;">INT</span> PRIMARY KEY,<br>
+                        &nbsp;&nbsp;nome <span style="color: #8be9fd;">VARCHAR</span>(100)<br>
+                        );
+                    </div>
+
+                    <p style="font-size: 0.9rem; text-align: left; margin-top: 10px;">O <strong>CÓDIGO REAL</strong>. Scripts SQL específicos para o banco escolhido (MySQL, Oracle, etc).</p>
+                </div>
+
+            </div>
         </div>
 
         <!-- Slide 4: MER e DER -->
@@ -86,13 +196,161 @@
 
         <!-- Slide 7: Exemplos de DER -->
         <div class="slide">
-            <h2>Exemplo Prático</h2>
-            <img src="https://placehold.co/800x300?text=Exemplo+DER+Escola" alt="Exemplo DER Escola" style="width: 100%; border-radius: 8px;">
-            <p><strong>Escola:</strong></p>
+            <h2>Exemplo Prático: Sistema Escolar</h2>
+            
+            <!-- SVG MER Escola (Modelo Conceitual Clássico) -->
+            <div style="width: 100%; margin: 15px 0; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">
+                <svg viewBox="0 0 1000 600" preserveAspectRatio="xMidYMid meet" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" style="background-color: white; font-family: 'Arial', sans-serif;">
+                    
+                    <!-- Definições -->
+                    <defs>
+                        <!-- Gradiente para Entidades -->
+                        <linearGradient id="entityGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#f0f8ff;stop-opacity:1" />
+                        </linearGradient>
+                        <!-- Sombra Suave -->
+                        <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur in="SourceAlpha" stdDeviation="3"/>
+                            <feOffset dx="2" dy="2" result="offsetblur"/>
+                            <feComponentTransfer>
+                                <feFuncA type="linear" slope="0.3"/>
+                            </feComponentTransfer>
+                            <feMerge> 
+                                <feMergeNode/>
+                                <feMergeNode in="SourceGraphic"/> 
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- ============================================= -->
+                    <!-- RELACIONAMENTOS (Losangos) -->
+                    <!-- ============================================= -->
+                    
+                    <!-- CURSA (Entre Aluno e Curso) -->
+                    <g transform="translate(350, 300)">
+                        <!-- Linhas de Conexão -->
+                        <line x1="-150" y1="170" x2="0" y2="0" stroke="#555" stroke-width="2" /> <!-- Para Aluno -->
+                        <line x1="150" y1="-200" x2="0" y2="0" stroke="#555" stroke-width="2" /> <!-- Para Curso -->
+                        
+                        <!-- Cardinalidades -->
+                        <rect x="-80" y="80" width="30" height="20" fill="white" rx="4"/>
+                        <text x="-65" y="95" text-anchor="middle" font-weight="bold" fill="#333">N</text>
+                        
+                        <rect x="70" y="-100" width="30" height="20" fill="white" rx="4"/>
+                        <text x="85" y="-85" text-anchor="middle" font-weight="bold" fill="#333">N</text>
+
+                        <!-- Losango -->
+                        <path d="M 0 -50 L 80 0 L 0 50 L -80 0 Z" fill="#fff3e0" stroke="#f57c00" stroke-width="3" filter="url(#shadow)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="#e65100" font-weight="bold" font-size="16">CURSA</text>
+                    </g>
+
+                    <!-- MINISTRA (Entre Professor e Curso) -->
+                    <g transform="translate(650, 300)">
+                        <!-- Linhas de Conexão -->
+                        <line x1="150" y1="170" x2="0" y2="0" stroke="#555" stroke-width="2" /> <!-- Para Professor -->
+                        <line x1="-150" y1="-200" x2="0" y2="0" stroke="#555" stroke-width="2" /> <!-- Para Curso -->
+
+                        <!-- Cardinalidades -->
+                        <rect x="50" y="80" width="30" height="20" fill="white" rx="4"/>
+                        <text x="65" y="95" text-anchor="middle" font-weight="bold" fill="#333">1</text>
+                        
+                        <rect x="-100" y="-100" width="30" height="20" fill="white" rx="4"/>
+                        <text x="-85" y="-85" text-anchor="middle" font-weight="bold" fill="#333">N</text>
+
+                        <!-- Losango -->
+                        <path d="M 0 -50 L 80 0 L 0 50 L -80 0 Z" fill="#fff3e0" stroke="#f57c00" stroke-width="3" filter="url(#shadow)"/>
+                        <text x="0" y="5" text-anchor="middle" fill="#e65100" font-weight="bold" font-size="16">MINISTRA</text>
+                    </g>
+
+
+                    <!-- ============================================= -->
+                    <!-- ENTIDADE: CURSO (Topo Centro) -->
+                    <!-- ============================================= -->
+                    <g transform="translate(500, 100)">
+                        <!-- Atributos -->
+                        <line x1="0" y1="-30" x2="0" y2="-80" stroke="#333" stroke-width="1.5"/> <!-- ID -->
+                        <line x1="-70" y1="0" x2="-120" y2="0" stroke="#333" stroke-width="1.5"/> <!-- Nome -->
+                        <line x1="70" y1="0" x2="140" y2="0" stroke="#333" stroke-width="1.5"/> <!-- Carga -->
+
+                        <!-- Ellipses -->
+                        <ellipse cx="0" cy="-80" rx="40" ry="25" fill="black" stroke="black" stroke-width="2"/> <!-- PK Cheia -->
+                        <text x="0" y="-75" text-anchor="middle" fill="white" font-weight="bold" font-size="14">ID</text>
+
+                        <ellipse cx="-140" cy="0" rx="50" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="-140" y="5" text-anchor="middle" font-size="14">Nome</text>
+
+                        <ellipse cx="160" cy="0" rx="60" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="160" y="5" text-anchor="middle" font-size="12">Carga Horária</text>
+
+                        <!-- Retângulo Entidade -->
+                        <rect x="-70" y="-30" width="140" height="60" fill="url(#entityGrad)" stroke="#004494" stroke-width="3" filter="url(#shadow)"/>
+                        <text x="0" y="10" text-anchor="middle" fill="#004494" font-weight="bold" font-size="18">CURSO</text>
+                    </g>
+
+
+                    <!-- ============================================= -->
+                    <!-- ENTIDADE: ALUNO (Baixo Esquerda) -->
+                    <!-- ============================================= -->
+                    <g transform="translate(200, 470)">
+                        <!-- Atributos -->
+                        <line x1="-70" y1="0" x2="-100" y2="0" stroke="#333" stroke-width="1.5"/> <!-- ID -->
+                        <line x1="0" y1="30" x2="0" y2="80" stroke="#333" stroke-width="1.5"/> <!-- Nome -->
+                        <line x1="70" y1="0" x2="110" y2="0" stroke="#333" stroke-width="1.5"/> <!-- Matricula -->
+                        <line x1="-35" y1="30" x2="-80" y2="70" stroke="#333" stroke-width="1.5"/> <!-- DataNasc -->
+
+                        <!-- Ellipses -->
+                        <ellipse cx="-130" cy="0" rx="40" ry="25" fill="black" stroke="black" stroke-width="2"/> <!-- PK -->
+                        <text x="-130" y="5" text-anchor="middle" fill="white" font-weight="bold" font-size="14">ID</text>
+
+                        <ellipse cx="0" cy="100" rx="60" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="0" y="105" text-anchor="middle" font-size="14">Nome</text>
+
+                        <ellipse cx="150" cy="0" rx="50" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="150" y="5" text-anchor="middle" font-size="14" text-decoration="underline">Matrícula</text>
+
+                        <ellipse cx="-100" cy="80" rx="50" ry="25" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="-100" y="85" text-anchor="middle" font-size="12">DataNasc</text>
+
+                        <!-- Retângulo Entidade -->
+                        <rect x="-70" y="-30" width="140" height="60" fill="url(#entityGrad)" stroke="#004494" stroke-width="3" filter="url(#shadow)"/>
+                        <text x="0" y="10" text-anchor="middle" fill="#004494" font-weight="bold" font-size="18">ALUNO</text>
+                    </g>
+
+
+                    <!-- ============================================= -->
+                    <!-- ENTIDADE: PROFESSOR (Baixo Direita) -->
+                    <!-- ============================================= -->
+                    <g transform="translate(800, 470)">
+                        <!-- Atributos -->
+                        <line x1="70" y1="0" x2="100" y2="0" stroke="#333" stroke-width="1.5"/> <!-- ID -->
+                        <line x1="0" y1="30" x2="0" y2="80" stroke="#333" stroke-width="1.5"/> <!-- Nome -->
+                        <line x1="-70" y1="0" x2="-110" y2="0" stroke="#333" stroke-width="1.5"/> <!-- Especialidade -->
+
+                        <!-- Ellipses -->
+                        <ellipse cx="130" cy="0" rx="40" ry="25" fill="black" stroke="black" stroke-width="2"/> <!-- PK -->
+                        <text x="130" y="5" text-anchor="middle" fill="white" font-weight="bold" font-size="14">ID</text>
+
+                        <ellipse cx="0" cy="100" rx="60" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="0" y="105" text-anchor="middle" font-size="14">Nome</text>
+
+                        <ellipse cx="-150" cy="0" rx="60" ry="30" fill="white" stroke="#333" stroke-width="1.5"/>
+                        <text x="-150" y="5" text-anchor="middle" font-size="12">Especialidade</text>
+
+                        <!-- Retângulo Entidade -->
+                        <rect x="-70" y="-30" width="140" height="60" fill="url(#entityGrad)" stroke="#004494" stroke-width="3" filter="url(#shadow)"/>
+                        <text x="0" y="10" text-anchor="middle" fill="#004494" font-weight="bold" font-size="18">PROFESSOR</text>
+                    </g>
+
+                </svg>
+            </div>
+            
+            <p><strong>Descrição do Modelo:</strong></p>
             <ul>
-                <li><strong>Aluno:</strong> Nome, Matrícula, DataNasc.</li>
-                <li><strong>Curso:</strong> Nome, CargaHorária.</li>
-                <li><strong>Professor:</strong> Nome, Especialidade.</li>
+                <li><strong>Aluno:</strong> Identificado por <u>ID</u> (PK) e <u>Matrícula</u>. Possui Nome e Data de Nascimento.</li>
+                <li><strong>Curso:</strong> Identificado por <u>ID</u>. Possui Nome e Carga Horária.</li>
+                <li><strong>Professor:</strong> Identificado por <u>ID</u>. Possui Nome e Especialidade.</li>
+                <li><strong>Relacionamentos:</strong> Aluno <em>Cursa</em> (N:N) Curso; Professor <em>Ministra</em> (1:N) Curso.</li>
             </ul>
         </div>
 
@@ -117,6 +375,15 @@
             </button>
         </div>
 
+        <!-- Slide Final: Encerramento -->
+        <div class="slide">
+            <h2 style="text-align: center; color: #28a745;">Parabéns!</h2>
+            <h3 style="text-align: center;">Você concluiu esta aula</h3>
+            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Aula+Concluída!" alt="Conclusão" style="width: 50%; display: block; margin: 20px auto; border-radius: 10px;">
+            <p style="margin-top: 30px;">Certifique-se de ter enviado todas as atividades.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+
     </div>
 
     <!-- Controles -->
@@ -125,7 +392,7 @@
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 8</div>
+    <div class="slide-number" id="slideNumber">1 / 9</div>
 
     <script src="assets/js/script.js"></script>
 </body>

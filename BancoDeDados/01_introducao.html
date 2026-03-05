@@ -105,12 +105,46 @@
             <p><strong>S</strong>istema <strong>G</strong>erenciador de <strong>B</strong>anco de <strong>D</strong>ados (DBMS).</p>
             <p>É o software que atua como intermediário entre o usuário/aplicação e os dados armazenados.</p>
             
-            <img src="https://placehold.co/800x200/004587/FFFFFF?text=Usuário+<->+Aplicação+<->+SGBD+<->+Dados" alt="Arquitetura SGBD" style="width: 100%; margin: 20px 0; border-radius: 8px;">
+            <!-- Grid with 3 columns to separate tables -->
+            <div class="grid-layout" style="margin: 30px 0; grid-template-columns: 1fr 120px 1fr; gap: 0; align-items: center;">
+                <div class="grid-item">
+                    <h3 style="color: var(--senai-blue); text-align: center;">Tabela: Clientes</h3>
+                    <table style="width: 100%; font-size: 0.9rem;">
+                        <tr style="background: #ccc;"><th>ID</th><th>Nome</th><th>Cidade</th></tr>
+                        <tr><td>1</td><td>Ana Silva</td><td>SP</td></tr>
+                        <tr><td>2</td><td>João Souza</td><td>RJ</td></tr>
+                        <tr><td>3</td><td>Maria Lima</td><td>MG</td></tr>
+                    </table>
+                </div>
+                
+                <!-- Relationship Diamond (Peter Chen) Centered -->
+                <div style="position: relative; height: 100%; display: flex; align-items: center; justify-content: center;">
+                     <!-- Left Line -->
+                     <div style="position: absolute; left: 0; top: 50%; width: 50%; height: 2px; background: #333;"></div>
+                     <!-- Right Line -->
+                     <div style="position: absolute; right: 0; top: 50%; width: 50%; height: 2px; background: #333;"></div>
+                     
+                     <!-- Diamond Shape -->
+                     <div style="width: 70px; height: 70px; background: #fff3cd; border: 2px solid #d97706; transform: rotate(45deg); display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 5px rgba(0,0,0,0.1); z-index: 2;">
+                        <span style="transform: rotate(-45deg); font-size: 0.8rem; font-weight: bold; color: #d97706;">Realiza</span>
+                     </div>
+                </div>
+
+                <div class="grid-item">
+                    <h3 style="color: var(--senai-blue); text-align: center;">Tabela: Pedidos</h3>
+                    <table style="width: 100%; font-size: 0.9rem;">
+                        <tr style="background: #ccc;"><th>ID</th><th>Data</th><th>ID_Cliente</th></tr>
+                        <tr><td>101</td><td>2023-10-01</td><td>1</td></tr>
+                        <tr><td>102</td><td>2023-10-02</td><td>2</td></tr>
+                        <tr><td>103</td><td>2023-10-03</td><td>1</td></tr>
+                    </table>
+                </div>
+            </div>
 
             <div class="grid-layout">
                 <div class="grid-item">
                     <strong>Abstração</strong><br>
-                    O usuário não precisa saber como o dado é gravado no disco (bits/bytes). Ele pede "Traga o Cliente X".
+                    O usuário não precisa saber como o dado é gravado no disco (bits/bytes). Ele pede "Traga os Pedidos da Ana".
                 </div>
                 <div class="grid-item">
                     <strong>Segurança (ACID)</strong><br>
@@ -161,17 +195,91 @@ TABELA: Clientes
             
             <div class="grid-layout">
                 <div class="grid-item">
-                    <h3>Chave Primária (PK)</h3>
-                    <p>Identificador ÚNICO de cada linha. Não pode repetir e não pode ser vazio.</p>
-                    <p><em>Ex: CPF, Matrícula, ID Automático.</em></p>
+                    <h3>Chave Primária (PK) - Primary Key</h3>
+                    <p>A <strong>Chave Primária</strong> é a coluna (ou conjunto de colunas) que identifica de forma EXCLUSIVA cada linha na tabela.</p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li><strong>Unicidade:</strong> Não podem existir dois registros com a mesma PK.</li>
+                        <li><strong>Obrigatória:</strong> Todo registro deve ter uma PK e ela não pode ser vazia (NOT NULL).</li>
+                        <li><strong>Identidade:</strong> É o "RG" do registro no banco de dados.</li>
+                    </ul>
+                    <p><em>Ex: CPF, Matrícula, Código do Produto.</em></p>
                 </div>
                 <div class="grid-item">
-                    <h3>Chave Estrangeira (FK)</h3>
-                    <p>Um campo que aponta para a PK de outra tabela. Cria o RELACIONAMENTO.</p>
-                    <p><em>Ex: O campo "id_cliente" na tabela de "Pedidos".</em></p>
+                    <h3>Chave Estrangeira (FK) - Foreign Key</h3>
+                    <p>A <strong>Chave Estrangeira</strong> é o campo que estabelece o RELACIONAMENTO entre duas tabelas.</p>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        <li><strong>Conexão:</strong> Ela guarda o valor da PK de outra tabela.</li>
+                        <li><strong>Integridade:</strong> Garante que o vínculo seja válido (não posso vender para um cliente que não existe).</li>
+                        <li><strong>Navegação:</strong> Permite cruzar dados de tabelas diferentes.</li>
+                    </ul>
+                    <p><em>Ex: O campo "id_cliente" na tabela de "Pedidos" aponta para o "id" do "Cliente".</em></p>
                 </div>
             </div>
-            <img src="https://placehold.co/800x150/E32119/FFFFFF?text=PK+(Tabela+A)+----liga---->+FK+(Tabela+B)" alt="Relacionamento PK FK" style="width: 100%; margin-top: 20px; border-radius: 8px;">
+            
+            <h3 style="margin-top: 20px; font-size: 1.2rem;">Exemplo Visual:</h3>
+            <img src="https://placehold.co/800x150/E32119/FFFFFF?text=PK+(Tabela+A)+----liga---->+FK+(Tabela+B)" alt="Relacionamento PK FK" style="width: 100%; margin-top: 10px; border-radius: 8px;">
+            
+            <h3 style="margin-top: 20px; font-size: 1.2rem;">Estrutura das Tabelas:</h3>
+            
+            <div class="grid-layout" style="margin-top: 10px; grid-template-columns: 1fr 1fr; align-items: start;">
+                <!-- Tabela Clientes -->
+                <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="background: #004587; color: white; padding: 10px; text-align: center; font-weight: bold;">
+                        Tabela: CLIENTES
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <tr style="background: #f2f2f2;">
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">ID <span style="color: #d97706; font-size: 0.8em;">(PK)</span></th>
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">Nome</th>
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">Email</th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #fff3cd; font-weight: bold;">1</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">Ana Silva</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">ana@email.com</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #fff3cd; font-weight: bold;">2</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">João Souza</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">joao@email.com</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <!-- Tabela Pedidos -->
+                <div style="background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    <div style="background: #28a745; color: white; padding: 10px; text-align: center; font-weight: bold;">
+                        Tabela: PEDIDOS
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                        <tr style="background: #f2f2f2;">
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">ID <span style="color: #d97706; font-size: 0.8em;">(PK)</span></th>
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">Data</th>
+                            <th style="padding: 8px; border-bottom: 1px solid #ddd; text-align: left;">ID_Cliente <span style="color: #004587; font-size: 0.8em;">(FK)</span></th>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #e6fffa;">101</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">2023-10-01</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #cce5ff; font-weight: bold;">1</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #e6fffa;">102</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">2023-10-02</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #cce5ff; font-weight: bold;">2</td>
+                        </tr>
+                         <tr>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #e6fffa;">103</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee;">2023-10-03</td>
+                            <td style="padding: 8px; border-bottom: 1px solid #eee; background-color: #cce5ff; font-weight: bold;">1</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <p style="text-align: center; font-size: 0.9rem; margin-top: 5px; color: #666;">
+                <span style="display: inline-block; width: 12px; height: 12px; background: #fff3cd; border: 1px solid #ddd; margin-right: 5px;"></span>PK (Origem) 
+                <span style="margin: 0 15px;">|</span>
+                <span style="display: inline-block; width: 12px; height: 12px; background: #cce5ff; border: 1px solid #ddd; margin-right: 5px;"></span>FK (Referência)
+            </p>
         </div>
 
         <!-- Slide 8: SQL (Structured Query Language) -->
@@ -239,7 +347,37 @@ TABELA: Clientes
             <p style="text-align: center; margin-top: 15px;">Exemplo: <strong>Aluno</strong> (Entidade) <em>assiste</em> (Relacionamento) <strong>Aula</strong> (Entidade).</p>
         </div>
 
-        <!-- Slide 11: Atividade Prática - Parte 1 -->
+        <!-- Slide 11 (Novo): Exemplo Prático MER -->
+        <div class="slide">
+            <h2>Exemplo Prático de MER: Médico e Paciente</h2>
+            <p>Vamos analisar um diagrama real para entender como representamos os dados graficamente.</p>
+            
+            <img src="assets/img/01_intro/medico.png" alt="Diagrama MER Médico Paciente" style="width: 100%; max-width: 800px; margin: 10px auto; display: block; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
+
+            <div class="grid-layout" style="grid-template-columns: 1fr; gap: 10px;">
+                <div class="grid-item">
+                    <h3>1. Entidades (Retângulos)</h3>
+                    <p><strong>Médico</strong> e <strong>Paciente</strong>. São os objetos principais do nosso sistema.</p>
+                </div>
+                
+                <div class="grid-item">
+                    <h3>2. Relacionamento (Losango)</h3>
+                    <p><strong>Atendimento</strong>. Conecta o Médico ao Paciente. Observe que o próprio atendimento tem um atributo: <em>Data</em> (quando ocorreu).</p>
+                </div>
+
+                <div class="grid-item">
+                    <h3>3. Atributos (Elipses)</h3>
+                    <ul style="list-style-type: disc; margin-left: 20px;">
+                        <li><strong>Identificadores (Sublinhados):</strong> <u>CRM</u> (Médico) e <u>CPF</u> (Paciente). São chaves únicas que não se repetem.</li>
+                        <li><strong>Simples:</strong> Nome. Armazena um valor único.</li>
+                        <li><strong>Multivalorado (Elipse Dupla):</strong> <span style="border: 2px double #333; border-radius: 50%; padding: 0 5px;">Telefone</span>. Indica que um paciente pode ter mais de um número.</li>
+                        <li><strong>Composto (Ramificações):</strong> Endereço. Para ser completo, ele precisa de <em>Rua</em>, <em>Número</em> e <em>Bairro</em>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 12: Atividade Prática - Parte 1 -->
         <div class="slide">
             <h2>Atividade Prática 1: Conceitos (40 min)</h2>
             <div class="activity-box">
@@ -255,7 +393,7 @@ TABELA: Clientes
             <button class="send-btn send-email-btn" data-input-id="resp-parte1">📧 Enviar Parte 1</button>
         </div>
 
-        <!-- Slide 12: Atividade Prática - Parte 2 -->
+        <!-- Slide 13: Atividade Prática - Parte 2 -->
         <div class="slide">
             <h2>Atividade Prática 2: Modelagem (40 min)</h2>
             <div class="activity-box">
@@ -271,7 +409,7 @@ TABELA: Clientes
             <button class="send-btn send-email-btn" data-input-id="resp-parte2">📧 Enviar Parte 2</button>
         </div>
 
-        <!-- Slide 13: Atividade Prática - Parte 3 -->
+        <!-- Slide 14: Atividade Prática - Parte 3 -->
         <div class="slide">
             <h2>Atividade Prática 3: SQL e Pesquisa (40 min)</h2>
             <div class="activity-box">
@@ -293,11 +431,11 @@ CREATE TABLE carros (
             <button class="send-btn send-email-btn" data-input-id="resp-parte3">📧 Enviar Parte 3</button>
         </div>
 
-        <!-- Slide 14: Encerramento -->
+        <!-- Slide 15: Encerramento -->
         <div class="slide">
-            <h1>Parabéns!</h1>
-            <h2>Você concluiu a Introdução a Banco de Dados</h2>
-            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Módulo+1+Concluído!" alt="Conclusão" style="width: 100%; border-radius: 10px; margin-top: 20px;">
+            <h2 style="text-align: center; color: #28a745;">Parabéns!</h2>
+            <h3 style="text-align: center;">Você concluiu a Introdução a Banco de Dados</h3>
+            <img src="https://placehold.co/800x300/28a745/FFFFFF?text=Módulo+1+Concluído!" alt="Conclusão" style="width: 50%; display: block; margin: 20px auto; border-radius: 10px;">
             <p style="margin-top: 30px;">Próxima Aula: <strong>Modelagem de Dados Avançada e Normalização</strong>.</p>
             <p>Certifique-se de ter enviado todas as 3 partes da atividade prática.</p>
             <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
@@ -311,7 +449,7 @@ CREATE TABLE carros (
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
-    <div class="slide-number" id="slideNumber">1 / 14</div>
+    <div class="slide-number" id="slideNumber">1 / 15</div>
 
     <script src="assets/js/script.js"></script>
 </body>

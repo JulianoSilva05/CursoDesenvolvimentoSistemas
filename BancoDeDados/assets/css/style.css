@@ -74,6 +74,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
+    transition: width 0.3s ease; /* Smooth transition for split view */
 }
 
 .slide {
@@ -88,8 +89,9 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px;
-    background: white;
+    padding: 80px 60px 120px 60px; 
+    background: white url('../img/slide_bg.png') no-repeat center center; 
+    background-size: 100% 100%;
     z-index: 1;
     overflow-y: auto;
 }
@@ -156,15 +158,89 @@ ul {
 /* Input for Exercises */
 .code-input {
     width: 100%;
-    max-width: 800px;
-    height: 200px;
+    max-width: 100%;
+    height: 35vh;
+    min-height: 250px;
     background: #f4f4f4;
     border: 1px solid #ccc;
-    padding: 10px;
-    font-family: monospace;
-    font-size: 1rem;
-    margin-top: 10px;
+    padding: 15px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 1.1rem;
+    line-height: 1.5;
+    margin-top: 15px;
     resize: vertical;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    transition: all 0.3s ease;
+}
+
+/* Split Screen / Side View Mode */
+.code-input.side-view {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 50vw !important;
+    height: 100vh !important;
+    max-width: 50vw !important;
+    z-index: 9999;
+    padding: 40px;
+    font-size: 1.2rem;
+    border: none;
+    border-left: 5px solid var(--senai-blue);
+    border-radius: 0;
+    background: #fdfdfd;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
+}
+
+/* Body State when Split Screen is active */
+body.split-screen-mode .slide-container {
+    width: 50vw; /* Compress slides to left half */
+}
+
+/* Adjust Controls in Split Screen */
+body.split-screen-mode .controls {
+    left: 25vw; /* Center of the left half */
+    transform: translateX(-50%);
+}
+
+body.split-screen-mode .senai-logo {
+    right: auto;
+    left: 20px; /* Move logo to left to avoid overlapping text area */
+}
+
+/* Maximize/Split Button (inserted via JS) */
+.maximize-btn {
+    background: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+.maximize-btn:hover { background: #444; }
+
+/* Close Button for Split View */
+.close-fullscreen-btn {
+    position: fixed;
+    top: 10px;
+    right: 20px;
+    background: var(--senai-red);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    font-size: 0.9rem;
+    font-weight: bold;
+    cursor: pointer;
+    z-index: 10000;
+    border-radius: 5px;
+    display: none;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.code-input.side-view + .close-fullscreen-btn,
+body.split-screen-mode .close-fullscreen-btn {
+    display: block;
 }
 
 .send-btn {
@@ -194,6 +270,7 @@ ul {
     height: auto;
     z-index: 100;
     filter: drop-shadow(2px 2px 4px rgba(0,0,0,0.2));
+    transition: all 0.3s ease;
 }
 
 /* Controls */
@@ -205,6 +282,7 @@ ul {
     z-index: 100;
     display: flex;
     gap: 20px;
+    transition: all 0.3s ease;
 }
 
 .nav-btn {
@@ -282,20 +360,21 @@ tr:nth-child(even) {background-color: #f2f2f2;}
     background-color: #ffeb3b !important;
 }
 
-/* Venn Diagram SVG */
-.venn-wrapper {
-    display: flex;
-    justify-content: center;
-    margin: 20px;
+.finish-btn {
+    background: var(--senai-red);
+    color: white;
+    padding: 15px 30px;
+    font-size: 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 30px;
+    display: block;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
-.venn-svg {
-    width: 300px;
-    height: 180px;
-}
-
-.venn-text {
-    fill: #333;
-    font-family: sans-serif;
-    font-weight: bold;
+.finish-btn:hover {
+    background: #c01c15;
 }
