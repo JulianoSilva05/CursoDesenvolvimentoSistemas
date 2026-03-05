@@ -32,6 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 7. Time Tracking
     startTime = Date.now();
+
+    // 8. Image Preview Modal Logic
+    initImagePreview();
 });
 
 let startTime; 
@@ -540,4 +543,46 @@ function initFinishButton() {
             }
         });
     }
+}
+
+function initImagePreview() {
+    const previewLinks = document.querySelectorAll('.preview-link');
+    if (previewLinks.length === 0) return;
+
+    // Create Modal Elements
+    const modal = document.createElement('div');
+    modal.id = 'img-preview-modal';
+    modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.9); z-index: 10001; display: none;
+        justify-content: center; align-items: center; cursor: zoom-out;
+    `;
+    
+    const img = document.createElement('img');
+    img.style.cssText = `max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2);`;
+    
+    const closeHint = document.createElement('div');
+    closeHint.textContent = 'Clique em qualquer lugar para fechar';
+    closeHint.style.cssText = `position: absolute; bottom: 20px; color: white; font-family: sans-serif; opacity: 0.7;`;
+
+    modal.appendChild(img);
+    modal.appendChild(closeHint);
+    document.body.appendChild(modal);
+
+    // Add Event Listeners
+    previewLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            e.preventDefault();
+            const imgSrc = link.getAttribute('data-img');
+            if (imgSrc) {
+                img.src = imgSrc;
+                modal.style.display = 'flex';
+            }
+        });
+    });
+
+    modal.addEventListener('click', () => {
+        modal.style.display = 'none';
+        img.src = ''; // Clear source
+    });
 }
