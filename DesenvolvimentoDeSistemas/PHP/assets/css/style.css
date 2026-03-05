@@ -74,6 +74,7 @@ body {
     width: 100%;
     height: 100%;
     position: relative;
+    transition: width 0.3s ease; /* Smooth transition for split view */
 }
 
 .slide {
@@ -185,42 +186,74 @@ ul {
     transition: all 0.3s ease;
 }
 
-/* Fullscreen Textarea Mode */
-.code-input.fullscreen {
+/* Split Screen / Side View Mode */
+.code-input.side-view {
     position: fixed;
     top: 0;
-    left: 0;
-    width: 100vw !important;
+    right: 0;
+    width: 50vw !important;
     height: 100vh !important;
-    max-width: 100vw !important;
+    max-width: 50vw !important;
     z-index: 9999;
     padding: 40px;
-    font-size: 1.5rem; /* Fonte maior para melhor leitura */
+    font-size: 1.2rem;
     border: none;
+    border-left: 5px solid var(--senai-blue);
     border-radius: 0;
     background: #fdfdfd;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.1);
 }
 
-/* Close Button for Fullscreen Textarea */
+/* Body State when Split Screen is active */
+body.split-screen-mode .slide-container {
+    width: 50vw; /* Compress slides to left half */
+}
+
+/* Adjust Controls in Split Screen */
+body.split-screen-mode .controls {
+    left: 25vw; /* Center of the left half */
+    transform: translateX(-50%);
+}
+
+body.split-screen-mode .senai-logo {
+    right: auto;
+    left: 20px; /* Move logo to left to avoid overlapping text area */
+}
+
+/* Maximize/Split Button (inserted via JS) */
+.maximize-btn {
+    background: #666;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-left: 10px;
+    font-size: 0.9rem;
+}
+.maximize-btn:hover { background: #444; }
+
+/* Close Button for Split View */
 .close-fullscreen-btn {
     position: fixed;
-    top: 20px;
+    top: 10px;
     right: 20px;
     background: var(--senai-red);
     color: white;
     border: none;
-    padding: 10px 20px;
-    font-size: 1rem;
+    padding: 8px 15px;
+    font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
     z-index: 10000;
     border-radius: 5px;
-    display: none; /* Hidden by default */
+    display: none;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);
 }
 
-.code-input.fullscreen + .close-fullscreen-btn {
-    display: block; /* Show when textarea is fullscreen */
+.code-input.side-view + .close-fullscreen-btn,
+body.split-screen-mode .close-fullscreen-btn {
+    display: block;
 }
 
 .send-btn {

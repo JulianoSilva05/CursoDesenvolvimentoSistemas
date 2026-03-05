@@ -24,30 +24,17 @@ document.addEventListener('DOMContentLoaded', () => {
     // 3. Email Sending Logic
     initEmailSender();
 
-    // 5. Finish Lesson Logic (Wait for DOM to load potentially dynamic buttons)
+    // 5. Split Screen Textarea Logic
+    initSplitScreenTextarea();
+
+    // 6. Finish Lesson Button
     initFinishButton();
 
-    // 6. Focus Mode (Proctoring) - Blocks access to other sites (deterrent)
-    initFocusMode();
-    // 7. Time Tracking (Time on Page)
+    // 7. Time Tracking
     startTime = Date.now();
-
-    // 8. Image Preview Modal Logic
-    initImagePreview();
-
-    // Check fullscreen on initial load if student is already identified (skipped modal)
-    if (studentName && !document.fullscreenElement) {
-        // We cannot force it without gesture, but we can show the resume overlay immediately
-        // However, initFocusMode creates the logic but doesn't expose forceFullscreenReentry directly unless we attach it to window or move it out.
-        // Let's rely on the first click (which we added listener for in initFocusMode) or wait for visibility change.
-        // But the user specifically asked for maximize on unlock (which reloads).
-        // On reload, we are here.
-        // Let's simulate a "blur/focus" cycle or just wait for the user to interact.
-        // The body click listener in initFocusMode will handle the first click.
-    }
 });
 
-let startTime; // Global variable to store start time
+let startTime; 
 
 function getFormattedTime() {
     const elapsed = Date.now() - startTime;
@@ -57,13 +44,213 @@ function getFormattedTime() {
     return `${hours}h ${minutes}m ${seconds}s`;
 }
 
-/* 
-function initFullscreenTextarea() {
-    // ... Function removed to allow viewing slides while typing ...
-}
-*/
+function showIdentificationModal() {
+    const modal = document.createElement('div');
+    modal.className = 'modal-overlay';
+    modal.innerHTML = `
+        <div class="modal-content">
+            <h2>Identificação do Aluno</h2>
+            <p>Por favor, digite seu nome completo para iniciar a aula.</p>
+            <div style="background: #fff3cd; color: #d97706; padding: 10px; margin: 10px 0; border-left: 5px solid #ffc107; font-size: 0.9rem; text-align: left;">
+                <strong>⚠️ Regras Importantes:</strong>
+                <ul style="margin: 5px 0 0 20px;">
+                    <li>O sistema monitora se você sair da tela.</li>
+                    <li>Ao completar 5 infrações, a tela será bloqueada.</li>
+                    <li>Use o botão de "Dividir Tela" para consultar o material enquanto responde.</li>
+                </ul>
+            </div>
+            <input type="text" id="studentNameInput" placeholder="Seu Nome Completo">
+            <button id="saveNameBtn" disabled>Começar Aula</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
 
-// --- Focus Mode Logic ---
+    const input = document.getElementById('studentNameInput');
+    const btn = document.getElementById('saveNameBtn');
+
+    input.addEventListener('input', () => {
+        btn.disabled = input.value.trim().length < 3;
+    });
+
+    btn.addEventListener('click', () => {
+        const name = input.value.trim();
+        if (name) {
+            localStorage.setItem('studentName', name);
+            modal.remove();
+        }
+    });
+}
+
+function initSlideshow() {
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const progressBar = document.getElementById('progressBar');
+    const slideNumber = document.getElementById('slideNumber');
+    const btnPrev = document.getElementById('btnPrev');
+    const btnNext = document.getElementById('btnNext');
+
+    if (!btnPrev || !btnNext) return;
+
+    function checkAndEnforceFullscreen() {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(err => {
+                console.log("Fullscreen request failed:", err);
+            });
+        }
+    }
+
+    function showSlide(index) {
+        if (index < 0) index = 0;
+        if (index >= slides.length) index = slides.length - 1;
+
+        currentSlide = index;
+
+        slides.forEach(slide => slide.classList.remove('active'));
+        slides[currentSlide].classList.add('active');
+
+        slides[currentSlide].scrollTop = 0;
+
+        if (progressBar) {
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+
+        if (slideNumber) {
+            slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
+        }
+
+        btnPrev.disabled = currentSlide === 0;
+        btnNext.disabled = currentSlide === slides.length - 1;
+        
+        if (currentSlide === slides.length - 1) {
+            btnNext.style.display = 'none';
+        } else {
+            btnNext.style.display = 'inline-block';
+            btnNext.textContent = "Próximo";
+        }
+    }
+
+    btnPrev.addEventListener('click', () => {
+        checkAndEnforceFullscreen();
+        showSlide(currentSlide - 1);
+    });
+    
+    btnNext.addEventListener('click', () => {
+        checkAndEnforceFullscreen();
+        showSlide(currentSlide + 1);
+    });
+
+    showSlide(0);
+}
+
+function initEmailSender() {
+    const sendBtns = document.querySelectorAll('.send-btn'); // PHP uses .send-btn (check HTML)
+    
+    // Helper para mostrar mensagens sem sair da tela cheia (evita infração)
+    function showInlineMessage(btn, text, isError = false) {
+        // Remove mensagens anteriores
+        const oldMsg = btn.parentNode.querySelector('.status-msg');
+        if (oldMsg) oldMsg.remove();
+
+        const msg = document.createElement('p');
+        msg.className = 'status-msg';
+        msg.innerHTML = text; // Permite HTML/Emojis
+        msg.style.color = isError ? '#dc3545' : '#28a745';
+        msg.style.marginTop = '10px';
+        msg.style.fontWeight = 'bold';
+        msg.style.fontSize = '1.1rem';
+        msg.style.transition = 'opacity 0.5s';
+        
+        // Insere logo após o botão
+        btn.parentNode.insertBefore(msg, btn.nextSibling);
+
+        // Remove após 5 segundos se for erro (sucesso fica fixo)
+        if (isError) {
+            setTimeout(() => {
+                msg.style.opacity = '0';
+                setTimeout(() => msg.remove(), 500);
+            }, 5000);
+        }
+    }
+
+    sendBtns.forEach(btn => {
+        btn.addEventListener('click', async (e) => {
+            const studentName = localStorage.getItem('studentName') || "Aluno Desconhecido";
+            const lessonTitle = document.title;
+            
+            // PHP files use .code-input class
+            const container = btn.parentElement; // Usually inside a div
+            // Try to find input in parent or siblings (robustness)
+            let codeInput = container.querySelector('.code-input');
+            if (!codeInput) {
+                 // Try finding it in the previous sibling element (slide structure variation)
+                 const prev = btn.previousElementSibling;
+                 if (prev && prev.classList.contains('code-input')) {
+                     codeInput = prev;
+                 } else {
+                     // Try searching in the whole slide
+                     const slide = btn.closest('.slide');
+                     if (slide) codeInput = slide.querySelector('.code-input');
+                 }
+            }
+            
+            if (!codeInput) {
+                showInlineMessage(btn, '⚠️ Erro: Campo de código não encontrado.', true);
+                return;
+            }
+
+            const codeContent = codeInput.value;
+            if (!codeContent.trim()) {
+                showInlineMessage(btn, '⚠️ Por favor, escreva sua resposta antes de enviar.', true);
+                return;
+            }
+
+            const slide = btn.closest('.slide');
+            const activityTitleElement = slide.querySelector('h2');
+            const questionText = activityTitleElement ? activityTitleElement.innerText : "Atividade";
+
+            const originalText = btn.innerHTML;
+            btn.disabled = true;
+            btn.innerHTML = '⏳ Enviando...';
+
+            const formData = {
+                _subject: `PHP - ${lessonTitle} - ${studentName}`,
+                _template: "table",
+                _captcha: "false",
+                Nome_Aluno: studentName,
+                Aula: lessonTitle,
+                Tempo_de_Aula: getFormattedTime(),
+                Pergunta: questionText,
+                Resposta: codeContent
+            };
+
+            try {
+                const response = await fetch("https://formsubmit.co/ajax/julianoqm@gmail.com", {
+                    method: "POST",
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (response.ok) {
+                    showInlineMessage(btn, '✅ Atividade enviada com sucesso!', false);
+                    btn.innerHTML = '✅ Enviado!';
+                    btn.style.backgroundColor = '#28a745';
+                } else {
+                    throw new Error('Erro na resposta do servidor.');
+                }
+            } catch (error) {
+                console.error(error);
+                showInlineMessage(btn, '❌ Erro ao enviar. Verifique sua internet e tente novamente.', true);
+                btn.disabled = false;
+                btn.innerHTML = originalText;
+            }
+        });
+    });
+}
+
 function initFocusMode() {
     let infractionCount = parseInt(localStorage.getItem('infractionCount') || '0');
     const maxInfractions = 5; 
@@ -246,300 +433,109 @@ function initFocusMode() {
     }, { once: true }); // Only try once per session to avoid annoyance
 }
 
-function showIdentificationModal() {
-    const modal = document.createElement('div');
-    modal.className = 'modal-overlay';
-    modal.innerHTML = `
-        <div class="modal-content">
-            <h2>Identificação do Aluno</h2>
-            <p>Por favor, digite seu nome completo para iniciar a aula.</p>
-            <div style="background: #fff3cd; color: #d97706; padding: 10px; margin: 10px 0; border-left: 5px solid #ffc107; font-size: 0.9rem; text-align: left;">
-                <strong>⚠️ Regras Importantes:</strong>
-                <ul style="margin: 5px 0 0 20px;">
-                    <li>Qualquer ação que saia da tela implicará em infração.</li>
-                    <li>Infrações descontam pontos da atividade do dia.</li>
-                    <li>O sistema monitora trocas de aba e minimizações.</li>
-                </ul>
-            </div>
-            <input type="text" id="studentNameInput" placeholder="Seu Nome Completo">
-            <button id="saveNameBtn" disabled>Começar Aula</button>
-        </div>
-    `;
-    document.body.appendChild(modal);
-
-    const input = document.getElementById('studentNameInput');
-    const btn = document.getElementById('saveNameBtn');
-
-    input.addEventListener('input', () => {
-        btn.disabled = input.value.trim().length < 3;
-    });
-
-    btn.addEventListener('click', () => {
-        const name = input.value.trim();
-        if (name) {
-            localStorage.setItem('studentName', name);
-            modal.remove();
-        }
-    });
-}
-
-// List of lessons in order for navigation
-const lessonFiles = [
-    "01_estrutura_html5.html",
-    "02_flexbox_responsivo.html",
-    "03_bootstrap.html",
-    "04_logica_js.html",
-    "05_intro_php.html",
-    "06_lacos_arrays.html",
-    "07_html_php_forms.html",
-    "08_pdo_conexao.html",
-    "09_crud_create.html",
-    "10_crud_read.html",
-    "11_crud_update_delete.html",
-    "12_sessoes_autenticacao.html",
-    "13_upload_relacionamentos.html",
-    "14_arquitetura_seguranca.html",
-    "15_projeto_final.html"
-];
-
-function navigateToNextLesson() {
-    // Get current filename
-    let path = window.location.pathname;
-    let currentFile = path.substring(path.lastIndexOf('/') + 1);
-    currentFile = decodeURIComponent(currentFile);
+function initSplitScreenTextarea() {
+    const textareas = document.querySelectorAll('.code-input');
     
-    // Handle case where URL might not have the file name (e.g. server root)
-    if (!currentFile || currentFile === 'index.html') return; // Don't auto-nav from index
-
-    const currentIndex = lessonFiles.indexOf(currentFile);
-    if (currentIndex !== -1 && currentIndex < lessonFiles.length - 1) {
-        if(confirm("Você finalizou esta aula. Deseja ir para a próxima?")) {
-            window.location.href = lessonFiles[currentIndex + 1];
-        }
-    } else if (currentIndex === lessonFiles.length - 1) {
-        alert("Parabéns! Você concluiu todas as aulas do curso.");
-    }
-}
-
-function initSlideshow() {
-    let currentSlide = 0;
-    const slides = document.querySelectorAll('.slide');
-    const progressBar = document.getElementById('progressBar');
-    const slideNumber = document.getElementById('slideNumber');
-    const btnPrev = document.getElementById('btnPrev');
-    const btnNext = document.getElementById('btnNext');
-
-    // Create controls if they don't exist (robustness)
-    if (!btnPrev || !btnNext) {
-        console.warn('Navigation buttons not found.');
-        return;
+    // Create global close button if it doesn't exist
+    let closeBtn = document.querySelector('.close-fullscreen-btn');
+    if (!closeBtn) {
+        closeBtn = document.createElement('button');
+        closeBtn.className = 'close-fullscreen-btn';
+        closeBtn.innerHTML = '➡️ Restaurar Tela';
+        document.body.appendChild(closeBtn);
     }
 
-    function showSlide(index) {
-        if (index < 0) index = 0;
-        if (index >= slides.length) index = slides.length - 1;
-
-        currentSlide = index;
-
-        slides.forEach(slide => slide.classList.remove('active'));
-        slides[currentSlide].classList.add('active');
-
-        // Scroll to top when changing slide
-        slides[currentSlide].scrollTop = 0;
-
-        // Update Progress
-        if (progressBar) {
-            const progress = ((currentSlide + 1) / slides.length) * 100;
-            progressBar.style.width = `${progress}%`;
-        }
-
-        // Update Number
-        if (slideNumber) {
-            slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
-        }
-
-        // Update Buttons
-        btnPrev.disabled = currentSlide === 0;
-        btnNext.disabled = currentSlide === slides.length - 1;
+    textareas.forEach(textarea => {
+        // Create Split Button for each textarea
+        const splitBtn = document.createElement('button');
+        splitBtn.className = 'maximize-btn';
+        splitBtn.innerHTML = '◫ Dividir Tela';
+        splitBtn.title = 'Abrir editor ao lado para consultar os slides';
         
-        if (currentSlide === slides.length - 1) {
-            // Last slide behavior
-            btnNext.style.display = 'none'; // Hide "Next" on last slide
-        } else {
-            btnNext.style.display = 'inline-block';
-            btnNext.textContent = "Próximo";
-        }
-    }
-
-    // Check and Enforce Fullscreen on Navigation
-    function checkAndEnforceFullscreen() {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(err => {
-                console.log("Fullscreen request failed:", err);
-            });
-        }
-    }
-
-    btnPrev.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide - 1);
-    });
-    
-    btnNext.addEventListener('click', () => {
-        checkAndEnforceFullscreen();
-        showSlide(currentSlide + 1);
-    });
-
-    // Keyboard Navigation REMOVED as requested
-    /*
-    document.addEventListener('keydown', (e) => {
-        const activeSlide = slides[currentSlide];
+        // Prevent Copy/Paste
+        textarea.addEventListener('paste', e => {
+             e.preventDefault();
+             alert("🚫 Colar é proibido! Digite sua resposta.");
+        });
+        textarea.addEventListener('copy', e => e.preventDefault());
         
-        // Next Action (ArrowRight, Space, PageDown)
-        if (['ArrowRight', ' ', 'PageDown'].includes(e.key)) {
-            // Removed logic
-        }
-        // Prev Action (ArrowLeft, PageUp)
-        else if (['ArrowLeft', 'PageUp'].includes(e.key)) {
-            // Removed logic
-        }
-    });
-    */
+        // Insert button before textarea
+        textarea.parentNode.insertBefore(splitBtn, textarea);
 
-    // Initialize
-    showSlide(0);
-}
-
-function initEmailSender() {
-    // Select all buttons with class 'send-btn' (used in our HTML templates)
-    const sendBtns = document.querySelectorAll('.send-btn');
-    
-    sendBtns.forEach(btn => {
-        btn.addEventListener('click', async (e) => {
-            const studentName = localStorage.getItem('studentName') || "Aluno Desconhecido";
-            const lessonTitle = document.title;
-            
-            // Find the textarea in the same container (sibling or parent search)
-            const container = btn.parentElement;
-            const codeInput = container.querySelector('.code-input');
-            
-            if (!codeInput) {
-                alert('Erro: Campo de código não encontrado.');
-                return;
+        // Logic
+        splitBtn.addEventListener('click', () => {
+            // Store original parent to restore later
+            if (!textarea.dataset.originalParent) {
+                // Use a marker to know exactly where to put it back
+                const marker = document.createElement('div');
+                marker.id = 'textarea-marker-' + Math.random().toString(36).substr(2, 9);
+                marker.style.display = 'none';
+                textarea.parentNode.insertBefore(marker, textarea);
+                textarea.dataset.markerId = marker.id;
             }
 
-            const codeContent = codeInput.value;
-            if (!codeContent.trim()) {
-                alert('Por favor, escreva sua resposta antes de enviar.');
-                return;
-            }
+            // Move to body to persist across slide changes
+            document.body.appendChild(textarea);
+            
+            textarea.classList.add('side-view');
+            document.body.classList.add('split-screen-mode');
+            closeBtn.style.display = 'block';
+            textarea.focus();
 
-            // Find the question/activity title (Previous H2 in the slide)
-            const slide = btn.closest('.slide');
-            const activityTitleElement = slide.querySelector('h2');
-            const questionText = activityTitleElement ? activityTitleElement.innerText : "Atividade";
+            // Auto-copy question logic...
+            // Logic to find activity content in the slide
+            // We need to find the slide that *contained* the button
+            const slide = splitBtn.closest('.slide'); 
+            if (slide) {
+                const activityBox = slide.querySelector('.activity-box') || slide.querySelector('.grid-layout');
+                if (activityBox) {
+                    let formattedText = "";
+                    const separator = "\n/* =========================================\n   SUA RESPOSTA ABAIXO:\n   ========================================= */\n\n";
+                    
+                    // Simple text extraction
+                    let textContent = activityBox.innerText;
+                    // Cleanup excessive newlines
+                    textContent = textContent.replace(/\n\s*\n/g, '\n');
+                    
+                    formattedText = "/* ENUNCIADO:\n" + textContent + "\n*/" + separator;
 
-            // Disable button to prevent double submission
-            const originalText = btn.innerHTML;
-            btn.disabled = true;
-            btn.innerHTML = '⏳ Enviando...';
-
-            // Data to send via FormSubmit
-            const formData = {
-                _subject: `PHP - ${lessonTitle} - ${studentName}`,
-                _template: "table", 
-                _captcha: "false",
-                Nome_Aluno: studentName,
-                Aula: lessonTitle,
-                Tempo_de_Aula: getFormattedTime(),
-                Codigo_Resposta: questionText,
-                Resposta_Aluno: codeContent
-            };
-
-            try {
-                // Using FormSubmit.co AJAX API
-                const response = await fetch("https://formsubmit.co/ajax/julianoqm@gmail.com", {
-                    method: "POST",
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify(formData)
-                });
-
-                if (response.ok) {
-                    alert('✅ Resposta enviada com sucesso para o professor!');
-                    btn.innerHTML = '✅ Enviado!';
-                    btn.style.backgroundColor = '#28a745';
-                } else {
-                    throw new Error('Erro na resposta do servidor de email.');
+                    if (!textarea.value.includes("SUA RESPOSTA ABAIXO")) {
+                        textarea.value = formattedText + textarea.value;
+                    }
                 }
-            } catch (error) {
-                console.error(error);
-                alert('❌ Erro ao enviar. Verifique sua internet.');
-                btn.disabled = false;
-                btn.innerHTML = originalText;
-            }
-        });
-    });
-}
-
-function initImagePreview() {
-    const previewLinks = document.querySelectorAll('.preview-link');
-    if (previewLinks.length === 0) return;
-
-    // Create Modal Elements
-    const modal = document.createElement('div');
-    modal.id = 'img-preview-modal';
-    modal.style.cssText = `
-        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-        background: rgba(0,0,0,0.9); z-index: 10001; display: none;
-        justify-content: center; align-items: center; cursor: zoom-out;
-    `;
-    
-    const img = document.createElement('img');
-    img.style.cssText = `max-width: 90%; max-height: 90%; border-radius: 8px; box-shadow: 0 0 20px rgba(255,255,255,0.2);`;
-    
-    const closeHint = document.createElement('div');
-    closeHint.textContent = 'Clique em qualquer lugar para fechar';
-    closeHint.style.cssText = `position: absolute; bottom: 20px; color: white; font-family: sans-serif; opacity: 0.7;`;
-
-    modal.appendChild(img);
-    modal.appendChild(closeHint);
-    document.body.appendChild(modal);
-
-    // Add Event Listeners
-    previewLinks.forEach(link => {
-        link.addEventListener('click', (e) => {
-            e.preventDefault();
-            const imgSrc = link.getAttribute('data-img');
-            if (imgSrc) {
-                img.src = imgSrc;
-                modal.style.display = 'flex';
             }
         });
     });
 
-    modal.addEventListener('click', () => {
-        modal.style.display = 'none';
-        img.src = ''; // Clear source
+    closeBtn.addEventListener('click', () => {
+        const splitInputs = document.querySelectorAll('.code-input.side-view');
+        splitInputs.forEach(el => {
+            el.classList.remove('side-view');
+            
+            // Restore to original location
+            const markerId = el.dataset.markerId;
+            if (markerId) {
+                const marker = document.getElementById(markerId);
+                if (marker && marker.parentNode) {
+                    marker.parentNode.insertBefore(el, marker);
+                    marker.remove();
+                }
+                delete el.dataset.markerId;
+            }
+        });
+        
+        document.body.classList.remove('split-screen-mode');
+        closeBtn.style.display = 'none';
     });
 }
 
 function initFinishButton() {
-    // This function looks for a button with id="finishLessonBtn"
-    // It can be added dynamically or exist in HTML
     const finishBtn = document.getElementById('finishLessonBtn');
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
-            if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e voltará para o início.')) {
-                localStorage.clear(); // Clears ALL localStorage data (studentName, infractions, etc.)
-                alert('Aula finalizada! Obrigado.');
-                
-                // Redirect to the first slide of the current page (reload) 
-                // OR if we want to go to a specific "Home", we could do window.location.href = 'index.html';
-                // The request says "volta para o primeiro slide ... solicitando o nome do outro aluno"
-                // Reloading the page will trigger the check for studentName, find it missing, and show the modal.
+            if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e reiniciará.')) {
+                localStorage.clear(); 
+                alert('Aula finalizada com sucesso!');
                 location.reload(); 
             }
         });
