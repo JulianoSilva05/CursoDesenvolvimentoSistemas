@@ -1,0 +1,294 @@
+
+--- Page 3 ---
+Related titles from O’Reilly
+Ant: The Definitive Guide
+Building Java Enterprise Applications
+Database Programming with JDBC
+and Java
+Developing JavaBeans
+Enterprise JavaBeans
+J2ME in a Nutshell
+Java 2D Graphics
+Java and SOAP
+Java & XML
+Java and XML Data Binding
+Java and XSLT
+Java Cookbook
+Java Cryptography
+Java Distributed Computing
+Java Enterprise in a Nutshell
+Java Examples in a Nutshell
+Java Foundation Classes in a Nutshell
+Java I/O
+Java in a Nutshell
+Java Internationalization
+Java Message Service
+Java Network Programming
+Java NIO
+Java Performance Tuning
+Java Programming with Oracle JDBC
+Java Programming with Oracle SQLJ
+Java RMI
+Java Security
+JavaServer Pages
+JavaServer Pages Pocket Reference
+Java Servlet Programming
+Java Threads
+Java Web Services
+JXTA  in a Nutshell
+Learning Java
+Learning Wireless Java
+Also available
+The Java Enterprise CD Bookshelf
+--- Page 4 ---
+Java
+
+ Swing
+SECOND EDITION
+Marc Loy , Robert Eckstein, Dave W ood,
+James Elliott, and Brian Cole
+Beijing • Cambridge • Farnham • Köln • Sebastopol • Tokyo
+,swing2.book.8435  Page iii  Wednesday, March 7, 2012  11:42 AM
+--- Page 5 ---
+Java ™ Swing, Second Edition
+by Marc Loy, Robert Eckstein, Dave Wood, James Elliott, and Brian Cole
+Copyright © 2003, 1998 O’Reilly Media, Inc. All rights reserved.
+Printed in the United States of America.
+Published by O’Reilly Media, Inc., 1005 Gravenstein Highway North, Sebastopol, CA 95472.
+O’Reilly Media, Inc. books may be purchased for educational, business, or sales promotional use. On-
+lineeditionsarealsoavailableformosttitles(safari.oreilly.com).Formoreinformationcontactourcor-
+porate/institutional sales department: (800) 998-9938 orcorporate@oreilly.com.
+Editors: Mike Loukides and Debra Cameron
+Production Editor: Matt Hutchinson
+Cover Designer: Hanna Dyer
+Interior Designer: David Futato
+Printing History:
+September 1998: First Edition.
+November 2002: Second Edition.
+Nutshell Handbook, the Nutshell Handbook logo, and the O’Reilly logo are registered trademarks of
+O’ReillyMedia,Inc.Java™Swing,SecondEdition,theimageofaspidermonkey,andrelatedtradedress
+are trademarks of O’Reilly Media, Inc. Many of the designations used by manufacturers and sellers to
+distinguish their products are claimed as trademarks. Where those designations appear in this book,
+andO’ReillyMedia,Inc.wasawareofatrademarkclaim,thedesignationshavebeenprintedincapsor
+initial caps. Java and all Java-based trademarks and logos are trademarks or registered trademarks of
+Sun Microsystems, Inc., in the United States and other countries. O’Reilly Media, Inc. is independent
+of Sun Microsystems, Inc.
+While every precaution has been taken in the preparation of this book, the publisher and authors
+assume no responsibility for errors or omissions, or for damages resulting from the use of the
+information contained herein.
+ISBN: 978-0-596-00408-8
+[M] [2012-03-09]
+,swing2.book.8435  Page iv  Wednesday, March 7, 2012  11:42 AM
+--- Page 6 ---
+v
+*
+Table of Contents
+Preface  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . xiii
+1. Introducing Swing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1
+What Is Swing?  1
+Swing Features  5
+Swing Packages and Classes  10
+The Model-View-Controller Architecture 13
+Working with Swing  16
+The Swing Set Demo  17
+Reading This Book  18
+2. Jump-Starting a Swing Application  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
+Upgrading Your AWT Programs  20
+A Simple AWT Application  21
+Including Your First Swing Component  22
+Beyond Buttons  30
+What Is an Internal Frame?  31
+A Bigger Application  34
+3. Swing Component Basics  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 41
+Understanding Actions  41
+Graphical Interface Events  48
+Graphics Environments  49
+Sending Change Events in Swing  51
+The JComponent Class  52
+Responding to Keyboard Input  80
+--- Page 7 ---
+vi | Table of Contents
+4. Labels and Icons . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 84
+Labels  84
+Working with Images  90
+Support for HTML  93
+Icons  94
+Implementing Your Own Icons  95
+Dynamic Icons  96
+The ImageIcon Class  98
+5. Buttons  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 101
+The ButtonModel Interface  101
+The DefaultButtonModel Class  104
+The AbstractButton Class  106
+The JButton Class  111
+The JToggleButton Class  120
+The JToggleButton.ToggleButtonModel Class 123
+The JCheckBox Class  124
+The JRadioButton Class  126
+The ButtonGroup Class  128
+6. Bounded-Range Components  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 132
+The Bounded-Range Model  132
+The JScrollBar Class  138
+The JSlider Class  142
+The JProgressBar Class  148
+Monitoring Progress  152
+7. Lists, Combo Boxes, and Spinners . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 159
+Lists  159
+Representing List Data  164
+Handling Selections  173
+Displaying Cell Elements  182
+The JList Class  185
+Combo Boxes  193
+The JComboBox Class  200
+Spinners  208
+Spinner Models  212
+Spinner Editors  217
+--- Page 8 ---
+Table of Contents | vii
+8. Swing Containers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 225
+A Simple Container  225
+The Root Pane  228
+Basic RootPaneContainers  246
+The JFrame Class  246
+The JWindow Class  251
+The JApplet Class  254
+9. Internal Frames  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 259
+Simulating a Desktop  259
+The JInternalFrame Class  261
+The JDesktopPane Class  269
+The DesktopManager Interface  271
+Building a Desktop  275
+10. Swing Dialogs . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 286
+The JDialog Class  286
+The JOptionPane Class  289
+Using JOptionPane  293
+Simple Examples  301
+Getting the Results  303
+A Comparison: Constructors Versus Static Methods 305
+Using Internal Frame Dialogs with JDesktopPane 311
+11. Specialty Panes and Layout Managers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 314
+The JSplitPane Class  314
+The JScrollPane Class  320
+The JTabbedPane Class  333
+Layout Managers  339
+The SpringLayout Class  354
+Other Panes  365
+12. Chooser Dialogs  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 366
+The JFileChooser Class  367
+The File Chooser Package  380
+The Color Chooser  389
+The JColorChooser Class  391
+Developing a Custom Chooser Panel  396
+Developing a Custom Preview Panel  399
+Developing a Custom Dialog  400
+--- Page 9 ---
+viii | Table of Contents
+13. Borders . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 406
+Introducing Borders  406
+Painting Borders Correctly  408
+Swing Borders  410
+Creating Your Own Border  429
+14. Menus and Toolbars . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 432
+Introducing Swing Menus  432
+Menu Bar Selection Models  437
+The JMenuBar Class  439
+The JMenuItem Class  443
+The JPopupMenu Class  453
+The JMenu Class  461
+Selectable Menu Items  469
+Toolbars  482
+15. Tables . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 489
+The JTable Class  490
+Implementing a Column Model  505
+Table Data  507
+Selecting Table Entries  526
+Rendering Cells  530
+Editing Cells  533
+Next Steps  538
+16. Advanced Table Examples . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 539
+A Table with Row Headers  540
+Large Tables with Paging  543
+A Table with Custom Editing and Rendering 549
+Charting Data with a TableModel  557
+17. Trees . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 567
+A Simple Tree  567
+Tree Models  572
+The JTree Class  579
+Tree Nodes and Paths  593
+Tree Selections  604
+Tree Events  609
+Rendering and Editing  616
+What Next?  632
+--- Page 10 ---
+Table of Contents | ix
+18. Undo . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 633
+The Swing Undo Facility  633
+The UndoManager Class  651
+Extending UndoManager  678
+19. Text 101 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 681
+The Swing Text Components  682
+The JTextComponent Class  684
+The JTextField Class  691
+A Simple Form  695
+The JPasswordField Class  698
+The JTextArea Class  700
+How It All Works  706
+20. Formatted Text Fields  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 708
+The JFormattedTextField Class  711
+Handling Numerics  714
+The DefaultFormatter Class  716
+The MaskFormatter Class  721
+The InternationalFormatter Class  724
+The DateFormatter Class  725
+The NumberFormatter Class  726
+The DefaultFormatterFactory Class  727
+Formatting with Regular Expressions 731
+The InputVerifier Class  732
+21. Carets, Highlighters, and Keymaps . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 734
+Carets  735
+Highlighters  746
+Keymaps  754
+22. Styled Text Panes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 760
+The JTextPane Class  760
+AttributeSets and Styles  766
+The Document Model  797
+Document Events  818
+Views  832
+The DocumentFilter Class  845
+The NavigationFilter Class  847
+--- Page 11 ---
+x | Table of Contents
+23. Editor Panes and Editor Kits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 849
+The JEditorPane Class  849
+Overview of the Editor Kits  854
+HTML and JEditorPane  880
+Hyperlink Events  885
+The HTMLEditorKit Class  887
+Extending HTMLEditorKit  891
+Editing HTML  897
+Writing HTML  900
+Reading HTML  906
+A Custom EditorKit  907
+24. Drag and Drop . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 912
+What Is Drag and Drop?  912
+The Drop API  919
+The Drag Gesture API  934
+The Drag API  941
+Rearranging Trees  952
+Finishing Touches  960
+25. Programming with Accessibility  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 967
+How Accessibility Works  968
+The Accessibility Package  972
+Other Accessible Objects  978
+Types of Accessibility  982
+Classes Added in SDK 1.3 and 1.4  990
+The Accessibility Utility Classes  996
+Interfacing with Accessibility  1003
+26. Look and Feel  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1009
+Mac OS X and the Default Look-and-Feel  1010
+How Does It Work?  1011
+Key Look-and-Feel Classes and Interfaces 1014
+The MultiLookAndFeel  1037
+Auditory Cues  1041
+Look-and-Feel Customization  1043
+Creation of a Custom Look-and-Feel  1054

@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 12: Gerenciadores de Layout</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Aula 12: Gerenciadores de Layout</h1>
+            <h2>Flow, Border, Grid, Box, Null</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 12</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Design Responsivo e Flexível</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Conceitos Fundamentais -->
+        <div class="slide">
+            <h2>Conceitos Fundamentais (Teoria)</h2>
+            <div class="grid-layout">
+                
+                <div class="grid-item">
+                    <h3>Null Layout</h3>
+                    <p>Posicionamento absoluto (setBounds). NÃO recomendado, pois quebra ao redimensionar.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>BoxLayout</h3>
+                    <p>Organiza componentes em uma única coluna ou linha (mais flexível que Flow).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Espaçamento</h3>
+                    <p>Hgap e Vgap em BorderLayout e FlowLayout.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Combinação</h3>
+                    <p>O segredo do Swing é misturar layouts: Um BorderLayout contendo JPanels com GridLayouts.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Aprofundamento -->
+        <div class="slide">
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. BoxLayout e Box</h3>
+            <p>Útil para barras de ferramentas ou formulários verticais. A classe <code>Box</code> fornece espaçadores invisíveis (Struts e Glues) para empurrar componentes.</p>
+            
+            <h3>2. Layout Nulo (Perigo!)</h3>
+            <p>Usar <code>setLayout(null)</code> parece fácil, mas sua janela ficará quebrada em telas com DPI diferente ou se o usuário mudar a fonte do sistema.</p>
+        
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
+            <div class="code-block">
+// Painel Vertical com BoxLayout
+JPanel painel = new JPanel();
+painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
+
+painel.add(new JButton("Um"));
+painel.add(Box.createVerticalStrut(10)); // Espaço fixo de 10px
+painel.add(new JButton("Dois"));
+painel.add(Box.createVerticalGlue()); // Empurra o resto para baixo
+painel.add(new JButton("Fim"));
+            </div>
+        </div>
+
+        <!-- Slide 5: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Reproduza o layout de uma 'Calculadora'. Use BorderLayout para o visor (Norte) e GridLayout para os botões numéricos (Centro).
+            </div>
+            
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
+            </div>
+
+            <textarea id="activity-12" class="code-input">
+/*
+ * ATIVIDADE PRÁTICA - AULA 12
+ * Tempo estimado: 60 minutos
+ */
+
+import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File; 
+
+public class CalculadoraLayout extends JFrame {
+    public CalculadoraLayout() {
+        super("Calc");
+        setSize(300, 400);
+        
+        JTextField visor = new JTextField("0");
+        visor.setFont(new Font("Arial", Font.BOLD, 30));
+        add(visor, BorderLayout.NORTH);
+        
+        JPanel botoes = new JPanel(new GridLayout(4, 3, 5, 5));
+        // Adicione botões de 0-9 e operações (+, -, =)
+        
+        add(botoes, BorderLayout.CENTER);
+    }
+    public static void main(String[] args) { new CalculadoraLayout().setVisible(true); }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final -->
+        <div class="slide">
+            <h2>Aula Concluída!</h2>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-12': [
+                { id: 'grid', text: 'Usar GridLayout', pattern: /GridLayout/ },
+{ id: 'border', text: 'Usar BorderLayout', pattern: /BorderLayout/ },
+{ id: 'gap', text: 'Configurar Gaps', pattern: /,\s*5,\s*5/ }
+            ]
+        };
+    </script>
+</body>
+</html>

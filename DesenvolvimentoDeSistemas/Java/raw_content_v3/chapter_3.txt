@@ -1,0 +1,1670 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Understanding Actions | 47
+    public static void main(String s[]) {
+        ActionExample example = new ActionExample();
+        JFrame frame = new JFrame("Action Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(example.menuBar);
+        frame.getContentPane().add(example.toolBar, BorderLayout.NORTH);
+        frame.setSize(200,200);
+        frame.setVisible(true);
+    }
+}
+The preceding example creates a toolbar with a single button and a menu with a sin-
+gle menu item. Both are generated from theSampleActionclass and are shown in
+Figure3-2.
+Selecting the menu item or clicking on the toolbar button a few times both yield the
+same results on the console:
+Action [Download] performed!
+Action [Download] performed!
+Action [Download] performed!
+Now for something interesting. You can add the following line to the constructor to
+disable the action:
+exampleAction.setEnabled(false);
+With this line, thePropertyChangeEventpropagates to listeners in the menu item and
+in the toolbar button, causing both components to turn gray and become disabled.
+Figure3-3 shows what happens when an action is disabled.
+Of course, you can enable the menu item and toolbar button again at any time with
+the following line of code:
+exampleAction.setEnabled(true);
+Figure3-2.An action in a menu and in a toolbar
+Figure3-3.A disabled action in a menu and in a toolbar
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+48 | Chapter 3: Swing Component Basics
+Upon execution, the property change again propagates, re-enabling both compo-
+nents simultaneously.
+Actions also play a critical role in supporting key bindings within components (see
+“Keyboard Events” later in this chapter).
+Graphical Interface Events
+Whenever you interact with your application’s user interface, the application
+receives an event from the windowing system to let it know that something hap-
+pened. Some events come from the mouse, such as mouse clicks, mouse move-
+ments, and mouse drags. Other events come from the keyboard, such as key presses
+and key releases. Every component generates events. Different components generate
+differenteventsasdictatedbytheirpurpose(andtheirL&F).Forexample,pressinga
+JButtongenerates anActionEvent(which is really just a converted mouse event). The
+ActionEventclass bundles up interesting stuff like which button the event came from,
+when the button was pressed, whether any modifier keys (such as Shift or Ctrl) were
+pressed at the time of the event, and so on.
+While the event-dispatching and -handling mechanism is grounded in the world of
+AWT (and beyond the scope of this book), we do want you to know what events the
+various Swing components generate—and when. Thewhatof the events is discussed
+in conjunction with each of the components. As we introduce components like
+JTextField, JButton, andJTable, we show the events that they fire and the methods
+you use to attach listeners and catch the events.
+Thewhenof the events is a bit more difficult to describe. Rather than attempt to
+list every possible scenario for every component, we’ve built a small utility: EEL,
+the Every Event Listener. TheEEL class implements every listener interface from
+thejava.awt.eventandjavax.swing.eventpackages. It has a variety of logging
+mechanisms to show you the events coming from your components. You attach an
+EEL instance to a component (or to multiple components) using the component’s
+add...Listener()method(s). You can choose to have the events sent to a file, to
+your console, or to an onscreen text area.
+This discussion really is beyond the scope of the book. So we’re posting this utility
+and its documentation on the web site for this book (http://www.oreilly.com/catalog/
+jswing2). Feel free to download it and use it to play with individual components or to
+debug an entire application. That’s one of the beauties of delegation event handling:
+you can attach EEL to an existing component without breaking its normal interac-
+tions with the application.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Graphics Environments | 49
+Graphics Environments
+SDK 1.4 recognizes a great deal of information about its environment. You can
+retrieve that information for your own code through theGraphicsEnvironment,
+GraphicsDevice, andGraphicsConfigurationclasses from thejava.awtpackage.
+While they aren’t part of Swing proper, these classes are definitely useful for Swing
+applications, especially those that take full advantage of their environment.
+To sum up these classes, a system keeps a local
+GraphicsEnvironmentobject that
+describes the devices on the system with an array ofGraphicsDeviceobjects. Each
+GraphicsDevicecontains (or at least may contain) multiple configurations of device
+capabilities (such as pixel formats or which visual screen you’re on) bundled up in an
+array ofGraphicsConfiguration objects.
+TheGraphicsConfigurationclass should not be confused with the
+DisplayModeclass (although it’s easy to do so). The display mode is
+something with which most savvy computer users will be familiar. On
+a system that supports multisync monitors, theDisplayModeclass
+encapsulates the width, height, color-depth, and refresh rate informa-
+tion for a given mode. The
+GraphicsConfigurationclass stores things
+like square versus rectangular pixels.GraphicsConfigurationcould
+even be used for devices such as printers. The configuration informa-
+tion is highly dependent on the native platform and thus varies widely
+from system to system. In any given system, both configurations and
+modes can be found through the available
+GraphicsDevice objects.
+If you’re curious about the various graphics configurations on your system, try out
+this little program,GuiScreens.java. It prints information on all devices and configu-
+rations. For each configuration, it also pops up aJFrame using that configuration.
+// GuiScreens.java
+//
+import java.awt.*;
+import javax.swing.*;
+public class GuiScreens {
+  public static void main(String[] args) {
+    Rectangle virtualBounds = new Rectangle();
+    GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice[] gs = ge.getScreenDevices();
+    JFrame frame[][] = new JFrame[gs.length][];
+    for (int j = 0; j < gs.length; j++) {
+      GraphicsDevice gd = gs[j];
+      System.out.println("Device " + j + ": " + gd);
+      GraphicsConfiguration[] gc = gd.getConfigurations();
+      frame[j] = new JFrame[gc.length];
+      for (int i=0; i < gc.length; i++) {
+        System.out.println("  Configuration " + i + ": " + gc[i]);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+50 | Chapter 3: Swing Component Basics
+        System.out.println("    Bounds: " + gc[i].getBounds());
+        virtualBounds = virtualBounds.union(gc[i].getBounds());
+        frame[j][i] = new JFrame("Config: " + i, gc[i]);
+        frame[j][i].setBounds(50, 50, 400, 100);
+        frame[j][i].setLocation(
+          (int)gc[i].getBounds().getX() + 50,
+          (int)gc[i].getBounds().getY() + 50);
+        frame[j][i].getContentPane().add(new JTextArea("Config:\n" + gc[i]));
+        frame[j][i].setDefaultCloseOperation( WindowConstants.EXIT_ON_CLOSE );
+        frame[j][i].setVisible(true);
+      }
+      System.out.println("Overall bounds: " + virtualBounds);
+    }
+  }
+}
+Here’s the text output from a Solaris system running CDE with one monitor:
+Device 0: X11GraphicsDevice[screen=0]
+  Configuration 0: X11GraphicsConfig[dev=X11GraphicsDevice[screen=0],vis=0x22]
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+  Configuration 1: X11GraphicsConfig[dev=X11GraphicsDevice[screen=0],vis=0x26]
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+  Configuration 2: X11GraphicsConfig[dev=X11GraphicsDevice[screen=0],vis=0x25]
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+  Configuration 3: X11GraphicsConfig[dev=X11GraphicsDevice[screen=0],vis=0x24]
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+  Configuration 4: X11GraphicsConfig[dev=X11GraphicsDevice[screen=0],vis=0x27]
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+Overall bounds: java.awt.Rectangle[x=0,y=0,width=1152,height=900]
+And here’s the output from an OS X system with two monitors:
+Device 0: sun.awt.MacGraphicsDevice@4dd8d9
+  Configuration 0: com.apple.mrj.internal.awt.graphics.MacGraphicsConfig@303297
+    Bounds: java.awt.Rectangle[x=0,y=0,width=1280,height=1024]
+Device 1: sun.awt.MacGraphicsDevice@5c08c3
+  Configuration 0: com.apple.mrj.internal.awt.graphics.MacGraphicsConfig@435a72
+    Bounds: java.awt.Rectangle[x=1280,y=-52,width=1152,height=870]
+Overall bounds: java.awt.Rectangle[x=0,y=-52,width=2432,height=1076]
+Headless Modes
+One other variation on the graphics environment is “headless” operation. This mode
+of running without any monitor shows up quite often on back-end systems. Java
+servlets trying to use the AWT, 2D, and Swing classes to draw dynamic graphs for a
+web page are a classic example of applications that need a graphics environment on a
+machine that might not have any graphics displays. You can detect such a case with
+the
+GraphicsEnvironment.isHeadless() call.
+If an environment is headless, there are certain calls that cannot be made. These calls
+tend to create onscreen components such as frames or dialogs—no good without a
+head—or otherwise attempt to interact with the (nonexistent) local user. Table3-4
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Sending Change Events in Swing | 51
+shows the documented Swing components that generate aHeadlessExceptionwhen
+called. SinceHeadlessExceptionis an unchecked exception (i.e., a descendant of
+RuntimeException), it is not always documented in the Javadoc for a method or in its
+throwsclause(inthesourcecode).ThebestpracticethathasevolvedforwritingJava-
+doc for such exceptions requires that the Javadoc mention the exception (with an
+@throwsentry), but that thethrowsclause in the actual method signatureomitit. This
+leads to a visual indication that it is an unchecked exception. Not all code has
+adopted this best practice, of course.
+Sending Change Events in Swing
+Swing uses two different change event classes. The first is the standardjava.beans.
+PropertyChangeEventclass. This class passes a reference to the object, sending the
+change notification as well as the property name, its old value, and its new value.
+The second,
+javax.swing.event.ChangeEvent, is a lighter version that passes only a
+reference to the sending object—in other words, the name of the property that
+changed, as well as the old and new values, are omitted.
+Since theChangeEventclass is not part of the JavaBeans specifications,
+properties that use this event are not “bound” according to the Java-
+Beans standard. In order to prevent confusion, properties that use a
+ChangeEventto notify listeners of property changes have not been
+marked as bound in our property tables.
+Because theChangeEventincludes only a reference to the event originator, which
+never changes, you can always define a singleChangeEventand reuse it over and over
+when firing events from your component.
+Table3-4.Swing components that throw HeadlessException
+Component Method(s)
+JApplet Constructors
+JColorChooser showDialog();setDragEnabled();createDialog(); constructors
+JDialog Constructors
+JFileChooser createDialog();showDialog();showOpenDialog();showSaveDialog();
+setDragenabled()
+JFrame Constructors
+JList setDragEnabled()
+JOptionPaneAll show dialog methods;createDialog();getFrameForComponent();
+getWindowForComponent();getRootFrame()
+JTable setDragEnabled()
+JTree setDragEnabled()
+JWindow Constructors
+SwingUtilities getSharedOwnerFrame()
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+52 | Chapter 3: Swing Component Basics
+The ChangeEvent Class
+TheChangeEventis a stripped-down version of thejava.beans.PropertyChangeEvent
+class. This class has no methods or properties, only a constructor. This simplicity
+makes it a popular class for developers wanting to fire off their own events. Recipients
+get a reference to the source of the event but then must query the source directly to
+findoutwhatjusthappened.It’sgreatforquicknotificationsorinstancesinwhichthe
+state of the source component is so complex it’s hard to predict which pieces of infor-
+mation the recipient will need, but it shouldn’t be used simply to save the component
+author a little time at the expense of runtime inefficiency if the recipient always needs
+to look up information that could have been part of a
+PropertyChangeEvent.
+Constructor
+public ChangeEvent(Object source)
+The constructor for theChangeEventclass. It takes only a single object, which
+represents the entity sending the event.
+The ChangeListener Interface
+Objects that intend to receive change events must implement thejavax.swing.event.
+ChangeListenerinterface. They can then register to receiveChangeEventobjects from
+a publisher class. TheChangeListener interface consists of only one method.
+Method
+public abstract void stateChanged(ChangeEvent e)
+Implemented in a listener object to receiveChangeEvent notifications.
+The JComponent Class
+JComponentis an abstract class that almost all Swing components extend; it provides
+much of the underlying functionality common throughout the Swing component
+library. Just as the
+java.awt.Componentclass serves as the guiding framework for
+most of the AWT components, thejavax.swing.JComponentclass serves an identical
+role for the Swing components. We should note that theJComponentclass extends
+java.awt.Container(which in turn extendsjava.awt.Component), so it is accurate to
+say that Swing components carry with them a great deal of AWT functionality as
+well.
+Because
+JComponentextendsContainer,manySwingcomponentscanserveascontain-
+ers for other AWT and Swing components. These components may be added using
+the traditionaladd()method ofContainer. In addition, they can be positioned with
+any Java layout manager while inside the container. The terminology remains the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 53
+same as well: components that are added to a container are said to be itschildren;t h e
+container is theparentof those components. Following the analogy, any component
+thatishigherinthetreeissaidtobeitsancestor,whileanycomponentthatisloweris
+said to be itsdescendant.
+Recall that Swing components are considered “lightweight.” In other words, they do
+not rely on corresponding peer objects within the operating system to render them-
+selves. As we mentioned in Chapter1, lightweight components draw themselves
+using the standard features of the abstract
+Graphicsobject, which not only decreases
+the amount of memory each component uses but allows components to have trans-
+parent portions and take on nonrectangular shapes. And, of course, lightweight com-
+ponents are free of a dedicated L&F.
+It’s not out ofthe questionto say thata potentialbenefit of using lightweight compo-
+nents is a decrease in testing time. This is because the functionality necessary to
+implement lightweight components in the Java virtual machine is significantly less
+than that of heavyweight components. Heavyweight components must be individu-
+ally mapped to their own native peers. On the other hand, one needs to implement
+only a single lightweight peer on each operating system for all the Swing compo-
+nents to work correctly. Hence, there is a far greater chance that lightweight compo-
+nents will execute as expected on any operating system and not require rounds of
+testing for each platform.
+Because all Swing components extendContainer, you should be care-
+ful that you don’tadd()to Swing components that aren’ttrulycon-
+tainers. The results range from amusing to destructive.
+In JDK 1.2,JComponentreuses some of the functionality of thejava.awt.Graphics2D
+class. This consists primarily of responsibilities for component painting and debugging.
+Inherited Properties
+Swing components carry with them several properties that can be accessed through
+JComponentbut otherwise originate with AWT. Before we go any further, we should
+review those properties ofjava.awt.Containerandjava.awt.Componentthat can be
+usedtoconfigureallSwingcomponents.Thisdiscussionisrelativelybrief;ifyouneed
+a more thorough explanation of these AWT classes, seeJavaAWTReferenceby John
+Zukowski (O’Reilly), which can be downloaded from this book’s web site,http://
+www.oreilly.com/catalog/jswing2/. Table3-5 lists the properties that
+JComponentinher-
+its from its AWT superclasses.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+54 | Chapter 3: Swing Component Basics
+Let’s discuss these properties briefly. Thebackgroundandforegroundproperties indi-
+cate which colors the component uses to paint itself. We should mention that with
+Swing thebackgroundproperty is disabled if the component is transparent (not
+opaque). The read-onlycolorModelproperty returns the current model used to trans-
+latecolorstopixelvalues;generally,theuserdoesnotneedtoaccessthisproperty.The
+font property lets you get or set the font used for displaying text in the component.
+The indexedcomponentproperty maintains a list of all the components inside the
+container. You can tell how many there are with the integercomponentCountprop-
+erty. If you want to access all of them through aComponentarray, retrieve the
+componentsproperty. Theinsetsproperty specifies the current insets of the con-
+tainer, while thelayoutproperty indicates which layout manager is managing the
+components of the container. Technically, this means that you can use any compo-
+nent as a container. Don’t be misled; if a component doesn’t seem like a reasonable
+container, it probably can’t be used as one. (Don’t, for example, try to add a
+JButton
+Table3-5.Properties inherited from the AWT Component and Container classes
+Property Data type
+get
+is
+setDefault value (if applicable)
+background Color ••
+colorModel ColorModel •
+componenti Component •
+componentCountint •
+components Component[] •
+cursor Cursor •• Cursor.DEFAULT_CURSOR
+enabled boolean •• true
+font Font ••
+foreground Color ••
+insets Insets • Insets(0,0,0,0)
+layout LayoutManager •• BorderLayout()
+locale Locale ••
+location Point ••
+locationOnScreenPoint ••
+name String •• ""
+parent Container •• null
+size Dimension ••
+showing boolean • true
+valid boolean •
+visible boolean •• true
+iindexed
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 55
+to aJScrollBar.) A number of components use these properties for internal, special-
+ized layout managers and components.
+Thelocaleproperty specifies the internationalization locale for the application. The
+locationproperty indicates thex,ycoordinates of the component’s upper-left corner
+in the container’s coordinate space. If you want to see the location of the compo-
+nent’s upper-left corner in screen coordinates, use the read-onlylocationOnScreen
+property.
+Thenameproperty gives this component a string-based name that components can
+display if they choose. Theparentproperty references the container that is acting as
+this component’s parent, ornullif there is none. Thesizeproperty specifies the
+component’s current height and width in pixels.
+The
+showingproperty indicates whether the component is currently showing on the
+screen, while thevisibleproperty tells if the component is marked to be drawn on
+the screen. There’s an odd, nonintuitive relationship betweenvisibleandshowing.A
+component that is visible isn’t necessarily showing. “Visible” means that a compo-
+nent is capable of being displayed; “showing” means that the component is actually
+displayed (though it may be obscured by something else). Most containers (
+JPanel,
+JFrame, etc.) are invisible by default; most other components (JButton, etc.) are visi-
+ble by default. So if you add aJButtonto an invisibleJFrame, for example, the button
+is visible but not showing. It can be displayed but happens to be in a container that
+isn’t currently displayed.
+Finally, if the
+validproperty isfalse, the component needs to be resized or moved by
+the component’s layout manager. If it istrue, the component is ready to be displayed.
+Common Methods
+Here are some other frequently called methods for working with Swing components:
+public Component add(Component comp)
+public Component add(Component comp, int index)
+public void add(Component comp, Object constraints)
+public void add(Component comp, Object constraints, int index)
+Add a component to the container, given the optional constraints and the cur-
+rent index.
+public void remove(int index)
+public void remove(Component comp)
+public void removeAll()
+Remove the appropriate component from the container. The final method emp-
+ties the entire container.
+public void pack()
+This method of
+java.awt.Windowresizes the window to encompass the preferred
+size of all the contained components, as placed by the current layout manager.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+56 | Chapter 3: Swing Component Basics
+It’s a good idea to callpack()after you’ve added components to a top-level con-
+tainer with a layout manager, such asJFrame,JDialog, andJWindow.
+public void validate()
+public void invalidate()
+Theinvalidate()method is typically called on aContainerto indicate that its
+children need to be laid out, or on aComponentto indicate that it needs to be re-
+rendered. This method is often called automatically. However, certain changes
+to a
+Component(such as changing the size of a button by changing its label or
+font) do not cause it to be invalidated. In such cases,invalidate()must be
+called on theComponentto mark it as invalid, andvalidate()must be called on
+itsContainer. Thevalidate()method is typically called to validate, lay out, and
+repaint aContainer. Calling this method is especially important when you add or
+removeComponents in aContainer that is already displayed.
+Swing improves thevalidate()/invalidate()situation a bit by calling
+invalidate()in response to many property changes, saving you from having to
+make the call. Unfortunately, there are still situations (such as changing a
+JButton’s font) that do not trigger an automaticinvalidate()call, so you’ll still
+have to explicitly callinvalidate() in these cases.
+The key things to take away from these methods are:
+• You may need to callinvalidate()if you make changes to the appearance
+of a displayed component.
+• You must callvalidate()onContainers that have been invalidated (typi-
+cally by the addition or invalidation of a child).
+As a result of deprecation and the movement toward JavaBeans accessors, AWT has
+some methods with multiple names. For example,
+show()andsetVisible(true)are
+essentially the same. It is always better to use the JavaBeans-style name—
+setVisible()inthis case—whenworkingwith Swing;thenewer nameislessconfus-
+ing for people familiar with the JavaBeans conventions.
+JComponent Properties
+Now to the heart of the matter.JComponenthas many properties of its own and over-
+rides (or otherwise modifies) the behavior of many of its inherited properties. This is
+where the new and interesting stuff happens. Table3-6 shows a summary of
+JComponent’s properties.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 57
+Table3-6.JComponent properties
+Property Data type
+get
+is
+set Default value
+UIb, p ComponentUI •
+UIClassID String • "ComponentUI"
+accessibleContext AccessibleContext• null
+actionMap1.3 ActionMap ••
+alignmentXo float ••
+alignmentYo float ••
+ancestorListeners1.4 AncestorListener[]•
+autoscrolls boolean •• false
+borderb Border •• null
+boundso Rectangle ••
+debugGraphicsOptionsint •• DebugGraphics.
+NONE_OPTION
+defaultLocales1.4 Locale ••
+doubleBuffered boolean •• false
+enabledb,o boolean •• true
+focusCycleRoot boolean • false
+focusTraversabled boolean • true
+graphicso Graphics •
+height int • bounds.height
+inputMapf, 1.3; also indexedget InputMap ••
+inputVerifierb, 1.3 InputVerifier ••
+insetso Insets ••
+locationo Point •• Point(bounds.x,
+bounds.y)
+managingFocus
+d boolean • false
+maximumSizeb, o Dimension ••
+minimumSizeb, o Dimension ••
+nextFocusableComponentd Component ••
+opaqueb boolean •• false
+optimizedDrawingEnabled boolean • true
+paintingTile boolean •
+preferredSizeb, o Dimension ••
+propertyChangeListeners (also
+string indexed version)
+PropertyChangeListener[]•
+1.3since 1.3, 1.4since 1.4, bbound, ddeprecated, ffinal, iindexed, ooverridden, pprotected, sstatic
+See alsojava.awt.Container andjava.awt.Component (Table 3-5).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+58 | Chapter 3: Swing Component Basics
+New properties in the 1.3 and 1.4 SDKs
+The properties added in 1.3 and 1.4 focus on three areas. TheInputMapand
+ActionMapclasses were added in 1.3 to improve the handling of keyboard events.
+(These classes are discussed in “Keyboard Events” later in this chapter.) SDK 1.4
+added some convenience support for accessing event handlers such as property and
+vetoable property change listeners. The
+transferHandlerproperty was also added in
+1.4—a big step up in the usability of Drag and Drop (DnD). You can learn more
+about that property in Chapter24, which is devoted to DnD functionality.
+Finally, the
+inputVerifierandverifyInputWhenFocusTargetproperties were added in
+1.3 to offer applications an easy and reliable way to check a user’s text input for
+validity. Text components with attachedInputVerifiers will call the verifier’s
+shouldYieldFocus()method when they’re about to lose input focus, providing an
+opportunity to give the user feedback and keep focus if the input isn’t valid. Any
+Components, such as Cancel buttons, that should remain usable even when there is
+invalid input in some text field, can be configured to work properly by setting their
+verifyInputWhenFocusTargetproperty tofalse. These capabilities are discussed in
+greater depth in Chapter20.
+registeredKeyStrokesKeyStroke[] •
+requestFocusEnabledboolean •• true
+rootPane JRootPane •
+sizeo Dimension •• Dimension
+(bounds.height,
+bounds.width)
+toolTipText String
+•• null
+topLevelAncestor Container •
+transferHandlerb,1.4 TransferHandler •• null
+validateRoot boolean • false
+verifyInputWhenFocusTargetb, 1.3 boolean ••
+vetoableChangeListeners1.4 VetoableChangeListener[]
+visibleo boolean •• true
+visibleRect Rectangle •
+widtho int • bounds.width
+xo int • bounds.x
+yo int • bounds.y
+Table3-6.JComponent properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, ddeprecated, ffinal, iindexed, ooverridden, pprotected, sstatic
+See alsojava.awt.Container andjava.awt.Component (Table 3-5).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 59
+UI Delegates and UIClassIDs
+As we mentioned in Chapter1, all Swing components use a modified MVC architec-
+ture. Each Swing component is responsible for maintaining two unique objects: a
+model and a UI delegate. The object representing the model handles the state infor-
+mation specific to the component while the UI delegate determines how the compo-
+nent paints itself based on the model’s state information.
+Note that there is no property for a model in
+JComponent. You typically access the
+modelproperty at the level of aJComponentsubclass. This is because each Swing com-
+ponent defines its own data model, which is unique from that of all other compo-
+nents. The UI delegate property, on the other hand, can be handled at theJComponent
+level because the methods for rendering lightweight components are always the
+same. These methods (e.g.,
+installUI(), uninstallUI(), setUI(), paint()) can be
+traced back to the abstract classjavax.swing.plaf.ComponentUI, which serves as the
+superclass for all UI delegates.
+JComponentcontains a reference to the current UI delegate for the object.JComponent
+allows a subclass to alter the component’s UI delegate with the protectedsetUI()
+method; this method effectively resets the L&F of the component. The UI therefore
+acts like a write-only property, but we hesitate to call it a property because its muta-
+tor isn’t public. Invoking
+setUI()by itself, however, does not change the display. A
+call toupdateUI()is also required, which forces the component to redraw itself. If
+you are looking to change the entire L&F of the application, it is better to change it
+universally with the
+setLookAndFeel()method ofUIManagerthan to change it one
+component at a time. See Chapter2for a simple example of how to work with vari-
+ous L&Fs.
+Each Swing component maintains a read-only string constant,
+UIClassID, that identi-
+fies the type of UI delegate that it uses. Most Swing components override the acces-
+sorgetUIClassID()and return a string constant, typically the letters “UI” appended
+to the name of the component (without the “J”). This string is then used by Swing’s
+UI manager to match the component with a UI delegate for the current L&F. For
+example, a
+JButtonobject has aUIClassIDstring ofButtonUI. If the current L&F is
+Metal, theUIManagercan figure out that theMetalButtonUIis the correct UI-delegate
+class to use. See Chapter26 for more information about theUIManagerand how to
+change L&Fs.
+Invalidating and Repainting
+Sometimes entire components need to be drawn to the screen. At other times, only
+parts of components can (or should) be drawn. For example, if an internal frame is
+dragged across the container, the entire internal frame is redrawn along the way until
+it reaches its destination. However, only the parts of the container uncovered by the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+60 | Chapter 3: Swing Component Basics
+internal frame need to be repainted. We typically do not repaint the entire compo-
+nent, as this would be an unnecessary waste of processing time. (See Figure3-4.)
+Swing uses arepaintmanagerto repaint lightweight components. The repaint man-
+ager maintains a queue of rectangular areas that need to be repainted; it calls these
+areas “dirty regions.” Sometimes the rectangles are the size of entire components; at
+other times they are smaller. The repaint manager processes repaint requests as they
+are added to the queue, updating dirty regions as quickly as possible while preserv-
+ing the visual order of the components. In AWT, the
+Componentclass contains an
+Figure3-4.Performing repaints for components in Java
+Only this area of the underlying component must be repainted
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 61
+overloadedrepaint()method that allows you to repaint only a subrectangle of the
+component. The same is true withJComponent. If only part of a component needs to
+be repainted, the repaint manager invokes an overloaded version of therepaint()
+method that takes aRectangle parameter.
+JComponentcontains tworepaint()methods that add specified rectangles directly to
+the dirty region. Like AWT, you should call these methods instead of invoking the
+paint()method directly, which bypasses theRepaintManager. TheRepaintManager
+class is discussed in more detail in Chapter28.
+The paint( ) method and opaqueness
+BecauseJComponentis the direct subclass of the AWTContainerclass, it is the offi-
+cial recipient of repaint requests through itspaint()method. As you might guess,
+JComponentmust delegate this request by passing it to thepaint()method of the UI-
+delegate object. The responsibility, however, does not end there.JComponentis actu-
+ally responsible for paintingthreeitems: the component itself, any borders associ-
+ated with the component, and any children that it contains.
+The order is intentional. Components drawn last are always on top; hence, child
+components always paint over their parents.JComponentcontains three protected
+methods that it uses to complete this functionality:
+•protected void paintComponent(Graphics g)
+•protected void paintBorder(Graphics g)
+•protected void paintChildren(Graphics g)
+Because of the complexity involved in painting and repainting Swing components,
+you should always try to override these three methods while creating your own com-
+ponents. Also, do not try to override
+paint() unless you callsuper.paint().
+SDK 1.4 introduced a series of methods relating to printing rather than painting.
+Callingthe
+print()orprintAll()methods(both public andavailablesince1.2) now
+results in calls toprintComponent(), printBorder(), andprintChildren()in that
+order.
+When painting or printingJComponentsubclasses, theGraphicsobject passed to these
+methods is actually aGraphics2Dobject. You can cast it as such if you want to take
+advantage of the increased functionality available in the 2D packages. Check out
+Jonathan Knudsen’sJava 2D Graphics (O’Reilly) for more detailed information.
+The boolean propertyopaquedictates the transparency of each Swing object.*If this
+property is set tofalse, the component’s background color is transparent. This
+means that any areas left untouched by the component’s rendering allow graphics in
+* In JDK 1.2, theisOpaque() method is defined injava.awt.Component.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+62 | Chapter 3: Swing Component Basics
+the background to show through. If the property is set totrue, the rectangular paint-
+ing region is completely filled with the component’s background color before it is
+rendered. Incidentally, transparency was not possible before lightweight compo-
+nents. Native peer objects in Java 1.0 always drew their component on a solid rectan-
+gle; anything that was behind the component was erased. Figure3-5 shows the
+difference between an opaque and a transparent (nonopaque) label, both with a dark
+background color. The label on the left is transparent, so its background color is
+ignored;thelabel’stextappearsontopofthecontainer’srelativelylightbackground.
+JComponentcan optimize its repainting time if none of its children overlap; this is
+because the repaint manager does not have to compute the hidden and visible areas
+for each child component before rendering them. Some containers, such as
+JSplitPane, are designed so that overlap between child components is impossible, so
+this optimization works nicely. Other containers, such asJLayeredPane, have sup-
+port for child components that can overlap.JComponentcontains a property that
+Swing frequently calls upon to see if it can optimize component drawing:
+optimizedDrawingEnabled.I nJComponent, this property is set totrueby default. If
+overlap occurs in a subclass ofJComponent, the subclass should override the
+isOptimizedDrawingEnabled()accessor and returnfalse. This prevents the repaint
+manager from using the optimized drawing process when rendering the container’s
+children.
+JComponentcontains a boolean read-only property (paintingTile) that indicates
+whether the component is currently in the process of painting atile, which is a child
+component that does not overlap any other children. TheisPaintingTile()method
+returnstrue until all tiles have been painted.
+ThevisibleRectproperty is aRectanglethat indicates the intersection of the compo-
+nent’s visible rectangles with the visible rectangles of all of its ancestors. Why the
+intersection? Remember that you can have a contained object that is clipped by its
+parent. For example, you can move an internal frame so that a portion of it falls out-
+side the parent window’s clipping region. Therefore, the visible portion (the portion
+that is actually drawn to the screen) consists only of the intersection of the parent’s
+visible portion and the child’s visible portion. You typically do not need to access
+this property.
+Figure3-5.Transparency and opaqueness
+Transparent Opaque
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 63
+ThevalidateRootproperty isfalseby default. If it is set totrue, it designates this
+component as the root component in a validation tree. Recall that each time a com-
+ponent in a container is invalidated, its container is invalidated as well, along with all
+of its children. This causes an invalidation to move all the way up the component
+hierarchy, stopping only when it reaches a component for which
+isValidateRoot()
+returnstrue. Currently, the only components that set this property totrueare
+JRootPane(which is used by all the Swing top-level components),JScrollPane, and
+JTextField.
+ThetopLevelAncestorproperty contains a reference to the top-level window that
+contains this component, usually aJWindoworJApplet. TherootPaneproperty con-
+tains the low-levelJRootPanefor this component;JRootPaneis covered in more detail
+in Chapter8.
+Finally,JComponentcontains a property calledautoscrolls, which indicates whether
+a component is capable of supporting autoscrolling. This property isfalseby
+default. If the property istrue,a nAutoscrollerobject has been set over this compo-
+nent. TheAutoscrollerobject monitors mouse events on the target component. If
+the mouse is dragged outside the component, the autoscroller forces the target com-
+ponent to scroll itself. Autoscrolling is typically used in containers such asJViewport.
+Position, Size, and Alignment
+You can set and retrieve a Swing component’s current position and size on the screen
+through the
+boundsproperty, or more precisely, through thelocationandsizeprop-
+erties ofJComponent. Thelocationproperty is defined as aPointin the parent’s coor-
+dinate space where the upper-left corner of the component’s bounding box resides.
+The
+sizeproperty is aDimensionthat specifies the current width and height of the
+component. Theboundsproperty is aRectangleobject that gives the same informa-
+tion: it bundles both thelocationand thesizeproperties. Figure3-6 shows how
+Swing measures the size and location of a component.
+Unlike the AWTComponentclass, thegetBounds()accessor inJComponentcan take a
+preinstantiatedRectangle object:
+Rectangle myRect = new Rectangle();
+myRect = component.getBounds(myRect);
+If aRectangleis supplied, thegetBounds()method alters each of the fields in the
+passed-inRectangleto reflect the component’s current size and position, returning a
+copy of it. If the reference passed in is anull, the method instantiates a new
+Rectangleobject, sets its values, and returns it. You can use the former approach to
+reduce the number of garbage rectangles created and discarded over multiple calls to
+getBounds(), which increases the efficiency of your application.
+ThesetBounds()method alters the component’s size and position. This method also
+takes aRectangleobject. If the new settings are different from the previous settings,
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+64 | Chapter 3: Swing Component Basics
+the component is moved, typically resized, and invalidated. If the component has a
+parent, it is invalidated as well. Be warned that various layout managers may over-
+ride any changes you attempt to make to the
+boundsproperty. Invalidating a compo-
+nent with a call tosetBounds()may force the layout manager to recompute and reset
+the bounds of the component in relation to the other components, resolving it to the
+same size as before.
+Here is a short example that shows how to retrieve the current position and size of
+any Swing component:
+JFrame frame = new JFrame("Test Frame");
+frame.setBounds(20,20,200,200);
+frame.setVisible(true);
+Rectangle r = new Rectangle();
+r = frame.getBounds(r);
+System.out.println("X      = " + r.x());
+System.out.println("Y      = " + r.y());
+System.out.println("Width  = " + r.width());
+System.out.println("Height = " + r.height());
+There is a shorthand approach for retrieving each of the bounds properties.
+JComponentcontains four methods that directly access them:getX(), getY(),
+getWidth(), andgetHeight(). You can use these accessors directly instead of instan-
+tiating aRectangleobject on the heap with a call togetBounds(). Consequently, you
+can replace the last six lines with the following four:
+System.out.println("X      = " + frame.getX());
+System.out.println("Y      = " + frame.getY());
+System.out.println("Width  = " + frame.getWidth());
+System.out.println("Height = " + frame.getHeight());
+Figure3-6.Working with the bounds, size, and location properties
+location= new
+Point (X, Y)Y
+X
+Height
+Width
+size= new
+Dimension
+(Width, Height)
+bounds= new
+Rectangle
+(X, Y , Width, Height)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 65
+In addition, if it is just the size or location you are concerned with, you can use the
+getSize()andgetLocation()accessors to set or retrieve the size or location. Size is
+specified as aDimensionwhile location is given as aPoint. LikegetBounds(), the
+getLocation()accessor also allows the programmer to pass in a preinstantiated
+Pointobject. If one is passed in, the method alters the coordinates of thePoint
+instead of instantiating a new object.
+Point myPoint = new Point();
+myPoint = component.getLocation(myPoint);
+You can still use thesetSize()andsetLocation()methods ofjava.awt.Componentif
+you prefer to code with those as well. Again, note that when altering the size of the
+component, the layout manager may override the new value and reset it to its previ-
+ous value, thus ignoring your new size values.
+The three well-known AWT sizing properties,
+minimumSize, preferredSize, and
+maximumSize, are accessible throughJComponent. minimumSizeindicates the smallest
+size for the component when it is in a container.preferredSizecontains the size at
+which the container’s layout manager should strive to draw the component.
+maximumSizeindicates the largest size the component should be when displayed in a
+container. If none of these properties are set by the user, they are always calculated
+by the component’s UI delegate or directly by the layout manager of the container, in
+that order. The methods
+setMinimumSize(),setPreferredSize, andsetMaximumSize()
+allow you to change these properties without subclassing.
+Finally,JComponentcontains two read/write properties that help interested layout
+managers align the component in a container:alignmentXandalignmentY. Both of
+these properties contain floating-point values between 0.0 and 1.0; the numbers
+determine the position of the component relative to any siblings. A number closer to
+0 indicates that the component should be positioned closer to the left or top side,
+respectively. A perfect 0.5 indicates that the component should be placed at the cen-
+ter, while a number nearing 1 indicates that the component should be positioned
+closer to the right or bottom. Currently, the only layout managers that use these
+properties are the
+BoxLayoutandOverlayLayoutmanagers; all AWT 1.1 layout man-
+agers ignore these properties and position their children by other means. We discuss
+these managers further in Chapter11.
+Adding Borders
+It’s easy to add borders to Swing components, a feature AWT lacks. TheJComponent
+borderproperty accepts objects that implement thejavax.swing.border.Borderinter-
+face. Figure3-7 shows a component with a border.
+Swing currently provides several styles of borders, including an empty border. Each
+one extends thejavax.swing.border.Borderinterface. In addition, you can surround
+a Swing component with multiple borders through the use of theCompoundBorder
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+66 | Chapter 3: Swing Component Basics
+class. This class allows you to combine any two borders into a single border by speci-
+fying an outer and inner border. BecauseCompoundBorderaccepts other compound
+borders, you can recursively layer as many borders as you like into a single border.
+Using borders is extremely easy. For example, one of Swing’s border styles is an
+etched border. Here is how you might create a border similar to the one in
+Figure3-7:
+JLabel label = new JLabel("A Simple Label");
+label.setBorder(BorderFactory.createEtchedBorder());
+One important characteristic of Swing is that if aborderproperty is set on a compo-
+nent, the border overrides the component’sinsetsproperty. Swing allows the pro-
+grammer to specify an empty border, so you can still pad the component with extra
+space as well as provide a border if you use aCompoundBorder. If theborderproperty
+isnull, the default insets are used for the component instead. Borders are covered in
+more detail in Chapter13.
+Working with Tooltips
+JComponentalso provides Swing components with support fortooltips. Tooltips are
+small windows of text that pop up when the user rests the mouse over the target
+component. They typically supplement the meaning of an icon or button, but they
+can also provide the user with instructions or important information about the
+underlying component. The tooltip usually disappears after a designated amount of
+time (four seconds by default) or if the mouse is moved outside of the component’s
+bounds.
+Simplestring-basedtooltipscanbeautomaticallysetorretrievedusingthe
+toolTipText
+property ofJComponent, as shown here:
+JButton button = new JButton("Press Me!"); // JButton extends JComponent.
+button.setToolTipText("Go Ahead!");
+System.out.println(button.getToolTipText());
+Figure3-8 shows what a tooltip looks like on the screen.
+JComponentdoes not manage tooltips by itself; it gets help from theToolTipManager
+class.TheToolTipManagercontinuallyscansformouseeventsoncomponentsthathave
+tooltips. When the mouse passes into a component with a tooltip set, the
+ToolTipManagerbeginsatimer.Ifthemousehasnotleftthecomponent’sregionin0.75
+Figure3-7.Simple borders in Swing
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 67
+seconds, a tooltip is drawn at a preset location near the component. If the mouse has
+moved out of a region for longer than 0.5 seconds, the tooltip is removed from the
+screen.
+With the default
+setToolTipText()andgetToolTipText()methods,JComponenthan-
+dles the creation of an appropriate tooltip. If you want to get more creative, how-
+ever, Swing provides a separate object for tooltips:JToolTip. With it, you can
+completely redefine the characteristics of a tooltip by declaring your ownJToolTip
+object and overriding thecreateToolTip()method ofJComponentto return it to the
+ToolTipManager on demand.
+We cover theJToolTip object and theToolTipManager in more detail in Chapter27.
+Client Properties
+Swing components can maintain a special table of properties called “client proper-
+ties.” This provides specialized properties that can be meaningful in components
+only in certain instances. For example, let’s assume that a specific L&F uses a client
+property to store information about how a component should display itself when
+that L&F is activated. As you might guess, this client property would be meaningless
+when another L&F is activated. Using the client properties approach allows various
+L&Fs to expand their component properties without deluging the Swing source base
+with L&F-specific data.
+The name “client properties” is somewhat confusing because client properties are
+distinct from JavaBeans-style properties. Obviously, there’s a big difference: unlike
+JavaBeans properties, you can create new client properties without subclassing; you
+can even create new client properties at runtime. These two methods in
+JComponent
+store and retrieve client properties:
+myComponent.putClientProperty("aClientProperty", Boolean.TRUE);
+Boolean result = (Boolean)getClientProperty("aClientProperty");
+Because we are using a hashtable, the properties must be objects and not primitive
+data types; we must use theBoolean object instead of simply settingtrue orfalse.
+Figure3-8.A tooltip for a component
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+68 | Chapter 3: Swing Component Basics
+Double Buffering
+TheJComponentclass allows all Swing components to take advantage ofdoublebuff-
+ering. The idea behind double buffering is that it takes longer for a component to
+render its individual parts on screen than it does for a rectangular-area copy to take
+place. If the former occurs over multiple screen refreshes, the human eye is likely to
+catch the component in the process of being drawn, and it may appear to flicker.
+With the latter, the screen is usually updated as fast as the monitor can refresh itself.
+*
+When double buffering is activated in Swing, all component rendering performed by
+the repaint manager is done in an offscreen buffer. Upon completion, the contents of
+the offscreen buffer are quickly copied (not redrawn) on the screen at the compo-
+nent’s position. You can request double buffering for a particular component by
+accessing the boolean
+doubleBufferedproperty ofJComponent. Passing intrueto the
+setDoubleBuffered() method enables double buffering;false shuts it off:
+JButton button = new JButton("Test Button");
+button.setDoubleBuffered(true);    // Turns on double buffering
+You can use theisDoubleBuffered()method to check if double buffering is cur-
+rently enabled on a Swing component. The component level setting is only a request,
+and Swing double buffering may be completely disabled at the level of the repaint
+manager (for example, when running under an operating system like Mac OS X,
+double buffering is always performed by the window manager, so doing it again in
+Swing would simply throw away processor cycles for no benefit). See “The Repaint-
+Manager Class” in Chapter28 for more details and for information about how you
+can use graphics-accelerated “volatile images” in SDK 1.4 to further speed up Swing
+double buffering.
+With double buffering, transparency is maintained in nonopaque components
+because the graphics underneath the component are copied into the buffer before
+any offscreen rendering takes place. However, there is a slight penalty for double
+bufferingnonopaquecomponentsbecauseSwingperformstwoareacopiesinsteadof
+one: one to copy the context in which the component is drawn to the offscreen
+buffer before drawing, and one to copy this context plus the rendered component
+back to the screen.
+Buffers also chew up a great deal of memory, so the repaint manager tries to avoid
+using more than one offscreen buffer at a time. For example, if an offscreen buffer
+has been set for both a container and one of its children, the buffer for the parent
+container is used for both components.
+* Area copies are always faster because they are performed by the operating system or even the graphics card
+of the computer. At this level, they are commonly referred to as “bit-block transfers,” or BitBLTs.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 69
+Serialization
+Objects that extendJComponentare serializable; that is, the object’s data at any point
+can be written out, orserialized, onto an output stream, which might send it over a
+network or save it in a file.*The serialized output can later bedeserializedback into
+memory, where the object continues to operate from its original state. Object serial-
+ization gives Java programmers a powerful and convenient way to store and retrieve
+object data, as opposed to saving or transmitting state data in custom-made storage
+files. Serialization also provides the ability to transfer active components quickly
+from one virtual machine to another, which can be useful in remote method invoca-
+tion (RMI) and other forms of distributed computing.
+You can serialize components in Swing as you normally would in Java by passing a
+reference to the object into the
+writeObject()method of anObjectOutputStream
+object. In the event that the serialized object contains a reference to another object,
+the serialization algorithm recursively calls
+writeObject()on that object as well, con-
+tinuing until all objects in the class hierarchy are serialized. The resultingobject
+graphis then written out to the output stream. Conversely, you can deserialize a
+component back in by using thereadObject()method of anObjectInputStream,
+which reverses the entire process.
+Serialization in its current form is suited primarily for short-term uses
+such as RMI and interprocess communication. The binary file pro-
+duced by serialization is guaranteed to be readable only by another vir-
+tual machine of the same revision. If you want to store components for
+long-term (archival) use, you can use the XMLEncoder to dump the
+public properties (as defined by the JavaBeans spec) to an XML file.
+See the
+java.beans.XMLEncoder class for more details.
+The DebugGraphics Class
+Lightweight components are rendered entirely in Java, as opposed to offloading their
+work to a native heavyweight peer. The abstractGraphicsclass outlines platform-
+independent implementations for line-drawing, image-painting, and area-copying
+and filling that a lightweight peer can call upon to draw itself. If you create your own
+component, or extend an existing one, a
+Graphicsobject is often passed to the UI
+delegate’spaint() method to help with the drawing.
+Sometimes the way you intend a component to be painted, however, isn’t how it
+appears on the screen. Debugging painting problems can prove to be troublesome,
+especially when dealing with transparency, opaqueness, and double buffering.
+JComponent, however, can generate a special version of theGraphicsobject, called
+* The only exceptions to this are fields marked with thetransient keyword.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+70 | Chapter 3: Swing Component Basics
+DebugGraphics, which it can pass to a UI delegate’spaint()method. This object can
+take a set of user-configurable debugging options that modify how a component is
+drawn to the screen.
+If you wish to activate debugging for the component’s graphics, you can pass one or
+more debugging flags (see Table3-7) intoJComponent’ssetDebugGraphicsOptions()
+method.
+The debug options outlined in Table3-7 are bits in a binary mask; you can set more
+than one at the same time by using the bitwise OR (|) operator, as shown here:
+JButton myButton = new JButton("Hello");  // JButton extends JComponent.
+myButton.setDebugGraphicsOptions(DebugGraphics.FLASH_OPTION
+                                       | DebugGraphics.LOG_OPTION);
+Whenanyofthedebuggraphicsoptionsareset,thegetComponentGraphics()method
+ofJComponentreturns aDebugGraphicsobject instead of a normalGraphicsobject. As
+wementionedearlier,thesametypeofobjectispassedtotheUIdelegateofthecom-
+ponent. When a component draws itself, it calls upon the functionality of the
+DebugGraphicsobject to perform the task, just as it would with a typicalGraphics
+object. The drawing primitives are then slowed or logged so that the user can help
+identify any problems.
+Focus and Focus Cycle Methods
+The termfocusrefers to the active component on the screen. We typically think of
+the active component as the frame or window that is the current recipient of mouse
+and keyboard events. Other components, such as buttons and text fields, can have
+the focus as well. Visual cues, like a colored title bar or a dashed outline, often help
+us determine where the current focus resides.
+When we click on another component with the mouse, the focus is typically shifted,
+and that component is now responsible for consuming mouse and keyboard events.
+You can alsotraversethe focus by pressing the Tab key to move forward or the Tab
+and the Shift keytogether tomove backward. Thiscauses the focus to cycle fromone
+Table3-7.Constants for DebugGraphics options
+DebugGraphics constant Description
+DebugGraphics.FLASH_OPTIONCauses each graphics primitive to flash a configurable number of times as it is
+being rendered.
+DebugGraphics.LOG_OPTIONPrints a text message to the screen as each graphics primitive is drawn.
+DebugGraphics.BUFFERED_OPTIONRaises a window that shows the drawing that is taking place in the offscreen
+buffer. This is useful in the event that the double-buffered feature has been
+activated.
+DebugGraphics.NONE_OPTIONDisables all debug graphics options.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 71
+component to the next, eventually completing a loop and returning to its original
+position. This loop is called thefocus cycle.
+A group of components within a single container can define a focus cycle of its own.
+If the container has its own focus cycle, the focus repeatedly traverses through all of
+its children that accept the focus. The focus cycle is typically determined by the loca-
+tion of components in the container, although you can create your own focus tra-
+versal policy if you require different behavior. With the default focus policy, the
+component closest to the top-left corner of the container always receives focus first.
+The focus then moves from left to right across the components, and from top to bot-
+tom. Figure3-9 shows how the default focus cycle shifts focus between components
+in a container.
+If a container has a focus cycle of its own, it should override the
+Containermethod
+isFocusCycleRoot()and returntrue. If the method returnstrue, then the container
+is known as theroot container of the focus cycle.
+With SDK 1.2or 1.3, you can explicitly name the component that should receive the
+focus after a givenJComponentby setting itsnextFocusableComponentproperty. In
+addition, focus can be programmatically requested through theJComponentmethod
+requestFocus(), which the focus manager can call to shift the focus to this compo-
+nent. This is often done when the user selects the object (i.e., presses aJButton). If
+you don’t want your component to be able to respond torequestFocus()calls, you
+can set therequestFocusEnabled property ofJComponent tofalse.
+With SDK 1.4, this method of managing focus was replaced by the more flexible
+FocusTraversalPolicyclass as part of a major overhaul of the whole focus system.
+This class allows you to define a focus policy to manage a container. (In this case,
+“focus policy” simply means an algorithm to figure out which component follows,
+and which one precedes, the current component in the focus cycle.) One advantage
+of moving to policy-based management is that generic policies can be developed for
+containers—no more need to hook up individual components.
+There is an important distinction here: setting the
+requestFocusEnabledproperty to
+falsedoes not mean that the focus cannot betraversedonto your component; it simply
+Figure3-9.The default container focus traversal policy
+Button Button Button
+Text Field Button
+Container
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+72 | Chapter 3: Swing Component Basics
+means that it cannot be programmatically requested.JComponentprovides a similar
+property,focusable,* that you can enable or disable to specify whether a component
+ever receives focus at all.
+We discuss the concept of focus in detail in Chapter28.
+Keyboard Events
+Swing components can be programmed to trigger various actions when certain key-
+strokes occur. For example, components automatically handle focus-related keyboard
+events. The default focus mechanism watches for Tab and Shift-Tab keystrokes,
+adjusting the focus and consuming the keystrokes. If the focus mechanism does not
+know how to handle a keystroke, and no registered low-level
+KeyListeners have con-
+sumed it,JComponentchecks to see whether theprocessComponentKeyEvent()method
+consumes it. The default implementation does nothing, the idea being that you can
+override it in a subclass if you want to react to a keystroke in your own way. You’re
+not likely to want to use that approach, though, because it’s much less flexible than
+whathappensnext:ifnothinghasconsumedthekeyevent,
+JComponentcheckstoseeif
+akeyboardactionhas been registered for that keystroke. A set of maps provide a con-
+venient way to translate key events to appropriate component-related actions.
+Translation to an action starts by converting the key event to theKeyStrokethat rep-
+resents it. This is used as a key to check the component’sInputMapfor a correspond-
+ing action name (theInputMapcould return any kind of object, but convention
+dictates that it be aStringcorresponding to a logical action name). The result of this
+lookup, if notnull, is used in turn as a key to look in the component’sActionMapfor
+anActionto perform. Assuming that a non-null Actionwas found, its
+actionPerformedmethod is invoked (as described in “The Action Interface” earlier in
+this chapter).
+It might seem like overkill to use a two-map lookup like this. Wouldn’t it be simpler
+tojustputthe
+ActionsdirectlyintheInputMap?Itturnsoutthereareacoupleofgood
+reasons for the second layer. Although a given type of component generally supports
+a well-defined set of logical operations, the specific
+Actionclasses that implement
+them often vary depending on the L&F in use. Similarly, the keys that are used to
+invoke the actions vary between L&Fs, which leads to a complex coupling between
+the component and the L&F-specific UI delegate. Separating the two concepts into
+two maps provides an easy-to-understand translation between
+KeyStrokes and logi-
+cal event names, and from event names to specificActionimplementations. It also
+* PriortoSDK1.4,thefocusTraversableproperty(nowdepricated)wasusedinstead;settingthispropertyto
+false allowed the component to receive focus programmatically but not through traversal.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 73
+means thatInputMaps are nicely self-documenting; it’s easy to turn them into a
+human-readable table that shows the functions assigned to various keys.*
+InputMaps andActionMaps are also designed to be easy to share between components
+(or even similar component types). They have aparentproperty that is checked if a
+binding isn’t found, so common functionality can be placed in a shared parent map,
+and component-specific definitions added to a local map on an as-needed basis; the
+text components make extensive use of this capability.
+JComponentmakes this easy by
+providing newly initialized components with emptyInputMaps andActionMaps whose
+parents are the (likely shared) map provided by the UI. So, as a developer, you never
+need to worry about the possible existence of shared maps; you can just start adding
+your custom mappings and rely on Swing to provide the rest.
+Before showing you the details of how to register keyboard actions, there is one more
+complication to clarify. The process outlined here described a single
+InputMapused to
+translate keystrokes to action names. In fact, components have three separate
+InputMaps to address the fact that there are different situations under which a compo-
+nent might be asked to respond to a keyboard event. The most obvious case, which
+probably sprang to mind, is when the component itself is the owner of the keyboard
+focus. Components can also have a chance to respond to key events if they don’t
+have focus in two other cases. First, a component may respond if it is an ancestor of
+(contains) the focused component. Think of a
+ScrollPane, in which the Page Up and
+Page Down keys remain functional even though you’re working with thecontentsof
+the pane rather than the pane itself. Second, a component may respond if it is simply
+inside a window that is focused (this is how button mnemonics work). In order to
+create the proper
+InputMap, the methods to manipulate them offer acondition
+parameter whose legal values are shown in Table3-8.
+* For more details about the design goals of this key-binding mechanism, which was introduced in SDK 1.3,
+seehttp://java.sun.com/products/jfc/tsc/special_report/kestrel/keybindings.html, which also describes the lim-
+itationsofthepreviousmechanism.Ifyouarestillworkingwithapre-1.3versionofSwing,youcanfindthe
+first edition’s version of this section, which discusses how to use the old key-binding mechanism, on this
+book’s web site,http://www.oreilly.com/catalog/jswing2/.
+Table3-8.Constants for InputMap selection
+Constant Description
+WHEN_FOCUSED TheInputMap used when the component has the focus
+WHEN_IN_FOCUSED_WINDOW TheInputMap used when the component resides in a container that
+has the focus
+WHEN_ANCESTOR_OF_FOCUSED_COMPONENT TheInputMap used when the component is the ancestor of (contains)
+the component that currently has the focus
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+74 | Chapter 3: Swing Component Basics
+You obtain a component’s input map through one of the following two methods
+(these were mentioned in Table3-6, but bear repeating in this context):
+public InputMap getInputMap(int condition)
+Return the input map to be used under the specified condition.
+public InputMap getInputMap()
+A convenience method that callsgetInputMap(WHEN_FOCUSED), which is the most
+commonly used condition.
+Looking up the action map is simpler since there’s only one method:
+public ActionMap getActionMap()
+Return the action map associated with the component.
+A brief example illustrates how to perform the common task of assigning an event to
+a component using this binding mechanism. Suppose we wanted to extend the
+example program in “Using an Action” to perform a download whenever the F8 key
+is pressed. One way we could do this is by adding the following lines to the end of
+the
+ActionExample constructor:
+exampleButton.getActionMap().put("download", exampleAction);
+exampleButton.getInputMap(WHEN_IN_FOCUSED_WINDOW).put(
+  KeyStroke.getKeyStroke("F8"), "download");
+The first line binds the logical action namedownloadto our sample download action
+withinthe button’s action map. Thesecond line causes the F8 keyto trigger this logi-
+cal action whenever the button’s window has the focus, even if the button itself does
+not. This two-step registration process in which both an
+InputMapand theActionMap
+are retrieved and modified is very common when working with custom actions
+because of the two-stage, key-mapping process. If you’re simply changing or adding
+bindings for a standard keystroke or action, you need to work with only one of the
+maps.
+To remove a binding you’ve set, both types of maps provide a
+removemethod that
+takes aKeyStrokeobject that will be removed from the mapping. Theclearmethod
+removes all mappings. Neither of these methods affect inherited mappings. In fact, if
+you added a keystroke that overrode an inherited mapping, removing that keystroke
+restores the inherited mapping. If you actually want to block an inherited mapping
+without providing a new action, register a mapping to the action
+"none", which con-
+vention mandates never has anAction bound to it.
+There are corresponding methods for setting the map properties themselves, of
+course. These are used far less commonly, but do provide a way to eliminate the
+inherited
+parent maps provided by the L&F’s UI delegate:
+,swing2.book.8435  Page 74  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 75
+public void setInputMap(int condition, InputMap map)
+public void setActionMap(ActionMap actionMap)
+Replace the corresponding map completely, eliminating any inherited map-
+pings. Passing a
+null argument causes the component to have no bindings at all.
+Note that if you replace the mappings this way, there’s no way to get back the previ-
+ously inherited mappings unless you keep a reference to the original maps yourself.
+(SeeAppendixB for a list of default bindings.)
+Accessibility
+As we mentioned in Chapter1, Swing components support accessibility options.
+Accessibility options are constructed for users who have trouble with traditional user
+interfaces and include support for alternative input and output devices and actions.
+There are several parts to accessibility (covered in detail in Chapter25).
+JComponent
+implements the methods required by theAccessibleinterface, though it does not
+implement the interface itself.
+TheaccessibleContextproperty holds anAccessibleContextobject that is the focal
+point of communication between the component and auxiliary accessibility tools.
+There’s a different default context for each kind ofJComponent. For more informa-
+tion, see Chapter25.
+Events
+Table3-9 shows the events fired byJComponent(not counting the many events it
+inherits from the AWT classes).
+Event methods
+The 1.3 SDK added an access method for general event listeners:
+public EventListener[] getListeners(Class listenerType)
+This method pulls listeners from a protectedlistListenerfield based on the
+specified type. All the variousaddListener()methods forJComponentadd their
+listeners to this list. Subclasses can add their own listeners to thelistListener
+field. See Chapter27 for more information on event listener lists.
+Table3-9.JComponent events
+Event Description
+PropertyChangeEventA change has occurred inJComponent.
+VetoablePropertyChangeEventA change has occurred inJComponentthat can be vetoed by interested listeners.
+AncestorEvent An ancestor of aJComponent has moved or changed its visible state.
+,swing2.book.8435  Page 75  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+76 | Chapter 3: Swing Component Basics
+The following methods may move tojava.awt.Component in the future:
+public void firePropertyChange(String propertyName, byte oldValue, byte newValue)
+public void firePropertyChange(String propertyName, char oldValue, char newValue)
+public void firePropertyChange(String propertyName, short oldValue, short newValue)
+public void firePropertyChange(String propertyName, int oldValue, int newValue)
+public void firePropertyChange(String propertyName, long oldValue, long newValue)
+public void firePropertyChange(String propertyName, float oldValue, float newValue)
+public void firePropertyChange(String propertyName, double oldValue, double
+newValue)
+public void firePropertyChange(String propertyName, boolean oldValue, boolean
+newValue)
+Fire a
+PropertyChangeEventto all registered listeners ifnewValuediffers from
+oldValue. There are overloaded versions of this method for each primitive data
+type.
+public void addPropertyChangeListener(PropertyChangeListener listener)
+public void removePropertyChangeListener(PropertyChangeListener listener)
+Add or remove a
+PropertyChangeListener to the event registration list.
+public void addVetoableChangeListener(VetoableChangeListener listener)
+public void removeVetoableChangeListener(VetoableChangeListener listener)
+Add or remove a
+VetoableChangeListenerto the event registration list. A
+VetoableChangeListeneris allowed to veto any property changes that occur
+inside a component. If only one veto occurs, the property is not changed.
+public void addAncestorListener(AncestorListener listener)
+public void removeAncestorListener(AncestorListener listener)
+Add or remove an
+AncestorListenerto the event registration list. All registered
+objects are notified if any of the components’ ancestors change position or are
+made visible or invisible.
+JComponentalso inherits all the event listener registration methods from its AWT
+superclasses,ContainerandComponent. FromComponent, it inherits the methods to
+add or remove aComponentListener, FocusListener, KeyListener, MouseListener,o r
+MouseMotionListener. FromContainer, it inherits the methods to add or remove a
+ContainerListener. We won’t describe all the listener interfaces here; for more infor-
+mation, seeJavaAWTReferenceby John Zukowski (O’Reilly). However, you should
+note that Swing supports only the event model established in JDK 1.1. To receive an
+event, you must always register as a listener with the
+JComponentthat generates the
+event—events are never propagated through the containment hierarchy, as they were
+in JDK 1.0.
+Constructor
+public JComponent()
+Initialize a simpleJComponent and set the layout manager tonull.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 77
+Graphics Methods
+protected Graphics getComponentGraphics(Graphics g)
+Accept a graphics context and modify its foreground color and font to match the
+current defaults. If the debug graphics option has been activated, the method
+returns a special graphics object that the programmer can configure for debug-
+ging component drawing with the color and font modifications.
+public void update(Graphics g)
+Equivalent to
+paint(g). This is significantly different from theupdate()method
+ofComponent, which first cleared the component’s background. In Swing, clear-
+ing the component is handled byComponentUI, based on whether the component
+is opaque.
+public boolean contains(int x, int y)
+Returntrueif the coordinates passed in are inside the bounding box of the com-
+ponent,falseotherwise. The method always asks the UI delegate first, giving it
+an opportunity to define the bounding box as it sees fit. If the UI delegate does
+not exist for this component, or cannot define the bounding box, the standard
+component
+contains() method is invoked.
+public Insets getInsets (Insets insets)
+Copy theJComponent’s insets into the givenInsetsobject and return a reference
+to this object.
+public void paint(Graphics g)
+The primary method that the AWT subsystem calls upon for components to
+draw themselves if they are not obscured. This method delegates most of its
+work to the protected methods
+paintComponent(), paintBorder(), and
+paintChildren(), which it calls in that order. Because this method performs its
+own internal calculations, it is generally not a good idea to override it in a sub-
+class; if you want to redefine how a component draws itself, override
+paintComponent() instead.
+public void reshape(int x, int y, int w, int h)
+Reset thebounds property of the component.
+protected void paintComponent(Graphics g)
+Draw the component using the graphics context provided. Unless overridden, it
+simply turns around and calls the
+paint()method of the delegate. If there is no
+delegate, the method does nothing.
+protected void paintChildren(Graphics g)
+Cycle through each of the component’s children, invoking thepaint()method
+on each one.
+protected void paintBorder(Graphics g)
+Paint the border (or borders) outlined by theborderproperty ofJComponent.
+Note that if a border is defined,JComponentignores its own insets and uses the
+border instead.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+78 | Chapter 3: Swing Component Basics
+public void repaint(long tm, int x, int y, int width, int height)
+public void repaint(Rectangle r)
+Place a request to repaint the specified region on the repaint manager’s update
+queue. The initial variable
+tmof the firstrepaint()method is no longer used and
+can be ignored. Because the redrawing queue knows the correct order to draw
+various component layers, it is widely preferred that you call these methods,
+instead of directly invoking
+paint().
+public void paintImmediately(int x, int y, int w, int h)
+public void paintImmediately(Rectangle r)
+Force an immediate repaint of the specified region in the component. This
+method is invoked by the repaint manager when it is time for the component to
+drawitself;theprogrammershouldnotcallthismethod.Thismethodmaymove
+to
+java.awt.Component in the future.
+public void revalidate()
+Add the current component to the repaint manager’s revalidation queue, which
+is located on the system event queue.
+public void computeVisibleRect(Rectangle visibleRect)
+Calculate a
+Rectanglethat represents the intersection of the component’s own
+visible rectangle and each of its ancestors. The result is placed in thevisibleRect
+property and is used to determine how much of a component is drawn on the
+screen.
+Focus Methods
+public void requestFocus()
+Shift the focus to this component if therequestFocusEnabled property istrue.
+public boolean requestDefaultFocus()
+Shiftthefocustoadefaultcomponent,typicallythefirstfocus-traversablecompo-
+nentinthecurrentcontainer.Ifthemethodisunabletofindsuchacomponent,it
+returns
+false. This method was deprecated in SDK 1.4. (You should generally
+move your focus-related code toFocusTraversalPolicy implementations.)
+public void grabFocus()
+Used by focus managers to shift the focus to this component, regardless of the
+state of the
+requestFocusEnabledproperty. Because of this, it is generally better
+to userequestFocus() instead of this method.
+public boolean hasFocus()
+Returntrueif this component currently has the focus. This method is defined in
+java.awt.Component in JDK 1.2.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComponent Class | 79
+Tooltip Methods
+public String getToolTipText(MouseEvent event)
+Retrieve the text used for the component’s tooltip, given the appropriate mouse
+event.JComponentalways returns the currenttoolTipTextproperty. However,
+you can override this method in your own component if you want to return dif-
+ferent strings based on various mouse events.
+public Point getToolTipLocation(MouseEvent event)
+This method currently returns
+null. You can override it in your own component
+to specify the local component coordinates where its tooltip should be dis-
+played. If the method returns
+null, Swing chooses a location for you.
+public JToolTip createToolTip()
+Return a new instance ofJToolTipby default. If you want to extend theJToolTip
+class with a tooltip of your own, you can override this method in your compo-
+nents, forcing it to return the new class to the tooltip manager.
+Client Properties Methods
+public final Object getClientProperty(Object key)
+Search the client property list for theObjectspecified under the appropriate key.
+It returnsnull if no object is found.
+ public final void putClientProperty(Object key, Object value)
+Insert the specified client property value under the appropriatekey. If the value
+passed in isnull, the property is cleared from the list.
+Miscellaneous Methods
+protected void setUI(ComponentUI u)
+Installuas the UI delegate for the component, effectively changing the compo-
+nent’s L&F. This change doesn’t appear onscreen untilupdateUI() is called.
+public void updateUI()
+Called by the currentUIManagerto notify the component that its L&F has
+changed, and that the UI delegate should repaint itself.
+public void scrollRectToVisible(Rectangle aRect)
+Call similar methods up the component hierarchy. You can override this method
+at any level if you want to explicitly handle scrolling updates.
+public static boolean isLightweightComponent(Component c)
+A convenience method that returns a
+booleanindicating whether the component
+passed is a lightweight component. If it is, the method returnstrue. Otherwise,
+it returnsfalse. This method may move tojava.awt.Component in the future.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+80 | Chapter 3: Swing Component Basics
+Responding to Keyboard Input
+Swing provides a flexible framework for keyboard-based control, which can be used
+by any component. The rest of the chapter explains this mechanism.
+The InputMap Class
+InputMapmaps keystrokes to logical action names. When the user types a key combi-
+nation, it’s looked up in the input map of the focused component (and perhaps other
+componentsintheactivewindow,asdescribedearlier).Ifamatchisfound,theresult-
+ing object is used as a key in the corresponding component’s
+ActionMapto look up the
+concreteActionclass to be invoked. The platform-specific L&F implementations pro-
+videInputMaps consistent with the key-binding conventions for their platforms.
+When looking for values in anInputMap,a java.awt.KeyStrokeis always used as the
+key.KeyStrokeis a simple, immutable class that represents a particular keyboard
+action (including any modifier keys).KeyStrokes are intended to be unique (that is, if
+twoKeyStrokevariables represent the same action, they should reference the same
+KeyStrokeinstance). To ensure uniqueness, you can’t createKeyStrokes directly; you
+must obtain them through the staticgetKeyStroke()factory methods in the
+KeyStroke class.
+Although the result of looking up aKeyStrokein anInputMapis an arbitrary object,
+and any object can be used as a key for looking up an action in anActionMap, in prac-
+tice the values areStrings. By convention, their content is a descriptive name for the
+action to be performed (such ascopy,print,save, or the like). This allowsInputMaps
+to be largely self-documenting (it’s easy to print their contents as a “cheat sheet”
+showing the keys that invoke particular commands) and also improves the readabil-
+ity of code that requests actions programmatically. The most common way this
+string is obtained is by calling
+getName() on theAction to be added to the map.
+InputMaps can be chained together so that common functionality can be shared in a
+basicInputMap; specialized components can add custom keystrokes to their own
+InputMap and delegate the common cases to the shared map via theparent property.
+Property
+The single property defined byInputMapis shown in Table3-10. Theparentprop-
+erty establishes a fallbackInputMapthat is consulted if a key mapping is not found in
+the current map, much as the inheritance chain is followed when looking up the
+members of Java classes. If you create a cycle in the
+parentchain (for example, by
+setting twoInputMapsto beparents of each other), many of the method calls crash
+with aStackOverflowError.
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+Responding to Keyboard Input | 81
+Constructor
+public InputMap()
+The default constructor is the only constructor available. It creates an empty
+InputMap with noparent.
+Methods
+public KeyStroke[] allKeys()
+Return an array of allKeyStrokes defined in theInputMap, either directly or any-
+where along theparentchain. If there are no mappings, this method returns
+either an empty array ornull, depending on the history of theInputMap(s). Each
+key appears only once even if it overrides another on the parent chain.
+public void clear()
+Remove all keystroke mappings from thisInputMap(does not affect any map-
+pings in theparent chain).
+public Object get(KeyStroke keyStroke)
+Look up the specifiedkeyStrokein theInputMap(and theparentchain), return-
+ing a value that represents the logical action that should be taken in response. If
+no match is found, returnsnull. The result is generally used immediately to look
+up anActionin theActionMapof the component that owns thisInputMap. Con-
+vention dictates that the values returned areStrings describing the nature of the
+action to perform.
+public KeyStroke[] keys()
+Return an array ofKeyStrokes locally defined in thisInputMap. That is to say, it
+doesnotfollow theparentchain. If there are no mappings, this returns either an
+empty array ornull, depending on the history of theInputMap.
+public void put(KeyStroke keyStroke, Object actionMapKey)
+Define a new mapping for the specifiedkeyStroke. Future calls to theget()
+method returnactionMapKeyas the logical action associated withkeyStroke.A s
+suggested by the parameter name,actionMapKeyis intended to be used to look
+up anActionin anActionMap. By convention, it should be aStringwhose value
+is descriptive of the action. (AppendixB lists the standardActionMapkeys sup-
+ported by Swing components; your own classes can use these or define their own
+as appropriate.) Passing a
+null actionMapKeyhas the same effect as calling
+remove(keyStroke).
+Table3-10.InputMap property
+Property Data type
+get
+is
+set Default value
+parent InputMap •• null
+,swing2.book.8435  Page 81  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+82 | Chapter 3: Swing Component Basics
+public void remove(KeyStroke keyStroke)
+Remove the mapping defined for the specifiedkeyStrokefrom thisInputMap.
+Looking up thatkeyStrokein the future returns a value that is determined by the
+parentchain (which isnotaffected by this method). If you want to “block” a
+mapping in a sharedInputMapthat is part of yourparentchain, define a map-
+ping for thatKeyStroketo the stringnone. By convention, there is never anAction
+associatedwithnoneinanyActionMap, so its presencein yourInputMapcauses the
+parent check to be skipped without allowing any action to take place.
+public int size()
+Return the number of mappings defined in thisInputMap(not counting any that
+might be defined in theparentchain). For a new or newly clearedInputMap, this
+returns0.
+The ActionMap Class
+ActionMapis responsible for mapping logical action names to concreteAction
+instances that carry them out. When the user types a key combination, it’s looked up
+in theInputMapof a component, and the result is looked up as a key in the corre-
+spondingActionMap.
+Although any object can be used as a key in anActionMap, in practice they are
+Strings. By convention, their content is a descriptive name for the action to be per-
+formed (such ascopy, print, save, or the like), often obtained by callinggetName()
+on the correspondingAction.
+ActionMaps can be chained together so that common functionality can be shared in a
+basicActionMap; specialized components can add unique actions to their own
+ActionMapand delegate the common cases to the shared map through theparent
+property.
+A component’sActionMapcan also be used to configure auditory cues to be played at
+appropriate points by the component, as described in Chapter26.
+Property
+The single property defined byActionMapis shown in Table3-11. Theparentprop-
+erty establishes a fallbackActionMapthat is consulted if an action name is not found
+in the current map, much as the inheritance chain is followed when looking up the
+members of Java classes. If you create a cycle in theparentchain (for example, by
+setting twoActionMapsto beparents of each other), many of the method calls crash
+with aStackOverflowError.
+Table3-11.ActionMap property
+Property Data type
+get
+is
+set Default value
+parent ActionMap •• null
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Responding to Keyboard Input | 83
+Constructor
+public ActionMap()
+The default constructor is the only constructor available. It creates an empty
+ActionMap with noparent.
+Methods
+public Object[] allKeys()
+Return an array of all logical action names defined in theActionMap, either
+directly or anywhere along theparentchain. If there are no mappings, this
+method returns either an empty array ornull, depending on the history of the
+ActionMap(s). Each key appears only once even if it overrides another on the par-
+ent chain.
+public void clear()
+Remove all action mappings from the localActionMap(does not affect any in the
+parent chain).
+public Action get(Object key)
+Look up the specified action name in theActionMap(and theparentchain),
+returning the correspondingActionto be executed. If no match is found, returns
+null. The keys are often obtained by looking up aKeyStroke in anInputMap.
+public Object[] keys
+Return an array of the logical action names locally defined in thisActionMap.
+That is to say, it doesnotfollow theparentchain. If there are no mappings, this
+returns either an empty array ornull, depending on the history of theActionMap.
+public void put(Object key, Action action)
+Define a new mapping for the specifiedaction. Future calls to theget()method
+return it as theActionassociated with the logical namekey. By convention,key
+should be aStringwhose value is descriptive of the action. AppendixB lists the
+standardActionMapkeys supported by Swing components; your own classes can
+use these as well, or define their own, as appropriate. Passing anull keyhas the
+same effect as callingremove(action).
+public void remove(Object Key)
+Remove the mapping defined for the specifiedkeyfrom thisActionMap. Looking
+up that logical action name in the future returns a value determined by the
+parent chain (which isnot affected by this method).
+public int size()
+Return the number of mappings defined in thisActionMap(not counting any that
+might be defined in theparentchain). For a new or newly clearedActionMap, this
+method returns0.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+84
+Chapter4In this chapter:
+• Labels
+• Working with Images
+• Support for HTML
+• Icons
+• Implementing Y our Own Icons
+• Dynamic Icons
+• The ImageIcon Class
+CHAPTER 4
+Labels and Icons
+We’ll begin our look at the Swing components with theJLabelclass. In addition,
+we’ll look at Swing’sIconinterface and an implementation of this interface called
+ImageIcon. With just these few constructs, you’ll begin to see how Swing aids in the
+sophisticated UI development in Java.
+Labels
+Swing allows you to create labels that can contain text, images, or both. We’ll begin
+this chapter with a look at theJLabel class.
+TheJLabelclass allows you to add basic, noninteractive labels to a user interface.
+Because of its inherent simplicity, there is no model class forJLabel. Figure4-1
+shows a class diagram forJLabel. We’ll get into the two relationships toIcona little
+later.
+JLabelobjects may consist of both text and graphics (icons), but for simple text-only
+labels, the interface withJLabelis very similar to that ofjava.awt.Label. The code to
+create and display a very simple text label looks like this:
+Figure4-1.JLabel class diagram
+0..1
+0..1
+Key:
+javax.swing
+has defaultIcon
+SwingConstants
+JLabelJComponent Icon
+has disabledIcon
+Interface Class Abstract Class
+extends
+implements
+other relation
+A
+A
+accessible
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Labels | 85
+// SimpleJLabelExample.java
+//
+import javax.swing.*;
+public class SimpleJLabelExample {
+  public static void main(String[] args) {
+    JLabel label = new JLabel("A Very Simple Text Label");
+    JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().add(label); // Adds to CENTER
+    frame.pack();
+    frame.setVisible(true);
+  }
+}
+Running this simple program produces the display shown in Figure4-2.
+Properties
+TheJLabelclass contains the properties shown in Table4-1. Theiconand
+disabledIconproperties specify the icon to be displayed by default and when the
+label is disabled, respectively. If aniconis specified without adisabledIcon,a
+disabledIconis automatically created by converting the defaulticonto grayscale.
+Thefontproperty is shown in this table only because thesetFont()method is over-
+ridden to callrepaint() after callingsuper.setFont().
+Figure4-2.A simple JLabel
+Table4-1.JLabel properties
+Property Data type
+get
+is
+set Default value
+UI LabelUI •• From L&F
+UIClassIDo String "LabelUI"
+accessibleContexto AccessibleContext• JLabel.AccessibleJLabel
+disabledIconb Icon •• null
+displayedMnemonicb int •• KeyEvent.VK_UNDEFINED
+displayedMnemonicIndex1.4, b int -1
+fonto Font •• From L&F
+horizontalAlignmentb int •• LEADING1.3
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+86 | Chapter 4: Labels and Icons
+displayedMnemonicindicates the character to be used as an accelerator key, which
+typically means that an occurrence of this character is decorated with an underline in
+the label text.displayedMnemonicIndexis the index of the character that receives the
+decoration; it is set automatically to the first occurrence of thedisplayedMnemonic
+character in the label text. You can override this behavior by setting
+displayedMnemonicIndexto another index, or to-1 to force no decoration. (L&Fs are
+not technically required to honor thedisplayedMnemonicIndexproperty, but most of
+them do.)
+ThedisplayedMnemonicproperty isintbecause its value is intended to be
+one of theVK_ “virtual keycode” constants defined injava.awt.KeyEvent
+(see Table27-6). However, asetDisplayedMnemonic()method, which takes
+acharis also defined. It’s usually easier to callsetDisplayedMnemonic('a')
+than it is to callsetDisplayedMnemonic(KeyEvent.VK_A). If you use thechar
+version, it doesn’t matter if you specify an uppercase or lowercase character.
+If thelabelForproperty has been set, the referenced component gains focus when
+the mnemonic is pressed in conjunction with the Alt key.*One common use of this
+feature is to apply mnemonics to labels appearing next to text fields, allowing the
+fields to gain focus when the shortcut key is pressed. We’ll see an example of this
+strategy later in this section.
+The
+horizontalAlignmentandverticalAlignmentproperties are used to specify the
+alignment of the label’s content (text and icon) within its interior. If a label is sized to
+be just large enough for its content (asFlowLayoutdoes), setting these properties
+makes no difference. The values for these properties are defined inSwingConstants
+horizontalTextPositionb int •• TRAILING1.3
+iconb Icon •• null
+iconTextGapb int •• 4
+labelForb Component •• null
+textb String •• null
+verticalAlignmentb int •• CENTER
+verticalTextPositionb int •• CENTER
+* ThisisactuallyuptotheL&F,buttheBasicL&Fimplementsitthisway,andnoneoftheotherSwingL&Fs
+change this behavior. On the Macintosh, the Option key is used for Alt; newer keyboards have both labels.
+Table4-1.JLabel properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).

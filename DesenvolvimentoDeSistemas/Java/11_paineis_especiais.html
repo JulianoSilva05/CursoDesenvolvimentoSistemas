@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 11: Scroll e Viewports</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Aula 11: Scroll e Viewports</h1>
+            <h2>JScrollPane, ScrollBarPolicy</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 11</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Navegando em Grandes Conteúdos</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Conceitos Fundamentais -->
+        <div class="slide">
+            <h2>Conceitos Fundamentais (Teoria)</h2>
+            <div class="grid-layout">
+                
+                <div class="grid-item">
+                    <h3>Policies</h3>
+                    <p>Configurar quando as barras aparecem: ALWAYS, NEVER, AS_NEEDED.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Corner Components</h3>
+                    <p>Adicionar botões ou labels nos cantos de encontro das barras de rolagem.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Scroll Speed</h3>
+                    <p>Ajustar a velocidade de rolagem (UnitIncrement).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Programmatic Scroll</h3>
+                    <p>Mover a rolagem via código (ex: ir para o final do log).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Aprofundamento -->
+        <div class="slide">
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. Viewport</h3>
+            <p>O JScrollPane na verdade é uma 'janela' (Viewport) sobre um componente maior. Você pode manipular essa view diretamente.</p>
+            
+            <h3>2. Imagens Grandes</h3>
+            <p>ScrollPanes são perfeitos para visualizar imagens maiores que a tela. Basta colocar o ImageIcon em um JLabel e o JLabel no ScrollPane.</p>
+        
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
+            <div class="code-block">
+JTextArea area = new JTextArea(50, 50); // Área muito grande
+JScrollPane scroll = new JScrollPane(area);
+
+// Configuração Fina
+scroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+scroll.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+// Aumentar velocidade (padrão é muito lento)
+scroll.getVerticalScrollBar().setUnitIncrement(16);
+            </div>
+        </div>
+
+        <!-- Slide 5: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Crie um visualizador de termos de uso ('EULA'). Um JTextArea com um texto muito longo (gere via código) dentro de um ScrollPane. O botão 'Aceitar' só habilita se o usuário rolar até o final (Dica: AdjustmentListener).
+            </div>
+            
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
+            </div>
+
+            <textarea id="activity-11" class="code-input">
+/*
+ * ATIVIDADE PRÁTICA - AULA 11
+ * Tempo estimado: 60 minutos
+ */
+
+import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File; 
+
+public class TermosUso extends JFrame {
+    public TermosUso() {
+        super("Contrato");
+        setSize(400, 300);
+        
+        JTextArea texto = new JTextArea();
+        // Encha o texto com um loop for para ficar grande
+        
+        JScrollPane scroll = new JScrollPane(texto);
+        
+        JButton aceitar = new JButton("Aceitar");
+        aceitar.setEnabled(false);
+        
+        // Desafio: Habilitar botão ao rolar
+        // scroll.getVerticalScrollBar().addAdjustmentListener(...)
+        
+        add(scroll, BorderLayout.CENTER);
+        add(aceitar, BorderLayout.SOUTH);
+    }
+    public static void main(String[] args) { new TermosUso().setVisible(true); }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final -->
+        <div class="slide">
+            <h2>Aula Concluída!</h2>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-11': [
+                { id: 'policy', text: 'Configurar Policy', pattern: /ScrollBarPolicy/ },
+{ id: 'speed', text: 'Ajustar Velocidade', pattern: /setUnitIncrement/ },
+{ id: 'text', text: 'Texto Longo', pattern: /for/ }
+            ]
+        };
+    </script>
+</body>
+</html>

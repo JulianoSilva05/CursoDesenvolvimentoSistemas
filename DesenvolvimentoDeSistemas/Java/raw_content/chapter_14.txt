@@ -1,0 +1,2265 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 413
+Constructors
+public BevelBorder(int bevelType)
+public BevelBorder(int bevelType, Color highlight, Colorshadow)
+public BevelBorder(int bevelType, Color highlightOuter, ColorhighlightInner,
+ColorshadowOuter, ColorshadowInner)
+These constructors can be used to set the initial property values of the
+BevelBorder. The constructor is the only way the colors of the bevel border can
+be set; there are no mutator methods for the color variables.
+public SoftBevelBorder(int bevelType)
+public SoftBevelBorder(int bevelType, Color highlight, Color shadow)
+public SoftBevelBorder(int bevelType, Color highlightOuter, ColorhighlightInner,
+ColorshadowOuter, ColorshadowInner)
+These constructors can be used to set the initial property values of the
+SoftBevelBorder. The definitions are identical toBevelBorder constructors.
+In theconstructorswith twoColorarguments,thegivencolorssetthehighlightInner
+andshadowOuterproperties.highlightOuteris set tohighlight.darker(), and
+shadowInner is set toshadow.brighter().
+Methods
+public Insets getBorderInsets(Component c)
+public Insets getBorderInsets(Component c, Insets i)
+Return an
+Insetsobject specifying an inset of two pixels on each side for
+BevelBorderand three pixels on each side forSoftBevelBorder. The second ver-
+sion of this method modifies and returns the suppliedInsetsobject,i, allowing
+a single instance to be reused for efficiency.
+public Color getHighlightInnerColor(Component c)
+public Color getHighlightOuterColor(Component c)
+public Color getShadowInnerColor(Component c)
+public Color getShadowOuterColor(Component c)
+Retrieve various colors that would be used to draw the border if attached to an
+arbitrary component; the colors are used as shown in Figure13-5.
+public void paintBorder(Component c, Graphicsg, intx, inty, intwidth, intheight)
+Draw the beveled border within the graphics context of the component.
+Changing borders on the ﬂy
+Here is a short program that creates four labels. Each label draws a bevel border
+around itself when the mouse pointer enters the component’s region and erases it
+when the mouse leaves the region. This kind of “rollover” effect has become a popu-
+lar feature in some applications’ toolbars. Modifying the program to use soft bevel
+borders would be trivial.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+414 | Chapter 13: Borders
+// BevelExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class BevelExample extends JPanel {
+    BevelBorder bevel;
+    EmptyBorder empty;
+    JLabel label[] = new JLabel[4];
+    public BevelExample() {
+        super(true);
+        setLayout(new GridLayout(1, 4));
+        bevel = new BevelBorder(BevelBorder.RAISED);
+        empty = new EmptyBorder(5, 5, 5, 5);
+        label[0] = new JLabel("Home");
+        label[1] = new JLabel("Back");
+        label[2] = new JLabel("Forward");
+        label[3] = new JLabel("Stop");
+        for (int i = 0; i < label.length; i++) {
+            label[i].setHorizontalAlignment(JLabel.CENTER);
+            label[i].addMouseListener(new RolloverListener());
+            label[i].setBorder(empty);
+            add(label[i]);
+        }
+    }
+    public static void main(String s[]) {
+         JFrame frame = new JFrame("Bevel Border");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setSize(400, 100);
+         frame.setContentPane(new BevelExample());
+         frame.setVisible(true);
+    }
+    // Inner class to respond to mouse events for the "rollover" effect
+    class RolloverListener extends MouseAdapter {
+        public void mouseEntered(MouseEvent e) {
+            ((JLabel)e.getComponent()).setBorder(bevel);
+            repaint();
+        }
+        public void mouseExited(MouseEvent e) {
+            ((JLabel)e.getComponent()).setBorder(empty);
+            repaint();
+        }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 415
+        public void mouseClicked(MouseEvent e) {
+            String text = ((JLabel)e.getComponent()).getText();
+            System.out.println("You clicked " + text + "!");
+        }
+    }
+}
+Figure13-7 shows the results of our example.
+The Empty Border Class
+TheEmptyBorderclass is used to place empty space around a component. The size of
+the space on each side is defined by the border’s insets, which are set in the construc-
+tor. Figure13-8 shows an empty border with 20 pixels on all sides surrounding a
+JLabel. (Note that we used two other borders to denote the boundaries of the
+EmptyBorder.)
+Properties
+Table13-5 shows the properties of theEmptyBorder class.
+Figure13-7.Working with bevel borders
+Figure13-8.An empty border with two etched borders surrounding it
+Table13-5.EmptyBorder properties
+Property Data type
+get
+is
+setDefault value
+borderInsets1.3 Insets • None (set in constructor)
+borderOpaqueo boolean • false
+1.3since 1.3, ooverridden
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+416 | Chapter 13: Borders
+Constructors
+public EmptyBorder(int top, int left, int bottom, int right)
+public EmptyBorder(Insets insets)
+Create an empty border with the given insets.
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Since this is an empty border, this method does nothing.
+Method
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Return the insets that would be used with the specified component. The first
+version of this method returns an
+Insetsobject with the insets specified in the
+constructor (this is the same as theborderInsetsproperty). The second version
+of the method modifies and returns the suppliedInsetsobjectifor efficiency,
+reducing the number of throwaway objects created.
+The EtchedBorder Class
+An etched border is a single etching that surrounds the target component. The etch-
+ing consists of adjacent lines of two colors, a highlight and a shadow, and can be
+raised or lowered. Like bevel borders, etched borders render themselves by simulat-
+ing a light source above and to the left. The highlight is the color of the etching that
+faces the light source while the shadow is the color of the etching that faces away
+from the light source. An etched border is shown in Figure13-9.
+An etched border is very similar to a bevel border. By carefully manipulating the col-
+ors, you can create an
+EtchedBorder from aBevelBorder.
+Properties
+The properties for theEtchedBorderclass are shown in Table13-6. TheborderOpaque
+property always returnstrue, indicating that this border paints over all of its allo-
+cated pixels. TheetchTypetells whether the etch appears raised or lowered. Finally,
+Figure13-9.A lowered etched border in Swing
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 417
+thehighlightColorandshadowColorproperties indicate the two colors used to simu-
+late the etching. If no values are given, brighter and darker variations of the back-
+ground color of the component are used forhighlightColorandshadowColor,
+respectively.
+Constants
+EtchedBordercontains two constants used to initialize theetchTypeproperty, as
+shown in Table13-7.
+Constructors
+public EtchedBorder()
+Create a simple lowered etched border. The colors of the border’s highlight and
+shadow default to the
+brighter()anddarker()shades of the background color
+of any bordered component.
+public EtchedBorder(Colorhighlight, Colorshadow)
+Create a lowered etched border using the specified highlight and shadow colors
+for the etching. There are no mutators (“set” methods) for the color fields; they
+can be set only during construction.
+public EtchedBorder(int etchType)
+Create a simple etched border of the etch type passed in. The colors of the bor-
+der’s highlight and shadow default to the
+brighter()anddarker()shades of the
+background color of any bordered component.
+public EtchedBorder(int etchType, Color highlight, Color shadow)
+Create an etched border of the type passed in using the specified highlight and
+shadow colors for the etching. Note that there are no mutators for any of the
+properties; they can be set only during construction.
+Table13-6.EtchedBorder properties
+Property Data type
+get
+is
+setDefault value
+borderOpaqueo boolean • true
+etchType int • EtchedBorder.LOWERED
+highlightColor1.3 Color • null
+shadowColor1.3 Color • null
+1.3since 1.3, ooverridden
+Table13-7.EtchedBorder constants
+Constant Data type Definition
+RAISED int A raised border
+LOWERED int A lowered border
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+418 | Chapter 13: Borders
+Miscellaneous
+public Insets getBorderInsets(Component c)
+public Insets getBorderInsets(Comonentc, Insetsi)
+Return anInsetsobject specifying an inset of2 on each side. The second ver-
+sion of this method modifies and returns the givenInsets object,i.
+public Color getHighlightColor(Component c)
+public Color getShadowColor(Component c)
+Retrieve the colors that would be used to draw the shadowed and highlighted
+parts of the border on the specified component.
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Cause the border to paint itself with the graphics context of the component.
+The LineBorder Class
+TheLineBorderclass creates a border consisting of a line of arbitrary thickness
+around the component. Unlike the beveled or etched borders, the line is a single
+color and is not shaded. Since SDK 1.3, you can specify that the border use (very
+subtly) rounded corners. Figure13-10 shows two different line borders, each with a
+different thicknesses.
+Properties
+The properties for theLineBorderobject are shown in Table13-8. TheborderOpaque
+property always returnstrue, indicating that this border paints over all of its allo-
+cated pixels. The others describe the way it will be drawn; all are read-only and can
+be set only during construction.
+Figure13-10.Line borders in Swing
+Table13-8.LineBorder properties
+Property Data type
+get
+is
+set Default value
+borderOpaqueo boolean • true
+lineColor Color • From constructor
+ooverridden
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 419
+Constructors
+public LineBorder(Color color)
+public LineBorder(Color color, intthickness)
+public LineBorder(Color color, intthickness, booleanroundedCorners)
+Create a lined border with a specific color and an optional thickness and (since
+SDK 1.3) possibly rounded corners. The thickness defaults to
+1, and the corners
+to nonrounded.
+Methods
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Return an
+Insetsobject; the inset on each side is equal to the thickness of the
+line, as specified in the constructor. The second version of this method modifies
+and returns the given
+Insets object,i.
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Cause the border to paint itself with the graphics context of the component.
+Miscellaneous
+TheLineBorderclass contains two shortcut methods allowing you to reuse objects
+for certain commonly used kinds of borders. These methods reduce garbage collec-
+tion by returning the same object each time they are called. (The ability to safely and
+easily support this kind of shared object reuse is one of the major advantages of writ-
+ing immutable classes like
+LineBorder.)
+public static Border createBlackLineBorder()
+Return the equivalent ofLineBorder(Color.black, 1).
+public static Border createGrayLineBorder()
+Return the equivalent ofLineBorder(Color.gray, 1).
+roundedCornersboolean • false
+thickness int • 1
+Table13-8.LineBorder properties (continued)
+Property Data type
+get
+is
+set Default value
+ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+420 | Chapter 13: Borders
+The MatteBorder Class
+In art and photography, amatis often used to offset a picture from its frame. In
+Swing, matte* borders perform the same function, separating a component from
+everything else. A matte border in Swing can be either a solid color or a repeated
+image icon. The color or icon fills the entire space reserved by the border’s insets.
+With aMatteBorder, you have the choice of constructing the object with either a
+Coloror anIcon. If you choose a color, the color flood-fills the entire space reserved
+for the border. If you use an icon, the icon tiles or wallpapers itself throughout the
+entire area of theMatteBorder. Figure13-11 shows both kinds ofMatteBorder.
+Properties
+MatteBorderextends theEmptyBorderclass. TheborderOpaqueproperty can be either
+trueorfalse, depending on how the border is used. If theMatteBorderis drawn
+exclusively with a solid color, then the border is opaque, and the property has a
+value of
+true. If the border is used with an image, the image may contain transpar-
+ency, and the property has a value offalse. (See Table13-9.)
+Be careful if you use an image icon with aMatteBorderwithout explicitly
+setting the insets. The resulting border insets are the width and height of
+the icon used, which (depending on how much space the layout man-
+ager gives) could paint over part of your component.
+* ThisisSun’smisspelling,notours,perhapsbyassociationwiththemattepaintingsinmotionpicturespecial
+effects.
+Figure13-11.Various matte borders in Swing
+Table13-9.MatteBorder properties
+Property Data type
+get
+is
+setDefault value
+borderInsets1.3 Insets • None (set in constructor)
+borderOpaqueo boolean • None (depends on kind; see text)
+1.3since 1.3, ooverridden
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 421
+Constructors
+public MatteBorder(IcontileIcon)
+Create a matte border by calculating the insets from the icon passed in. The bor-
+der’s top and bottom height matches the height of the icon, while the border’s
+left and right width matches the width of the icon.
+public MatteBorder(InsetsborderInsets, ColormatteColor)
+public MatteBorder(inttop, intleft, intbottom, intright, ColormatteColor)
+Create a matte border with the specified insets using the solid color specified by
+matteColor.
+public MatteBorder(InsetsborderInsets, IcontileIcon)
+public MatteBorder(inttop, intleft, intbottom, intright, IcontileIcon)
+Create a matte border with the specified insets. Instead of using a flood-filled
+color, however, the specified icon is wallpapered throughout the border’s space.
+Methods
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Retrieve information about the component’s insets (the component isn’t used;
+the value returned is the same as that obtained through the
+borderInsetsprop-
+erty). The insets depend on how the border was constructed. If the insets were
+specified explicitly in the constructor, those insets are returned. If the border
+uses an icon and insets weren’t specified explicitly, the width of the icon is used
+as the inset on the left and right sides, and the height of the icon is used on the
+top and bottom. The second version of this method modifies and returns the
+given
+Insets object,i, to reduce the number of garbage objects created.
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Cause the border to paint itself with the graphics context of the component.
+Two kinds of matte borders
+Here is a program that displays the two types of matte borders from Figure13-11.
+// MatteExample.java
+//
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class MatteExample extends JPanel {
+    public MatteExample() {
+        super(true);
+        this.setLayout(new GridLayout(1, 2, 5, 5));
+        JLabel label1 = new JLabel("Matte Border");
+        JLabel label2 = new JLabel("Matte Border (Icon)");
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+422 | Chapter 13: Borders
+        label1.setHorizontalAlignment(JLabel.CENTER);
+        label2.setHorizontalAlignment(JLabel.CENTER);
+        Icon icon = new ImageIcon("plant.gif");
+        MatteBorder matte = new MatteBorder(35, 35, 35, 35, Color.blue);
+        MatteBorder matteicon = new MatteBorder(35, 35, 35, 35, icon);
+        label1.setBorder(matte);
+        label2.setBorder(matteicon);
+        add(label1);
+        add(label2);
+    }
+    public static void main(String s[]) {
+         JFrame frame = new JFrame("Matte Borders");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setSize(500, 200);
+         frame.setContentPane(new MatteExample());
+         frame.setVisible(true);
+    }
+}
+The TitledBorder Class
+TheTitledBorderclass takes an arbitrary border and adds a descriptive string to it.
+This title string can be placed in one of six different positions around the component
+and can be set to appear above, below, or overlaid on the border. In addition, you
+can specify the font and color of the title string. Figure13-12enumerates all of the
+explicit title positions and justifications available.
+Since SDK 1.3, there are also two logical positions,LEADING and
+TRAILING, which position the title relative to the direction in which text
+flows under the current locale. For better internationalization sup-
+port, useLEADING andTRAILING rather than the explicitLEFT orRIGHT
+positions.
+You can use any style of border in conjunction with aTitledBorderby setting the
+TitledBorder’s ownborderproperty. For example, the borders in Figure13-12are
+used in conjunction with aBevelBorder. The default border style, however, is an
+EtchedBorder. A titled, etched border (with the title at the top leading corner) has a
+strong tradition of being used in many applications to group a set of related user-
+interface elements visually inside of a larger window.
+Properties
+The properties for theTitledBorderclass are given in Table13-10. Theborderprop-
+erty contains the border that is being titled. It can be any border that implements the
+Borderinterface. The read-onlyborderOpaqueproperty always returnsfalse; the titled
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 423
+border does not color all of its pixels. Thetitleproperty holds the string that is dis-
+played with this border.titleColoris the string’s color,titleFontrepresents its font,
+size, and style.titleJustificationandtitlePositiontell where the title appears in
+relation to the component and the border. See Tables 13-11 and 13-12 for their values.
+Figure13-12.Title positions and justifications
+Table13-10.TitledBorder properties
+Property Data type
+get
+is
+set Default value
+border Border •• From L&F
+borderOpaqueo boolean • false
+title String •• ""
+titleColor Color •• From L&F
+titleFont Font •• From L&F
+titleJustification int •• LEADING1.3
+titlePositionint •• TOP
+1.3since 1.3, ooverridden
+Table13-11.Justification constants
+Property Data type Default value
+DEFAULT_JUSTIFICATION int Use the default justification, which isLEADING.
+LEFT int Place the title string on the left side of the border.
+1.3since 1.3
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+424 | Chapter 13: Borders
+Constructors
+public TitledBorder(String title)
+public TitledBorder(Border border)
+public TitledBorder(Border border, String title)
+public TitledBorder(Border border, String title, inttitleJustification, inttitlePosition)
+public TitledBorder(Border border, String title, inttitleJustification, inttitlePosition,
+FonttitleFont)
+public TitledBorder(Border border, String title, int titleJustification, inttitlePosition,
+FonttitleFont, ColortitleColor)
+Create a
+TitledBorderinstance with the specified properties. Any border that
+implements theBorderinterface can be used for theborderproperty. The justifi-
+cation and position constants are enumerated in Tables 13-11 and 13-12.
+Default values for omitted properties are shown in Table13-10.
+Miscellaneous
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Return an
+Insetsobject that describes the insets being used by the titled border;
+the insets depend on both the underlying border and the font and position of the
+border’s title. The second version of this method tries to reduce garbage creation
+CENTER int Place the title string in the center of the border.
+RIGHT int Place the title string on the right side of the border
+LEADING1.3 int Locale-sensitive positioning to the left for text that
+is oriented left-to-right, to the right if right-to-left.
+TRAILING1.3 int Locale-sensitive to the right for text that is oriented
+left-to-right, to the left if right-to-left.
+Table13-12.Position constants
+Constant Data type Definition
+DEFAULT_POSITION int Place the text in the default position,TOP.
+ABOVE_TOP int Place the text above the top line of the border.
+TOP int Place the text on the top line of the border.
+BELOW_TOP int Place the text below the top line of the border.
+ABOVE_BOTTOM int Place the text above the bottom line of the border.
+BOTTOM int Place the text on the bottom line of the border.
+BELOW_BOTTOM int Place the text below the bottom line of the border.
+Table13-11.Justification constants (continued)
+Property Data type Default value
+1.3since 1.3
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 425
+by modifying and returning the givenInsetsobject,i, but it can’t perform this
+optimization if the underlying border doesn’t extendAbstractBorder(and thus
+may lack a corresponding method).
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Cause the border to paint itself with the graphics context of the component.
+public Dimension getMinimumSize(Componentc)
+Return the minimum size of this border, including the border and text.
+Using a titled border
+Here is a short program that creates the image displayed in Figure13-13:
+// TitledExample.java
+//
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class TitledExample extends JPanel {
+    public TitledExample() {
+        super(true);
+        this.setLayout(new GridLayout(1, 1, 5, 5));
+        JLabel label = new JLabel("Titled Border");
+        label.setHorizontalAlignment(JLabel.CENTER);
+        TitledBorder titled = new TitledBorder("Title");
+        label.setBorder(titled);
+        add(label);
+    }
+    public static void main(String s[]) {
+         JFrame frame = new JFrame("Borders");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setSize(200, 100);
+         frame.setContentPane(new TitledExample());
+         frame.setVisible(true);
+    }
+}
+Figure13-13.A simple title border
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+426 | Chapter 13: Borders
+The CompoundBorder Class
+You can combine two borders to create more elaborate displays with the
+CompoundBorderclass. The insets of both borders are added together to form the
+insets of the resulting compound border object. The component renders the outside
+border first, followed by the inside border. You can compound borders recursively so
+that any number of borders can be embedded inside of a
+CompoundBorder object:
+CompoundBorder comp = new CompoundBorder(new CompoundBorder(new EtchedBorder(),
+                                         new EmptyBorder(10, 10, 10, 10)),
+                      new MatteBorder(20, 20, 20, 20, Color.red));
+The preceding code yields the border in Figure13-14.
+Properties
+Table13-13 lists the properties of theCompoundBorderclass. TheinsideBorderand
+outsideBorderproperties hold the borders that are combined. If both of the borders
+in the compound border are opaque, theborderOpaqueproperty istrue. Otherwise,
+the property isfalse.
+Constructors
+public CompoundBorder()
+Initialize an empty compound border with no outside or inside border. Because
+there are no mutators (“set” methods) for any border property, you will proba-
+bly never invoke this constructor.
+public CompoundBorder(BorderoutsideBorder, BorderinsideBorder)
+Create a compound border object with the specified inside and outside borders.
+Figure13-14.A compound border
+Table13-13.CompoundBorder properties
+Property Data type
+get
+is
+setDefault value
+borderOpaqueo boolean • See text
+insideBorder Border • null
+outsideBorder Border • null
+ooverridden
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 427
+Miscellaneous
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Return anInsetsobject describing the insets used by the compound border; the
+inset on each side is the sum of the insets of the borders being combined in this
+compound border. The second version of this method modifies and returns the
+given
+Insetsobject,i, to help reduce the number of temporary garbage objects
+created.
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+Cause the border to paint itself with the graphics context of the component.
+The BorderFactory Class
+TheBorderFactoryclass (which is in thejavax.swingpackage) allows you to call vari-
+ous static methods to create borders. Instead of declaring new instances for each bor-
+der, the factory class attempts to reuse previously defined (cached) borders, thus
+saving memory. It’s a good idea to get in the habit of using this factory if you create a
+lot of borders in your application. Currently, only a few borders are actually cached.
+But in future releases, additional border caching may be added to this class. The fact
+that most border classes areimmutable(i.e., they contain no mutator methods that
+would allow them to be changed) is an excellent design choice that enables this kind
+of instance sharing safely and easily even in a multithreaded environment like Java.
+Methods
+public static Border createBevelBorder(intbevelType)
+Create aBevelBorderof the specified type (either raised or lowered). This
+method returns a cached border rather than creating a new one.
+public static Border createBevelBorder(intbevelType, Colorhighlight, Colorshadow)
+Create aBevelBorderof the specified type (either raised or lowered), with the
+appropriate highlight and shadow colors.
+public static Border createBevelBorder(intbevelType, ColorhighlightOuter,
+ColorhighlightInner, ColorshadowOuter, ColorshadowInner)
+Create aBevelBorderof the specified type (either raised or lowered), with the
+appropriate highlight and shadow colors.
+public static Border createEmptyBorder()
+Create anEmptyBorder. This method returns a cached border rather than creat-
+ing a new one.
+public static Border createEmptyBorder(inttop, intleft, intbottom, intright)
+Create anEmptyBorder with the specified size.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+428 | Chapter 13: Borders
+public static Border createEtchedBorder()
+Create a defaultEtchedBorder. This method returns a cached border rather than
+creating a new one.
+public static Border createEtchedBorder(Colorhighlight, Colorshadow)
+Create anEtchedBorder with the appropriate highlight and shadow colors.
+public static Border createEtchedBorder(intbevelType)
+Since SDK 1.3, this method allows you to create nonlowered etched borders.
+Returns a cached border rather than creating a new one each time.
+public static Border createEtchedBorder(intbevelType, Colorhighlight, Colorshadow)
+Since SDK 1.3, this method allows you to create nonlowered etched borders
+using particular colors.
+public static Border createLineBorder(Colorcolor)
+Create a
+LineBorder with the specified color.
+public static Border createLineBorder(Colorcolor, intthickness)
+Create aLineBorder with the specified color and thickness.
+public static Border createLoweredBevelBorder()
+Create a loweredBevelBorder. This method returns a cached border rather than
+creating a new one.
+public static Border createRaisedBevelBorder()
+Create a raisedBevelBorder. This method returns a cached border rather than
+creating a new one.
+public static CompoundBorder createCompoundBorder()
+Create an emptyCompoundBorder.
+public static CompoundBorder createCompoundBorder(BorderoutsideBorder,
+BorderinsideBorder)
+Create aCompoundBorder by combining the two borders passed in.
+public static MatteBorder createMatteBorder(inttop, intleft, intbottom, intright,
+Colorcolor)
+Create aMatteBorder with the specified size and color.
+public static MatteBorder createMatteBorder(inttop, intleft, intbottom, intright,
+IcontitleIcon)
+Create aMatteBorderwith the specified size, tile-filling it with instances of the
+specified icontitleIcon.
+public static TitledBorder createTitledBorder(Borderborder)
+Create aTitledBorder fromborder.
+public static TitledBorder createTitledBorder(Borderborder, Stringtitle)
+Create aTitledBorderfromborder. The border’s title is thetitlestring passed
+in, positioned at the upper left of the border.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Creating Your Own Border | 429
+public static TitledBorder createTitledBorder(Borderborder, Stringtitle,
+inttitleJustification, inttitlePosition)
+Create aTitledBorderfrom theBorderpassed in. The border’s title, justifica-
+tion, and position are also passed in.
+public static TitledBorder createTitledBorder(Borderborder, Stringtitle,
+inttitleJustification, inttitlePosition, FonttitleFont)
+Create aTitledBorderfrom theBorderpassed in. The border’s title, justifica-
+tion, position, and font are all passed in.
+public static TitledBorder createTitledBorder(Borderborder, Stringtitle,
+inttitleJustification, inttitlePosition, FonttitleFont, ColortitleColor)
+Create aTitledBorderfrom theBorderpassed in. The border’s title is thetitle
+string passed in. The justification, position, font, and color of the border are also
+dictated by the variables passed in.
+public static TitledBorder createTitledBorder(Stringtitle)
+Create aTitledBorder with the given title.
+Creating Your Own Border
+Creating your own border is simple when you extend theAbstractBorderclass. You
+need to define three things: how to draw the border, whether it is opaque, and what
+its insets are. To accomplish this, you must implement
+paintBorder(), both
+isBorderOpaque()methods, andgetBorderInsets(). The hard part of coming up
+with your own border is doing something creative with theGraphicsprimitives in the
+paintBorder()method. A reminder: make sure that you paint only in the insets
+region that you define for yourself. Otherwise, you could be painting over the com-
+ponent you intend to border.
+Let’s take a look at a simple border:
+// CurvedBorder.java
+//
+import java.awt.*;
+import javax.swing.border.*;
+public class CurvedBorder extends AbstractBorder
+{
+    private Color wallColor = Color.gray;
+    private int sinkLevel = 10;
+    public CurvedBorder() { }
+    public CurvedBorder(int sinkLevel) { this.sinkLevel = sinkLevel; }
+    public CurvedBorder(Color wall) { this.wallColor = wall; }
+    public CurvedBorder(int sinkLevel, Color wall)    {
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+430 | Chapter 13: Borders
+        this.sinkLevel = sinkLevel;
+        this.wallColor = wall;
+    }
+    public void paintBorder(Component c, Graphics g, int x, int y, int w, int h)
+    {
+        g.setColor(getWallColor());
+        // Paint a tall wall around the component.
+        for (int i = 0; i < sinkLevel; i++) {
+           g.drawRoundRect(x+i, y+i, w-i-1, h-i-1, sinkLevel-i, sinkLevel);
+           g.drawRoundRect(x+i, y+i, w-i-1, h-i-1, sinkLevel, sinkLevel-i);
+           g.drawRoundRect(x+i, y, w-i-1, h-1, sinkLevel-i, sinkLevel);
+           g.drawRoundRect(x, y+i, w-1, h-i-1, sinkLevel, sinkLevel-i);
+        }
+    }
+    public Insets getBorderInsets(Component c) {
+        return new Insets(sinkLevel, sinkLevel, sinkLevel, sinkLevel);
+    }
+    public Insets getBorderInsets(Component c, Insets i) {
+        i.left = i.right = i.bottom = i.top = sinkLevel;
+        return i;
+    }
+    public boolean isBorderOpaque() { return true; }
+    public int getSinkLevel() { return sinkLevel; }
+    public Color getWallColor() { return wallColor; }
+}
+This border draws round rectangles in succession around the component. The rect-
+angles are offset from each other so that it appears that the component is depressed
+into the surface. The
+sinkLevelproperty defines how “deep” the depression should
+appear. Note that we define the border insets to match thesinkLevelproperty. We
+draw four round rectangles on each pass, instead of just one—this ensures that each
+pixel is filled between rectangles, which won’t be the case if we use just one. (If you
+want to see what we mean, try commenting out some of the
+drawRoundRect()calls.)
+Finally, thewallColor property specifies the border’s color.
+Here is an excerpt from the source that you can use to surround a slider with this
+border. Figure13-15 shows the result.
+JSlider mySlider = new JSlider();
+mySlider.setMajorTickSpacing(20);
+mySlider.setMinorTickSpacing(10);
+mySlider.setPaintTicks(true);
+mySlider.setPaintLabels(true);
+CurvedBorder border = new CurvedBorder(10, Color.darkGray);
+mySlider.setBorder(border);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Creating Your Own Border | 431
+Figure13-15.A custom curved border
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+432
+Chapter14In this chapter:
+• Introducing Swing Menus
+• Menu Bar Selection Models
+• The JMenuBar Class
+• The JMenuItem Class
+• The JPopupMenu Class
+• The JMenu Class
+• Selectable Menu Items
+• Toolbars
+CHAPTER 14
+Menus and Toolbars
+This chapter discusses Swing menus and toolbars. Menus are the richer and more
+flexible of the two, so they encompass most of the chapter. They tend to be the first
+thing users explore in learning a new application, so it’s fitting that Swing provides a
+great deal of freedom in laying out menu components.
+Toolbars allow you to group buttons, combo boxes, and other elements together in
+repositionable panels; these tools can assist the user in performing many common
+tasks. You can add any component to a Swing toolbar, even non-Swing compo-
+nents. In addition, Swing allows the toolbar to be dragged from the frame and posi-
+tioned inside a child window for convenience.
+Introducing Swing Menus
+Swing menu components are subclasses ofJComponent. Consequently, they have all
+the benefits of a Swing component, and you can treat them as such with respect to
+layout managers and containers.
+Here are some notable features of the Swing menu system:
+• Icons can augment or replace menu items.
+• Menu items can be radio buttons.
+• Keyboard accelerators can be assigned to menu items; these appear next to the
+menu item text.
+• Most standard Swing components can be used as menu items.
+Swing provides familiar menu separators, checkbox menu items, pop-up menus, and
+submenus for use in your applications. In addition, Swing menus support keyboard
+accelerators and “underline” style (mnemonic) shortcuts, and you can attach menu
+bars to the top of Swing frames with a single function that adjusts the frame insets
+accordingly. On the Macintosh, your application can be configured so that this
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Introducing Swing Menus | 433
+method places the menu bar at the top of the screen, where users expect to find it.
+Figure14-1 defines the various elements that make up the menu system in Swing.
+Note that not all platforms support underline-style mnemonics. Notably, on the
+Macintosh (which has never provided this sort of user interface) mnemonics do not
+appear at all in the system menu bar, and though they are visible in the actual
+menus, they do not work in either place. If your application uses mnemonics, you
+should consider grouping the code to set them up into a separate method that is
+invoked only when running on a platform that supports them.
+All platforms do support accelerators (shortcuts) but have different conventions
+about the key used to invoke them. You can take advantage of the
+Toolkitmethod
+getMenuShortcutKeyMask to always use the right key.
+Menu Hierarchy
+The class diagram for Swing menus is shown in Figure14-2.
+You might be surprised to findAbstractButtonin the hierarchy, but menus and
+menu items have many features in common with Swing buttons. For example, menu
+items can be highlighted (when the mouse pointer passes over them), they can be
+clicked to indicate that the user has made a choice, they can be disabled and grayed
+like buttons, and they can be assigned action commands to assist with event han-
+dling.
+JCheckBoxMenuItemandJRadioButtonMenuItemcan even be toggled between two
+Figure14-1.The elements of the Swing menu system
+Menubar
+CheckBox Menu Item
+Menu
+Menu Item (with Image)
+Separator
+Menu Item
+Menu Keyboard Accelerator
+Mnemonic
+Radio Button Menu Item
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+434 | Chapter 14: Menus and Toolbars
+selection states. Since Swing menu components share much of the functionality of
+Swing buttons, it is appropriate and efficient that they inherit fromAbstractButton.
+It may also seem surprising thatJMenuinherits fromJMenuItem, instead of vice-versa.
+This is because eachJMenucontains an implicit menu item that serves as the title of
+the menu. You’ll often hear this part of the menu called thetitlebutton. When the
+user presses or drags the mouse cursor over the title button, the corresponding menu
+appears. Note, however, that menus do not have to be anchored to a menu bar. You
+can embed them in other menus, where they act as submenus. This means that the
+title button must be able to act as a menu item, which would not be possible if the
+hierarchy was reversed. We discuss this behavior in more detail when we cover the
+JMenu class later in this chapter.
+Almost all of the menu classes implement theMenuElementinterface. TheMenuElement
+interface outlines standardized methods that dictate how each Swing menu compo-
+nent behaves when it encounters user input, such as keyboard or mouse events.
+Swing menu classes typically process these mouse and keyboard events and pass
+notifications to the component delegates, which handle any necessary redrawing of
+the component. These methods work in tandem with the
+MenuSelectionManager
+class. While you rarely need to implement theMenuElementinterface, it helps to know
+how it works. We show how to implement this interface later in the chapter.
+Getting Your Feet Wet
+Okay, it’s time to jump in. Here is a flashy program that introduces much of the
+basic Swing menu functionality:
+// IntroExample.java
+//
+Figure14-2.Swing menu diagram
+javax.swing
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+uses
+SwingConstants
+JCheckBoxMenuItem A
+JMenu A
+JRadioButtonMenuItem A
+JMenuItem AJComponent AbstractButton
+JPopUpMenu A
+JMenuBar A
+PopUp MenuSelectionManager
+MenuElement
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Introducing Swing Menus | 435
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class IntroExample extends JMenuBar {
+    String[] fileItems = new String[] { "New", "Open", "Save", "Exit" };
+    String[] editItems = new String[] { "Undo", "Cut", "Copy", "Paste" };
+    char[] fileShortcuts = { 'N','O','S','X' };
+    char[] editShortcuts = { 'Z','X','C','V' };
+    public IntroExample() {
+        JMenu fileMenu = new JMenu("File");
+        JMenu editMenu = new JMenu("Edit");
+        JMenu otherMenu = new JMenu("Other");
+        JMenu subMenu = new JMenu("SubMenu");
+        JMenu subMenu2 = new JMenu("SubMenu2");
+        // Assemble the File menus with mnemonics.
+        ActionListener printListener = new ActionListener() {
+                public void actionPerformed(ActionEvent event) {
+                    System.out.println("Menu item [" + event.getActionCommand() +
+                                       "] was pressed.");
+                }
+            };
+        for (int i=0; i < fileItems.length; i++) {
+            JMenuItem item = new JMenuItem(fileItems[i], fileShortcuts[i]);
+            item.addActionListener(printListener);
+            fileMenu.add(item);
+        }
+        // Assemble the File menus with keyboard accelerators.
+        for (int i=0; i < editItems.length; i++) {
+            JMenuItem item = new JMenuItem(editItems[i]);
+            item.setAccelerator(KeyStroke.getKeyStroke(editShortcuts[i],
+                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false));
+            item.addActionListener(printListener);
+            editMenu.add(item);
+        }
+        // Insert a separator in the Edit menu in Position 1 after "Undo".
+        editMenu.insertSeparator(1);
+        // Assemble the submenus of the Other menu.
+        JMenuItem item;
+        subMenu2.add(item = new JMenuItem("Extra 2"));
+        item.addActionListener(printListener);
+        subMenu.add(item = new JMenuItem("Extra 1"));
+        item.addActionListener(printListener);
+        subMenu.add(subMenu2);
+        // Assemble the Other menu itself.
+        otherMenu.add(subMenu);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+436 | Chapter 14: Menus and Toolbars
+        otherMenu.add(item = new JCheckBoxMenuItem("Check Me"));
+        item.addActionListener(printListener);
+        otherMenu.addSeparator();
+        ButtonGroup buttonGroup = new ButtonGroup();
+        otherMenu.add(item = new JRadioButtonMenuItem("Radio 1"));
+        item.addActionListener(printListener);
+        buttonGroup.add(item);
+        otherMenu.add(item = new JRadioButtonMenuItem("Radio 2"));
+        item.addActionListener(printListener);
+        buttonGroup.add(item);
+        otherMenu.addSeparator();
+        otherMenu.add(item = new JMenuItem("Potted Plant",
+                             new ImageIcon("image.gif")));
+        item.addActionListener(printListener);
+        // Finally, add all the menus to the menu bar.
+        add(fileMenu);
+        add(editMenu);
+        add(otherMenu);
+    }
+    public static void main(String s[]) {
+        JFrame frame = new JFrame("Simple Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(new IntroExample());
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+This example creates a menu bar with three simple menus, attaching mnemonics to
+the menu items of the File menu and keyboard accelerators to the menu items of the
+Edit menu. Figure14-3 shows a mosaic of the different menus that the program pro-
+duces. It also shows how the Edit menu looks on two different platforms, with the
+proper accelerator key (Control or Command) used on each.
+In the third menu, we’ve enhanced the last item with a GIF image of a potted plant.
+In addition, the first menu item in the Other menu is actually a submenu that pops
+out to a second submenu, underscoring the recursive nature of menus. If you select
+any of the menus, you are rewarded with a simple text output that tells you what you
+clicked:
+Menu item [New] was pressed.
+Menu item [Radio 1] was pressed.
+Don’t worry if you do not understand all the classes and methods at this point. We
+will examine each menu component in detail shortly.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Menu Bar Selection Models | 437
+Menu Bar Selection Models
+In all GUI environments, menu components allow only one selection to be made at a
+time. Swing is no exception. Swing provides a data model that menu bars and menus
+can use to emulate this behavior: the
+SingleSelectionModel.
+The SingleSelectionModel Interface
+Objects implementing theSingleSelectionModelinterface do exactly what its name
+suggests: they maintain an array of possible selections and allow one element in the
+array to be chosen at a time. The model holds the index of the selected element. If a
+new element is chosen, the model resets the index representing the chosen element
+and fires a
+ChangeEvent to each of the registered listeners.
+Properties
+Objects implementing theSingleSelectionModelinterface contain the properties
+shown in Table14-1. Theselectedproperty is abooleanthat tells if there is a selec-
+tion. TheselectedIndexproperty is an integer index that represents the currently
+selected item.
+Figure14-3.A sample of Swing menu effects
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+438 | Chapter 14: Menus and Toolbars
+Events
+Objects implementing theSingleSelectionModelinterface must fire aChangeEvent(not
+aPropertyChangeEvent)whentheobjectmodifiesitsselectedIndexproperty,i.e.,when
+the selection has changed. The interface contains the standardaddChangeListener()
+andremoveChangeListener() methods for maintaining a list ofChangeEvent listeners.
+void addChangeListener(ChangeListener listener)
+void removeChangeListener(ChangeListener listener)
+Add or remove the specifiedChangeListenerfrom the list of listeners receiving
+this model’s change events.
+Method
+TheSingleSelectionModel interface contains one other method:
+public void clearSelection()
+Clear the selection value, forcing theselected property to returnfalse.
+The DefaultSingleSelectionModel Class
+Swing provides a simple default implementation of theSingleSelectionModelinter-
+face in theDefaultSingleSelectionModel class.
+Properties
+DefaultSingleSelectionModelcontains just the properties required by the
+SingleSelectionModelinterface, as shown in Table14-2. TheselectedIndexproperty
+is an integer index that represents the currently selected item. The default value of-1
+indicates that there is no selection. Theselectedproperty is abooleanthat returns
+true if theselectedIndex is anything other than-1, andfalse otherwise.
+Table14-1.SingleSelectionModel properties
+Property Data type
+get
+is
+set Default value
+selected boolean •
+selectedIndex int ••
+Table14-2.DefaultSingleSelectionModel properties
+Property Data type
+get
+is
+set Default value
+selected boolean • false
+selectedIndex int •• -1
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuBar Class | 439
+Events and methods
+TheDefaultSingleSelectionModelobject provides all the events and methods speci-
+fied by theSingleSelectionModel interface discussed earlier.
+The JMenuBar Class
+Swing’sJMenuBarclass supersedes the AWTMenuBarclass. This class creates a hori-
+zontal menu bar component with zero or more menus attached to it.JMenuBaruses
+theDefaultSingleSelectionModelas its data model because the user can raise, oracti-
+vate, only one of its menus at a given time. Once the mouse pointer leaves that
+menu, the class removes the menu from the screen (orcancelsit, in Swing lingo), and
+all menus again become eligible to be raised. Figure14-4 shows the class hierarchy
+for the
+JMenuBar component.
+You can addJMenuobjects to the menu bar with theadd()method of theJMenuBar
+class.JMenuBarthen assigns an integer index based on the order in which the menus
+were added. The menu bar displays the menus from left to right on the bar accord-
+ing to their assigned index. In theory, there is one exception: the help menu. You are
+supposed to be allowed to mark one menu as the help menu; the location of the help
+menu is up to the L&F. In practice, trying to do this results in
+JMenuBarthrowing an
+Error.
+Menu Bar Placement
+You can attach menu bars to Swing frames or applets in one of two ways. First, you
+can use the
+setJMenuBar() method ofJFrame,JDialog,JApplet, orJInternalFrame:
+JFrame frame = new JFrame("Menu");
+JMenuBar menuBar = new JMenuBar();
+// Attach the menu bar to the frame.
+frame.setJMenuBar(menuBar);
+Figure14-4.JMenuBar class diagram
+javax.swing
+JMenuBar
+MenuElement
+SingleSelectionModel
+JMenu
+uses 1
+contains 0..*
+JComponent
+contains
+0..*
+A
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+440 | Chapter 14: Menus and Toolbars
+ThesetJMenuBar()methodisanalogoustothesetMenuBar()methodofjava.awt.Frame.
+Like its predecessor,setJMenuBar()allows the L&F to determine the location of the
+menu (typically, it anchors the menu bar to the top of a frame, adjusting the frame’s
+internalInsetsaccordingly). BothJAppletandJDialogcontain asetJMenuBar()
+method—this means that you can add menu bars to both applets and dialogs. Either
+way, be sure not to confuse the
+setJMenuBar()method with the oldersetMenuBar()
+method of AWT when working with Swing menus, or the compiler complains bitterly.
+If your application is running on a Macintosh, the Mac L&F can be configured to
+place menu bars at the top of the screen, where Mac users expect to find them. Set-
+ting the system property
+com.apple.macos.useScreenMenuBartotrueactivates this
+behavior. It’s disabled by default because most Java programs do not expect this
+behavior, and they must be coded properly to deal with it. Notably, the Aqua
+Human Interface Guidelines require that the menu bar is always visible. If your
+application has any frames that lack menu bars, whenever one of these gains focus, it
+causes the menu bar to disappear, much to the user’s consternation. The most com-
+mon way of dealing with this is to write a menu factory that generates an identical
+menu bar for each frame your application uses. Although this is a little extra work,
+the familiarity and comfort it brings your Mac users is probably worth it.
+The second way to add a menu bar is much less common. Recall that the
+JMenuBar
+class extendsJComponent. This means it can be positioned by a Swing layout man-
+ager like other Swing components. For example, we could replace the call to
+setJMenuBar() with the following code:
+menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
+frame.getContentPane().add(menuBar, BorderLayout.SOUTH);
+This places the menu bar at the bottom of the frame, as shown in Figure14-5. (Note
+that we set a beveled border around the menu bar to help outline its location.) It
+would even be possible to add two or three menu bars in different locations. Swing
+does not require a single menu bar to be anchored to the top of a frame. Because they
+extend
+JComponent,multiplemenubarscanbepositionedanywhereinsideacontainer.
+You have to add at least one named menu to a menu bar for it to
+gain any thickness. Otherwise, it appears as a thin line—similar to a
+separator.
+Of course, you’d never actually want to do this without a very compelling reason. It
+robs the L&F of its opportunity to place the menu bar in the appropriate location.
+Moving something as fundamental as a menu bar is almost certain to cause confu-
+sion and usability challenges for your users; having multiple menu bars would be
+baffling.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuBar Class | 441
+Properties
+The properties of theJMenuBarclass are shown in Table14-3.menuis an indexed
+property that references eachJMenuattached to the menu bar. The read-only
+menuCountproperty maintains a count of these attached menus. Remember that the
+single selection model allows only one menu to be activated at a time. If any menu is
+currently activated, theselectedproperty returnstrue; otherwise, the property
+returnsfalse. ThecomponentAtIndexproperty accesses the menu associated with the
+given index. It is similar to the indexedmenuproperty, except the contents are cast to
+a Component. If there is no component associated with that index, the
+getComponentAtIndex()accessor returnsnull. Thecomponentproperty returns a refer-
+ence tothis(i.e., the menu bar itself);subElementsreturns an array consisting of the
+menus on the menu bar.
+Figure14-5.JMenuBar positioned as a Swing component
+Table14-3.JMenuBar properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JMenuBar.AccessibleJMenuBar()
+borderPaintedb boolean •• true
+component Component • this
+componentAtIndexi Component • true
+helpMenuu JMenu •• Throws anError
+layouto LayoutManager •• BoxLayout(X_AXIS)
+marginb Insets •• null
+menuCount int • 0
+bbound, iindexed, ooverridden, uunimplemented
+See also properties from theJComponent class (Table 3-6).
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+442 | Chapter 14: Menus and Toolbars
+Themarginproperty controls the amount of space between the menu bar’s border
+and its menus while theborderPaintedproperty can be used to suppress the painting
+of the menu bar’s border even if theborderproperty has a non-nullvalue. Setting
+borderPaintedtofalseprevents the normal painting of the border. For more infor-
+mation about Swing borders, see Chapter13.
+ThehelpMenuproperty is supposed to allow you to designate oneJMenu
+as the help menu (which has a special location in some operating sys-
+tems), but this property has never been implemented, and using it
+throws an
+Erroreven in SDK 1.4. You can take advantage of the fact
+that the menu bar uses aBoxLayoutto insert “glue” to position your
+(ordinary) help menu at the right edge when appropriate, but this
+shifts the burden of knowing when to do that (based on the current
+L&F) to your code, which is unfortunate.
+Constructor
+public JMenuBar()
+Create and initialize an emptyJMenuBar object.
+Menu
+public JMenu add(JMenu menu)
+You can use this method to attach aJMenuto the menu bar set. Because of the
+BoxLayoutofJMenuBar, menus are displayed on the menu bar from left to right
+in the order that youadd()them. The method returns a reference to theJMenu
+that was passed in, allowing you to string together calls—for example,
+menubar.add(menu).add(menuitem).
+menui JMenu • null
+selected boolean • false
+selectionModelb SingleSelectionModel•• DefaultSingleSelectionModel()
+subElements MenuElement[] •
+UIb MenuBarUI •• From L&F
+UIClassIDo String • "MenuBarUI"
+Table14-3.JMenuBar properties (continued)
+Property Data type
+get
+is
+set Default value
+bbound, iindexed, ooverridden, uunimplemented
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuItem Class | 443
+Miscellaneous
+public int getComponentIndex(Component c)
+Return the index associated with the component reference passed in. If there is
+no match to the component, the method returns a-1. The only type of compo-
+nent it makes sense to pass in isJMenu.
+public void setSelected(Component c)
+Force the menu bar (and its associated model) to select a particular menu, which
+fires a
+ChangeEventin the menu bar’s single selection model. This method, for
+example, is called when a mnemonic key for a particular menu is pressed. Note
+that this is different than the
+boolean selected property listed in Table14-3.
+public void updateUI()
+Force theUIManagerto refresh the L&F of the component, based on the current
+UI delegate.
+JMenuBaralso implements the methods specified by theMenuElementinterface, which
+is covered later in this chapter.
+The JMenuItem Class
+Beforediscussingmenus,weshouldintroducetheJMenuItemclass.Figure14-6shows
+the class diagram for theJMenuItem component.
+A JMenuItemserves as a wrapper for strings and images to be used as elements in a
+menu. TheJMenuItemclass is essentially a specialized button and extends the
+AbstractButtonclass. Its behavior, however, is somewhat different from standalone
+buttons. When the mouse pointer is dragged over a menu item, Swing considers the
+menu item to beselected. If the user releases the mouse button while over the menu
+item, it is considered to be chosen and should perform its action.
+There is an unfortunate conflict in terminology here. Swing considers a menu item
+selected when the mouse moves over it, as updated by the
+MenuSelectionManagerand
+Figure14-6.JMenuItem class diagram
+javax.swingJMenuItem
+MenuElement
+AbstractButton
+contains
+0..*
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+444 | Chapter 14: Menus and Toolbars
+classes that implement theMenuElementinterface. On the other hand, Swing consid-
+ers a button selected when it remains in one of two persistent states, such as a check-
+box button remaining in the checked state until clicked again. So when a menu item
+is selected, its button model is reallyarmed. Conversely, when a menu item is dese-
+lected, its button model is disarmed. Finally, when the user releases the mouse but-
+ton over the menu item, the button is considered to be clicked, and the
+AbstractButton’sdoClick() method is invoked.
+Menu Item Shortcuts
+Menu items can take both keyboard accelerators and (on some platforms) mnemon-
+ics.Mnemonicsareanartifactofbuttons;theyappearasasingleunderlinebelowthe
+character that represents the shortcut. Keyboard accelerators, on the other hand, are
+inherited from
+JComponent. With menu items, they have the unique side effect of
+appearing in the menu item. (Their exact appearance and location is up to the L&F.)
+Figure14-7 shows both mnemonics and keyboard accelerators.
+Keyboard accelerators and mnemonics perform the same function: users can abbrevi-
+ate common GUI actions with keystrokes. However, a mnemonic can be activated
+only when the button (or menu item) it represents is visible on the screen. Menu
+item keyboard accelerators can be invoked any time the application has the focus—
+whether the menu item is visible or not. Also, as noted, accelerators work on all plat-
+forms and all L&Fs while mnemonics are less universal. Menus may be assigned
+both at once.
+Let’slookatprogrammingbothcases.Keyboardacceleratorstypicallyuseavarietyof
+keystrokes: function keys, command keys, or an alphanumeric key in combination
+with one or more modifiers (e.g., Shift, Ctrl, or Alt). All of these key combinations
+can be represented by the
+javax.swing.KeyStrokeclass, but only some of them are
+appropriate for the platform and L&F in use. Hence, you can assign a keyboard
+Figure14-7.Mnemonics and keyboard accelerators
+Menu Item with Mnemonic Menu Items with Keyboard Accelerators
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuItem Class | 445
+accelerator toa menu item bysetting itsacceleratorproperty withaKeyStrokeobject
+configured using the default toolkit’smenuShortcutKeyMask property, as follows:
+JMenuItem m = new JMenuItem("Copy");
+m.setAccelerator(KeyStroke.getKeyStroke('C',
+    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask(), false));
+Under Metal, this sets the accelerator to Ctrl-C, which is the letter C typed in combi-
+nation with the Ctrl key. The accelerator appears at the right side of the menu item
+(though again, the position is up to the L&F). The
+KeyStrokeclass is covered in more
+detail in Chapter27.
+The second, less universal, way to set a shortcut is through themnemonicproperty of
+theAbstractButton superclass:
+JMenuItem mi = new JMenuItem("Copy");
+mi.setMnemonic('C');
+Themnemonicproperty underlines the character you pass into thesetMnemonic()
+method. Note that mnemonic characters cannot take modifiers; they are simple let-
+ters. Be sure to use a letter that exists in the menu item’s label. Otherwise, nothing is
+underlined, and the user will not know how to activate the keyboard shortcut. Also
+be sure to set up mnemonics only if you’re running on a platform and L&F that sup-
+port them.
+As of SDK 1.4, you can use the
+displayedMnemonicIndexproperty to cope with menu
+items containing multiple copies of the character you’re using as a mnemonic, if it
+makes more sense for a later instance to be underlined (for example, the common
+SaveAsmenu item in which the uppercase “A” should get the underline). To achieve
+this, once you set up the mnemonic, callsetDisplayedMnemonicIndex with a value of5.
+Images
+In Swing, menu items can contain (or consist entirely of) icons. This can be a visual
+aid if the icon can convey the intended meaning more clearly. You can pass an
+Icon
+object to the constructor of theJMenuItem class as follows:
+JMenu menu = new JMenu("Justify");
+// The first two menu items contain text and an image. The third
+// uses only the image.
+menu.add(new JMenuItem("Center", new ImageIcon("center.gif")));
+menu.add(new JMenuItem("Right", new ImageIcon("right.gif")));
+menu.add(new JMenuItem(new ImageIcon("left.gif")));
+By default, the text is placed to the left of the image. This is shown on the left in
+Figure14-8. As you can see, this often misaligns the images to the right of the text,
+especially if there is a menu item consisting only of an image. If the menu item
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+446 | Chapter 14: Menus and Toolbars
+images are all the same width, you can improve the appearance of your menus by
+altering the text’s position using thesetHorizontalTextAlignment() method:
+JMenu menu = new JMenu("Justify");
+// The first two menu items contain text and an image. The third
+// uses only the image. The text is now set to the right.
+JMenuItem item1= new JMenuItem("Center", new ImageIcon("center.gif")));
+item1.setHorizontalTextAlignment(SwingConstants.RIGHT);
+JMenuItem item2= new JMenuItem("Right", new ImageIcon("right.gif")));
+item2.setHorizontalTextAlignment(SwingConstants.RIGHT);
+// Now add the menu items to the menu.
+menu.add(item1);
+menu.add(item2);
+menu.add(new JMenuItem(new ImageIcon("left.gif")));
+This positions the text on the other side of the images, as shown on the right of
+Figure14-8. You can trace thesetHorizontalTextAlignment()method up the class
+hierarchy to theAbstractButtonclass. As we mentioned before, theJMenuItemclass is
+a button object with respect to its text and image.AbstractButtoncontains a
+setVerticalTextAlignment()method as well, so if the accompanying image is taller
+than the menu item text, you can use this method to set the text’s vertical position as
+well. (See the
+AbstractButtonclass in Chapter5 and theOverlayLayoutclass in
+Chapter11 for more information about alignment with menu items and buttons.)
+The image is placed to the left of the text if you construct a menu item from an
+Action object (more on this later in the chapter).
+Java supports image transparency, so if you require some parts of an image to be
+transparent, you can specify a “transparent” color in the GIF file (many paint pro-
+grams allow you to do this), or you can create a specialized color filter that seeks out
+Figure14-8.Image and text placement in menu items
+Text Placed Left (Default) Text Placed Right
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuItem Class | 447
+specific pixel colors and changes their opacity before passing the resultingImageonto
+the menus. The former is much easier.
+Event Handling
+There are a number of ways to process events from menu items. Because menu items
+inheritActionEventfunctionality fromAbstractButton, one approach is to assign an
+action command to each menu item (this is often done automatically with named
+components) and attach all of the menu items to the same
+ActionListener. Then, in
+theactionPerformed()method of the listener, use the event’sgetActionCommand()
+method to obtain the action command of the menu item generating the event. This
+tells the listener which menu item has been clicked, allowing it to react accordingly.
+This is the approach used inIntroExample.javaearlier in this chapter and
+PopupMenuExample.java, which is discussed later.
+Alternatively, you can register a separate
+ActionListenerclass with each menu item,
+which takes the guesswork out of determining the menu item selected. However,
+Swing allows you to go a step further. The most object-oriented approach is to cre-
+ate a specialized
+Actionclass that corresponds to each of the tasks a user might
+request of your application. This lets you bundle the code for each program action
+together with the action’s name, icon, keystrokes, and other attributes in one place.
+You can then use this
+Actionto create the menu item, which automatically sets the
+item’s text, image, accelerator, and so on.
+This technique is particularly powerful if you want to be able to invoke the same
+action in multiple ways (such as from a toolbar as well as a menu). You can use the
+same
+Actioninstance to create the menu item and toolbar button, and they’ll both
+have appropriate labels and appearances. If the application needs to disable the
+action because it’s not currently appropriate, calling
+setEnabledon theAction
+instance automatically updates all user interface elements associated with the action
+(thus dimming both your menu item and toolbar button). Similarly, changing other
+attributes of the action, such as its name or icon, automatically updates any associ-
+ated user-interface components.
+Although prior to SDK 1.3 it wasn’t possible to construct a
+JMenuItemfrom anAction
+directly, adding theActionto aJMenuorJPopupMenuhad the same effect: the menu
+would create and configure an appropriateJMenuItem for you.
+Properties
+The properties for theJMenuItemclass are shown in Table14-4. Most of the proper-
+ties shown are superclass properties reconfigured to ensure that the menu item’s
+“button” acts like a menu item should. TheborderPaintedproperty is alwaysfalse;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+448 | Chapter 14: Menus and Toolbars
+menu items never take a border. ThefocusPaintedproperty is alsofalseto ensure
+that a focus rectangle is never drawn around the menu item.horizontalTextPosition
+andhorizontalAlignmentare both initialized toJButton.LEFT. This places the text to
+the left of the image icon and places the text and image icon on the left side of the
+menu item. (See the previous example for information on how to reconfigure this.)
+Theacceleratorproperty sets the keyboard accelerator for the menu item; the accel-
+erator is typically drawn to the right of the menu item string. Thearmedproperty
+simply maps abooleandown to the armed state of the component model,
+ButtonModel. You can use this to programmatically select the menu item, if needed.
+Theenabledproperty is abooleanthat indicates whether the user can select the menu
+item. If the menu item is disabled,JMenuItemautomatically grays the text and associ-
+ated image. As discussed earlier, the most powerful way to control the enabled state
+of a menu item is to associate it with anActionobject so that it automatically tracks
+the action’s enabled state. ThesubElementsproperty provides an array of submenus
+contained in this menu item.
+Table14-4.JMenuItem properties
+Property Data type
+get
+is
+set Default value
+acceleratorb KeyStroke •• null
+accessibleContexto Accessible Context• JMenuItem.
+AccessibleJMenuItem(
+)
+armed
+b, o boolean •• false
+borderPaintedo boolean •• false
+componento Component •
+enabledo boolean •• true
+focusPaintedo boolean •• false
+horizontalAlignmento int •• JButton.LEFT
+horizontalTextPositiono int •• JButton.LEFT
+menuDragMouseListeners1.4 MenuDragMouseListener[]•
+menuKeyListeners1.4 MenuKeyListener[]•
+modelo ButtonModel •• DefaultButtonModel()
+subElementso MenuElement[] •
+UIb MenuItemUI • From L&F
+UIClassIDo String • "MenuItemUI"
+1.4since 1.4, bbound, ooverridden
+See also properties from theAbstractButton class (Table 5-5).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuItem Class | 449
+Constructors
+JMenuItem()
+JMenuItem(Action action)
+JMenuItem(Icon icon)
+JMenuItem(String string)
+JMenuItem(String string, Icon icon)
+JMenuItem(String string, int mnemonic)
+Create a menu item with the appropriate icon or string. You also have the option
+to specify a mnemonic if you initialize with a string. Since Version 1.3, you can
+use the properties of an
+Actionto directly configure the properties of the
+JMenuItem.
+Events
+JMenuItems send many different kinds of events. Perhaps the most important are
+ActionEvents, which are fired when an item is selected.ChangeEventsare fired when
+button properties change. Methods for adding and removing listeners for these
+events are inherited from
+AbstractButton.
+JMenuItemalso uses special events for reporting mouse motions and key presses on
+top of the menu item. These are theMenuDragMouseEventandMenuKeyEvent. Here are
+the methods for registering listeners for these events:
+addMenuDragMouseListener (MenuDragMouseListener1)
+removeMenuDragMouseListener (MenuDragMouseListener1)
+These methods add or remove a specificMenuDragMouseListenerinterested in
+being notified when there is aMenuDragMouseEvent.
+addMenuKeyListener (MenuKeyListener 1)
+removeMenuKeyListener (MenuKeyListener 1)
+These methods add or remove a specific
+MenuKeyListenerinterested in being
+notified when there is aMenuKeyEvent.
+The following methods provide support for firing these events, though you will prob-
+ably never need to call them:
+public void processMenuDragMouseEvent (MenuDragMouseEvente)
+Fire a specific
+MenuDragMouseEventnotification based on the type ofMouseEvent
+that was observed. If theMouseEventlisted wasMOUSE_ENTERED, for example, the
+menu invokes thefireMenuDragMouseEntered() method.
+public void processMenuKeyEvent (MenuKeyEvente)
+Fire a specificMenuKeyEventnotification based on the type ofMenuKeyEventthat
+was observed. If theMenuKeyEventlisted wasKEY_RELEASED, for example, the
+menu invokes thefireMenuKeyReleased() method.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+450 | Chapter 14: Menus and Toolbars
+Method
+public void updateUI()
+Force the current UI manager to reset the current delegate for the component,
+thus updating the component’s L&F.
+Menu Element Interface
+public void menuSelectionChanged(booleanisIncluded)
+public MenuElement[] getSubElements()
+public Component getComponent()
+public void processMouseEvent(MouseEvent event, MenuElementpath[],
+MenuSelectionManagermanager)
+public void processKeyEvent(KeyEventevent, MenuElementpath[],
+MenuSelectionManagermanager)
+Implement the
+MenuElement interface, discussed later in this chapter.
+The MenuDragMouseEvent Class
+Swing generates a series of events while the mouse is dragging across an open menu.
+One event,
+MenuDragMouseEvent, describes the drag in relation to a particular menu
+item. You can listen for these events by adding an object that implements
+MenuDragMouseListenerto theaddMenuDragMouseListener()method ofJMenuItem. The
+object implementingMenuDragMouseListenerwill have four separate methods that can
+beinvokedinresponsetoamousedraginsideamenu;eachoneindicatesexactlywhat
+happened with the drag. Table14-5 shows the properties of the
+MenuDragMouseEvent.
+Properties
+Table14-5.MenuDragMouseEvent properties
+Property Data type
+get
+is
+setDefault value
+clickCounto int •
+ido int ••
+manager MenuSelectionManager•
+modifierso Object ••
+path MenuElement[] •
+popupTriggero boolean •
+source Object •
+wheno long •
+ooverridden
+See alsojava.awt.event.MouseEvent.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenuItem Class | 451
+Therearenodefaultsfortheevent;allpropertiesaresetintheconstructor.Thesource
+property indicates the object that sent the event. Theidproperty describes the type of
+event that was fired. Thewhenproperty gives the event a timestamp. Themodifiers
+property allows you to test various masks to see which mouse button is being pressed,
+as well as the Alt, Ctrl, Shift, and Meta keys. Thexandyproperties give the current
+location of the mouse pointer relative to the component in question. TheclickCount
+property describes how many times a mouse button has been clicked prior to this
+drag. The
+popupTriggerproperty indicates whether this mouse event should cause a
+popup menu to appear. Thepathproperty gives an ordered array ofMenuElement
+objects, describing the path to this specific menu. Finally, themanagerproperty con-
+tains a reference to the currentMenuSelectionManager for this menu system.
+Constructor
+public MenuDragMouseEvent(Componentsource, intid, longwhen, intmodifiers,
+intx, inty, intclickCount, booleanpopupTrigger, MenuElement[]path,
+MenuSelectionManagermanager)
+InitializeeachofthepropertiesdescribedinTable14-5withthespecifiedvalues.
+The MenuDragMouseListener Interface
+TheMenuDragMouseListenerinterface, which is the conduit for receiving the
+MenuDragMouseEventobjects, contains four methods. One method is called when the
+mouse is dragged inside the menu item, the second when the mouse is released
+inside the menu item. Finally, the last two are called when the mouse is dragged into
+a menu item, or dragged out of a menu item.
+Methods
+public abstract void menuDragMouseDragged(PopupMenuEvente)
+Called when the mouse is dragged inside of a menu item.
+public abstract void menuDragMouseReleased(PopupMenuEvente)
+Called when the mouse has been released inside of a menu item.
+xo int •
+yo int ••
+Table14-5.MenuDragMouseEvent properties (continued)
+Property Data type
+get
+is
+setDefault value
+ooverridden
+See alsojava.awt.event.MouseEvent.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+452 | Chapter 14: Menus and Toolbars
+public abstract void menuDragMouseEntered(PopupMenuEvente)
+Called when the mouse is being dragged, and has entered a menu item.
+public abstract void menuDragMouseExited(PopupMenuEvente)
+Called when the mouse is being dragged, and has exited a menu item.
+The MenuKeyEvent Class
+Swing also generates an event when a specific menu item receives a key event. Note
+that the key event does not have to be directed at the specific menu (i.e., an accelera-
+tor or mnemonic). Instead, the menu item responds to any key events generated while
+themenupopupcontainingitisshowingonthescreen.Youcanlistenfortheseevents
+by adding an object that implements
+MenuKeyListenerto theaddMenuKeyListener()
+method ofJMenuItem. The object implementingMenuKeyListenerwill have three sepa-
+rate methods that can be invoked in response to a menu key event.
+Table14-6 shows the properties ofMenuKeyEvent. There are no defaults for the event;
+all properties are set in the constructor. Thesourceproperty indicates the object that
+sent the event. Theidproperty describes the type of event that was fired. Thewhen
+property gives the event a timestamp. Themodifiersproperty allows you to test vari-
+ous masks to see which mouse button is being pressed, as well as the Alt, Ctrl, Shift,
+and Meta keys. ThekeyCodeandkeyCharproperties describe the key that was actu-
+ally pressed. Thepathproperty gives an ordered array ofMenuElementobjects,
+describing the path to this specific menu. Finally, themanagerproperty contains a ref-
+erence to the currentMenuSelectionManager.
+Constructor
+public MenuDragMouseEvent(Componentsource, intid, longwhen, intkeyCode,
+charkeyChar, MenuElement[]path, MenuSelectionManagermanager)
+This constructor takes each of the properties described in Table14-6.
+Table14-6.MenuKeyEvent properties
+Property Data Type
+get
+is
+setDefault Value
+ido int ••
+keyCharo char ••
+keyCodeo int •
+manager MenuSelectionManager•
+modifierso Object ••
+path MenuElement[] •
+source Object •
+wheno long •
+ooverridden
+See alsojava.awt.event.keyEvent.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JPopupMenu Class | 453
+The MenuKeyListener Interface
+TheMenuKeyListenerinterface, which is the conduit for receiving theMenuKeyEvent
+objects, contains three methods. One method is called when a key is typed (i.e.,
+pressed and released) while the second is called after a key is pressed. This third is
+called after a key is released. Note that if a key is pressed and held down for a few
+seconds, Swing emulates the traditional key behavior: it considers the key both
+“typed” and “pressed” again.
+Methods
+public abstract void menuKeyTyped(MenuKeyEvente)
+Called when a key intended for this menu element is both pressed and released.
+public abstract void menuKeyPressed(MenuKeyEvente)
+Called when a key intended for this menu element is pressed.
+public abstract void menuKeyReleased(MenuKeyEvente)
+Called when a key intended for this menu element is released.
+Menu items cannot exist by themselves; they must be embedded in menus. Swing
+implements two closely related styles of menus: anchored menus and pop-up menus.
+Swing uses the
+JMenu andJPopupMenu classes to implement these menus.
+The JPopupMenu Class
+Pop-up menus are an increasingly popular user-interface feature. These menus are
+not attached to a menu bar; instead, they are free-floating menus that associate
+themselves with an underlying component. This component is called theinvoker.
+Linked to specific interface elements, pop-up menus are nicely context-sensitive.
+They are brought into existence by a platform-dependent pop-up trigger event that
+occurs while the mouse is over the invoking component. In AWT and Swing, this
+trigger is typically a mouse event. Once raised, the user can interact with the menu
+normally. Figure14-9 is an example of a pop-up menu in Swing.
+You can add or insert
+JMenuItem, Component,o rActionobjects to the pop-up menu
+with theadd()andinsert()methods. TheJPopupMenuclass assigns an integer index
+to each menu item and orders them based on the layout manager of the pop-up
+menu. In addition, you can add separators to the menu by using theaddSeparator()
+method; these separators also count as an index. Figure14-10 shows the class dia-
+gram for the
+JPopupMenucomponent. Starting with SDK 1.4, pop-up menus use the
+Popupclass to actually draw themselves. This class is also used for other briefly dis-
+played interface elements like tooltips.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+454 | Chapter 14: Menus and Toolbars
+Displaying the Pop-up Menu
+Pop-up menus are usually raised by invoking theshow()method in response to a
+platform-specific pop-up trigger. Theshow()method sets thelocationandinvoker
+properties of the menu before making it visible. Pop ups are automatically canceled
+by a variety of events, including clicking a menu item; resizing an invoking compo-
+nent; or moving, minimizing, maximizing, or closing the parent window. (You won’t
+need to worry about canceling pop-up menus.) You raise the pop-up menu at the
+right time by checking all your
+MouseEvents to see if they’re the pop-up trigger. A
+word to the wise: if aMouseEventis the pop-up trigger, be sure not to pass it on to
+your superclass, or Swing could cancel the pop-up menu immediately after raising it!
+Also, be sure to check both pressed and released events because some platforms use
+one or the other. The easiest way to do that is to checkallmouse events. Here’s a
+Figure14-9.A pop-up menu in Swing
+Figure14-10.JPopupMenu class diagram
+javax.swing
+SingleSelectionModelJPopupMenu uses 1
+MenuElement
+JComponent
+contains
+0..* Popup
+1
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JPopupMenu Class | 455
+processMouseEvent()methodthatraisesapop-upmenuuponreceivingtheappropri-
+ate trigger:
+public void processMouseEvent(MouseEvent e) {
+    if (e.isPopupTrigger()) {
+        popup.show(this, e.getX(), e.getY());
+    }
+    else {
+        super.processMouseEvent(e);
+    }
+}
+Note the use ofisPopupTrigger()injava.awt.event.MouseEventto check whether
+the mouse event is a trigger in a platform-independent way. Since SDK 1.3,
+JPopupMenu has an equivalent method you can use in the same way.
+When the mouse moves outside the component, Swing no longer sends pop-up trig-
+ger events to that component, and its pop-up menu cannot be raised. This gives you
+the opportunity to define different pop-up menus for different underlying compo-
+nents, adding context sensitivity to your interface.
+Properties
+The properties of theJPopupMenuclass are shown in Table14-7. Pop-up menus have
+many properties. Thevisibleproperty tells whether the pop-up menu is currently
+showing on the screen; you can use thesetVisible()method to show or hide the
+pop up, but if it is a free-floating pop up, it is much easier to use theshow()method.
+Thelocationproperty provides the coordinates on the screen where the pop-up
+menu is or has been raised. The read-onlymarginproperty gives the amount of space
+between the pop-up window border and an imaginary rectangle surrounding the
+individual menu items.
+Table14-7.JPopupMenu properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JPopupMenu.
+accessibleJPopupMenu()
+borderPainted boolean •• true
+component Component •
+componentAtIndexi Component •
+invoker Component ••
+labelb String •• ""
+layouto LayoutManager •• GridBagLayout()
+1.4since 1.4, bbound, iindexed, ooverridden
+See also properties from theJMenuItem class (Table 14-4).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+456 | Chapter 14: Menus and Toolbars
+Theinvokerproperty is a reference to the component that is responsible for hosting
+the pop-up menu. TheborderPaintedproperty indicates whether the pop-up menu
+should paint its border. Thelabelproperty gives each pop-up menu a specific label;
+the individual L&F is free to use or ignore this property as it sees fit. Note thatlabel
+isaStringandnotaJLabel.componentAtIndexisanindexedpropertythatreturnsthe
+component at the specified index.
+ThelightWeightPopupEnabledproperty allows the programmer to enable or disable
+the potential use of lightweight components to represent the pop-up menu. If the
+property is set totrue, Swing uses a lightweight component when the pop-up is
+inside the top-level component’s drawing space, and a heavyweight when the pop-up
+extends beyond its space. If your interface uses any heavyweight components, they
+interfere with lightweight pop ups, so you should turn off this feature. You can set
+the default value of this property for all pop-up menus using the static
+setDefaultLightWeightPopupEnabled() method.
+Events
+JPopupMenuobjects fire aPopupMenuEventunder two conditions: when the menu
+becomes visible or invisible, or is canceled without a menu item selection. The class
+contains the standard
+addPopupMenuListener()andremovePopupMenuListener()
+methods for maintaining a list ofPopupMenuEvent subscribers.
+public void addPopupMenuListener(PopupMenuListenerl)
+public void removePopupMenuListener(PopupMenuListenerl)
+Add or remove a
+PopupMenuListener from the object’s event queue.
+lightWeightPopupEnabled boolean•• getDefaultLightWeightPop-
+upEnabled()
+locationo Point •
+margin Insets •
+popupMenuListeners1.4 PopupMenuListener[]•
+popupSize Dimension •
+selectionModelSingleSelectionModel• DefaultSingleSelectionMo-
+del()
+subElements MenuElement[]
+•
+UIb PopupMenuUI •• BasicPopupMenuUI()
+UIClassIDo String • "PopupMenuUI"
+visibleb, o boolean •• false
+Table14-7.JPopupMenu properties (continued)
+Property Data type
+get
+is
+set Default value
+1.4since 1.4, bbound, iindexed, ooverridden
+See also properties from theJMenuItem class (Table 14-4).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JPopupMenu Class | 457
+The ability to be notified right before the pop-up menu becomes visible gives you the
+opportunity to tweak the state and contents of the menu based on the current state
+of your application, which can make your interface even more helpful and context-
+sensitive.
+Note that when the pop-up menu is canceled, it also becomes invisible, so two
+events are potentially triggered. The cancelation event itself seems to be fired rarely
+in current implementations, though. If you need to know when the menu goes away,
+use the
+popupMenuWillBecomeInvisible handler.
+Constructors
+public JPopupMenu()
+public JPopupMenu(String title)
+Create an empty pop-up menu. The second constructor accepts a
+Stringas the
+title of the pop-up menu.
+Menu Items
+public JMenuItem add(JMenuItem menuItem)
+public Component add(Component c)
+public JMenuItem add(Action a)
+Add various elements to the pop-up menus. Objects extending either
+JMenuItem
+orJComponentcan be added, but the latter functions best if it implements the
+MenuElementinterface. If you specify anAction, its many properties are used to
+derive an appropriateJMenuItem, and its text is placed to the right of any image
+icon. The item retains its association with the action so that updates to the
+action (changes in name, icon, enabled state, etc.) are reflected by the item. The
+resulting
+JMenuItem is then returned, which you can use to alter its formatting.
+public JMenuItem insert(Action a, int index)
+public Component insert(Componentcomponent, intindex)
+Insert a specific menu item at a particular index. You can pass in a
+JComponentor
+anActionto these methods. If you use aJComponent, it’s best if it implements the
+MenuElementinterface. If you specify anAction, its various properties are used to
+derive an appropriateJMenuItem, and its text is placed to the right of any image
+icon. As usual, the item retains its association with the action. The resulting
+JMenuItemis then returned, which you can use to alter its formatting. All menu
+item indices that were previously at or after the specified position are incremented.
+public void addSeparator()
+Add a separator to the pop-up menu. Typically, a separator consists of a single
+horizontal line drawn across the pop-up menu. Note that, like menu items, the
+separator counts as an index in the menu. The separator used is an instance of
+an inner class, not the regular
+JSeparator; it is always horizontal.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+458 | Chapter 14: Menus and Toolbars
+Display
+public void show(Componentinvoker, intx, inty)
+Paint the pop-up menu at the requested coordinates. The method takes a refer-
+ence to the invoking component. It is functionally equivalent to the following
+calls:
+setInvoker(),setLocation(), andsetVisible().
+public void setPopupSize(intwidth, intheight)
+An alternate way to establish a preferred size for the pop up. (The other way is
+the
+popupSize property, which takes aDimension.)
+Miscellaneous
+public int getComponentIndex(Componentc)
+Return the index associated with the component referencec. If there is no match
+to the component passed in, the method returns-1.
+public static boolean getDefaultLightWeightEnabled
+Return the default value for thelightWeightPopupEnabled property.
+public boolean isPopupTrigger(MouseEvente)
+Since SDK 1.3, an alternate way to check whether a given mouse event should
+trigger a pop-up menu in the current L&F.
+public static void setDefaultLightWeightPopupEnabled(booleanaFlag)
+Set the default value of the
+lightWeightPopupEnabledproperty, which controls
+whether a lightweight or heavyweight component is used for the pop up.
+public void setSelected(Componentc)
+Force the pop-up menu’s model to select a particular menu item. This forces a
+property change event in the pop-up menu’s single selection model.
+public void updateUI()
+Force the default user interface manager to update itself, thus resetting the dele-
+gate to display a new
+PopupMenuUI.
+Menu Element Interface
+public void menuSelectionChanged(booleanisIncluded)
+public MenuElement[] getSubElements()
+public Component getComponent()
+public void processMouseEvent(MouseEventevent, MenuElementpath[],
+MenuSelectionManagermanager)
+public void processKeyEvent(KeyEvent event, MenuElementpath[],
+MenuSelectionManagermanager)
+Implement the
+MenuElement interface, which is covered later in this chapter.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JPopupMenu Class | 459
+Using Pop-up Menus
+Here is a program that demonstrates the use of theJPopupMenuclass. The example is
+similar to the one that generated Figure14-9, except that the pop up communicates
+events from the pop-up menu and from each of its menu items.
+// PopupMenuExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+public class PopupMenuExample extends JPanel {
+    public JPopupMenu popup;
+    public PopupMenuExample() {
+        popup = new JPopupMenu();
+        ActionListener menuListener = new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                System.out.println("Popup menu item [" +
+                                   event.getActionCommand() + "] was pressed.");
+            }
+        };
+        JMenuItem item;
+        popup.add(item = new JMenuItem("Left", new ImageIcon("left.gif")));
+        item.setHorizontalTextPosition(JMenuItem.RIGHT);
+        item.addActionListener(menuListener);
+        popup.add(item = new JMenuItem("Center", new ImageIcon("center.gif")));
+        item.setHorizontalTextPosition(JMenuItem.RIGHT);
+        item.addActionListener(menuListener);
+        popup.add(item = new JMenuItem("Right", new ImageIcon("right.gif")));
+        item.setHorizontalTextPosition(JMenuItem.RIGHT);
+        item.addActionListener(menuListener);
+        popup.add(item = new JMenuItem("Full", new ImageIcon("full.gif")));
+        item.setHorizontalTextPosition(JMenuItem.RIGHT);
+        item.addActionListener(menuListener);
+        popup.addSeparator();
+        popup.add(item = new JMenuItem("Settings . . ."));
+        item.addActionListener(menuListener);
+        popup.setLabel("Justification");
+        popup.setBorder(new BevelBorder(BevelBorder.RAISED));
+        popup.addPopupMenuListener(new PopupPrintListener());
+        addMouseListener(new MousePopupListener());
+    }
+    // An inner class to check whether mouse events are the pop-up trigger
+    class MousePopupListener extends MouseAdapter {
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+460 | Chapter 14: Menus and Toolbars
+        public void mousePressed(MouseEvent e) { checkPopup(e); }
+        public void mouseClicked(MouseEvent e) { checkPopup(e); }
+        public void mouseReleased(MouseEvent e) { checkPopup(e); }
+        private void checkPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popup.show(PopupMenuExample.this, e.getX(), e.getY());
+            }
+        }
+    }
+    // An inner class to show when pop-up events occur
+    class PopupPrintListener implements PopupMenuListener {
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+            System.out.println("Popup menu will be visible!");
+        }
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            System.out.println("Popup menu will be invisible!");
+        }
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            System.out.println("Popup menu is hidden!");
+        }
+    }
+    public static void main(String s[]) {
+        JFrame frame = new JFrame("Popup Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new PopupMenuExample());
+        frame.setSize(300, 300);
+        frame.setVisible(true);
+    }
+}
+The interesting parts of this program are the methods ofMousePopupListener. These
+call a private method,checkPopup(), to see if we’ve received an event that should
+raise the pop-up menu. If we get a valid trigger event, we show the pop up at the
+mouse location. This is an alternative to the approach of overriding
+processMouseEvent() that was demonstrated in “Displaying the Pop-up Menu.”
+The PopupMenuEvent Class
+This is a simple event that tells listeners that the target pop-up menu is about to
+become visible or invisible, or that it has been canceled. Note that it doesn’t tell
+which one has occurred. The object implementing
+PopupMenuListenerwill define
+three separate methods that can be called by a pop-up menu; each one indicates
+exactly what happened with the target pop-up menu object.
+Constructor
+public PopupMenuEvent(Object source)
+The constructor takes a reference to the object that fired the event.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenu Class | 461
+The PopupMenuListener Interface
+The PopupMenuListenerinterface, which is the conduit for receiving the
+PopupMenuEventobjects, contains three methods. One method is called when the pop
+up is canceled, and the other two indicate that the pop up is about to show or hide
+itself. This interface must be implemented by any listener object that wishes to be
+notified of changes to the pop-up menu.
+Methods
+public abstract void popupMenuCanceled(PopupMenuEvente)
+Called when the target pop-up menu is canceled or removed from the screen.
+(This seems to be called rarely in practice.)
+public abstract void popupMenuWillBecomeInvisible(PopupMenuEvente)
+Called when the pop-up menu is about to be removed from the screen.
+public abstract void popupMenuWillBecomeVisible(PopupMenuEvente)
+Called when the pop-up menu is about show itself on the screen. This is an
+excellent opportunity to update the contents of the menu (or their enabled
+states) based on current application conditions.
+The JMenu Class
+TheJMenuclass represents the anchored menus attached to aJMenuBaror another
+JMenu. Menus directly attached to a menu bar are calledtop-levelmenus. Submenus,
+on the other hand, are not attached to a menu bar but to a menu item that serves as
+its title. This menu item title is typically marked by a right arrow, indicating that its
+menu appears alongside the menu item if the user selects it. See Figure14-11.
+Figure14-11.Top-level menu and submenu
+Top-Level Menu Submenu
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+462 | Chapter 14: Menus and Toolbars
+JMenuis a curious class. It contains aMenuUIdelegate, but it uses aButtonModelfor its
+data model. To see why this is the case, it helps to visualize a menu as two compo-
+nents: a menu item and a pop-up menu. The menu item serves as the title. When it is
+pressed, it signals the pop-up menu to show itself either below or directly to the right
+of the menu item.
+JMenuactually extends theJMenuItemclass, which makes it possi-
+ble to implement the title portion of the menu. This, in effect, makes it a specialized
+button. On some platforms you can use the
+mnemonicproperty of theJMenuItem
+superclass to define a shortcut for the menu’s title and, consequently, the menu. In
+addition, you can use the
+enabledproperty ofJMenuItemto disable the menu if
+desired.
+As with pop-up menus, you can add or insertJMenuItem,Component,o rActionobjects
+in the pop-up portion of the menu by calling theadd()andinsert()methods. You
+can also add a simple string to the menu;JMenucreates the correspondingJMenuItem
+object for you internally. TheJMenuclass assigns an integer index to each menu item
+and orders them based on the layout manager used for the menu. You can also add
+separators to the menu by using theaddSeparator() method.
+You cannot use keyboard accelerators withJMenuobjects (top-level or
+submenu), because accelerators trigger actual program actions, not
+simply the display of a menu from which actions can be chosen. On
+some platforms you can use the
+setMnemonic()method to set a short-
+cut to bring up the menu, but the only universal, reliable approach is
+to assign keyboard accelerators to the non-submenu
+JMenuItems that
+trigger program actions.
+You can programmatically cause the submenu to pop up on the screen by setting the
+popupMenuVisibleproperty totrue. Be aware that the pop up does not appear if the
+menu’s title button is not showing.
+Figure14-12 shows the class diagram for theJMenu component.
+Figure14-12.JMenu class diagram
+javax.swing
+uses 1
+MenuElement
+JMenu JPopupMenuJMenuItem
+contains
+0..*
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A A A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenu Class | 463
+Properties
+TheJMenuproperties are listed in Table14-8.JMenuuses aJPopupMenuto represent its
+list of menu items. If you wish to access that underlying menu, you can do so using
+thepopupMenuproperty. ThepopupMenuVisibleproperty tracks whether the menu’s
+pop-up portion is currently visible. As noted, setting this totruewhen the title but-
+ton is visible causes the pop up to appear.JMenualso contains aselectedproperty,
+which indicates if the user has selected the title button of the menu. Both properties
+should mirror each other.
+The
+topLevelMenuproperty has the valuetrueif thisJMenuis directly attached to a
+menu bar and is not a submenu.itemis an indexed property that allows access to
+each of theJMenuItemobjects in the menu, whileitemCountmaintains a count of all
+of theJMenuItemobjects that are present. Thedelayproperty specifies the amount of
+time, in milliseconds, that the underlying menu waits to appear or disappear after
+Table14-8.JMenu properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JMenu.accessibleJMenu()
+component Component •
+componentOrientation1.4, o ComponentOrientation•• From L&F
+delay int •• 0
+itemCount int • 0
+itemi JMenuItem • null
+layouto LayoutManager •• OverlayLayout()
+menuComponentCount int • 0
+menuComponenti Component • null
+menuComponentsComponent[] •
+menuListeners1.4 MenuListener[]•
+modelo ButtonModel •• DefaultButtonModel()
+popupMenu JPopupMenu •
+popupMenuVisible boolean •• false
+selected boolean •• false
+subElements MenuElement[] •
+tearOffu boolean • Throws anError
+topLevelMenu boolean •
+UIb MenuUI • From L&F
+UIClassID String • "MenuUI"
+1.4since 1.4, bbound, iindexed, ooverridden, uunimplemented
+See also properties from theJMenuItem class (Table 14-4).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+464 | Chapter 14: Menus and Toolbars
+receiving the corresponding event. The delay must be set to a positive integer, or
+setDelay() throws anIllegalArgumentException.
+ThemenuComponentproperty is a more generalized version of theitemproperty; it
+returns the component at the given index as aComponentrather than as aJMenuItem.
+In addition, themenuComponentCountproperty retains a count of the menu items, sep-
+arators, and other components currently in the menu. ThemenuComponentsproperty
+lets you access each of the items in the menu, returned as an array ofComponent
+objects.
+ThecomponentOrientationproperty is used to accommodate non-Western languages
+in which text does not flow left to right.JMenuoverrides this property in order to
+properly pass changes on to theJPopupMenu delegate it uses.
+ThetearOffproperty is not yet implemented and is reserved for
+(increasingly dubious) future use in Swing. Trying to use it throws an
+Error(rather than something more appropriate like anUnsupportedOp-
+erationException). Since anErroris supposed to indicate a cata-
+strophic failure of the virtual machine, using this property will almost
+certainly crash your application.
+Constructor
+public JMenu()
+public JMenu(Action a)
+public JMenu(String s)
+public JMenu(String s, boolean b)
+Initialize a default
+JMenu. You have the option of specifying a string for theJMenu
+to display—as well as abooleanfor thetearOffproperty (which is ignored)—or
+binding it to anAction.
+Menu Items
+public JMenuItem add(JMenuItem menuItem)
+public Component add(Component c)
+public void add(String s)
+public JMenuItem add(Action a)
+Add various elements to the menus. Objects from both
+JMenuItemand
+JComponentcan be added, but the latter functions best if it implements the
+MenuElementinterface. If you specify aStringas the parameter, a menu item with
+the appropriatelabel iscreated. If youspecifyanAction, its textand iconproper-
+ties are used to derive an appropriateJMenuItem, and its text is placed to the right
+of the icon. It retains its association with the action and is updated to reflect
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenu Class | 465
+changes to its properties. The resultingJMenuItemis returned, which you can use
+to alter its formatting.
+public void addSeparator()
+Add a separator to the menu. Typically, a separator consists of a single horizon-
+tal line drawn across the menu.
+public void insert(String s, int index)
+public JMenuItem insert(JMenuItem mi, int index)
+public JMenuItem insert(Action a, int index)
+Insert a specific menu item at a particular index. The index must be positive, or
+the method throws an
+IllegalArgumentException. You can pass in aJMenuItem,a
+String,o ra nActionto these methods. If you specify aStringas the parameter, a
+menu item with the appropriate label is created. If you specify anAction, its text
+and icon properties are used to derive an appropriateJMenuItem, and its text is
+placed to the right of the icon. As usual, the menu retains its association with the
+action. Theresulting
+JMenuItemis returned,whichyou canuse toalter its format-
+ting. All menu items that were previously at or after the specified position are
+increased by one.
+public void insertSeparator(int index)
+Insert a horizontal separator at the position specified by the integer index. The
+index must be positive, or the method throws an
+IllegalArgumentException. All
+menu items’ indices that were previously at or after the specified position are
+increased by one.
+public void remove(JMenuItem item)
+public void remove(int index)
+Remove the menu item that matches the
+JMenuItempassed in or that currently
+occupies the specified integer index. If there are no matches (or if the position
+does not exist), no changes are made to the menu. If the function is successful,
+all menu items’ indices following the removed menu item are reduced by one.
+public void removeAll()
+Remove all of the items from the menu.
+Miscellaneous
+public void updateUI()
+Force the default user interface manager to update itself, thus resetting the dele-
+gate to display a new
+MenuUI.
+public void setMenuLocation(int x, int y)
+Set a custom location at which the menu appears when shown.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+466 | Chapter 14: Menus and Toolbars
+public boolean isMenuComponent(Component c)
+Determine whether the componentcis present anywhere in the menu. This
+method searches all submenus as well.
+public String paramString()
+Return aStringspecifying the current state of the menu properties (intended for
+debugging purposes).
+Event
+JMenuobjects fire aMenuEventwhen the user has selected or deselected the menu’s
+title button. TheJMenuobject contains the standardaddChangeListener()and
+removeChangeListener() methods for maintaining a list ofMenuEvent subscribers.
+public void addMenuListener(MenuListener listener)
+public void removeMenuListener(MenuListener listener)
+Add or remove aMenuListenerfrom the list of listeners receiving this menu’s
+events.
+MenuElement Interface
+public void menuSelectionChanged(boolean isIncluded)
+public MenuElement[] getSubElements()
+public Component getComponent()
+public void processKeyEvent(KeyEvent event, MenuElementpath[],
+MenuSelectionManagermanager)
+Implement the
+MenuElement interface, which is covered later in this chapter.
+Working with Menus
+Here is a program that demonstrates the use of theJMenuclass. In this program, we
+use Swing’sActionclass to process the menu events. (We’ll also use actions for tool-
+bars later in this chapter.)
+// MenuExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class MenuExample extends JPanel {
+    public JTextPane pane;
+    public JMenuBar menuBar;
+    public MenuExample() {
+        menuBar = new JMenuBar();
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JMenu Class | 467
+        JMenu formatMenu = new JMenu("Justify");
+        formatMenu.setMnemonic('J');
+        MenuAction leftJustifyAction = new MenuAction("Left",
+                                       new ImageIcon("left.gif"));
+        MenuAction rightJustifyAction = new MenuAction("Right",
+                                        new ImageIcon("right.gif"));
+        MenuAction centerJustifyAction = new MenuAction("Center",
+                                         new ImageIcon("center.gif"));
+        MenuAction fullJustifyAction = new MenuAction("Full",
+                                       new ImageIcon("full.gif"));
+        JMenuItem item;
+        item = formatMenu.add(leftJustifyAction);
+        item.setMnemonic('L');
+        item = formatMenu.add(rightJustifyAction);
+        item.setMnemonic('R');
+        item = formatMenu.add(centerJustifyAction);
+        item.setMnemonic('C');
+        item = formatMenu.add(fullJustifyAction);
+        item.setMnemonic('F');
+        menuBar.add(formatMenu);
+        menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
+    }
+    class MenuAction extends AbstractAction {
+        public MenuAction(String text, Icon icon) {
+            super(text,icon);
+        }
+        public void actionPerformed(ActionEvent e) {
+            try { pane.getStyledDocument().insertString(0 ,
+                  "Action ["+e.getActionCommand()+"] performed!\n", null);
+            } catch (Exception ex) { ex.printStackTrace(); }
+        }
+    }
+    public static void main(String s[]) {
+        MenuExample example = new MenuExample();
+        example.pane = new JTextPane();
+        example.pane.setPreferredSize(new Dimension(250, 250));
+        example.pane.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        JFrame frame = new JFrame("Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(example.menuBar);
+        frame.getContentPane().add(example.pane, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+468 | Chapter 14: Menus and Toolbars
+OurActions are all instances of the inner classMenuActions. As we add eachActionto
+the menu, it creates an appropriateJMenuItem(with the image left-justified) and
+returns it to us. This allows us to manipulate the resulting menu item in any way we
+want; in this case, we add a mnemonic for each item. You can run this program on
+various platforms to see if they support mnemonics. You shouldn’t rely on mnemon-
+ics as a key part of your user interface in a program intended for multiple platforms
+(in fact, you should avoid setting them at all unless you are sure the platform sup-
+ports them).
+The resulting program produces a menu bar with a single menu, as shown in
+Figure14-13. The menu containsfour menu itemsand is similar in appearance to the
+pop-up example. When the user clicks any menu item, Swing generates an
+ActionEventto be processed by theactionPerformed()method of ourMenuAction
+class. As in the previous examples, this results in the name of the menu item being
+printed. For variety, we have added a simple
+JTextPaneto display the results of our
+menu choice, instead of using the system output. See Chapters 19 and 22 for more
+information on
+JTextPane.
+The MenuEvent Class
+This is a simple event that tells listeners that the target menu has been raised,
+selected, or canceled. Note that it doesn’t tell which one has occurred. The listener
+defines three separate methods that can be called to deliver the menu event; each one
+tells exactly what happened.
+Figure14-13.A set of menu items with icons and mnemonics
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 469
+Constructor
+public MenuEvent(Object source)
+The constructor takes a reference to the object that fires the event.
+The MenuListener Interface
+TheMenuListenerinterface, which is the conduit for receivingMenuEvents, specifies
+three methods. One method is called when the menu is canceled; the other two are
+called when the title button of the menu is selected or deselected. This interface must
+be implemented by any listener object that needs to be notified of changes to the
+menu object.
+Methods
+public abstract void menuCanceled(MenuEvente)
+This method is called when the menu is canceled or removed from the screen.
+public abstract void menuDeselected(MenuEvente)
+This method is called when the target menu’s title button is deselected.
+public abstract void menuSelected(MenuEvente)
+This method is called when the target menu’s title button is selected.
+Selectable Menu Items
+So far, we’ve covered traditional menu items that produce a simple, text-oriented
+label associated with an action. But that’s not the only type of item to which users
+are accustomed. Swing provides for two selectable menu items: the checkbox menu
+item and the radio button menu item.
+The JCheckBoxMenuItem Class
+Checkbox menu items are represented by theJCheckBoxMenuItemclass. As you might
+have guessed, this object behaves similarly to theJCheckBoxobject. By clicking on a
+checkbox menu item, you can toggle a UI-defined checkmark that generally appears to
+the left of the menu item’s label. There is no mutual exclusion between adjoining
+JCheckBoxMenuItemobjects—the user can check any item without affecting the state of
+theothers.Figure14-14showstheclassdiagramfortheJCheckBoxMenuItemcomponent.
+Properties
+Table14-9 shows the properties of theJCheckBoxMenuItemclass.JCheckBoxMenuItem
+inherits theJMenuItemmodel (ButtonModel) and its accessors. TheJCheckBoxMenuItem
+class also contains two additional component properties. Thestateproperty has the
+valuetrueif the menu item is currently in the checked state, andfalseif it is not. The

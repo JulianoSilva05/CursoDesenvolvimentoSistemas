@@ -1,0 +1,1105 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JInternalFrame Class | 267
+frame is selected, the glass pane is made invisible, allowing components inside the
+frame to be accessed with the mouse. But when the frame is not selected, the glass
+pane is made visible. This means that the first time you click anywhere within an
+unselected internal frame, the mouse click does not get through to the component
+within the frame that you clicked on, but is instead intercepted by the glass pane,
+causing the frame to be selected (and causing the glass pane to be removed).
+The Metal Look-and-Feel JInternalFrame.isPalette
+Client Property
+If you plan to use the Metal L&F in your application, you can take advantage of a
+special custom property supported byMetalInternalFrameUI. This client property
+allows you to define an internal frame as a palette. This effectively amounts to
+removing the thick border from the frame. This is a technique commonly used in
+word-processing or graphics-editing programs to provide small windows that con-
+taina setofconvenient edit buttons.If you couplethe use ofthis clientproperty with
+the use of the desktop’s
+PALETTE_LAYER (discussed later), you have a nice borderless
+frame that floats above your other internal frames. Here’s an example of how you’d
+use this property:
+JInternalFrame palette = new JInternalFrame(); // Use any constructor.
+palette.putClientProperty("JInternalFrame.isPalette", Boolean.TRUE);
+palette.setBounds(0, 0, 50, 150);
+JDesktopPane desk = new JDesktopPane();
+desk.add(palette, JDesktopPane.PALETTE_LAYER);
+Other L&Fs quietly ignore this property. (If you’d like a framework in which to try
+out this code, there is a full-blown example program for working with internal
+frames at the end of this chapter that you can use as a starting point.)
+The JInternalFrame.JDesktopIcon Class
+JDesktopIconis a static inner class ofJInternalFramethat provides an iconified view
+of a frame.JInternalFrameinstantiates aJDesktopIconwhen the frame is created.
+The class extendsJComponentand, like other Swing components, leaves all details of
+its visual appearance to its UI delegate.
+Note that this class has no relation at all to the SwingIcon interface.
+You should not work with theJDesktopIconclass directly—the Java-
+doc for this inner class indicates that it will go away in a future Swing
+release.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+268 | Chapter 9: Internal Frames
+The InternalFrameEvent Class
+As we described earlier in the chapter,JInternalFrames fireInternalFrameEvents
+when the state of the frame changes. These are standardAWTEventsubclasses, provid-
+ing a number of constants to define the type of change that was made to the frame.
+Since SDK 1.3, it also provides agetInternalFramemethod to retrieve the associated
+frame.
+Constants
+Table9-3 shows constants defined as possible values for the event ID.
+The InternalFrameListener Interface
+JInternalFramefiresInternalFrameEvents to registeredInternalFrameListeners. This
+interface defines the following set of methods (which have a one-to-one correspon-
+dence to the methods in the
+java.awt.event.WindowListener interface).
+Methods
+Allofthesemethods,exceptforinternalFrameClosing(),arecalledbytheJInternalFrame
+when its properties are changed:
+public abstract void internalFrameActivated(InternalFrameEvent e)
+The frame has been activated, typically meaning that it gains focus and is
+brought to the front.
+public abstract void internalFrameClosed(InternalFrameEvent e)
+The frame has been closed.
+Table9-3.InternalFrameEvent constants
+Constant Type Description
+INTERNAL_FRAME_ACTIVATED int The frame has been activated, typically causing the title bar
+to change to a special color and the frame to gain focus.
+INTERNAL_FRAME_CLOSED int The frame has been closed (sent anytime the frame is closed).
+INTERNAL_FRAME_CLOSING int The frame is about to be closed (sent when the user clicks the
+closebox on the frame).
+INTERNAL_FRAME_DEACTIVATED int The frame has been deactivated, typically causing the title
+bar to change to a default color and the frame to lose focus.
+INTERNAL_FRAME_DEICONIFIED int The frame has been restored from an icon.
+INTERNAL_FRAME_ICONIFIED int The frame has been iconified.
+INTERNAL_FRAME_OPENED int The frame has been opened.
+INTERNAL_FRAME_FIRST int The first integer value used to represent the above event IDs.
+INTERNAL_FRAME_LAST int The last integer value used to represent the above event IDs.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JDesktopPane Class | 269
+public abstract void internalFrameClosing(InternalFrameEvent e)
+The frame is closing. This is called by the L&F when the close button is clicked.
+public abstract void internalFrameDeactivated(InternalFrameEvent e)
+The frame has been deactivated.
+public abstract void internalFrameDeiconified(InternalFrameEvent e)
+The frame has been restored from an icon.
+public abstract void internalFrameIconified(InternalFrameEvent e)
+The frame has been reduced to an icon.
+public abstract void internalFrameOpened(InternalFrameEvent e)
+A previously closed frame has been opened.
+The InternalFrameAdapter Class
+This class follows the standard AWT 1.1 listener/adapter pattern by providing empty
+implementations of the seven methods defined in theInternalFrameListenerinter-
+face. If you are interested only in certain types of events, you can create a subclass of
+this adapter that implements only the methods you care about.
+Methods
+The following methods have empty implementations in this class:
+public void internalFrameActivated(InternalFrameEvent e)
+public void internalFrameClosed(InternalFrameEvent e)
+public void internalFrameClosing(InternalFrameEvent e)
+public void internalFrameDeactivated(InternalFrameEvent e)
+public void internalFrameDeiconified(InternalFrameEvent e)
+public void internalFrameIconified(InternalFrameEvent e)
+public void internalFrameOpened(InternalFrameEvent e)
+The JDesktopPane Class
+JDesktopPaneis an extension ofJLayeredPane, which uses aDesktopManagerto con-
+trol the placement and movement of frames. Figure9-3 shows whatJDesktopPane
+looks like in several L&Fs. Like its superclass,JLayeredPanehas anulllayout man-
+ager. Components added to it must be placed at absolute locations with absolute
+sizes because it is intended to houseJInternalFrames, which rely on the user to deter-
+mine their placement.
+Another reason for usingJDesktopPaneis to allow pop-up dialog boxes to be dis-
+played usingJInternalFrames. This is discussed in detail in the next chapter.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+270 | Chapter 9: Internal Frames
+Properties
+Table9-4 shows the properties defined byJDesktopPane. TheallFramesproperty pro-
+vides access to allJInternalFrames contained by the desktop. ThedesktopManager
+property holds theDesktopManagerobject supplied by the pane’s L&F. (We’ll cover
+the responsibilities of theDesktopManagerin the next section.) Theopaqueproperty
+defaults totrueforJDesktopPanes, andisOpaque()is overridden so that it always
+returnstrue.UI contains theDesktopPaneUIimplementation, andUIClassIDcontains
+the class ID forJDesktopPane.
+Figure9-3.JDesktopPanes in four L&Fs
+Table9-4.JDesktopPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JDesktopPane.
+AccessibleJDesktopPane()
+allFrames JInternalFrame[] • Empty array
+desktopManager DesktopManager•• From L&F
+dragMode1.3 int •• LIVE_DRAG_MODE
+1.3since 1.3, ooverridden
+See also properties from theJLayeredPane class (Table 8-5).
+Mac JDesktopPane Metal JDesktopPane
+Motif JDesktopPane Windows JDesktopPane
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The DesktopManager Interface | 271
+Constructor
+public JDesktopPane()
+Create a new desktop and callupdateUI(), resulting in the L&F implementation
+installing aDesktopManager.
+Methods
+public JInternalFrame[] getAllFramesInLayer(int layer)
+Return all frames that have been added to the specified layer. This includes
+frames that have been iconified.
+public void updateUI()
+Called to indicate that the L&F for the desktop should be set.
+The DesktopManager Interface
+This interface is responsible for much of the management of internal frames con-
+tained by
+JDesktopPanes. It allows an L&F to define exactly how it wants to manage
+things such as frame activation, movement, and iconification. Most of the methods
+in
+InternalFrameUIimplementations should delegate to aDesktopManagerobject. As
+described earlier,DesktopManagers are contained byJDesktopPaneobjects and are
+intended to be set by the L&F. You can also create your own variations on the sup-
+plied implementations to provide custom behavior, as shown in the example that
+concludes this chapter.
+Methods
+The majority of the methods in this interface act on a givenJInternalFrame. How-
+ever, those methods that could be applied to other types of components do not
+restrict the parameter unnecessarily (they accept any
+JComponent), despite the fact
+that they are typically used only withJInternalFrames. If you implement your own
+DesktopManager or other L&F classes, you may find a need for this flexibility.
+opaqueo boolean •• true
+selectedFrame1.3 JInternalFrame •• Depends on current state
+UI DesktopPaneUI •• From L&F
+UIClassIDo String • "DesktopPaneUI"
+Table9-4.JDesktopPane properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, ooverridden
+See also properties from theJLayeredPane class (Table 8-5).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+272 | Chapter 9: Internal Frames
+public abstract void activateFrame(JInternalFrame f)
+Called to indicate that the specified frame should become active (is gaining
+focus).
+public abstract void beginDraggingFrame(JComponent f)
+Called to indicate that the specified frame is now being dragged. The given com-
+ponent is normally a
+JInternalFrame.
+public abstract void beginResizingFrame(JComponent f, int direction)
+Called to indicate that the specified frame will be resized. The direction comes
+from
+SwingConstantsandmustbeNORTH,SOUTH,EAST,WEST,NORTH_EAST,NORTH_WEST,
+SOUTH_EAST,o rSOUTH_WEST, representing the edge or corner being dragged
+(although this value is currently ignored by all provided implementations). The
+given component is normally a
+JInternalFrame. When resizing is complete,
+endResizingFrame() is called.
+public abstract void closeFrame(JInternalFrame f)
+Called to indicate that the specified frame should be closed.
+public abstract void deactivateFrame(JInternalFrame f)
+Called to indicate that the specified frame is no longer active (has lost focus).
+public abstract void deiconifyFrame(JInternalFrame f)
+Called to indicate that the specified frame should no longer be iconified.
+public abstract void dragFrame(JComponent f, intnewX, intnewY)
+Called to indicate that the specified frame should be moved from its current
+location to the newly specified coordinates. The given component is normally a
+JInternalFrame.
+public abstract void endDraggingFrame(JComponent f)
+Called to indicate that the specified frame is no longer being dragged. The given
+component is normally a
+JInternalFrame.
+public abstract void endResizingFrame(JComponent f)
+Called to indicate that the specified frame is no longer being resized. The given
+component is normally a
+JInternalFrame.
+public abstract void iconifyFrame(JInternalFrame f)
+Called to indicate that the specified frame should be iconified.
+public abstract void maximizeFrame(JInternalFrame f)
+Called to indicate that the specified frame should be maximized.
+public abstract void minimizeFrame(JInternalFrame f)
+Called to indicate that the specified frame should be minimized. Note that this is
+not the same as iconifying the frame. Typically, calling this method causes the
+frame to return to its size and position before it was maximized.
+public abstract void openFrame(JInternalFrame f)
+Called to add a frame and display it at a reasonable location. This is not often
+called because frames are normally added directly to their parent.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The DesktopManager Interface | 273
+public abstract void resizeFrame(JComponent f, int newX, intnewY, intnewWidth,
+intnewHeight)
+Called to indicate that the specified frame has been resized. Note that resizing is
+still in progress (many calls to this method may be made while the frame is being
+resized) after this method completes. The given component is normally a
+JInternalFrame.
+public abstract void setBoundsForFrame(JComponent f, intnewX, intnewY,
+intnewWidth, intnewHeight)
+Called to set a new size and location for a frame. The given component will nor-
+mally be a
+JInternalFrame.
+The DefaultDesktopManager Class
+DefaultDesktopManageris a default implementation of theDesktopManagerinterface. It
+serves as the base class for the Windows and Motif L&Fs, while the Metal L&F uses
+it without modification. In this section, we’ll give a brief explanation of how each of
+the methods in the interface is implemented by this class.
+Methods
+public void activateFrame(JInternalFrame f)
+CallsetSelected(false)on all otherJInternalFrames contained by the specified
+frame’s parent that are in the same layer as the given frame. It then moves the
+given frame to the front of its layer and selects it.
+public void closeFrame(JInternalFrame f)
+Remove the given frame from its parent. It also removes the frame’s icon (if dis-
+played). It sets the frame’s previous bounds to
+null.
+public void deiconifyFrame(JInternalFrame f)
+Remove the given frame’s icon from its parent and add the frame itself in its
+place. This method then tries to select the given frame if it can receive focus.
+public void dragFrame(JComponent f, intnewX, intnewY)
+Call
+setBoundsForFrame() with the given location and current dimensions.
+public void iconifyFrame(JInternalFrame f)
+Remove the given frame from its parent and add the frame’s desktop icon.
+Before adding the icon, it checks to see if it has ever been iconified. If not, it calls
+getBoundsForIconOf()to set the icon’s bounds. This is done only once for a
+given frame, ensuring that each time a frame is iconified, it returns to the same
+location on the desktop.
+public void maximizeFrame(JInternalFrame f)
+Maximize the given frame so that it fills its parent. This method also saves the
+frame’s previous bounds for use in
+minimizeFrame(). Once the frame has been
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+274 | Chapter 9: Internal Frames
+maximized, it is also selected. This method can be called on an iconified frame,
+causing it to be deiconified and maximized.
+public void minimizeFrame(JInternalFrame f)
+Set the frame’s bounds to its previous bounds. If there are no previous bounds
+(previous bounds are set by calling
+maximizeFrame()), the frame is not resized.
+public void openFrame(JInternalFrame f)
+Get the desktop icon for the given frame. If the icon’s parent is non-null, the
+icon is removed from the parent, and the frame is added. If its parent isnull, this
+method does nothing.
+public void resizeFrame(JComponent f, intnewX, intnewY, intnewWidth,
+intnewHeight)
+CallsetBoundsForFrame() with the given location and dimensions.
+public void setBoundsForFrame(JComponent f, intnewX, intnewY, intnewWidth,
+intnewHeight)
+Move and resize the given frame (usingsetBounds()) and validate the frame if
+the size was actually changed.
+public void beginDraggingFrame(JComponent f)
+public void beginResizingFrame(JComponent f, intdirection)
+public void endDraggingFrame(JComponent f)
+public void endResizingFrame(JComponent f)
+Provide support for faster dragging if the desktop’s
+dragMode requires it.
+public void deactivateFrame(JInternalFrame f)
+If the frame was selected, deselect it.
+Protected methods
+This default implementation provides several convenience methods, which it uses in
+the methods described above. The methods relate to desktop icon management and
+the management of a frame’s previous size (when maximized). If you subclass
+DefaultDesktopManager, these methods will probably be of use to you.
+The frame’s previous bounds and an indication of whether it has ever been iconified
+are stored in client properties on the frame itself.
+* The property names used are
+previousBounds (which holds aRectangle) andwasIconOnce (which holds aBoolean).
+protected Rectangle getBoundsForIconOf(JInternalFrame f)
+Get the bounds for the given frame’s icon. The width and height are taken
+directly from the size of the icon. The icon is placed in the lower-left corner of
+the desktop. If an icon has already been placed in this corner, the icon is placed
+directly to the right, continuing until an unclaimed position along the bottom of
+* See “Client Properties” in Chapter3 for an explanation ofJComponent’s client property feature.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 275
+the frame is found. If there is no space along the bottom, a new row of icons is
+started directly above the first row. Once a frame has been iconified, its icon’s
+location is set, and the icon always returns to the same spot (unless it is moved
+by the user).
+protected Rectangle getPreviousBounds(JInternalFrame f)
+Return the frame’s previous bounds (set when the frame is maximized). These
+bounds are retrieved from the frame’s
+previousBounds client property.
+protected void removeIconFor(JInternalFrame f)
+Remove the given frame’s icon from its parent and repaint the region under the
+icon.
+protected void setPreviousBounds(JInternalFrame f, Rectangler)
+Save the previous bounds of a frame. This is done by saving the frame’s previous
+bounds in the frame itself, using the client property,
+previousBounds. This is gen-
+erally called bymaximizeFrame(), with the data being used in a subsequent
+minimizeFrame() call.
+protected void setWasIcon(JInternalFrame f, Booleanvalue)
+Called byiconifyFrame()to indicate whether the frame has, at some time, been
+iconified. This is done by saving the booleanvaluein the frame itself, using the
+client propertywasIconOnce. This is used to determine whether the icon’s bounds
+have been defined.
+protected boolean wasIcon(JInternalFrame f)
+Determine whether a frame has ever been iconified (if it has, bounds are already
+defined for the icon). This is done by returning the
+wasIconOnceclient property
+on the frame.
+Building a Desktop
+In this section, we’ll pull together some of the things we’ve discussed in the previous
+section to create an application using
+JDesktopPane, JInternalFrame, and a custom
+DesktopManager. The example will show:
+• The effect of adding frames to different layers of the desktop
+• How to display a background image (“wallpaper”) on the desktop
+• How to keep frames from being moved outside of the desktop
+• How to deiconify, move, and resize internal frames by frame “tiling”
+• How to take advantage of
+JInternalFrame’s constrained properties by requiring
+that there be at least one noniconified frame on the desktop
+Figure9-4 shows what the application looks like when it’s running. Here, we see the
+desktop with three frames, plus a fourth that has been iconified. The frames titled
+“Lo” are in a lower layer than the “Up” frames. No matter which frame is active or
+how the frames are arranged, the “Up” frame always appears on top of the others.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+276 | Chapter 9: Internal Frames
+Frames in the same layer can be brought to the front of that layer by clicking on the
+frame. This display also shows the use of a background image (what good is a desk-
+top if you can’t put your favorite image on the background, right?). This image is
+added to a very low layer (the lowest possible Java
+int, actually) to ensure that it is
+always painted behind anything else in the desktop. Figure9-5 shows the same dis-
+play after the frames have been “tiled.”
+Now, let’s take a look at some of the code used to create this example. There are
+three primary classes:
+SampleDesktop
+Thisisthemainclass,whichwechosetocreateasaJFramethatusesaJDesktopPane
+as its content pane.SampleDesktophas two inner classes.AddFrameActionis an
+Actionused to add frames to the desktop. Recall from Chapter3 that actions are a
+Figure9-4.SampleDesktop layered frames and background image
+Figure9-5.SampleDesktop with tiled frames
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 277
+nice way to encapsulate functionality that you might want to invoke from multiple
+locations. The other inner class,IconPolice, is responsible for ensuring that if there
+is only a single frame on the desktop, it cannot be iconified.
+SampleDesktopMgr
+An extension ofDefaultDesktopManagerthat keepsframes frombeing moved out-
+side the bounds of the desktop.
+TileAction
+A generic action class that can be used to tile all frames on a given desktop.
+Let’s take a look at these classes piece by piece. The complete source listing is pro-
+vided at the end of the chapter.
+Setting Things Up
+The first thing to look at is theSampleDesktop constructor:
+public SampleDesktop(String title) {
+    super(title);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Create a desktop and set it as the content pane. Don't set the layered
+    // pane, since it needs to hold the menu bar too.
+    desk = new JDesktopPane();
+    setContentPane(desk);
+    // Install our custom desktop manager.
+    desk.setDesktopManager(new SampleDesktopMgr());
+    createMenuBar();
+    loadBackgroundImage();
+}
+We set the frame’s content pane to our newJDesktopPane. Since we won’t be adding
+anything else to the body of the frame, this is a good idea. We could also have called
+getContentPane().add(desk), but, as we discussed in Chapter8, this just introduces
+anunnecessaryextralevel(thecontentpanewouldthenbeaJPanelholdingonlyour
+JDesktopPane). The more important thing to avoid is callingsetLayeredPane(desk).
+Remember, the layered pane is responsible for rendering the menu bar too. If you did
+this, the menu bar would still be drawn at the top of the frame, but your desktop
+would be filling the same space, allowing frames to be placed over the menu.
+The
+createMenuBar()method called here just adds a few options to the frame’s menu
+bar. It uses instances ofAddFrameActionfor adding new frames (at “Up” and “Lo”
+levels), and it uses an instance ofTileActionto support frame tiling. See the com-
+plete code listing at the end of this section for more details on this method.
+The
+loadBackgroundImage() method looks like this:
+protected void loadBackgroundImage() {
+  ImageIcon icon = new ImageIcon("images/matterhorn.gif");
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+278 | Chapter 9: Internal Frames
+  JLabel l = new JLabel(icon);
+  l.setBounds(0, 0, icon.getIconWidth(), icon.getIconHeight());
+  desk.add(l, new Integer(Integer.MIN_VALUE));
+}
+This method just creates a largeJLabelcontaining an image and adds this label to
+the lowest possible layer of the desktop. This ensures that nothing is ever painted
+behind the background. In this example, we don’t make any effort to resize or tile
+the background image, but it certainly could be done.
+Adding Frames to the Desktop
+TheAddFrameActionclass is anActionwe’ve added to the menu bar. When fired,
+AddFrameActioninstantiates aJInternalFrameand adds it to the specified layer of the
+desktop. Here’s the code for theactionPerformed() method of this class:
+public void actionPerformed(ActionEvent ev) {
+  JInternalFrame f = new JInternalFrame(name, true, true, true, true);
+  f.addVetoableChangeListener(iconPolice);
+  f.setBounds(0, 0, 120, 60);
+  desk.add(f, layer);
+  f.setVisible(true);  // Needed since 1.3
+}
+The important things to notice here are that we set the bounds, not just the size, of
+the new frame, and we explicitly make it visible. We get the name of the frame from
+the name of the action being handled. If you don’t specify a location (we’ve specified
+[0,0], the upper-left corner) for the frame, it won’t appear on the desktop when you
+add it. Remember, there’s no layout manager controlling the location of the compo-
+nents in a
+JDesktopPane. Also, starting with SDK 1.3, internal frames start out invisi-
+ble until you explicitly make them visible, just like regular frames.
+Veto Power
+In the previous code block, we added aVetoableChangeListenerto each new frame
+we created. This listener is an instance of another inner class calledIconPolice. The
+purpose of this class is to ensure that the last frame on the desktop cannot be iconi-
+fied. This may not be the most useful thing in the world to do, but it shows how to
+use
+JInternalFrame’s constrained properties. Here’s the code for this class:
+class IconPolice implements VetoableChangeListener {
+  public void vetoableChange(PropertyChangeEvent ev)
+   throws PropertyVetoException {
+    String name = ev.getPropertyName();
+    if (name.equals(JInternalFrame.IS_ICON_PROPERTY)
+        && (ev.getNewValue() == Boolean.TRUE)) {
+      JInternalFrame[] frames = desk.getAllFrames();
+      int count = frames.length;
+      int nonicons = 0; // How many are not icons?
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 279
+      for (int i = 0; i < count; i++) {
+        if (!frames[i].isIcon()) {
+          nonicons++;
+        }
+      }
+      if (nonicons <= 1) {
+        throw new PropertyVetoException("Invalid Iconification!", ev);
+      }
+    }
+  }
+}
+If you haven’t used constrained properties before, this code may look a little strange.
+The idea behind constrained properties is that before a property is changed, all regis-
+tered listeners are given the opportunity to “veto” the change. This is done by throw-
+ing a
+PropertyVetoException from thevetoableChange() method, as we’ve done here.
+Bounding the frames
+The next class to look at is our custom desktop manager calledSampleDesktopMgr.
+This class is an extension ofDefaultDesktopManager, which overrides the default
+implementation ofdragFrame(). This is the method called any time the frame is
+moved. The new implementation simply checks the new location of the frame to see
+if the requested change of bounds will result in part of the frame moving outside of
+the desktop. If so, it adjusts the coordinates so that the frame is only moved to the
+edge of the desktop. The code for this method is included at the end of the chapter.
+This class is included only as a useful example of the type of thing you might want to
+do with a desktop manager. If you don’t mind frames being moved off the desktop,
+you can always just use
+DefaultDesktopManager (the default).
+Moving Things Around
+The last class in this example is calledTileAction. Its job is to resize all of the frames
+and lay them out in a grid on a desktop. There are a few interesting things that take
+place in the
+actionPerformed()method of this class. First, we get all of the frames on
+the desktop and determine where each frame should be placed and how big it should
+be based on the size of the desktop and the total number of frames. For the details of
+how this is calculated, see the full code listing at the end of the chapter.
+Next, we iterate over all of the frames on the desktop, deiconifying any iconified
+frames and then setting the size and location of each frame. Here’s the block of code
+that does this work:
+for (int i = 0; i < rows; i++) {
+  for (int j = 0; j < cols && ((i * cols) + j < count); j++) {
+    JInternalFrame f = allframes[(i * cols) + j];
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+280 | Chapter 9: Internal Frames
+    if (!f.isClosed() && f.isIcon()) {
+      try {
+        f.setIcon(false);
+      }
+      catch (PropertyVetoException ex) {}
+    }
+    desk.getDesktopManager().resizeFrame(f, x, y, w, h);
+    x += w;
+  }
+  y += h;     // Start the next row.
+  x = 0;
+}
+We callsetIcon()on the frame rather than callingdeiconifyFrame()on the
+DesktopManager. We do this becausedeiconifyFrame()does not actually change the
+state of theiconproperty in the frame, which can result in unexpected behavior
+down the road. Figure9-6 shows the sequence of calls (only certain significant calls
+are identified) made when we callsetIcon(false).
+Note that the UI delegate is registered as a listener for property change events. When
+it hears that a frame is being deiconified, it calls
+deiconifyFrame()on the desktop
+manager. This object then adds the frame to its container (the desktop pane in this
+case), removes the icon, and selects the newly added frame.
+Once the frame is deiconified, we relocate and resize it by calling the
+resizeFrame()
+method on the desktop manager:
+desk.getDesktopManager().resizeFrame(f, x, y, w, h);
+We call this method (instead of just callingsetBounds()on the frame) because it vali-
+dates the frame after setting its bounds.
+Figure9-6.setIcon() sequence diagram
+frame:JInternalFrame
+setIcon(false)
+BasicInternalFrameUI DefaultDesktopManager JDesktopPane
+firePropertyChange()
+propertyChange()
+deiconifyFrame()
+setSelected(true)
+add(frame)
+remove(icon)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 281
+Source Code
+Here’s the complete source code (three files) for this example:
+// SampleDesktop.java
+//
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.*;
+import java.beans.*;
+// An example that shows how to do a few interesting things using JInternalFrames,
+// JDesktopPane, and DesktopManager
+public class SampleDesktop extends JFrame {
+  private JDesktopPane desk;
+  private IconPolice iconPolice = new IconPolice();
+  public SampleDesktop(String title) {
+    super(title);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Create a desktop and set it as the content pane. Don’t set the layered
+    // pane, since it needs to hold the menu bar too.
+    desk = new JDesktopPane();
+    setContentPane(desk);
+    // Install our custom desktop manager.
+    desk.setDesktopManager(new SampleDesktopMgr());
+    createMenuBar();
+    loadBackgroundImage();
+  }
+  // Create a menu bar to show off a few things.
+  protected void createMenuBar() {
+    JMenuBar mb = new JMenuBar();
+    JMenu menu = new JMenu("Frames");
+    menu.add(new AddFrameAction(true));  // Add "upper" frame.
+    menu.add(new AddFrameAction(false)); // Add "lower" frame.
+    menu.add(new TileAction(desk));      // Add tiling capability.
+    setJMenuBar(mb);
+    mb.add(menu);
+  }
+  // Here, we load a background image for our desktop.
+  protected void loadBackgroundImage() {
+    ImageIcon icon = new ImageIcon("images/matterhorn.gif");
+    JLabel l = new JLabel(icon);
+    l.setBounds(0,0,icon.getIconWidth(),icon.getIconHeight());
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+282 | Chapter 9: Internal Frames
+    // Place the image in the lowest possible layer so nothing can ever be painted
+    // under it.
+    desk.add(l, new Integer(Integer.MIN_VALUE));
+  }
+  // This class adds a new JInternalFrame when requested.
+  class AddFrameAction extends AbstractAction {
+    public AddFrameAction(boolean upper) {
+      super(upper ? "Add Upper Frame" : "Add Lower Frame");
+      if (upper) {
+        this.layer = new Integer(2);
+        this.name = "Up";
+      }
+      else {
+        this.layer = new Integer(1);
+        this.name = "Lo";
+      }
+    }
+    public void actionPerformed(ActionEvent ev) {
+      JInternalFrame f = new JInternalFrame(name, true, true, true, true);
+      f.addVetoableChangeListener(iconPolice);
+      f.setBounds(0, 0, 120, 60);
+      desk.add(f, layer);
+      f.setVisible(true);  // Needed since 1.3
+    }
+    private Integer layer;
+    private String name;
+  }
+  // A simple vetoable change listener that insists that there is always at least one
+  // noniconified frame (just as an example of the vetoable properties)
+  class IconPolice implements VetoableChangeListener {
+    public void vetoableChange(PropertyChangeEvent ev)
+      throws PropertyVetoException
+    {
+      String name = ev.getPropertyName();
+      if (name.equals(JInternalFrame.IS_ICON_PROPERTY)
+          && (ev.getNewValue() == Boolean.TRUE)) {
+        JInternalFrame[] frames = desk.getAllFrames();
+        int count = frames.length;
+        int nonicons = 0; // How many are not icons?
+        for (int i = 0; i < count; i++) {
+          if (!frames[i].isIcon()) {
+            nonicons++;
+          }
+        }
+        if (nonicons <= 1) {
+          throw new PropertyVetoException("Invalid Iconification!", ev);
+        }
+      }
+    }
+  }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 283
+  // A simple test program
+  public static void main(String[] args) {
+    SampleDesktop td = new SampleDesktop("Sample Desktop");
+    td.setSize(300, 220);
+    td.setVisible(true);
+  }
+}
+// SampleDesktopMgr.java
+//
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.util.*;
+import java.beans.*;
+// A DesktopManager that keeps its frames inside the desktop
+public class SampleDesktopMgr extends DefaultDesktopManager {
+  // This is called whenever a frame is moved. This implementation keeps the frame
+  // from leaving the desktop.
+  public void dragFrame(JComponent f, int x, int y) {
+    if (f instanceof JInternalFrame) {  // Deal only with internal frames.
+      JInternalFrame frame = (JInternalFrame)f;
+      JDesktopPane desk = frame.getDesktopPane();
+      Dimension d = desk.getSize();
+      // Nothing all that fancy below, just figuring out how to adjust
+      // to keep the frame on the desktop
+      if (x < 0) {              // Too far left?
+        x = 0;                  // Flush against the left side.
+      }
+      else {
+        if (x + frame.getWidth() > d.width) {     // Too far right?
+          x = d.width - frame.getWidth();         // Flush against right side.
+        }
+      }
+      if (y < 0) {              // Too high?
+        y=0;                    // Flush against the top.
+      }
+      else {
+        if (y + frame.getHeight() > d.height) {   // Too low?
+          y = d.height - frame.getHeight();       // Flush against the bottom.
+        }
+      }
+    }
+    // Pass along the (possibly cropped) values to the normal drag handler.
+    super.dragFrame(f, x, y);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+284 | Chapter 9: Internal Frames
+// TileAction.java
+//
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.beans.*;
+// An action that tiles all internal frames when requested
+public class TileAction extends AbstractAction {
+  private JDesktopPane desk; // The desktop to work with
+  public TileAction(JDesktopPane desk) {
+    super("Tile Frames");
+    this.desk = desk;
+  }
+  public void actionPerformed(ActionEvent ev) {
+    // How many frames do we have?
+    JInternalFrame[] allframes = desk.getAllFrames();
+    int count = allframes.length;
+    if (count == 0) return;
+    // Determine the necessary grid size.
+    int sqrt = (int)Math.sqrt(count);
+    int rows = sqrt;
+    int cols = sqrt;
+    if (rows * cols < count) {
+      cols++;
+      if (rows * cols < count) {
+        rows++;
+      }
+    }
+    // Define some initial values for size and location.
+    Dimension size = desk.getSize();
+    int w = size.width / cols;
+    int h = size.height / rows;
+    int x = 0;
+    int y = 0;
+    // Iterate over the frames, deiconifying any iconified frames and then
+    // relocating and resizing each.
+    for (int i = 0; i < rows; i++) {
+      for (int j = 0; j < cols && ((i * cols) + j < count); j++) {
+        JInternalFrame f = allframes[(i * cols) + j];
+        if (!f.isClosed() && f.isIcon()) {
+          try {
+            f.setIcon(false);
+          }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Building a Desktop | 285
+          catch (PropertyVetoException ignored) {}
+        }
+        desk.getDesktopManager().resizeFrame(f, x, y, w, h);
+        x += w;
+      }
+      y += h; // Start the next row.
+      x = 0;
+    }
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+286
+Chapter10In this chapter:
+• The JDialog Class
+• The JOptionPane Class
+• Using JOptionPane
+• Simple Examples
+• Getting the Results
+• A Comparison: Constructors Versus
+Static Methods
+• Using Internal Frame Dialogs with
+JDesktopPane
+CHAPTER 10
+Swing Dialogs
+In most applications, information occasionally needs to be displayed for a brief
+period of time, often just long enough for the user to read it and click OK or perhaps
+enter a value, such as a password. Swing provides the
+JOptionPaneclass to make cre-
+ating such simple dialog boxes extremely easy—in many cases requiring just one line
+of code.
+Applications may also serve more complex dialog needs, such as providing a prop-
+erty editor in which a set of related values can be modified, with an appropriate
+interface. Swing’s
+JDialogclass supports such general-purpose dialogs.JDialogs can
+also be non-modal,*which means the user does not need to close the dialog before
+interacting with other application windows. When possible, implementing such an
+interface yields a more pleasant and productive user experience.
+Even though
+JOptionPanemakes it very easy (for the programmer) to pop up a dia-
+log, bear in mind that this will disrupt the flow of activity for users and force them to
+deal with the dialog before they can proceed with their underlying task. While this is
+sometimes unavoidable or even appropriate, it is usually worth trying to find less dis-
+ruptive alternatives (direct manipulation, a non-modal floating notification, or some
+other non-modal approach). This may require more work on the part of the devel-
+oper but will result in a better application. And if the application is widely adopted,
+the benefits are multiplied across the entire user base.
+The JDialog Class
+JDialogis the Swing version of its superclass,java.awt.Dialog. It provides the same
+key features described in Chapter8†in the discussion ofJWindow, JFrame, and
+* A modal dialog forces the user to interact only with that dialog until it is dismissed.
+†Certain parts of this chapter assume that you have read at least part of Chapter8.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JDialog Class | 287
+JApplet: it uses aJRootPaneas its container, and it provides default window-closing
+behavior. SinceJDialogextendsjava.awt.Dialog, it has a heavyweight peer and is
+managed by the native windowing system. Figure10-1 shows howJDialogfits into
+the class hierarchy.
+Properties
+JDialogdefines the properties and default values listed in Table10-1. Thecontent-
+Pane, glassPane, JMenuBar, andlayeredPaneproperties are taken fromrootPane,
+which is set to a newJRootPane by the constructor.
+Figure10-1.JDialog class diagram
+Table10-1.JDialog properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JDialog.
+AccessibleJDialog()
+contentPaneo Container •• FromrootPane
+defaultCloseOperationint •• HIDE_ON_CLOSE
+defaultLookAndFeelDecorateds, 1.4 boolean ••Depends on L&F, often false
+glassPaneo Component •• FromrootPane
+JMenuBaro JMenuBar •• null
+layeredPaneo JLayeredPane •• FromrootPane
+layouto LayoutManager•• BorderLayout
+modal* boolean •• false
+1.4since 1.4, ooverridden, sstatic
+*Inherited fromDialog; can be set inJDialog constructors.
+See also thejava.awt.Dialog class.
+1
+java.awt
+javax.swing
+RootPaneContainer
+WindowConstants
+containsJDialog JRootPane
+Dialog
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+AA
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+288 | Chapter 10: Swing Dialogs
+ThedefaultCloseOperationspecifies how the dialog should react if its window is
+closed. The valid values come from theWindowConstantsclass, and the default opera-
+tion is to hide the dialog.
+ThedefaultLookAndFeelDecoratedproperty provides a hint about whether newly cre-
+atedJDialogs should have their window decorations (such as title bars, controls to
+manipulate or close the window, and the like) drawn by the current L&F. This is
+only a hint; setting it totruehas no effect if the L&F is unable to provide decora-
+tions or the window manager is unable to create undecorated windows.
+Thelayoutproperty is listed here becauseJDialogoverridessetLayout()to throw an
+Errorif an attempt is made to change the layout manager, rather than set the layout
+manager of the dialog’s content pane.
+The
+parentandtitleproperties are inherited fromComponentandDialog, respec-
+tively. Both are listed here because they can be set in theJDialog constructors.
+Themodalproperty is listed in this table because theJDialogconstructors allow this
+property (inherited fromDialog) to be set. If a dialog is modal, no other window can
+be active while the dialog is displayed. As noted previously, such a restriction on the
+user’s actions should be avoided if it’s possible to design a better approach.
+Constructors
+There are many constructors to choose from, but they are all variations of the two
+fully specified constructors listed here, omitting one or more parameters from the
+end. The difference between the two families of constructors is whether the owner of
+the
+JDialogis aFrameor aDialog. Note that it is valid to supply no owner by passing
+nullas the first argument to any of the constructors or by using the zero argument
+constructor. The primary role of the owner is to dispose of any windows (including
+dialogs) that it owns when the owner itself is disposed.
+parent* Container • SwingUtilities.get-
+SharedOwnerFrame()
+rootPane JRootPane • JRootPane
+title* String •• ""
+Table10-1.JDialog properties (continued)
+Property Data type
+get
+is
+set Default value
+1.4since 1.4, ooverridden, sstatic
+*Inherited fromDialog; can be set inJDialog constructors.
+See also thejava.awt.Dialog class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JOptionPane Class | 289
+public JDialog()
+Create a new dialog without a specified parent frame. An invisible owner frame
+is obtained fromSwingUtilities.getSharedOwnerFrame().
+public JDialog(Dialog owner, String title, boolean modal, GraphicsConfiguration gc)
+Create a dialog with the given owner dialog, title, modal setting, andGraphics-
+Configuration.
+public JDialog(Frame owner, String title, boolean modal, GraphicsConfiguration gc)
+Create a dialog with the given owner frame, title, modal setting, andGraphics-
+Configuration.
+All constructors can now (since 1.4) potentially throwHeadlessExceptionif the
+graphics environment is operating in a “headless” mode, meaning that there is no
+display, keyboard, or mouse. This would be true, for example, in a servlet environ-
+ment that used Swing to generate graphics to be sent to a web browser as down-
+loaded image files.
+The versions that specify a
+GraphicsConfiguration(also introduced in 1.4) allow you
+to select the display device on which the dialog should appear if your application is
+running in a multi-screen environment.
+Public Methods
+public void setLocationRelativeTo(Component c)
+Set the dialog’s location based on the location of the given component. The dia-
+log is centered within (if the component is larger than the dialog) or over (if the
+dialog is larger) the input component. If the specified component is not cur-
+rently displayed, this method centers the dialog on the screen. Note that this
+method has no effect on the dialog’s parent, even if the input component is a dif-
+ferent
+Frame.
+public void update(Graphics g)
+This implementation ofupdate() just callspaint().
+The JOptionPane Class
+JOptionPaneis a utility class used to create complexJDialogs andJInternalFrames
+(the latter of which is used for lightweight dialogs). Figure10-2shows where
+JOptionPanefitsintotheclasshierarchy;Figure10-3showsJOptionPaneinfourL&Fs.
+Itprovidesarangeofconvenientwaystocreatecommonpop-upmodaldialogboxes,
+which significantly reduces the amount of code you are required to write, at the
+expense of forcing the user to drop whatever she’s doing and react to the pop up.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+290 | Chapter 10: Swing Dialogs
+For example, to create a very simple dialog window with the text “Click OK after
+you read this” and an OK button withoutJOptionPane, you’d have to write some-
+thing like this:
+  public void showSimpleDialog(JFrame f) {
+  final JDialog d = new JDialog(f, "Click OK", true);
+  d.setSize(200, 150);
+  JLabel l = new JLabel("Click OK after you read this", JLabel.CENTER);
+  d.getContentPane().setLayout(new BorderLayout());
+  d.getContentPane().add(l, BorderLayout.CENTER);
+  JButton b = new JButton("OK");
+Figure10-2.JOptionPane class diagram
+Figure10-3.JOptionPanes (showing internal confirm dialogs) in four L&Fs
+javax.swing
+creates
+JOptionPane
+JDialog
+JComponent
+JInternalFramecreates
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+A
+Metal JOptionPane
+Motif JOptionPane
+Windows JOptionPane
+Mac JOptionPane
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JOptionPane Class | 291
+  b.addActionListener(new ActionListener() {
+    public void actionPerformed(ActionEvent ev) {
+      d.setVisible(false);
+      d.dispose();
+    }
+  });
+  JPanel p = new JPanel();     // Flow layout will center button.
+  p.add(b);
+  d.getContentPane().add(p, BorderLayout.SOUTH);
+  d.setLocationRelativeTo(f);
+  d.setVisible(true);
+}
+That’s quite a lot of work for such a conceptually simple task. UsingJOptionPane,
+this method can be replaced with:
+JOptionPane.showMessageDialog(f, "Click OK after you read this",
+  "Click OK", JOptionPane.INFORMATION_MESSAGE);
+Figure10-4 shows the dialogs created by these two examples.
+Properties
+JOptionPanedefines the properties listed in Table10-2. ThemaxCharactersPerLine
+property specifies the maximum number of characters the L&F should display on a
+single line. By default there is no limit. To change this value, you must subclass
+JOptionPane.*
+Figure10-4.JDialogs created with (left) and without (right) JOptionPane
+* IfyousubclassJOptionPaneforthispurpose,you’llneedtoconstructinstancesofyoursubclassesratherthan
+using the static methods (which will just constructJOptionPane objects, ignoring your subclass).
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+292 | Chapter 10: Swing Dialogs
+TheUI andUIClassIDproperties are defined as usual.valuespecifies the value
+selected by the user and is set by the L&F when the user closes the dialog.
+rootFrameis a static “property” that controls the default rootFrameto be used when
+calling static “show” methods that don’t take aFrame parameter.
+wantsInputindicates whether the pane is expecting input (beyond just clicking a
+JButton) from the user.
+The other properties (as well as more onvalueandwantsInput) are discussed in
+detail throughout the chapter.
+JOptionPane Structure
+The dialogs created byJOptionPaneare made up of four basic elements, some of
+which may benull. These elements are shown in Figure10-5. (The input appearing
+in the frame’s title bar is not part of theJOptionPaneitself but can be set using the
+static dialog-creation methods.)
+Table10-2.JOptionPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JOptionPane.
+AccessibleJOptionPane()
+iconb Icon •• null
+initialSelectionValueb Object •• null
+initialValueb Object •• null
+inputValueb Object •• null
+maxCharactersPerLineCount int• Integer.MAX_VALUE
+messageb Object •• "JOptionPane Message"
+messageTypeb int •• PLAIN_MESSAGE
+optionsb Object[] •• null
+optionTypeb int •• DEFAULT_OPTION
+rootFrames Frame •• From L&F
+selectionValuesb Object[] •• null
+UI JOptionPaneUI•• From L&F
+UIClassIDo String • "OptionPaneUI"
+valueb Object •• null
+wantsInputb boolean •• false
+bbound, ooverridden, sstatic
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using JOptionPane | 293
+The elements are:
+An icon
+The icon usually provides some visual indication of the type of message
+being displayed. The icons used for four Swing L&Fs are shown in
+Figure10-7.
+A message area
+The message area usually contains a simple textual message. However,it can
+actually be any arbitrary
+Object. We’ll discuss how different types of objects
+are displayed later in this chapter.
+A data input area
+This area allows the user to enter a value or make a selection in response to
+the message. Typically, this is a
+JTextField, JComboBox,o rJList, but this is
+entirely up to the L&F.
+A set of option buttons
+For example, OK and Cancel.
+Using JOptionPane
+There are basically two ways to useJOptionPane. The simplest, demonstrated by the
+example at the beginning of this section, is to invoke one of the many static methods
+of the class. These methods all result in a
+JDialogorJInternalFramebeing displayed
+immediately for the user. The methods return when the user clicks one of the but-
+tons in the dialog.
+The other way to use
+JOptionPaneis to instantiate it using one of the many construc-
+tors and then callcreateDialog()orcreateInternalFrame(). These methods give
+Figure10-5.JOptionPane structure
+Icon
+Message
+Input
+Option Buttons
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+294 | Chapter 10: Swing Dialogs
+you access to theJDialogorJInternalFrameand allow you to control when and
+where they are displayed. In most cases, the static methods will do everything you
+need. As withJDialogconstructors, the static methods can (since 1.4) potentially
+throw aHeadlessExceptionif the graphics environment is operating in a “headless”
+mode, meaning that there is no display, keyboard, or mouse.
+It’s worth noting thatJOptionPaneextendsJComponent. When you instantiate
+JOptionPane, you actually have a perfectly usable component, laid out with the struc-
+ture we described earlier. If you wanted to, you could display the component
+directly, but it typically makes sense to use it only in a dialog or internal frame.
+All of the methods inJOptionPanethat result in the creation of a
+JDialogcreate modal dialogs, but the methods that display
+JInternalFrames do not enforce modality. When the internal frame
+dialog is displayed, the other windows in your application can still
+receive focus. Typically, you will create modal dialogs. The situations
+in which you might use internal frames are discussed in the preceding
+chapter. See “Using internal frame dialogs with JDesktopPane” later in
+this chapter for more information about working with dialogs as inter-
+nal frames.
+Events
+JOptionPanefires aPropertyChangeEventany time one of the bound properties listed
+in Table10-6 changes value. This is the mechanism used to communicate changes
+from theJOptionPaneto theJOptionPaneUI, as well to the anonymous inner class lis-
+tenersJOptionPanecreates to close the dialog when thevalueorinputValueproperty
+is set by the L&F.
+Constants
+Tables 10-3 through 10-6 list the many constants defined in this class. They fall into
+four general categories:
+Message types
+Used to specify what type of message is being displayed
+Option types
+Used to specify what options the user should be given
+Options
+Used to specify which option the user selected
+Properties
+Contains the string names of the pane’s bound properties

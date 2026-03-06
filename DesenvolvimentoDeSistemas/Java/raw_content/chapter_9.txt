@@ -1,0 +1,1081 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+240 | Chapter 8: Swing Containers
+    setSize(200, 150);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    JLayeredPane lp = getLayeredPane();
+    // Create three buttons.
+    JButton top = new JButton();
+    top.setBackground(Color.white);
+    top.setBounds(20, 20, 50, 50);
+    JButton middle = new JButton();
+    middle.setBackground(Color.gray);
+    middle.setBounds(40, 40, 50, 50);
+    JButton bottom = new JButton();
+    bottom.setBackground(Color.black);
+    bottom.setBounds(60, 60, 50, 50);
+    // Place the buttons in different layers.
+    lp.add(middle, new Integer(2));
+    lp.add(top, new Integer(3));
+    lp.add(bottom, new Integer(1));
+  }
+  public static void main(String[] args) {
+    SimpleLayers sl = new SimpleLayers();
+    sl.setVisible(true);
+  }
+}
+In this example, we add three colored buttons to aJLayeredPane. The top button is
+placed in layer 3, the middle in layer 2, and the bottom in layer 1. Recall that the
+Component.add()method takes anObjectas a second parameter, so we must create
+Integerobjects to identify the layers, rather than just passing inints. When we run
+this example, we see (in Figure8-6) that the white (if your L&F allows custom but-
+ton colors) button (the one with the highest layer, 3) is drawn above the gray button
+(in layer 2), which is drawn above the black button (layer 1). The order in which the
+buttons were added has no significance.
+The actual values used for the layers are not important, only their relative ordering.
+We could just as easily have used 10, 20, and 30 as the layer values.
+Figure8-6.JLayeredFrame example with three buttons, each in their own layer
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 241
+Properties
+JLayeredPanedefines default values for the properties listed in Table8-5. Thelayout
+property is set tonullby default. This works fine when the pane’s layers are contain-
+ers themselves, each managing the layout of a particular layer, or when only a single
+component is added to each layer. If multiple components are added to a single
+layer, however, they will be laid out with no layout manager. This is why the
+RootLayoutclass described earlier explicitly lays out the components it adds to a sin-
+gle layer of its layered pane.
+TheoptimizedDrawingEnabledproperty is defined inJComponentand allows a compo-
+nent’s children to be drawn more efficiently if they can be guaranteed not to overlap.
+InJComponent,thispropertyisalwaystrue.InJLayeredPane,itistrueonlyifthecom-
+ponents in the pane do not overlap.
+Constants
+JLayeredPanedefines several constants. The six shown in Figure8-7 (and listed in
+Table8-6) areIntegerobjects, used to define specific layers available to users of the
+class.
+Table8-5.JLayeredPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• AccessibleJLayeredPane()
+layouto LayoutManager•• null
+optimizedDrawingEnabledo boolean • true
+ooverridden
+See also properties from theJComponent class (Table 3-6).
+Figure8-7.Predefined layers
+DRAG_LAYER
+POPUP_LAYER
+MODAL_LAYER
+PALETTE_LAYER
+DEFAULT_LAYER
+FRAME_CONTENT_LAYER
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+242 | Chapter 8: Swing Containers
+Remember, any number can be used as a layer number; these are provided as useful
+defaults. However, it’s generally not a good idea to mix your own values with these
+constants, since there’s no guarantee they won’t change (this would be very unlikely,
+but it’s definitely poor coding practice to assume the exact values of symbolic con-
+stants). Instead, you should choose to use either these constants or define your own
+layer values.
+LAYER_PROPERTY is used as a client property name on anyJComponents added to the
+pane. The client property value is anIntegerrepresenting the component’s layer.
+(The constant is itself just aString.)
+Constructor
+public JLayeredPane()
+This constructor creates a new pane with anull layout manager.
+Adding Components to Layers
+Theadd()methods described below (implemented injava.awt.Container) are not
+actually reimplemented in this class, but it’s important to understand how they can
+be used with
+JLayeredPane. In order to gain this understanding, we’ll first explain the
+use of the termposition with respect to this class.
+A component’s position in a layer determines the order in which it will be drawn.
+This is no different from a component’s position in a simple container. Components
+with the lowest position numbers are drawn last (on top). Components with a posi-
+tion of –1 are added with the next highest position number, so they will drawn first
+(onbottom).Thisisbestunderstoodbylookingataquickexample.Assumewehave
+three components in a layer at positions 0, 1, and 2. We have:
+A B C
+Table8-6.JLayeredPane constants
+Constant Type Description
+DEFAULT_LAYER Integer Used for most components (0)
+DRAG_LAYER Integer Used when dragging objects on the screen to ensure that they
+appear on top of everything else as they are being dragged (400)
+FRAME_CONTENT_LAYER Integer Used only for the content pane and menu bar (–30,000)
+LAYER_PROPERTY String The name of the layer client property
+MODAL_LAYER Integer Used to display modal pop-up windows above other compo-
+nents (200)
+PALETTE_LAYER Integer Used to display floating toolbars or palettes (100)
+POPUP_LAYER Integer Used to ensure that pop ups (including tooltips) are displayed
+above the components that generate them (300)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 243
+Now, if we add D to position 1, it shoves B and C down:
+A D B C
+Adding E to position –1 sticks E at the end (currently position 4) and yields:
+A D B C E
+Adding F to position 5 gives us:
+A D B C E F
+F occupies the lowest screen position, and A occupies the highest. If we paint these
+components, they will be painted in the following order:
+F E C B D A
+That is, F will be drawn first (on bottom) and A will be drawn last.
+When working with multiple layers, nothing changes. The only difference is that all
+components in a given layer are painted before any components in the next layer,
+regardless of their positions within a layer. Note that the ordering of layers places the
+components in thehighestnumbered layer on top, while the ordering of positions
+places the component with thelowest numbered position on top. So, if we have:
+Layer 1: A B (A is at position 0; B is at position 1)
+Layer 2: C D
+Layer 3: E F
+The components (shown with “layer,position” subscripts) will be painted in this
+order:
+B
+1,1 A1,0 D2,1 C2,0 F3,1 E3,0
+The component (E) with the highest layer (3) and lowest position (0) is painted last
+(on top), as shown in Figure8-1.
+Here’s how the various versions of
+Component.add()work withJLayeredPane. Rather
+than supply things likeNORTH as a constraint on where to add things, we pass an
+Integerrepresenting the layer we want to use. Again, theseadd()methods arenot
+reimplemented inJLayeredPane; they’re covered here only for the purpose of explain-
+ing how they work in this context. Each version ofadd()is explained in terms of
+how it will calladdImpl(), a protected method thatisimplemented in this class and
+is also described below.
+public Component add(Component comp)
+Results in a call to
+addImpl(comp, null, -1).
+public Component add(Component comp, int index)
+Results in a call toaddImpl(comp, null, index).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+244 | Chapter 8: Swing Containers
+public void add(Component comp, Objectconstraints)
+Results in a call toaddImpl(comp, constraints, -1). Theconstraintsargument
+should be an integer specifying which layer to addcomp to.
+public void add(Component comp, Objectconstraints, intindex)
+Results in a call toaddImpl(comp, constraints, index). The input object should
+be an integer specifying the layer to add the component to.
+public Component add(String name, Componentcomp)
+Should not be used withJLayeredPane. If it is, it results in a call toaddImpl(comp,
+name, -1). Sincename is not an integer, it is ignored.
+protected void addImpl(Component comp, Objectconstraints, intindex)
+This implementation ofaddImplchecks to see if the given constraint object is an
+integer, and if so, uses it as the component’s layer. If the constraint object isnull
+(or anything other than an integer), the component’s layer is set by calling
+getLayer() (described later in this chapter).
+Layer management methods
+JLayeredPanemakes it easy to manipulate layers and the components within them by
+providing the following methods:
+public int getComponentCountInLayer(int layer)
+Return the number of components currently in the specified layer.
+public Component[] getComponentsInLayer(int layer)
+Return an array containing theComponents currently in the specified layer.
+public int getIndexOf(Component c)
+Return the absolute index of the given component. This ignores the pane’s lay-
+ers completely. The component with the highest index is the first component
+Figure8-8.Paint order of layered components
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 245
+painted, meaning that it appears under all other components (which are painted
+in decreasing order). Since this method ignores the abstractions, it can be useful
+in conjunction with methods such as
+remove() (mentioned below).
+public int getLayer(Component c)
+Return the layer in which the given component has been placed. If the given
+component is a
+JComponent, the layer is determined by getting itsLAYER_PROPERTY.
+If it is not aJComponent, it is looked up in an internal hashtable used for map-
+ping non-JComponents to layers. In either case, if the layer cannot be determined
+as described, theDEFAULT_LAYER is returned.
+public int getPosition(Component c)
+Return a component’s position within its layer.
+public int highestLayer()
+Return the highest numbered layer in which a child is contained. If there are no
+children,
+0 is returned.
+public int lowestLayer()
+Return the lowest numbered layer in which a child is contained. If there are no
+children,
+0 is returned.
+public void moveToBack(Component c)
+Move the specified component to the “back” of its layer.
+public void moveToFront(Component c)
+Move the specified component to the “front” of its layer (position 0).
+public void remove(int index)
+Remove the specified component (the index is an absolute index, not layer-
+based) from the pane.
+public void setLayer(Component c, int layer)
+public void setLayer(Component c, int layer, intposition)
+Set the layer and position (which defaults to
+–1in the first case) for the given
+component and repaint the component. Note that these methods do not add the
+component to the pane;
+add()must still be called. Alternatively, a single call to
+add(c, new Integer(layer))oradd(c, new Integer(layer), position)could be
+made. If the given component is aJComponent, its layer is stored by setting the
+LAYER_PROPERTY on the component itself. If not, the component’s layer is stored
+in an internal hash table that maps from non-JComponents to layers.
+public void setPosition(Component c, int position)
+Set a component’s position within its layer (determined by callinggetLayer(c)).
+Static methods
+public static int getLayer(JComponent c)
+Use theLAYER_PROPERTY to get the layer for a given Swing component. Normally,
+thegetLayer() instance method should be used.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+246 | Chapter 8: Swing Containers
+public static JLayeredPane getLayeredPaneAbove(Componentc)
+Search the component hierarchy from the given component upward, returning
+the firstJLayeredPaneit finds. This allows you to find the layered pane in which
+a component has been placed. If none is found, it returnsnull.
+public static void putLayer(JComponent c, intlayer)
+Set a component’s layer by assigning a value to itsLAYER_PROPERTY. It does not
+cause a repaint as thesetLayer()instance method does. Normally,setLayer()
+should be used.
+Basic RootPaneContainers
+For the rest of this chapter, we’ll look at some basic containers (JFrame,JWindow, and
+JApplet) that implementRootPaneContainerand useJRootPane. First, we’ll take a
+quick look at a simple interface calledWindowConstants.
+The WindowConstants Interface
+WindowConstantsis a simple interface containing only constants. It is implemented by
+JFrame,JDialog, andJInternalFrame.
+Constants
+The constants defined inWindowConstantsspecify possible behaviors in response to a
+window being closed. These values are shown in Table8-7.
+In the next section, we’ll look at a strategy for exiting the application in response to a
+frame being closed.
+The JFrame Class
+The most common Swing container for Java applications is theJFrameclass. Like
+java.awt.Frame, JFrameprovides a top-level window with a title, border, and other
+platform-specific adornments (e.g., minimize, maximize, and close buttons). Because
+Table8-7.JWindowConstants constants
+Constant Type Description
+DISPOSE_ON_CLOSE int Disposes window when closed
+DO_NOTHING_ON_CLOSE int Does nothing when closed
+EXIT_ON_CLOSE1.4, * int Exits the virtual machine when closed
+HIDE_ON_CLOSE int Hides window when closed
+1.4since 1.4
+*This constant was added in 1.4, although a matching constant was defined in the 1.3JFrame class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFrame Class | 247
+it uses aJRootPaneas its only child, working with aJFrameis slightly different than
+working with an AWTFrame. An emptyJFrame is shown in Figure8-9.
+The primary difference is that calls toadd()must be replaced with calls to
+getContentPane().add(). In fact, theaddImpl()method is implemented so that a call
+madedirectlytoadd()throwsanError.(Theerrormessagetellsyounottocalladd()
+directly.)
+Properties
+JFramedefines the properties shown in Table8-8. TheaccessibleContextproperty is
+as expected.ContentPane, glassPane, layeredPane, andJMenuBarare really properties
+ofJRootPane(described earlier in the chapter).JFrameprovides direct access to these
+panes, as required by theRootPaneContainer interface.
+Figure8-9.Empty JFrame instances on Unix, Mac, and Windows platforms
+Table8-8.JFrame properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JFrame.Accessible-JFrame()
+backgroundo Color •• UIManager.getColor
+("control")
+contentPaneo Container •• FromrootPane
+defaultCloseOperation int •• HIDE_ON_CLOSE
+glassPaneo Component •• FromrootPane
+JMenuBaro JMenuBar •• FromrootPane
+layeredPaneo JLayeredPane •• FromrootPane
+layouto LayoutManager•• BorderLayout()
+rootPaneo, * JRootPane •• JRootPane()
+rootPaneCheckingEnabledp boolean •• true
+titleo String •• ""
+ooverridden, pprotected
+*ThesetRootPane() method is protected.
+See also thejava.awt.Frame class.
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+248 | Chapter 8: Swing Containers
+ThedefaultCloseOperationissettoHIDE_ON_CLOSE,avaluetakenfromWindowConstants.
+This indicates that closing aJFrame window results in a call tosetVisible(false).
+Thelayoutproperty is listed here becauseJFrameoverridessetLayout()to throw an
+Errorif an attempt is made to change the layout manager, rather than set the layout
+manager of the frame’s content pane.
+TherootPaneproperty is set to a new instance ofJRootPanewhen the frame is cre-
+ated and cannot be changed (via public methods). TherootPaneCheckingEnabled
+property determines whether you get those error messages when trying to add com-
+ponents directly to the root pane.
+The accessors for thetitleproperty are inherited fromFrame. This property can also
+be set in theJFrame constructor.
+Constructors
+All constructors can now (since 1.4) potentially throwHeadlessExceptionif the
+graphics environment is operating in a “headless” mode, meaning that there is no
+display, keyboard, or mouse. This would be true, for example, in a servlet environ-
+ment that used Swing to generate graphics to be sent to a web browser as down-
+loaded image files.
+The versions that specify a
+GraphicsConfiguration(introduced in 1.3 forJFrame)
+allow you to select the display device on which the dialog should appear if your
+application is running in a multi-screen environment.
+public JFrame()
+public JFrame(GraphicsConfiguration gc)
+Create a new unnamed, invisible frame. Nothing appears in the title bar of the
+frame.
+public JFrame(String title)
+public JFrame(GraphicsConfiguration gc, Stringtitle)
+Create an invisible frame with the specified title.
+Protected Methods
+JFramehas a few protected methods that you should know about. If you extend
+JFrame, you can override them to alter the default behavior. In particular, if you don’t
+want the frame responding towindowClosing()events at all, you can provide an
+emptyimplementationoftheprocessWindowEvent()method.Thiswillleaveyouwith
+the responsibility of closing the frame programmatically. The next section has an
+example of extending
+processWindowEvent()to confirm that the user really wants to
+close the frame.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFrame Class | 249
+protected void frameInit()
+Called by the constructor to enable key and window events, set the root pane,
+and set the background color. The last thing this method does is set the
+rootPaneCheckingEnabled field totrue.
+protected void processWindowEvent(WindowEvent e)
+Allow the superclass implementation to process the event. The superclass then
+handles window-closing events based on the current default close operation for
+the frame. For
+HIDE_ON_CLOSE, the frame is made invisible; forDISPOSE_ON_CLOSE,
+the frame is made invisible and disposed of; and forDO_NOTHING_ON_CLOSE, pre-
+dictably, nothing is done.
+Exiting Frames
+In many applications, closing the main application frame should cause the program
+to exit (shutting down the virtual machine). The default implementation, however, is
+only to hide the frame when it is closed, leaving the virtual machine running with no
+visible frame. We’ll briefly look at two simple ways to get the program to exit when
+the frame is closed.
+The simplest thing to do is to set the close operation to exit:
+// FrameClose1.java
+//
+import javax.swing.JFrame;
+public class FrameClose1 {
+  public static void main(String[] args) {
+    JFrame mainFrame = new JFrame();
+    // Exit app when frame is closed.
+    mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    mainFrame.setSize(320, 240);
+    mainFrame.setVisible(true);
+  }
+}
+Another alternative that works with SDKs prior to 1.3 is to add aWindowListenerto
+the frame, callingSystem.exit()in thewindowClosing()method. Here’s a simple
+example:
+// FrameClose2.java
+//
+import javax.swing.JFrame;
+import java.awt.event.*;
+public class FrameClose2 {
+  public static void main(String[] args) {
+    JFrame mainFrame = new JFrame();
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+250 | Chapter 8: Swing Containers
+    // Exit app when frame is closed.
+    mainFrame.addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent ev) {
+        System.exit(0);
+      }
+    });
+    mainFrame.setSize(320, 240);
+    mainFrame.setVisible(true);
+  }
+}
+If you get tired of writing this same block of code in every frame that needs to close
+properly, you might want to use an extension ofJFramethat supports this feature.
+Here’s one possible implementation of such a class:
+// ExitFrame.java
+//
+import javax.swing.JFrame;
+import java.awt.event.WindowEvent;
+// A very simple extension of JFrame that defaults to EXIT_ON_CLOSE for
+// its close operation. Relies on the 1.3 or higher SDK.
+public class ExitFrame extends JFrame {
+  public ExitFrame() {
+    super();
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+  public ExitFrame(String title) {
+    super(title);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+}
+You can use this class just like you’d use aJFrame. If you don’t want the program to
+exit when the user closes the frame, just change the default close action to one of the
+values defined inWindowConstants.
+A more common strategy is to display a dialog box asking something like, “Are you
+sure?” when the user tries to close the frame.
+JOptionPane(which we’ll discuss in
+detail in Chapter10) makes this very easy to do. All you need to do is reimplement
+your
+processWindowEvent() method like this:
+protected void processWindowEvent(WindowEvent e) {
+  if (e.getID() == WindowEvent.WINDOW_CLOSING) {
+    int exit = JOptionPane.showConfirmDialog(this, "Are you sure?");
+    if (exit == JOptionPane.YES_OPTION) {
+      System.exit(0);
+    }
+  }
+  // If you don’t want listeners processing the WINDOW_CLOSING events, you could put
+  // this next call in an else block for the if (e.getID()...) statement. That way,
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JWindow Class | 251
+  // only the other types of Window events (iconification, activation, etc.) would be
+  // sent out.
+  super.processWindowEvent(e);
+}
+The JWindow Class
+JWindowis an extension ofjava.awt.Windowthat uses aJRootPaneas its single compo-
+nent. Other than this core distinction,JWindowdoes not change anything defined by
+theWindow class.
+In AWT, one common reason for using theWindowclass was to create a pop-up
+menu. Since Swing explicitly provides aJPopupMenuclass (see Chapter14), there is no
+need to extendJWindowfor this purpose. The only time you’ll useJWindowis if you
+have something that needs to be displayed in its own window without the adorn-
+ments added byJFrame. Remember, this means that the window can only be moved
+or closed programmatically (or via the user’s platform-specific window manager con-
+trols, if available).
+One possible use for
+JWindowwould be to display a splash screen when an applica-
+tion is starting up. Many programs display screens like this, containing copyright
+information, resource loading status, etc. Here’s such a program:
+// SplashScreen.java
+//
+import java.awt.*;
+import javax.swing.*;
+public class SplashScreen extends JWindow {
+  private int duration;
+  public SplashScreen(int d) {
+    duration = d;
+  }
+  // A simple little method to show a title screen in the center of the screen for
+  // the amount of time given in the constructor
+  public void showSplash() {
+    JPanel content = (JPanel)getContentPane();
+    content.setBackground(Color.white);
+    // Set the window’s bounds, centering the window.
+    int width = 450;
+    int height =115;
+    Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+    int x = (screen.width-width)/2;
+    int y = (screen.height-height)/2;
+    setBounds(x,y,width,height);
+    // Build the splash screen.
+    JLabel label = new JLabel(new ImageIcon("oreilly.gif"));
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+252 | Chapter 8: Swing Containers
+    JLabel copyrt = new JLabel
+      ("Copyright 2002, O’Reilly & Associates", JLabel.CENTER);
+    copyrt.setFont(new Font("Sans-Serif", Font.BOLD, 12));
+    content.add(label, BorderLayout.CENTER);
+    content.add(copyrt, BorderLayout.SOUTH);
+    Color oraRed = new Color(156, 20, 20,  255);
+    content.setBorder(BorderFactory.createLineBorder(oraRed, 10));
+    // Display it.
+    setVisible(true);
+    // Wait a little while, maybe while loading resources.
+    try { Thread.sleep(duration); } catch (Exception e) {}
+    setVisible(false);
+  }
+  public void showSplashAndExit() {
+    showSplash();
+    System.exit(0);
+  }
+  public static void main(String[] args) {
+    // Throw a nice little title page up on the screen first.
+    SplashScreen splash = new SplashScreen(10000);
+    // Normally, we’d call splash.showSplash() and get on with the program.
+    // But, since this is only a test...
+    splash.showSplashAndExit();
+  }
+}
+All this program does is create aJWindowcontaining a pair of labels and display it in
+the center of the screen. In a real application, the title screen might be displayed
+while various system resources are being loaded (consider using aProgressMonitorin
+this case). When run, this example displays a simple window in the center of the
+screen, as shown in Figure8-10.
+Properties
+JWindowdefines the properties shown in Table8-9. ThecontentPane, glassPane, and
+layeredPaneare really properties ofJRootPane(described earlier in the chapter).
+Figure8-10.JWindow used as a splash screen
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JWindow Class | 253
+Direct access is provided for convenience. UnlikeJFrame(andJApplet, described
+below),JWindowdoes not provide direct access to the root pane’s menu bar. This is
+just an indication ofJWindow’s intended usage. If you have some compelling reason to
+display a menu bar on aJWindow, you can always access it through the root pane or
+just add it as a component.
+Thelayoutproperty is listed here becauseJWindowoverridessetLayout()to throw an
+Errorif an attempt is made to change the layout manager, rather than set the layout
+manager of the window’s content pane.
+TherootPaneproperty is set to a new instance ofJRootPanewhen the frame is cre-
+ated and cannot be changed using public methods.
+Constructors
+public JWindow()
+Create a new, invisible window associated with no particular owner. This uses a
+package-private method inSwingUtilitiesto make a “fake” frame that serves as
+the owner. This makes this window a top-level window with no focus dependen-
+cies.
+public JWindow(JFrame frame)
+public JWindow(Window window)
+Create a new, invisible window associated with the given frame or window. A
+window created with a valid (i.e., non-
+null) association is focusable only when
+the associated frame or window is visible on the screen.
+Table8-9.JWindow properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JWindow.AccessibleJWindow()
+contentPaneo Container •• FromrootPane
+glassPaneo Component •• FromrootPane
+layeredPaneo JLayeredPane •• FromrootPane
+layouto LayoutManager•• BorderLayout()
+rootPaneo, * JRootPane •• JRootPane()
+rootPaneCheckingEnabledp boolean •• true
+ooverridden, pprotected
+*ThesetRootPane() method is protected.
+See also thejava.awt.Window class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+254 | Chapter 8: Swing Containers
+public JWindow(GraphicsConfiguration gc)
+public JWindow(Window window, GraphicsConfigurationgc)
+Create a new, invisible window (possibly associated with the given window)
+using the given graphics configuration. The
+GraphicsConfigurationobject lets
+you create windows on things such as virtual screens.
+The JApplet Class
+JAppletis a simple extension ofjava.applet.Appletto use when creating Swing pro-
+grams designed to be used in a web browser (orappletviewer). As a direct subclass of
+Applet,JAppletis used in much the same way, with theinit(),start(), andstop()
+methods still playing critical roles. The primary thingJAppletprovides thatApplet
+does not is the use of aJRootPaneas its single display component. The properties and
+methods described below should look a lot like those described in the previous sec-
+tions on
+JFrame andJWindow. Figure8-11 shows aJApplet running inappletviewer.
+Here’s the code for this simple applet:
+// SimpleApplet.java
+//
+import javax.swing.*;
+import javax.swing.border.*;
+import java.awt.*;
+public class SimpleApplet extends JApplet {
+  public void init() {
+    JPanel p = new JPanel();
+    p.setLayout(new GridLayout(2, 2, 2, 2));
+    p.add(new JLabel("Username"));
+    p.add(new JTextField());
+    p.add(new JLabel("Password"));
+Figure8-11.A JApplet running in the SDK appletviewer
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JApplet Class | 255
+    p.add(new JPasswordField());
+    Container content = getContentPane();
+    content.setLayout(new GridBagLayout()); // Used to center the panel
+    content.add(p);
+  }
+}
+UsingJAppletin browsers is a bit trickier. You should have a browser that supports
+at least the 1.2release of the JRE. You typically end up using the Java Plug-in. The
+Plug-in allows you to specify which version of the JRE you want to use. The applet
+code itself doesn’t change, but your HTML page is quite a bit different. For exam-
+ple, here’s the simple HTML page with the
+<applet> tag to use with theappletviewer:
+<HTML>
+<HEAD><TITLE>JApplet Demo Page</TITLE></HEAD>
+<BODY BGCOLOR="#FFFFFF">
+<H1>JApplet Demo Page</H1>
+If you see the login applet in this window, your plug-in has
+been successfully installed and configured. <b>Congratulations!</b>
+<hr>
+<applet code=SimpleApplet width=300 height=200>
+  <param name=”bogus” value=”just testing”>
+</applet>
+<hr>
+</BODY>
+</HTML>
+Pretty straightforward. Now here’s the converted code that should replace the
+<applet>tag from the example above. We used the SDK’sHtmlConverterapplica-
+tion to produce this page that brings up the applet from Figure8-11 in a browser
+with the Java Plug-in:
+<!--"CONVERTED_APPLET"-->
+<!-- HTML CONVERTER -->
+<OBJECT
+    classid="clsid:8AD9C840-044E-11D1-B3E9-00805F499D93"
+    WIDTH = 300 HEIGHT = 200
+    codebase="http://java.sun.com/products/plugin/autodl/jinstall-1_3-win.
+cab#Version=1,3,0,0">
+    <PARAM NAME = CODE VALUE = SimpleApplet >
+    <PARAM NAME="type" VALUE="application/x-java-applet;version=1.3">
+    <PARAM NAME="scriptable" VALUE="false">
+    <PARAM NAME = "bogus" VALUE ="just testing">
+    <COMMENT>
+    <EMBED
+            type="application/x-java-applet;version=1.3"
+            CODE = SimpleApplet
+            WIDTH = 300
+            HEIGHT = 200
+            bogus = "just testing"
+        scriptable=false
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+256 | Chapter 8: Swing Containers
+        pluginspage="http://java.sun.com/products/plugin/index.html#download">
+        <NOEMBED>
+        </NOEMBED>
+    </EMBED>
+    </COMMENT>
+</OBJECT>
+<!--"END_CONVERTED_APPLET"-->
+Not an obvious conversion, but fortunately, you can always use the converter tool to
+help you out. (You may want to run the converter from the 1.3 release of the SDK.
+This will allow you to support “1.3 and higher” if you want maximum compatibility
+for old versions of the Plug-in.) If you get deep into producing Swing applets, you
+should check out the full details on the Java Plug-in athttp://java.sun.com/products/
+plugin/index.html.
+One happy note to end this discussion: more and more browsers are supporting the
+Java Plug-in with a “use this plug in as the default for applets” type of option. With
+this in place, you don’t need the converted HTML at all. The regular
+<applet>tags
+run just swell.
+Hiding the Warning Message
+Older versions of the popular browsers do not allow applets to access the system
+event queue. As a result, a warning message is printed to the Java console, indicating
+that the applet attempted to access the system event queue and failed. If you find this
+warning sufficiently annoying, Swing provides a workaround that allows you to sup-
+press it. (You don’t have to worry about this if you use the Java Plug-in; see the pre-
+vious section for more details.) Just implement a constructor for your applet with the
+following code:
+getRootPane().putClientProperty("defeatSystemEventQueueCheck", Boolean.TRUE);
+In AWT, applets rarely (if ever) had constructors. With Swing, a constructor (which
+must have no arguments) is a good place to set client properties like this one.
+Threading Issues
+SinceJAppletsare typically used within an existing Java virtual machine (from the
+web browser), you need to be careful about Swing threading issues. A good rule of
+thumb is that any adding or manipulation of components should be done in the
+init()method. If you choose to interact with Swing components in thestart()
+method, you should be sure to execute the code in the event dispatch thread using
+the
+SwingUtilities.invokeLater() orSwingUtilities.invokeAndWait() methods.
+// SimpleApplet2.java
+//
+import javax.swing.*;
+import java.awt.*;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JApplet Class | 257
+public class SimpleApplet2 extends JApplet {
+  public SimpleApplet2() {
+    // Suppress warning message on older versions if needed:
+    //   getRootPane().putClientProperty("defeatSystemEventQueueCheck",
+    //   Boolean.TRUE);
+  }
+  public void start() {
+    SwingUtilities.invokeLater(new Runnable() {
+      public void run() { // Run in the event thread.
+        JPanel p = new JPanel();
+        p.setLayout(new GridLayout(2, 2, 2, 2));
+        p.add(new JLabel("Username"));
+        p.add(new JTextField());
+        p.add(new JLabel("Password"));
+        p.add(new JPasswordField());
+        Container content = getContentPane();
+        content.setLayout(new GridBagLayout()); // Used to center the panel
+        content.add(p);
+        validate();
+      }
+    });
+  }
+}
+Of course, in this example, we could just move this code toinit()and safely do
+away withinvokeLater(). But if you start working with things like dynamic tables or
+trees in your applet, this approach is ideal. For more information on threading issues
+in Swing, see Chapter1 for an introduction and Chapter28 for more details.
+Properties
+JAppletdefines the properties and default values shown in Table8-10. The
+contentPane,glassPane,layeredPane, andJMenuBarproperties are really properties of
+JRootPane(described earlier in the chapter). Direct access is provided to them for
+convenience.
+Table8-10.JApplet properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JApplet.AccessibleJApplet()
+contentPaneo Container •• FromrootPane
+glassPaneo Component •• FromrootPane
+layeredPaneo JLayeredPane •• FromrootPane
+layouto LayoutManager•• BorderLayout()
+ooverridden, pprotected
+*ThesetRootPane() method is protected.
+See also thejava.applet.Applet class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+258 | Chapter 8: Swing Containers
+Thelayoutproperty is listed here becauseJAppletoverridessetLayout()to throw an
+Errorif an attempt is made to change the layout manager, rather than set the layout
+manager of the applet’s content pane.
+TherootPaneproperty is set when the applet is created. It cannot be changed via
+public methods.
+Constructor
+public JApplet()
+Create a new applet and ensure that thetimerQueueis running. This is how
+browsers (andappletviewer) create new applets. If you supply a constructor with
+an applet, perhaps to disable event queue checking, remember that browsers
+expect an applet constructor to have no arguments. The constructor sets the
+applet’s foreground color to black and its background color to white.
+User Interface Method
+public void update(Graphics g)
+OverrideContainer.update()to do nothing but callpaint(). This is consistent
+with the implementation ofupdate()provided byJComponent(and the imple-
+mentation used byJFrame).
+JMenuBaro JMenuBar •• FromrootPane
+rootPaneo, * JRootPane •• JRootPane()
+rootPaneCheckingEnabledp boolean •• true
+Table8-10.JApplet properties (continued)
+Property Data type
+get
+is
+set Default value
+ooverridden, pprotected
+*ThesetRootPane() method is protected.
+See also thejava.applet.Applet class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+259
+Chapter9sIn this chapter:
+• Simulating a Desktop
+• The JInternalFrame Class
+• The JDesktopPane Class
+• The DesktopManager Interface
+• Building a Desktop
+CHAPTER 9
+Internal Frames
+Simulating a Desktop
+Some GUI applications keep their entire interface in a single root window, which
+looks like a desktop environment and contains internal “windows” and icons, ele-
+ments you’d find on the actual desktop. This style of interface was first used in early
+versions of the Windows operating system because, at that time, the operating sys-
+tem didn’t support multiple, overlapping real windows for each application, so there
+was no alternative.
+Whiletherearestillafewspecialcircumstancesinwhichthiskindofinterfaceisactu-
+ally desirable (for example, if you’re creating an emulation of another computer or a
+virtual environment and want to keep that world clearly distinct in its own window),
+most applications would be better off using real windows on the actual desktop.
+Applications that stick to a virtual desktop interface out of habit do their users a dis-
+service in a number of ways. Because their internal frames (simulated windows) are
+restricted to exist within the application’s root window, the user has to compromise
+between making that window very large so there is room to position the applica-
+tion’s windows in a convenient way, and keeping it small so that the windows of
+other applications can be seen and accessed conveniently. It’s usually impossible to
+come up with a happy medium. The user is also prevented from overlapping win-
+dows of this application with windows of any other application, even if this would
+provide a better workflow.
+Most of the perceived advantages of using a simulated desktop environment in a typ-
+ical application can be achieved in a better way by thoughtful use of application pal-
+ettes and the positioning of separate windows. If (despite all these caveats) it turns
+out that youdoneed to create and manage your own desktop in a window, Swing
+can accommodate you.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+260 | Chapter 9: Internal Frames
+In this chapter, we’ll look at a collection of classes Swing provides to allow you to
+create this type of application in Java. At the end of the chapter, we’ll provide a large
+sample program that shows how to implement a variety of useful features.
+Overview
+Before looking at each of the classes involved in the Swing desktop/internal frame
+model,we’lltakeamomentforanoverviewofhowtheyallworktogether.Figure9-1
+shows the relationships between the classes we’ll be covering in this chapter.
+A
+JInternalFrameisacontainerthatissimilartoaJFrame.Thekeydifferenceisthatinter-
+nal frames can exist only within some other Java container.JInternalFrameimplements
+the following three interfaces:Accessible,WindowConstants, andRootPaneContainer.
+Each internal frame keeps a reference to an instance of the static inner class called
+JDesktopIcon. Like real frames,JInternalFrames can be iconified.JDesktopIconis the
+class responsible for taking the place of the frame when it is iconified.
+Though not required,JInternalFrames are typically used inside of aJDesktopPane.
+JDesktopPaneis an extension ofJLayeredPanethat adds direct support for managing a
+collection ofJInternalFrames in layers.JDesktopPaneuses an object called a
+DesktopManagerto control how different behavior, like iconification or maximization,
+Figure9-1.Internal frame and desktop class diagram
+javax.swing.event
+javax.swing
+JInternalFrameJComponent
+DesktopManager
+JLayeredPane
+JInternalFrame.
+JDesktopIcon
+JDesktopPane
+isIconFor contains
+1 0..* contains
+managedBy
+receives
+DefaultDesktopManager
+InternalFrameEvent InternalFrameAdapterInternalFrameListener
+notifies
+1
+1
+0..*
+RootPaneContainer
+WindowConstants
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JInternalFrame Class | 261
+is carried out. A default implementation of this interface,DefaultDesktopManager,i s
+provided. We’ll see how all of this functionality is broken down as we cover the vari-
+ous classes and interfaces involved.
+One more thing to notice about Figure9-1 is thatJInternalFramesupports a type of
+listener calledInternalFrameListener. This interface contains methods like those
+defined by the AWTWindowListenerclass, with slightly different names, using
+InternalFrameEvents rather thanWindowEvents as input.
+The JInternalFrame Class
+JInternalFrameprovides the ability to create lightweight frames that exist inside
+other components. An internal frame is managed entirely within some other Java
+container, just like any other component, giving the program complete control over
+iconification, maximization, resizing, etc. Despite looking like “real” windows, the
+underlying windowing system knows nothing of the existence of internal frames.
+*
+Figure9-2 shows what internal frames look like in various L&Fs.
+* Note thatJInternalFrame extendsJComponent, notJFrame orFrame, so this statement should seem logical.
+Figure9-2.JInternalFrames in four L&Fs
+Mac JInternalFrame Metal JInternalFrame
+Motif JInternalFrame Windows JInternalFrame
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+262 | Chapter 9: Internal Frames
+There’s quite a lot to discuss aboutJInternalFrames, but most of their power comes
+when they are used inside aJDesktopPane. This section provides a quick overview of
+the properties, constructors, and methods available inJInternalFrame, and a more
+detailed discussion of using internal frames follows.
+Properties
+JInternalFramedefines the properties and default values shown in Table9-1. The
+background andforeground properties are delegated to the frame’s content pane.
+Table9-1.JInternalFrame properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JInternalFrame.
+AccessibleJInternalFrame()
+closable boolean •• false
+closedb,c boolean •• false
+contentPaneb, o Container •• FromrootPane
+defaultCloseOperation int •• DISPOSE_ON_CLOSE1.3
+desktopIcon JInternalFrame.
+JDesktopIcon
+•• JInternalFrame.
+JDesktopIcon()
+desktopPane JDesktopPane
+• null
+focusCycleRoot1.4, o boolean •• true (can’t be changed)
+focusCycleRootAncestor1.4, o Container • null (will never change)
+frameIconb Icon •• null
+glassPaneb, o Component •• FromrootPane()
+iconb,c boolean •• false
+iconifiable boolean •• false
+JMenuBarb,o JMenuBar •• FromrootPane()
+layer1.3 int •• 0 (set available since 1.3)
+layeredPaneb,o JLayeredPane •• FromrootPane()
+maximizable boolean •• false
+maximumb,c boolean •• false
+normalBounds1.3 Rectangle •• Non-maximized size
+resizable boolean •• false
+rootPaneb,o JRootPane • JRootPane()
+selectedb,c boolean •• false
+titleb String •• ""
+1.3since 1.3, 1.4since 1.4, bbound, cconstrained, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JInternalFrame Class | 263
+Three pairs of properties indicate whether something can be done to a frame and
+whether that thing is currently done to the frame. They are:closable/closed,
+iconifiable/icon, andmaximizable/maximum. Note thatclosed, icon, andmaximumare
+constrained properties.
+ThecontentPane, glassPane, layeredPane, andJMenuBarproperties come from the
+RootPaneContainerinterface and are taken directly from the frame’sJRootPane. The
+rootPane property is set to a newJRootPane when the frame is constructed.
+The value of thedefaultCloseOperationproperty defaults toWindowConstants.
+DISPOSE_ON_CLOSE. This means that when the user clicks the frame’s close widget, the
+frame is hidden, and itsdispose()method is called. (Prior to SDK 1.3, the default
+wasHIDE_ON_CLOSE.)
+Theclosedproperty is one of four constrained properties in this class,
+which means that attempts to set them could be vetoed. Code that sets
+these properties must be wrapped in try/catch blocks to handle the
+potential for a
+PropertyVetoException. As of this writing, these remain
+the only constrained properties you’ll encounter in the standard Swing
+classes.
+ThedesktopIconreflects how the frame is displayed when iconified. AJDesktopIcon
+(which leaves the rendering to the L&F) is created for the frame when it is instanti-
+ated. ThedesktopPaneproperty provides a convenient way to access theJDesktopPane
+containing the frame, if there is one.
+focusCycleRootandfocusCycleRootAncestorrelate to the improved focus traversal
+mechanism introduced in SDK 1.4 and described in “Focus and Focus Cycle Meth-
+ods” in Chapter3. For internal frames the
+focusCycleRootproperty is alwaystrue,
+andfocusCycleRootAncestoris alwaysnullbecause an internal frame is always the
+root of a focus cycle.
+frameIconis the icon painted inside the frame’s titlebar (usually on the far left). By
+default, there is no icon. However, the Basic L&F checks to see if aframeIconhas
+been set and, if not, paints the “java cup” icon. This explains why an icon appears in
+the Windows L&F frame shown in Figure9-2, but not in the others (which provide
+UIb InternalFrameUI•• From L&F
+UIClassIDo String • "InternalFrameUI"
+warningString String • null
+Table9-1.JInternalFrame properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, cconstrained, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+264 | Chapter 9: Internal Frames
+their ownpaint()implementations, rather than using the one provided by the Basic
+L&F). *
+Thelayerproperty controls the frame’s current layer, if it has been placed in a
+JLayeredPane. Since SDK 1.3, it has been possible to change a frame’s layer by set-
+ting this property. ThenormalBoundsproperty reflects (or changes) the size that the
+frame occupies when it’s not maximized. If the frame is not maximized when
+getNormalBounds is called, it returns the same value asgetBounds.
+Theresizableproperty indicates whether the frame can be resized by dragging its
+edges or corners, andselectedindicates whether the frame has been selected (this
+typically determines the color of the titlebar).selectedis a constrained property.
+title contains the string for the titlebar.
+TheUI property holds the current L&F implementation for the frame, andUIClassID
+reflects the class ID for internal frames.
+Finally,thewarningStringproperty,whichisalwaysnull,isusedtospecifythestring
+that should appear in contexts where the frame might be insecure. This is the tech-
+nique used byjava.awt.Windowto display a string like “Warning: Applet Window”
+when a Java window is displayed from an applet. SinceJInternalFrames are always
+fully enclosed by some other top-level container, this property is alwaysnull.
+Events
+JInternalFramefires anInternalFrameEvent(discussed later in this chapter) when-
+ever the frame’s state changes.
+The following standard methods are provided for working with events:
+public void addInternalFrameListener(InternalFrameListener l)
+public void removeInternalFrameListener(InternalFrameListener l)
+public InternalFrameListener[] getInternalFrameListeners()
+ (since 1.4)
+Like all the other Swing classes,JInternalFramefiresPropertyChangeEvents when the
+value of any bound property is changed.JInternalFrameis unique in that it is the
+only Swing class that uses vetoable changes for some properties (closed, icon,
+maximum, andselected).
+Constants
+Table9-2shows the constants defined in this class. They are all strings and contain
+the names of the bound properties.
+* TheBasicLookAndFeelis an abstract base class that all the Swing L&Fs extend. For more information, see
+Chapter26.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JInternalFrame Class | 265
+Constructors
+JInternalFrameprovides constructors that allow several of its boolean properties to
+be set at creation time. By default,resizable,closable,maximizable, andiconifiable
+are all set tofalse.
+public JInternalFrame()
+public JInternalFrame(String title)
+Create a new frame with all four properties set to false.
+public JInternalFrame(String title, boolean resizable)
+public JInternalFrame(String title, boolean resizable, boolean closable)
+public JInternalFrame(String title, boolean resizable, boolean closable, boolean maxi-
+mizable)
+public JInternalFrame(String title, boolean resizable, boolean closable, boolean maxi-
+mizable, boolean iconifiable)
+Allow one to four of the frame’s boolean properties to be set at creation time.
+JLayeredPane Methods
+ThesemethodsareapplicableonlyiftheframeiscontainedbyaJLayeredPane(other-
+wise, they do nothing).
+public void moveToBack()
+public void toBack()
+Call the containing layered pane’smoveToBack()method, causing the frame to be
+thefirst(bottom)componentpaintedinitslayer.toBack()justcallsmoveToBack(),
+and the presence of both stems from historical inconsistency in the API.
+Table9-2.JInternalFrame constants
+Constant Property
+CONTENT_PANE_PROPERTY Indicates that the content pane has changed
+FRAME_ICON_PROPERTY Indicates that the frame’s icon has changed
+GLASS_PANE_PROPERTY Indicates that the glass pane has changed
+IS_CLOSED_PROPERTY Indicates that the frame has been opened or closed
+IS_ICON_PROPERTY Indicates that the frame as been iconified or deiconified
+IS_MAXIMUM_PROPERTY Indicates that the frame has been maximized or minimized
+IS_SELECTED_PROPERTY Indicates that the frame has been selected or deselected
+LAYERED_PANE_PROPERTY Indicates that the layered pane has changed
+MENU_BAR_PROPERTY Indicates that the menu bar has changed
+ROOT_PANE_PROPERTY Indicates that the root pane has changed
+TITLE_PROPERTY Indicates that the frame’s title has changed
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+266 | Chapter 9: Internal Frames
+public void moveToFront()
+public void toFront()
+Call the containing layered pane’smoveToFront()method, causing the frame to
+be the last (top) component painted in its layer. These methods are equivalent.
+Miscellaneous Public Methods
+public void dispose()
+Make the frame invisible, unselected, and closed.
+public void doDefaultCloseAction()
+Cause the frame to act exactly as if the Close button had been clicked. Available
+since 1.3.
+public Component getFocusOwner()
+If the frame is active, return the child that has focus (otherwise, return
+null).
+Available since 1.3.
+public Component getMostRecentFocusOwner()
+If the frame is active, this method returns the same value asgetFocusOwner. Oth-
+erwise, it returns the value thatgetFocusOwnerwould return if the frame were
+active. Available since 1.4.
+public void pack()
+LikeFrame’spack()method, this method causes the frame to be resized accord-
+ing to the preferred size of its components.
+public void reshape(int x, int y, int width, int height)
+Call its superclass implementation and then force a repaint of the frame, so that
+decorations such as the title bar are painted.
+public void restoreSubcomponentFocus()
+Request that the frame restore focus to the most recent focus owner. Called by
+the UI when the frame is reactivated (e.g., by clicking on the title bar). Available
+since 1.3.
+public void show()
+Make the frame visible and select it, bringing it to the front of its layer.
+public void updateUI()
+Called to indicate that the L&F for the frame has changed.
+Use of the Glass Pane
+JInternalFrameis the only Swing class that uses the glass pane (see “The Glass Pane”
+in Chapter8 for a general discussion). To be precise,JInternalFrameitself doesn’t do
+anything special with the glass pane, but the default UI implementation
+(
+BasicInternalFrameUI) does. This class toggles the visibility of an internal frame’s
+glass pane each time the state of the frame’sselectedproperty changes. When the

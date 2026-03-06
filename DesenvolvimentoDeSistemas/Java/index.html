@@ -1,18 +1,253 @@
+
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Java</title>
+    <title>Aulas de Java Swing</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 50px; background-color: #f4f4f4; }
-        h1 { color: #004587; }
-        a { text-decoration: none; color: #E32119; font-weight: bold; }
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #E32119;
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .lesson-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s, border-left 0.2s;
+            border-left: 5px solid transparent;
+        }
+
+        .lesson-item:hover {
+            transform: translateX(5px);
+            border-left: 5px solid var(--senai-red);
+        }
+
+        .lesson-info h3 {
+            margin-bottom: 5px;
+            color: var(--senai-blue);
+        }
+
+        .lesson-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .btn-start {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
     </style>
 </head>
 <body>
-    <h1>Módulo Java</h1>
-    <p>Conteúdo em desenvolvimento...</p>
-    <a href="../index.html">Voltar</a>
+
+    <header>
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h1>Módulo de Java Swing</h1>
+        <p>Desenvolvimento de Interfaces Gráficas Desktop</p>
+    </header>
+
+    <main>
+        <div class="lesson-list">
+            
+            <a href="01_intro_swing.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 01: Introdução ao Swing</h3>
+                    <p>O que é Swing, MVC e Arquitetura.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="02_primeiro_app.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 02: Iniciando com Swing</h3>
+                    <p>Primeiro componente e Janelas.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="03_componentes_basicos.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 03: Componentes Básicos</h3>
+                    <p>Eventos, Ações e JComponent.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="04_labels_icons.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 04: Labels e Ícones</h3>
+                    <p>JLabel e Manipulação de Imagens.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="05_botoes.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 05: Botões</h3>
+                    <p>JButton, CheckBox e RadioButton.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="06_bounded_range.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 06: Componentes de Intervalo</h3>
+                    <p>Slider, ProgressBar e ScrollBar.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="07_listas_combos.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 07: Listas e Combos</h3>
+                    <p>JList, JComboBox e Spinners.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="08_containers.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 08: Containers Swing</h3>
+                    <p>JFrame, JWindow e RootPane.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="09_internal_frames.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 09: Janelas Internas</h3>
+                    <p>JInternalFrame e DesktopPane.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="10_dialogos.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 10: Diálogos</h3>
+                    <p>JOptionPane e JDialog.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="11_paineis_especiais.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 11: Painéis Especiais</h3>
+                    <p>SplitPane, ScrollPane e TabbedPane.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="12_layouts.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 12: Gerenciadores de Layout</h3>
+                    <p>Layouts e SpringLayout.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="13_choosers.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 13: Seletores</h3>
+                    <p>FileChooser e ColorChooser.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="14_bordas.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 14: Bordas</h3>
+                    <p>Trabalhando com Bordas no Swing.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="15_menus.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 15: Menus e Barras de Ferramentas</h3>
+                    <p>Criando Menus e Toolbars.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Curso de Desenvolvimento de Sistemas - SENAI</p>
+    </footer>
+
 </body>
 </html>

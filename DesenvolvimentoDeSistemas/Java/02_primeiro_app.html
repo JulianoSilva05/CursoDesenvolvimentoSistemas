@@ -1,0 +1,178 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciando com Swing</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Logo SENAI -->
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Iniciando com Swing</h1>
+            <h2>Do AWT ao Swing: Primeiros Passos</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 02</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Estimada:</strong> 3 Horas</p>
+                <p>Prática: Criando sua primeira Janela Swing</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: AWT vs Swing na Prática -->
+        <div class="slide">
+            <h2>Atualizando do AWT para Swing</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>A Regra do "J"</h3>
+                    <p>Muitos componentes do Swing são evoluções diretas do AWT. Para usá-los, geralmente basta adicionar um <strong>"J"</strong> na frente do nome da classe.</p>
+                    <ul>
+                        <li><code>Button</code> → <code>JButton</code></li>
+                        <li><code>TextField</code> → <code>JTextField</code></li>
+                        <li><code>Label</code> → <code>JLabel</code></li>
+                        <li><code>Frame</code> → <code>JFrame</code></li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Importando</h3>
+                    <p>Enquanto o AWT fica em <code>java.awt.*</code>, o Swing fica em:</p>
+                    <pre style="background: #2d2d2d; color: white; padding: 10px; border-radius: 5px;"><code>import javax.swing.*;</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Seu Primeiro Componente Swing -->
+        <div class="slide">
+            <h2>Seu Primeiro Componente Swing</h2>
+            <p>Vamos criar um botão simples. Note que o <code>JButton</code> pode ter ícones, algo que o botão do AWT não fazia facilmente.</p>
+            
+            <div class="code-block">
+import javax.swing.*;
+import java.awt.*;
+
+public class HelloSwing {
+    public static void main(String[] args) {
+        // 1. Criar a Janela (JFrame)
+        JFrame frame = new JFrame("Minha Primeira Janela");
+        frame.setSize(300, 200);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // Importante!
+
+        // 2. Criar o Componente (JButton)
+        JButton botao = new JButton("Clique em Mim!");
+        
+        // 3. Adicionar à Janela
+        frame.add(botao);
+
+        // 4. Mostrar
+        frame.setVisible(true);
+    }
+}
+            </div>
+            <div style="margin-top: 10px; background: #e3f2fd; padding: 10px; border-radius: 5px; color: #0d47a1;">
+                <strong>Dica:</strong> O <code>setDefaultCloseOperation</code> é crucial. Sem ele, fechar a janela apenas a esconde, mas o programa continua rodando em segundo plano.
+            </div>
+        </div>
+
+        <!-- Slide 4: JFrame e Painéis -->
+        <div class="slide">
+            <h2>Estrutura de uma Janela (JFrame)</h2>
+            <p>O <code>JFrame</code> não é apenas um retângulo vazio. Ele tem camadas.</p>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Content Pane</h3>
+                    <p>É onde você coloca seus botões, textos e imagens. Você raramente adiciona coisas direto no JFrame, mas sim no seu <strong>Content Pane</strong>.</p>
+                    <pre><code>frame.getContentPane().add(botao);</code></pre>
+                    <p><em>(Nas versões novas do Java, <code>frame.add()</code> faz isso automaticamente para você).</em></p>
+                </div>
+                <div class="grid-item">
+                    <h3>JPanel</h3>
+                    <p>Para organizar vários componentes, usamos <code>JPanel</code>. É como uma "div" no HTML.</p>
+                    <p>Você agrupa botões num Painel, e coloca o Painel na Janela.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Exemplo Mais Complexo -->
+        <div class="slide">
+            <h2>Um Exemplo Mais Rico</h2>
+            <p>Vamos criar uma janela com texto e imagem.</p>
+            <div class="code-block">
+// Ícone (certifique-se de ter a imagem)
+ImageIcon icone = new ImageIcon("logo_senai.png");
+
+// Label com Texto e Ícone
+JLabel etiqueta = new JLabel("Bem-vindo ao Curso!", icone, JLabel.CENTER);
+
+// Configurando posição do texto em relação à imagem
+etiqueta.setHorizontalTextPosition(JLabel.CENTER);
+etiqueta.setVerticalTextPosition(JLabel.BOTTOM);
+
+frame.add(etiqueta);
+            </div>
+            <p>Isso demonstra o poder do Swing: componentes híbridos (texto + imagem) fáceis de usar.</p>
+        </div>
+
+        <!-- Slide 6: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática 01</h2>
+            <p>Crie uma aplicação Java Swing que exiba uma janela com:</p>
+            <ol>
+                <li>Título "Sistema SENAI".</li>
+                <li>Tamanho 400x300.</li>
+                <li>Um botão no centro com o texto "Entrar".</li>
+                <li>Quando fechar a janela, o programa deve encerrar completamente.</li>
+            </ol>
+            
+            <textarea id="activity-02" class="code-input">
+/*
+ * Atividade Prática 01
+ * Crie uma aplicação Java Swing que exiba uma janela com:
+ * 1. Título "Sistema SENAI".
+ * 2. Tamanho 400x300.
+ * 3. Um botão no centro com o texto "Entrar".
+ * 4. Quando fechar a janela, o programa deve encerrar completamente.
+ */
+
+// Digite seu código Java aqui...
+import javax.swing.*;
+
+public class Atividade01 {
+    public static void main(String[] args) {
+        
+    }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final: Conclusão -->
+        <div class="slide">
+            <h2>Parabéns! Você concluiu esta aula.</h2>
+            <p>Você criou sua primeira janela e entendeu a estrutura básica de um JFrame.</p>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Controles de Navegação -->
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

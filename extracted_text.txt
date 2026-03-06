@@ -1,0 +1,789 @@
+
+--- Page 11 ---
+x | Table of Contents
+23. Editor Panes and Editor Kits . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 849
+The JEditorPane Class  849
+Overview of the Editor Kits  854
+HTML and JEditorPane  880
+Hyperlink Events  885
+The HTMLEditorKit Class  887
+Extending HTMLEditorKit  891
+Editing HTML  897
+Writing HTML  900
+Reading HTML  906
+A Custom EditorKit  907
+24. Drag and Drop . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 912
+What Is Drag and Drop?  912
+The Drop API  919
+The Drag Gesture API  934
+The Drag API  941
+Rearranging Trees  952
+Finishing Touches  960
+25. Programming with Accessibility  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 967
+How Accessibility Works  968
+The Accessibility Package  972
+Other Accessible Objects  978
+Types of Accessibility  982
+Classes Added in SDK 1.3 and 1.4  990
+The Accessibility Utility Classes  996
+Interfacing with Accessibility  1003
+26. Look and Feel  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1009
+Mac OS X and the Default Look-and-Feel  1010
+How Does It Work?  1011
+Key Look-and-Feel Classes and Interfaces 1014
+The MultiLookAndFeel  1037
+Auditory Cues  1041
+Look-and-Feel Customization  1043
+Creation of a Custom Look-and-Feel  1054
+--- Page 12 ---
+Table of Contents | xi
+27. Swing Utilities  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1076
+Utility Classes  1077
+The Timer Class  1082
+Tooltips  1085
+Rendering Odds and Ends  1087
+Event Utilities  1089
+28. Swing Under the Hood  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1102
+Working with Focus  1102
+Multithreading Issues in Swing  1116
+Lightweight Versus Heavyweight Components 1124
+Painting and Repainting  1128
+Creating Your Own Component  1133
+A. Look-and-Feel Resources  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1157
+B. Component Actions  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1170
+Index  . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 1195
+--- Page 13 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xiii
+Preface
+When Java was first released, its user interface facilities were a significant weakness.
+The Abstract Window Toolkit (AWT) was part of the JDK from the beginning, but it
+really wasn’t sufficient to support a complex user interface. It supported everything
+you could do in an HTML form and provided free-standing frames, menus, and a
+few other objects, but you’d be hard-pressed to implement an application as com-
+plex as Quicken or Lotus Notes. AWT also had its share of portability problems; it
+relied heavily on the runtime platform’s native user interface components, and it
+wasn’t always possible to hide differences in the way these components behaved.
+JDK 1.1 fixed a number of problems—most notably, it introduced a new event
+model that was much more efficient and easier to use—but it didn’t make any major
+additions to the basic components. We got a
+ScrollPaneand aPopupMenu, but that
+was about it. Furthermore, AWT still relied on the native components and therefore
+continued to have portability problems.
+In April 1997, Sun’s Java group (then called JavaSoft) announced the Java Founda-
+tion Classes, or JFC, which supersedes (and includes) AWT. A major part of the JFC
+was a set of much more complete, flexible, and portable user interface components
+called “Swing.” (The JFC also includes a comprehensive facility for 2D graphics,
+printing, and Drag and Drop.) With Swing, you can design interfaces with tree com-
+ponents, tables, tabbed dialogs, tooltips, and a growing set of other features that
+computer users are accustomed to.
+In addition to the new components, Swing made three major improvements to the
+AWT. First, Swing doesn’t rely on the runtime platform’s native components. It’s
+written entirely in Java and creates its own components. This approach solved most
+of the portability problems since components don’t inherit weird behaviors from the
+runtime environment or do they work against its grain. Second, because Swing is in
+complete control of the components, it’s in control of the way components look on
+the screen and gives you more control over how your applications look. You can
+--- Page 14 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xiv | Preface
+choose between several pre-built “look-and-feels” (L&Fs), or you can create your
+own if you want your software to show your personal style (more appropriate for
+games than for daily productivity software, of course). This feature is called “Plugga-
+ble Look-and-Feel,” or PLAF. Third, Swing makes a very clear distinction between
+the data a component displays (the “model”) and the actual display (the “view”).
+While the fine points of this distinction are appreciated mostly by computer scien-
+tists, it has important implications for all developers. This separation means that
+components are extremely flexible. It’s easy to adapt components to display new
+kinds of data that their original design didn’t anticipate or to change the way a com-
+ponent looks without getting tangled up in assumptions about the data it represents.
+The first official release of Swing, for use with JDK 1.1, took place in the spring of
+1998. Swing (and the rest of JFC) was built into Java 2and revolutionized Java user
+interfacedevelopment.TheSwingcomponentscontinuetoevolvewithJava,andJava
+2 SDK 1.4 is the best version yet. This book shows you how to join the revolution.
+What This Book Covers
+ThisbookgivesacompleteintroductiontotheentireSwingcomponentset.Ofcourse,
+itshowsyouhowtouseallofthecomponents:howtodisplaythemonthescreen,reg-
+ister for events, and get information from them. You’d expect that in any Swing book.
+This book goes much further. It goes into detail about the model-delegate architecture
+behind the components and discusses all of the data models. Understanding the mod-
+els is essential when you’re working on an application that requires something signifi-
+cantly different from the components’ default behavior. For example, if you need a
+component that displays a different data type or one that structures data in some non-
+standard way, you’ll need to work with the data models. This book also discusses how
+to write “accessible” user interfaces and how to create your own look-and-feel.
+There are a few topics this book doesn’t cover, despite its girth. We assume you
+know the Java language. For Swing, it’s particularly important to have a good grasp
+of inner classes (both named and anonymous), which are used by Swing itself and in
+our examples. We assume that you understand the JDK 1.1 event model, Java’s
+mechanism for communicating between asynchronous threads. Swing introduced
+manyneweventtypes,allofwhicharediscussedinthisbook,butweprovideonlyan
+overview of the event mechanism as a whole. We also assume that you understand
+the older AWT components, particularly the
+ComponentandContainerclasses, which
+are superclasses of the Swing’sJComponent. We assume that you understand the AWT
+layout managers, all of which are usable within Swing applications. If you are new to
+Java, or would like a review, you can find a complete discussion of these topics in the
+JavaAWTReferenceby John Zukowski
+*or a solid introduction inLearningJavaby
+* PDFs for theJava AWT Referenceare available at this book’s web site,http://www.oreilly.com/catalog/
+jswing2.
+--- Page 15 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Preface | xv
+Pat Niemeyer and Jonathan Knudsen (both published by O’Reilly). We do not
+assume that you know anything about other JFC topics, like Java 2D—check out
+Java2Dby Jonathan Knudsen for that; all the drawing and font manipulation in this
+book can be done with AWT. (We do cover the JFC Accessibility API, which is sup-
+ported by every Swing component, as well as the drag-and-drop facility, since this
+functionality is a requirement for modern user interfaces.)
+The major Swing classes fall into the following packages:
+javax.accessibility
+Classes that support accessibility for people who have difficulty using standard
+user interfaces. Covered in Chapter25.
+javax.swing
+The bulk of the Swing components. Covered in Chapters 3–14 and 27–28.
+javax.swing.border
+Classes for drawing fancy borders around components. Covered in Chapter13.
+javax.swing.colorchooser
+Classes providing support for theJColorChoosercomponent. Covered in
+Chapter12.
+javax.swing.event
+Swing events. Covered throughout the book.
+javax.swing.filechooser
+Classes providing support for theJFileChoosercomponent. Covered in
+Chapter12.
+javax.swing.plaf
+Classes supporting the PLAF, including classes that implement the Metal and
+Multi L&Fs. (Implementations of the Windows and Motif L&Fs are pack-
+aged under
+com.sun.java.swing.plaf, and the Macintosh Aqua L&F is under
+com.apple.mrj.swing.) Covered in Chapter 26.
+javax.swing.table
+ClassesprovidingsupportfortheJTablecomponent(JTableitselfisinjavax.swing).
+Covered in Chapters 15 and 16.
+javax.swing.text
+Classes providing support for the text components (such asJTextField; the com-
+ponents themselves are in thejavax.swing package). Covered in Chapters 19–23.
+javax.swing.text.html and javax.swing.text.rtf
+“Editor kits” for working with HTML and Microsoft RTF documents. Covered
+in Chapter23. The
+text.htmlpackage has a subpackage,parser, which includes
+tools for parsing HTML.
+--- Page 16 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xvi | Preface
+javax.swing.tree
+ClassesprovidingsupportfortheJTreecomponent(JTreeitselfisinjavax.swing).
+Covered in Chapter17.
+javax.swing.undo
+Classes that implement undoable operations. Covered in Chapter18.
+What’s New in This Edition?
+This second edition covers the latest developments in the Java 2Standard Edition
+SDK 1.3 and 1.4. We’ve tried to highlight the changes from 1.2in case you have to
+work with older releases for compatibility or political reasons.
+For brevity’s sake, we refer to Java versions by their SDK version number, describing
+this or that feature as having been introduced in SDK 1.3 or 1.4. Earlier versions
+were called Java Development Kits, so in those cases we refer to JDK 1.1 or 1.2.
+This new edition incorporated your feedback from the first edition! The first edition
+was too heavy on the documentation side for many readers. The Javadoc for the
+Swing packages continues to improve, and more and more people are familiar with
+the patterns of Java classes and methods. With those two facts in mind, we try to
+focus on the parts of the API that are interesting and useful rather than just includ-
+ing them because they exist. We added many new examples and improved the exist-
+ing examples. This book is a true and thorough revision of the first edition, not a
+mere update.
+As a quick reference to some of the changes you’ll find in the 1.3 and 1.4 releases of
+the SDK, TableP-1 and TableP-2list any significant changes to components and
+briefly describe those changes. We detail these changes throughout the book as we
+discuss the particular components.
+.
+TableP-1.Swing changes in the Java 2 SDK 1.3
+Component or feature In chapter Description of changes or additions
+JTree 17 Several new properties were added, including the click
+count to start editing and the selection path.
+JTable 15 Improved general performance and cell rendering.
+AbstractCellEditor is now the parent class of the
+DefaultCellEditor used by tables.
+JSplitPane 11 A new resizeWeight property was added, and the
+dividerLocationProperty is now bound.
+JFileChooser 12 You can now remove the Ok and Cancel buttons. A new
+property,acceptAllFileFilterUsed, was added.
+JCheckBox 5 Added new borderPaintedFlat property.
+DefaultButtonModel 5 Added new getGroup() method.
+--- Page 17 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Preface | xvii
+JInternalFrame 9 Several fixes and newly public classes and methods. Inter-
+nal frames are now invisible by default, and the default
+close operation is nowDISPOSE_ON_CLOSE.
+JTabbedPane 11 Added new toolTipTextAt indexed property.
+Text components 19-23 Several fixes applied. Several improvements in general
+HTML support via theHTMLEditorKit and related
+classes. (XHTML documents are still not supported.)
+JViewport 11 New scrollMode property added.
+JComponent 3 New print methods added: printComponent(),
+printBorder(),printChildren().
+InputVerifier 20 New class added.
+Keyboard binding 3, B New keyboard binding mechanism added. New classes,
+InputMapandActionMap, replaceKeymapfunctionality.
+Borders 13 New LineBorder constructor to support rounded cor-
+ners added.
+Actions 3, 5, 14 AbstractAction class was updated, and new con-
+structors forJCheckBox,JRadioButton,
+JToggleButton,JMenu,JMenuItem,
+JCheckBoxMenuItem, and
+JRadioButtonMenuItem that useAction were
+added.
+JToolBar 14 Support for titling undocked toolbars added.
+JPopupMenu 14 Added new popupTrigger boolean property.
+JFrame 11 Added new EXIT_ON_CLOSE constant for use with the
+defaultCloseOperation property.
+ListenerList 27 Added getListeners() method to several model
+classes, includingAbstractDocument,
+AbstractTableModel,AbstractListModel,
+DefaultButtonModel,DefaultTreeModel, and
+DefaultListSelectionModel.
+TableP-2.Swing changes in the Java 2 SDK 1.4
+Component or feature In chapter Description of changes or additions
+JProgressBar 6 Added support for indeterminate progress bars.
+JSpinner 7 Added new spinner class.
+JFormattedTextField 20 Added new formatted text field class that validates user
+input.
+Focus 3, 28 A new focus model and methodology was introduced.
+Several of the old-style focus methods and classes were
+deprecated as of 1.4.1.
+TableP-1.Swing changes in the Java 2 SDK 1.3 (continued)
+Component or feature In chapter Description of changes or additions
+--- Page 18 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xviii | Preface
+Drag and Drop 24 New architecture introduced, and dragEnabled and
+transferHandler properties added to several
+components.
+Box 11 Now descends from JComponent.
+JButton 5 More control over mnemonic underline location granted.
+JComboBox 7 Added PopupMenuListener and support for cell size
+prototyping.
+JFileChooser 12 Added support for modifying the properties of the Open
+button (such as its text and tooltip). Also added support
+for selecting multiple files. (The multiple file selection
+mode was introduced in the 1.2 release but was not
+implemented until 1.4.)
+JInternalFrame 9 Long titles are now truncated, and the title bar is ren-
+dered with a gradient.
+Text components 19-23 Tooltip support was improved.  HTML support, including
+accessibility in documents, was improved (XHTML is still
+not supported). New
+replace() method added to
+AbstractDocument.
+JOptionPane 10 New input dialog methods added.
+JPopupMenu 14 Now properly supports key bindings.
+JTabbedPane 11 Introduced scrollable tabs for panes with a large number
+of tabs. Mnemonic support for accessing tabs was also
+added.
+JTree 17 Null roots are now allowed, and first-letter keyboard nav-
+igation was added.
+JList 7 Items can now be arranged horizontally, and first-letter
+keyboard navigation was added.
+SwingConstants 27 New constants, NEXT andPREVIOUS, were added.
+SwingUtilities 27 New methods added, including
+calculateInnerArea() and
+applyComponentOrientation()
+LookAndFeel 3, 26, B General support for auditory cues was added. Access to
+Windows desktop properties was also added.
+JComponent 3 requestFocus()andrequestFocusInWindow()
+methods are now public.
+MouseWheelEvent
+MouseWheelListener
+11 New event and listener for mouse wheels added.
+JRootPane 10 Look-and-feel can now supply window decoration.
+JScrollBar 6 Now properly overrides setUI().
+JScrollPane 11 Now supports mouse wheel events. (This support can be
+turned off.)
+RepaintManager 28 New method to return a VolatileImage.
+SpringLayout 11 New class (and supporting classes) added.
+TableP-2.Swing changes in the Java 2 SDK 1.4 (continued)
+Component or feature In chapter Description of changes or additions
+--- Page 19 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Preface | xix
+On the Web Site
+The web site for this book,http://www.oreilly.com/catalog/jswing2/,offers some
+important materials you’ll want to know about. All the examples in this book can be
+found there, as well as free utilities, PDFs of John Zukowski’sJavaAWTReference
+(foundational for understanding Swing), and selected material from the first edition
+for those of you working with older SDKs.
+The examples are available as a JAR file, a ZIP archive, and a compressed TAR
+archive. The files namedswingwere tested against J2SE SDK 1.4 for this edition. The
+files namedswing-1ewere tested against JDK 1.2for the first edition of the book.
+The files namedswing-oldwere written with the beta releases of Swing and use the
+com.java.swing hierarchies.
+We also include a few free utilities on the site that you may want to check out:
+macmetrics.jar
+Lee Ann Rucker’s MacMetrics theme. See “Mac OS X and the Default Look-and-
+Feel” in Chapter26 for details on this helpful tool that enables developers with-
+outaccesstoMacOSXtoseehowtheirapplications’interfaceswilllookonthat
+platform.
+oraswing.jar
+Our very own utilities bundle with documentation, including:
+eel.jar
+TheEveryEventListenerutilityfordebuggingeventsfromthevariousSwing
+andAWT components.
+relativelayout.jar
+A niftyXML-based layout manager.
+mapper.jar
+A quick helper for discovering theInputMapandActionMapentries (both
+bound and unbound) for any given component. This is the utility we used to
+buildAppendixB.
+We may add other utilities as we receive feedback from readers, so be sure to check
+theREADME file on the site!
+We owe a debt of gratitude to John Zukowski and O’Reilly & Associates, who have
+graciously allowed the classicJava AWT Referenceto be placed online at our site.
+You can download PDFs of the entire book.
+The web site also includes some expanded material that we couldn’t shoehorn into
+this edition of the book. For those of you still working with JDK 1.2, we’ve included
+a PDF containing the “Keyboard Actions” section from Chapter3 of the first edi-
+tion—the approach changed markedly with SDK 1.3. Regardless of your version of
+--- Page 20 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xx | Preface
+Java, if you're planning on extending theHTMLEditorKit, you should check out the
+expanded material online. We cover the basics of this editor kit in Chapter23, but
+for those of you who want to dig in deep, you should download PDFs of the two
+chapters devoted to this topic..
+Conventions
+This book follows certain conventions for font usage, property tables, and class dia-
+grams. Understanding these conventions up-front makes it easier to use this book.
+This book uses the following font conventions:
+Italic
+Used for filenames, file extensions, URLs, application names, emphasis, and
+new terms when they are first introduced
+Constant width
+Used for Java class names, functions, variables, components, properties, data
+types, events, and snippets of code that appear in text
+Constant width bold
+Used for commands you enter at the command line and to highlight new code
+inserted in a running example
+Constant width italic
+Used to annotate output
+This icon designates a note, which is an important aside to the nearby
+text.
+This icon designates a warning relating to the nearby text.
+Properties Tables
+Swing components are all JavaBeans. Properties provide a powerful way to work
+with JavaBeans, so we use tables throughout the book to present lists of properties.
+TableP-3 is an example from the hypothetical
+JFooclass that shows how we use
+these tables.
+--- Page 21 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Preface | xxi
+Properties tables tell you the data type; whether it has is, get, and set methods; and
+its default value, if any. Footnotes to the properties tables tell you, among other
+things, whether a property is bound, protected, indexed, and/or overridden. We use
+“overridden” to mean both actual overridden methods in the case of a concrete par-
+entclassandimplementedmethodsinthecaseofanabstractparentclassoraninter-
+face. If it is a recent addition, the version of the SDK that added the property is noted
+(assume 1.2 if there is no footnote).
+TableP-3 indicates that a
+JFooobject has a read/write bound property namedopaque
+with the data typeboolean. The property was introduced in the 1.4 release of the
+SDK. This property has accessor methods with the signatures:
+public boolean getOpaque();
+public boolean isOpaque();
+public void setOpaque(boolean opaque);
+These methods aren’t listed separately when we discuss the class’s other methods.
+Becauseopaqueis a bound property, changing its value generates aPropertyChange-
+Event.Theoverriddenfootnoteindicatesthattheopaquepropertyisalsoinherited(or
+possibly implemented for the first time); it is listed here because theJFooclass has
+altered the property in some way—e.g., the default value was changed, accessor
+methods were added, or new behavior when accessing or modifying the value was
+specified. A cross-reference following the table says that
+JFoohas inherited proper-
+ties from theJComponentclass; see the discussion of that class for details on these
+properties.
+We’ve listed default values for properties wherever applicable. (Properties of inter-
+faces, for example, will not have any values listed.) To save space, we omit thenew
+operator in these tables.
+One more note about bound properties. The Swing developers introduced some con-
+fusion into the notion of a “bound property” by adding a new lightweight event,
+ChangeEvent, which is a stateless version ofPropertyChangeEvent. In these tables, we
+adhere strictly to the JavaBeans definition of a bound property: modifying a bound
+property generates a
+PropertyChangeEvent.
+TableP-3.Properties of the fictional JFoo class
+Property Data type
+get
+is
+set Default value
+opaqueb, o, 1.4 boolean ••• true
+bbound, ooverridden, 1.4since 1.4
+See also properties from theJComponent class (Table 3-6).
+--- Page 22 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xxii | Preface
+Class Diagrams
+The class diagrams that appear throughout the book are similar to those inLearning
+Javaand other Java books from O’Reilly. Solid lines indicate inheritance relation-
+ships; dotted lines indicate interface relationships. In FigureP-1,ClassAextends
+AbstractClass, which implementsInterfaceX. There are two interface relationships
+that we don’t show in this way. All Swing classes implementSerializable, and
+showing this relationship explicitly would clutter the diagram; just assume that any
+Swing class implementsSerializable, unless stated otherwise in the text. Many
+Swing classes implement theAccessibleinterface; rather than cluttering the dia-
+grams, we show that a class implementsAccessible with an A icon.
+We also use the class diagrams to show information about relations between classes.
+In FigureP-1, the long, dashed arrow indicates that
+ClassAusesClassB. The label on
+the arrow indicates the nature of the relationship; other common relations are “con-
+tains” and “creates.”1..*indicates the multiplicity of the relationship. Here, an
+instance of
+ClassAuses one or more instances ofClassB. Other multiplicities are1
+(exactly one instance),0..* (any number of instances), and0..1 (zero or one instance).
+How to Contact Us
+Along with O’Reilly, we have verified the information in this book to the best of our
+abilities, but you may find that features have changed (or even that we have made
+mistakes!). Please let us know about any errors you find, as well as your suggestions
+for future editions, by writing to:
+O’Reilly & Associates, Inc.
+1005 Gravenstein Highway North
+Sebastopol, CA 95472
+(800) 998-9938 (U.S. and Canada)
+(707) 829-0515 (international/local)
+(707) 829-0104 (fax)
+You can also contact O’Reilly by email. To be put on the mailing list or request a cat-
+alog, send a message to:
+info@oreilly.com
+FigureP-1.Class diagram notation
+1..*
+package
+InterfaceX InterfaceY
+Abstract Class ClassA
+ClassB
+usesA
+--- Page 23 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Preface | xxiii
+We have a web page for this book, where we list errata, examples, and any addi-
+tional information. You can access this page at:
+http://www.oreilly.com/catalog/jswing2/
+To ask technical questions or comment on the book, send email to:
+bookquestions@oreilly.com
+For more information about O’Reilly books, conferences, Resource Centers, and the
+O’Reilly Network, see O’Reilly’s web site at:
+http://www.oreilly.com/
+Acknowledgments
+We’re particularly indebted to our technical reviewers for this second edition: Chris-
+tian Hessler, John Pyeatt, Maciek Smuga-Otto, and Dave Wood.
+Marc Loy
+I’ll start off the mutual admiration society by thanking my cohorts Jim and Brian.
+They came to the table after we lost Dave and Bob (from the first edition) to other
+books, and well, life in general. This update would not have been possible without
+them. Our editor Deb Cameron has the patience and diligence of some very patient
+and diligent god. I continue to be amazed by the support and insight I receive from
+my colleagues Tom Berry, Damian Moshak, and Brooks Graham. Gratitude for the
+inspiration to keep writing (even if it is technical) goes to Amy Hammond, my sister
+and confidante. A special thanks to Kathy Godeken for an early push in the right
+direction. Words are not enough to thank my partner Ron, so I’ll not waste the
+space.
+Brian Cole
+Thanks to my family for putting up with me as an author. This goes tenfold for my
+partner, Beth, for that and more. Thanks to Deb, who was very understanding about
+deadlines, and especially to Marc and Jim, who were always willing to lend a hand
+despite deadlines of their own. Thanks to my employers and coworkers, who were
+willing to accommodate my schedule. Finally, thanks to the anonymous program-
+mer who discovered that running java with
+-Dsun.java2d.noddraw=truefixes the
+appalling 1.3 drawing problems common on Win32systems equipped with some
+popular types of video cards. You saved me a lot of time.
+James Elliott
+Any list of thanks has to start with my parents for fostering my interest in computing
+evenwhenwewerelivingincountriesthatmadethatamajorchallenge,andwithmy
+--- Page 24 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+xxiv | Preface
+partner Joe for putting up with it today when it has flowered into a major obsession.
+I’d also like to acknowledge my Madison employer, Berbee, for giving me an oppor-
+tunity to delve deeply into Java and build skills as an architect of reusable APIs; for
+letting me stay clear of the proprietary, platform-specific tar pit that is engulfing so
+much of the programming world; for surrounding me with such incredible col-
+leagues; and for being supportive when I wanted to help with this book. Of course, I
+have Marc to thank for getting me involved in this crazy adventure in the first place,
+and Deb for helping make sense of it.
+I wanted to be sure this edition gave good advice about how to work with Swing on
+Mac OS X, Apple’s excellent, Unix-based environment for Java development, so I
+asked for some help. Lee Ann Rucker (who should also be thanked for her heroic
+workofsingle-handedlyimplementingthenewMacOSLook-and-Feelwhileonloan
+from Sun to Apple) shared some great ideas and approaches to writing solid, cross-
+platform Java applications, including the MacMetrics theme described in
+Chapter26. Count me among the many people wishing Sun or Apple would put her
+back on the Mac Java team! Eric Albert, another frequent source of insight on
+Apple’s Java-Dev mailing list, gave me more suggestions and pointed me to his excel-
+lent chapter inEarlyAdopterMacOSXJava(Wrox Press). Finally, Matt Drance at
+Apple’s Developer Technical Support sent me an early (and helpful) version of his
+technical note on how to make Java applications as Mac-friendly as possible. There
+are many others to whom I’m indebted, but I’ve already used more than my fair
+share of space, so the rest of you know who you are!
+We all want to thank the many members of O’Reilly’s production department, who
+put in lots of work under a tight schedule.
+--- Page 25 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+1
+Chapter1In this chapter:
+• What Is Swing?
+• Swing Features
+• Swing Packages and Classes
+• The Model-View-Controller
+Architecture
+• Working with Swing
+• The Swing Set Demo
+• Reading This Book
+CHAPTER 1
+Introducing Swing
+Welcome to Swing! By now, you’re probably wondering what Swing is and how you
+can use it to spice up your Java applications. Or perhaps you’re curious as to how
+the Swing components fit into the overall Java strategy. Then again, maybe you just
+want to see what all the hype is about. Well, you’ve come to the right place; this
+book is all about Swing and its components. So let’s dive right in and answer the first
+question that you’re probably asking right now, which is…
+What Is Swing?
+If you poke around the Java home page (http://java.sun.com/), you’ll find Swing
+described as a set of customizable graphical components whose look-and-feel (L&F)
+can be dictated at runtime. In reality, however, Swing is much more than this. Swing
+is the next-generation GUI toolkit that Sun Microsystems created to enable enter-
+prise development in Java. Byenterprise development, we mean that programmers
+can use Swing to create large-scale Java applications with a wide array of powerful
+components. In addition, you can easily extend or modify these components to con-
+trol their appearance and behavior.
+Swing is not an acronym. The name represents the collaborative choice of its design-
+ers when the project was kicked off in late 1996. Swing is actually part of a larger
+family of Java products known as the Java Foundation Classes (JFC), which incorpo-
+rate many of the features of Netscape’s Internet Foundation Classes (IFC) as well as
+design aspects from IBM’s Taligent division and Lighthouse Design. Swing has been
+in active development since the beta period of the Java Development Kit (JDK) 1.1,
+circa spring of 1997. The Swing APIs entered beta in the latter half of 1997 and were
+initially released in March 1998. When released, the Swing 1.0 libraries contained
+nearly 250 classes and 80 interfaces. Growth has continued since then: at press time,
+Swing 1.4 contains 85 public interfaces and 451 public classes.
+--- Page 26 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+2 | Chapter 1: Introducing Swing
+Although Swing was developed separately from the core Java Development Kit, it
+doesrequireatleastJDK1.1.5torun.Swingbuildsontheeventmodelintroducedin
+the 1.1 series of JDKs; you cannot use the Swing libraries with the older JDK 1.0.2.
+In addition, you must have a Java 1.1–enabled browser to support Swing applets.
+The Java 2SDK 1.4 release includes many updated Swing classes and a few new fea-
+tures. Swing is fully integrated into both the developer’s kit and the runtime environ-
+ment of all Java 2 releases (SDK 1.2 and higher), including the Java Plug-In.
+What Are the Java Foundation Classes?
+The FC is a suite of libraries designed to assist programmers in creating enterprise
+applications with Java. The Swing API is only one of five libraries that make up the
+JFC. The JFC also consists of the Abstract Window Toolkit (AWT), the Accessibil-
+ity API, the 2D API, and enhanced support for Drag and Drop capabilities. While the
+Swing API is the primary focus of this book, here is a brief introduction to the other
+elements in the JFC:
+AWT
+The Abstract Window Toolkit is the basic GUI toolkit shipped with all versions
+of the Java Development Kit. While Swing does not reuse any of the older AWT
+components, it does build on the lightweight component facilities introduced in
+AWT 1.1.
+Accessibility
+The accessibility package provides assistance to users who have trouble with tra-
+ditional user interfaces. Accessibility tools can be used in conjunction with
+devices such as audible text readers or braille keyboards to allow direct access to
+the Swing components. Accessibility is split into two parts: the Accessibility API,
+which is shipped with the Swing distribution, and the Accessibility Utilities API,
+which is distributed separately. All Swing components support accessibility, so
+this book dedicates an entire chapter (Chapter25) to accessibility design and
+use.
+2D API
+The 2D API contains classes for implementing various painting styles, complex
+shapes, fonts, and colors. This Java package is loosely based on APIs that were
+licensed from IBM’s Taligent division. The 2D API classes are not part of Swing,
+so they are not covered in this book.
+Drag and Drop
+Drag and Drop (DnD) is one of the more common metaphors used in graphical
+interfaces today. The user is allowed to click and “hold” a GUI object, moving it
+to another window or frame in the desktop with predictable results. The DnD
+API allows users to implement droppable elements that transfer information
+between Java applications and native applications. Although DnD is not part of
+--- Page 27 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+What Is Swing? | 3
+Swing, it is crucial to a commercial-quality application. We tackle this topic in
+Chapter24.
+Figure1-1 enumerates the various components of the Java Foundation Classes.
+Because part of the Accessibility API is shipped with the Swing distribution, we show
+it overlapping Swing.
+Is Swing a Replacement for AWT?
+No. Swing is actually built on top of the core AWT libraries. Because Swing does not
+contain any platform-specific (native) code, you can deploy the Swing distribution
+on any platform that implements the Java 1.1.5 or above virtual machine. In fact, if
+you have JDK 1.2or higher on your platform, then the Swing classes are already
+available, and there’s nothing further to download. If you use a JDK version prior to
+1.2, you can download the entire set of Swing libraries as a set of Java Archive (JAR)
+files from the Swing home page,http://java.sun.com/products/jfc. In either case, it is
+generally a good idea to visit this URL for any extra packages or L&Fs that may be
+distributed separately from the core Swing libraries.
+Figure1-2shows the relationship between Swing, AWT, and the Java Development
+Kit in the 1.1 and higher JDKs. In JDK 1.1, the Swing classes must be downloaded
+separately and included as an archive file on the classpath (swingall.jar).
+* JDK 1.2
+(and higher) comes with a Swing distribution.
+Figure1-1.The five APIs of the JFC
+* ThestandaloneSwingdistributionscontainseveralotherJARfiles.swingall.jariseverything(exceptthecon-
+tents ofmulti.jar) wrapped into one lump and is all you normally need to know about. For completeness,
+the other JAR files are:swing.jar, which contains everything but the individual L&F packages;motif.jar,
+which contains the Motif (Unix) L&F;windows.jar, which contains the Windows L&F;multi.jar, which
+contains a special L&F that allows additional (often nonvisual) L&Fss to be used in conjunction with the
+primary L&F; andbeaninfo.jar, which contains special classes used by GUI development tools.
+Java Foundation Classes
+AWT Swing Accessibility Java
+2D
+Drag
+and
+Drop
+--- Page 28 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+4 | Chapter 1: Introducing Swing
+Swing contains many more graphical components than its immediate predecessor,
+AWT 1.1. Many are components that were scribbled on programmer wishlists since
+Java first debuted—including tables, trees, internal frames, and a plethora of
+advanced text components. In addition, Swing contains many design advances over
+AWT. For example, Swing introduced an
+Actionclass that makes it easier to coordi-
+nate GUI components with their functionality. You’ll also find that a much cleaner
+design prevails throughout Swing; this cuts down on the number of unexpected sur-
+prises that you’re likely to face while coding.
+Swing depends extensively on the event-handling mechanism of AWT 1.1, although
+it does not define a comparatively large amount of events for itself. Each Swing com-
+ponent also contains a variable number of exportable properties. This combination
+of properties and events in the design was no accident. Each of the Swing compo-
+nents, like the AWT 1.1 components before them, adhere to the popular JavaBeans
+specification. As you might have guessed, this means that you can import all of the
+Swing components into various GUI builder tools, which is useful for powerful
+visual programming.
+Rethinking the AWT
+To understand why Swing exists, it helps to understand the market forces that drive
+Java as a whole. The Java Programming Language was developed in 1993 and 1994,
+largely under the guidance of James Gosling and Bill Joy at Sun Microsystems, Inc.
+WhenSunreleasedtheJavaDevelopmentKitontheInternet,itignitedafirestormof
+excitement that swept through the computing industry. At first, developers prima-
+rily experimented with Java forapplets, mini-programs embedded in web browsers.
+However, as Java matured over the course of the next two years, many developers
+began using Java to develop full-scale applications.
+Oratleasttheytried.AsdevelopersportedJavatomoreandmoreplatforms,itsweak
+points started to show. The language was robust and scalable, extremely powerful as
+Figure1-2.Relationships between Swing, AWT, and the JDK in the 1.1 and higher SDKs
+AWT classes
+JDK
+CLASSPATH
+Swing classes
+swingall.jar
+JDK 1.1
+AWT classes
+JFC
+JDK 1.2 and higher
+Swing classes
+--- Page 29 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Features | 5
+a networking tool, and served well as an easy-to-learn successor to the more estab-
+lished C++. The primary criticism, however, was that it was an interpreted language,
+which means that by definition it executed code slower than its native, compiled
+equivalents. Consequently, many developers flocked to just-in-time (JIT) compilers—
+highly optimized interpreters—to speed up their large-scale applications. This solved
+many problems, but one weak point that continually received scathing criticism was
+the graphical widgets that Java was built on: the Abstract Window Toolkit (AWT).
+The primary issue here was that AWT provided only the minimal amount of func-
+tionality necessary to create a windowing application. For enterprise applications, it
+quickly became clear that programmers needed something bigger.
+After nearly a year of intense scrutiny, the AWT classes were ready for a change.
+From Java 1.0 to Java 1.1, the AWT reimplemented its event model from a “chain”
+design to an “event subscriber” design. This meant that instead of propagating
+events through a predefined hierarchy of components, interested classes simply regis-
+tered with other components to receive noteworthy events. Because events typically
+involve only the sender and receiver, this eliminated much of the overhead in propa-
+gating them. When component events were triggered, an event object was passed
+only to those classes interested in receiving them.
+Sun developers also began to see that relying on native widgets for the AWT compo-
+nents was proving to be troublesome. Similar components looked and behaved dif-
+ferently on many platforms, and coding for the ever-expanding differences of each
+platform became a maintenance nightmare. In addition, reusing the component wid-
+gets for each platform limited the abilities of the components and proved to be
+expensive on system memory.
+Clearly, Sun knew that AWT wasn’t enough. It wasn’t that the AWT classes didn’t
+work; they simply didn’t provide the functionality necessary for full-scale enterprise
+applications. At the 1997 JavaOne Conference in San Francisco, JavaSoft announced
+the Java Foundation Classes. Key to the design of the JFC was that the new Swing
+components would be written entirely in Java and have a consistent L&F across plat-
+forms. This allowed Swing and the JFC to be used on any platform that supported
+Java 1.1 or later; all the user had to do was to include the appropriate JAR files on
+the
+CLASSPATH to make each of the components available for use. Since JDK 1.2,
+Swing has been part of the standard Java distribution; no special action is needed to
+use Swing components.
+Swing Features
+Swing provides many features for writing large-scale applications in Java. Here is an
+overview of some of the more popular features.
+--- Page 30 ---
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+6 | Chapter 1: Introducing Swing
+Pluggable Look-and-Feels
+One of the most exciting aspects of the Swing classes is the ability to dictate the L&F
+ofeachofthe components,evenresetting theL&F atruntime.L&Fshave become an
+important issue in GUI development over the past 10 years. Many users are familiar
+with the Motif style of user interface, which was common in Windows 3.1 and is still
+in wide use on Unix platforms. Microsoft created a more optimized L&F in their
+Windows 95/98/NT/2000 operating systems. In addition, the Macintosh computer
+system has its own carefully designed L&F, which most Apple users feel comfortable
+with.
+SwingiscapableofemulatingseveralL&FsandcurrentlysupportstheWindows,Unix
+Motif, and “native” Java Metal L&Fs. Mac OS X comes with full support for its own
+L&FbasedonApple’sAquaHumanInterfaceGuidelines,althoughyoucanstillaccess
+Metalifyouprefer.Inaddition,Swingallowstheuserto switchL&Fsatruntimewith-
+out having to close the application. This way, a user can experiment to see which L&F
+is best for her with instantaneous feedback. (In practice, nobody really does this, but
+it’s still pretty cool from a geeky point of view.) And, if you’re feeling really ambitious
+as a developer (perhaps a game developer), you can create your own L&F for each one
+of the Swing components!
+The Metal L&F combines some of the best graphical elements in today’s L&Fs and
+even adds a few surprises of its own. Figure1-3 shows an example of several L&Fs
+that you can use with Swing, including the Metal L&F. All Swing L&Fs are built
+from a set of base classes called the Basic L&F. However, though we may refer to the
+Basic L&F from time to time, you can’t use it on its own. If you’re lucky enough to
+be developing applications in the Mac OS X environment, you’ll be familiar with the
+L&F shown in Figure1-4.
+Lightweight Components
+Most Swing components are lightweight. In the purest sense, this means that compo-
+nents are not dependent on native peers to render themselves. Instead, they use sim-
+plified graphics primitives to paint themselves on the screen and can even allow
+portions to be transparent.
+The ability to create lightweight components first emerged in JDK 1.1, although the
+majority of AWT components did not take advantage of it. Prior to that, Java pro-
+grammers had no choice but to subclass
+java.awt.Canvasorjava.awt.Panelif they
+wished to create their own components. With both classes, Java allocated an opaque
+peer object from the underlying operating system to represent the component, forc-
+ing each component to behave as if it were its own window, thereby taking on a rect-
+angular, solid shape. Hence, these components earned the name “heavyweight”
+because they frequently held extra baggage at the native level that Java did not use.

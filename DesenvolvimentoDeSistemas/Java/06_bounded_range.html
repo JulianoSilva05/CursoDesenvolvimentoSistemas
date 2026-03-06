@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 06: Controles de Valor e Progresso</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Aula 06: Controles de Valor e Progresso</h1>
+            <h2>JSlider, JProgressBar, BoundedRangeModel</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 06</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Manipulação de Dados Numéricos</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Conceitos Fundamentais -->
+        <div class="slide">
+            <h2>Conceitos Fundamentais (Teoria)</h2>
+            <div class="grid-layout">
+                
+                <div class="grid-item">
+                    <h3>ChangeListener</h3>
+                    <p>Evento disparado continuamente enquanto o usuário arrasta o slider.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>JProgressBar Indeterminado</h3>
+                    <p>Modo de 'carregando' quando não se sabe o tempo total.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Labels no Slider</h3>
+                    <p>Exibição de rótulos personalizados (ex: Baixo, Médio, Alto) na régua.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Orientação</h3>
+                    <p>Sliders e Barras podem ser Verticais ou Horizontais.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Aprofundamento -->
+        <div class="slide">
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. Customizando a Régua (Ticks)</h3>
+            <p>O JSlider permite configuração detalhada de espaçamento maior (Major) e menor (Minor), além de 'Snap' (imã) para valores inteiros.</p>
+            
+            <h3>2. Barra de Progresso Real</h3>
+            <p>Para atualizar uma barra de progresso em uma aplicação real, você precisará usar Threads ou SwingWorker, pois loops normais travam a interface.</p>
+        
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
+            <div class="code-block">
+// Slider Vertical com Labels
+JSlider slider = new JSlider(JSlider.VERTICAL, 0, 100, 50);
+slider.setMajorTickSpacing(20);
+slider.setMinorTickSpacing(5);
+slider.setPaintTicks(true);
+slider.setPaintLabels(true);
+
+// Detectando movimento em tempo real
+slider.addChangeListener(e -> {
+    JSlider source = (JSlider)e.getSource();
+    if (!source.getValueIsAdjusting()) {
+        System.out.println("Valor final: " + source.getValue());
+    }
+});
+            </div>
+        </div>
+
+        <!-- Slide 5: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Simule um 'Instalador'. Use um Slider para o usuário definir a velocidade de instalação e um botão 'Instalar' que inicia uma ProgressBar (use um Timer para simular o progresso).
+            </div>
+            
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
+            </div>
+
+            <textarea id="activity-06" class="code-input">
+/*
+ * ATIVIDADE PRÁTICA - AULA 06
+ * Tempo estimado: 60 minutos
+ */
+
+import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File; 
+
+public class Instalador extends JFrame {
+    JProgressBar barra;
+    public Instalador() {
+        super("Setup");
+        setSize(400, 200);
+        setLayout(new FlowLayout());
+        
+        barra = new JProgressBar(0, 100);
+        barra.setStringPainted(true);
+        
+        // Crie Slider de velocidade
+        // Botão que inicia um javax.swing.Timer
+        // O Timer deve incrementar a barra.setValue(barra.getValue() + 1)
+        
+        add(barra);
+    }
+    public static void main(String[] args) { new Instalador().setVisible(true); }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final -->
+        <div class="slide">
+            <h2>Aula Concluída!</h2>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-06': [
+                { id: 'timer', text: 'Usar Timer (Simulação)', pattern: /Timer/ },
+{ id: 'paint', text: 'Pintar Texto na Barra', pattern: /setStringPainted/ },
+{ id: 'slider', text: 'Configurar Ticks do Slider', pattern: /setPaintTicks/ }
+            ]
+        };
+    </script>
+</body>
+</html>

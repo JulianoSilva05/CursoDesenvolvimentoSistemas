@@ -1,0 +1,1675 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 347
+  public HBox() {
+    super("Horizontal Box Test Frame");
+    setSize(200, 100);
+    Panel box = new Panel();
+    // Use BoxLayout.Y_AXIS if you want a vertical box.
+    box.setLayout(new BoxLayout(box, BoxLayout.X_AXIS));
+    setContentPane(box);
+    for (int i = 0; i < 3; i++) {
+      Button b = new Button("B" + i);
+      box.add(b);
+    }
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    HBox bt = new HBox();
+  }
+}
+Well, maybe that’s not really exciting since you can do the same thing with a well-
+constructed grid-layout manager. But theBoxLayoutclass does allow for components
+to be different sizes, unlike theGridLayoutclass. Recall from Figure11-13 that we
+had a two-line text area as well as several checkbox components. The text area is
+somewhat taller than the checkboxes, but that doesn’t bother the
+BoxLayoutman-
+ager. Figure11-14 shows the same application with altered background for the com-
+ponents. You can see the actual size of each component with respect to the layout
+manager.
+Box alignments
+One other thing to note about theBoxLayoutclass is the off-axis alignment of the
+components, dictated by thealignmentXandalignmentYproperties of theComponent
+class. For example, in a vertical box, thealignmentXproperty of the first component
+is used to determine the horizontal position of a component relative to the other
+Figure11-14.The BoxLayout manager with components of varying heights
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+348 | Chapter 11: Specialty Panes and Layout Managers
+components. Likewise, thealignmentYproperty dictates the vertical alignment of
+components in a horizontalBoxLayout.
+The default alignments for the various components can throw things off. In the code
+example for Figure11-13, we set thealignmentXproperty of theJTextAreato0.0 to
+keep everything left-aligned. Without that manual adjustment, the text area tries to
+center itself on the screen. The checkboxes that follow then line up with their left
+edges on the same imaginary line as the center of the text area. Sometimes that’s
+exactly what you want, but sometimes it isn’t. Just be aware that some components
+occasionally need tweaking.
+The OverlayLayout Class
+Another layout manager in the Swing package is theOverlayLayoutclass. This layout
+manager is more of a facilitating manager for some of the Swing components, such as
+JMenuItemandAbstractButton. The purpose of this layout manager is to place com-
+ponents on top of each other based on some alignment points. This allows things
+like buttons and menu items to manage icons and text in the same visual area. Recall
+that a “center” alignment for a button with both an icon and a text label places the
+text directly over the icon.
+OverlayLayoutunderstands how to arrange components
+that overlap.
+The alignment points are values between 0.0 and 1.0 for both the horizontal and ver-
+tical axes. (For the horizontal axis, 0.0 is the left side of the component, 1.0 is the
+right side. The vertical axis runs from 0.0 at the top to 1.0 at the bottom.) You assign
+a horizontal and vertical pair of points to each component in the container.
+OverlayLayoutthen arranges the components so that their alignment points all
+occupythe same spot. To accomplish the previousicon and textexample, youwould
+set the alignments for the icon to
+0.5 horizontal and0.5 vertical. You would do the
+same for the text. However, if you wanted the text to show up underneath the icon
+but still centered horizontally, you would set the icon’s alignments to
+0.5 horizontal
+and1.0 vertical. The text would use0.5 horizontal and0.0 vertical. Figure11-15
+illustrates these two scenarios.
+As noted forBoxLayout, theOverlayLayoutclass implements theLayoutManager2inter-
+face from thejava.awtpackage. Again, you can find out more about layout manag-
+ers inJava AWT Reference by John Zukowski (O’Reilly).
+Constructor
+One constructor does exist for creating anOverlayLayout manager:
+public OverlayLayout(Container target)
+Create a layout manager for managing the components in a given container.
+Note that calling this constructor does not install the resulting layout manager
+for
+target. You still need to callsetLayout(). For example:
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 349
+JPanel p1 = new JPanel();
+OverlayLayout overlay = new OverlayLayout(p1);
+p1.setLayout(overlay);
+An OverlayLayout Example
+Rather than contrive an example using theOverlayLayoutmanager, Figure11-16
+shows a simple program that lets you play with three buttons inside a panel, with an
+OverlayLayoutmanager running. You can type in the X- and Y-alignment values
+between 0.0 and 1.0 into text fields along the bottom. The text fields are organized
+as X and Y alignments for each of the three buttons (B1, B2, and B3 respectively).
+Click the Update button. The buttons in the floating panel rearrange themselves
+according to the values you enter. The gridlines show the bounds of the panel and its
+center. Try changing several of the values; this will give you an idea of how this lay-
+out manager might be used.
+In Figure11-16, you can see we placed B2above and to the right of B1. We gave B3
+centered alignment (
+0.5) for both axes. You can see how its center corresponds to
+the origin created by the polar opposite constraints of the other buttons—not the
+center of the container.
+Admittedly, you probably won’t be lining up buttons using this layout manager, but
+imagine controlling a multiline, multiicon label. This layout manager could prove
+useful in such situations.
+Here’s the code that produced this example. As with many of the examples, this one
+is more fun if you compile and run the program itself.
+// OverlayTest.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class OverlayTest extends JFrame {
+Figure11-15.Arranging with OverlayLayout (crosshairs represent alignment points)
+Horizontal: 0.5
+Vertical: 0.5
+Horizontal: 0.5
+Vertical: 0.5
+End results
+Horizontal: 0.5
+Vertical: 1.0
+Horizontal: 0.5
+Vertical: 0.0
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+350 | Chapter 11: Specialty Panes and Layout Managers
+    public OverlayTest() {
+        super("OverlayLayout Test");
+        setSize(500, 300);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        final Container c = getContentPane();
+        c.setLayout(new GridBagLayout());
+        final JPanel p1 = new GridPanel();
+        final OverlayLayout overlay = new OverlayLayout(p1);
+        p1.setLayout(overlay);
+        final JButton jb1 = new JButton("B1");
+        final JButton jb2 = new JButton("B2");
+        final JButton jb3 = new JButton("B3");
+        Dimension b1 = new Dimension(60, 50);
+        Dimension b2 = new Dimension(80, 40);
+        Dimension b3 = new Dimension(100, 60);
+        jb1.setMinimumSize(b1);
+        jb1.setMaximumSize(b1);
+        jb1.setPreferredSize(b1);
+        jb2.setMinimumSize(b2);
+        jb2.setMaximumSize(b2);
+        jb2.setPreferredSize(b2);
+        jb3.setMinimumSize(b3);
+        jb3.setMaximumSize(b3);
+        jb3.setPreferredSize(b3);
+        SimpleReporter reporter = new SimpleReporter();
+        jb1.addActionListener(reporter);
+        jb2.addActionListener(reporter);
+        jb3.addActionListener(reporter);
+Figure11-16.A demonstration of the OverlayLayout manager on three components
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 351
+        p1.add(jb1);
+        p1.add(jb2);
+        p1.add(jb3);
+        JPanel p2 = new JPanel();
+        p2.setLayout(new GridLayout(2,6));
+        p2.add(new JLabel("B1 X", JLabel.CENTER));
+        p2.add(new JLabel("B1 Y", JLabel.CENTER));
+        p2.add(new JLabel("B2 X", JLabel.CENTER));
+        p2.add(new JLabel("B2 Y", JLabel.CENTER));
+        p2.add(new JLabel("B3 X", JLabel.CENTER));
+        p2.add(new JLabel("B3 Y", JLabel.CENTER));
+        p2.add(new JLabel(""));
+        final JTextField x1 = new JTextField("0.0", 4); // B1 x alignment
+        final JTextField y1 = new JTextField("0.0", 4); // B1 y alignment
+        final JTextField x2 = new JTextField("0.0", 4);
+        final JTextField y2 = new JTextField("0.0", 4);
+        final JTextField x3 = new JTextField("0.0", 4);
+        final JTextField y3 = new JTextField("0.0", 4);
+        p2.add(x1);
+        p2.add(y1);
+        p2.add(x2);
+        p2.add(y2);
+        p2.add(x3);
+        p2.add(y3);
+        GridBagConstraints constraints = new GridBagConstraints();
+        c.add(p1, constraints);
+        constraints.gridx = 1;
+        JButton updateButton = new JButton("Update");
+        updateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent ae) {
+                jb1.setAlignmentX(Float.valueOf(x1.getText().trim()).floatValue());
+                jb1.setAlignmentY(Float.valueOf(y1.getText().trim()).floatValue());
+                jb2.setAlignmentX(Float.valueOf(x2.getText().trim()).floatValue());
+                jb2.setAlignmentY(Float.valueOf(y2.getText().trim()).floatValue());
+                jb3.setAlignmentX(Float.valueOf(x3.getText().trim()).floatValue());
+                jb3.setAlignmentY(Float.valueOf(y3.getText().trim()).floatValue());
+                p1.revalidate();
+            }
+        });
+        c.add(updateButton, constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        constraints.gridwidth = 2;
+        c.add(p2, constraints);
+    }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+352 | Chapter 11: Specialty Panes and Layout Managers
+    public static void main(String args[]) {
+        OverlayTest ot = new OverlayTest();
+        ot.setVisible(true);
+    }
+    public class SimpleReporter implements ActionListener {
+        public void actionPerformed(ActionEvent ae) {
+            System.out.println(ae.getActionCommand());
+        }
+    }
+    public class GridPanel extends JPanel {
+        public void paint(Graphics g) {
+            super.paint(g);
+            int w = getSize().width;
+            int h = getSize().height;
+            g.setColor(Color.red);
+            g.drawRect(0,0,w-1,h-1);
+            g.drawLine(w/2,0,w/2,h);
+            g.drawLine(0,h/2,w,h/2);
+        }
+    }
+}
+When the user clicks Update, we receive anActionEvent. The listener for this event
+does all the real work. We then query all the text fields, convert their contents into
+numbers, and set the alignment values. To make the new alignments take effect, we
+invalidate the layout and tell our panel to redo its layout.
+The SizeRequirements Class
+Laying out all of these components for the different layout managers involves a lot of
+calculations that can be quite similar. The layout manager needs to end up with a list
+of (x,y) coordinates for each component as well as a list of widths and heights. The
+SizeRequirementsclass provides several convenience methods for doing exactly these
+kinds of calculations.
+Layout managers generally need two types of calculations: aligned and tiled. You can
+see both of these kinds of calculations in action with theFlowLayoutmanager. If you
+place two buttons and a list on a panel managed byFlowLayout, you get the compo-
+nents laid out left to right, each vertically centered relative to the others. The left-to-
+right x coordinates and widths for each component are an example of tiled require-
+ments. The y coordinates and heights are an example of aligned requirements. You
+can perform both types of calculations with the static methods of this class. One
+thing to remember when using
+SizeRequirements, however, is that it calculates only
+one axis at a time—you can’t make one call to get both the (x, y) and (width, height)
+lists. It’s not really a big hassle though; just make one call for the x and width values
+and another for the y and height values.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 353
+Fields
+public float alignment
+This field represents the actual alignment used for the component. A “center”
+alignment would be0.5. A “left” alignment (when calculating widths) would be
+0.0.
+public int maximum
+This field represents the maximum size allowed for this component. If you are
+calculating widths, this should be the same as
+getMaximumSize().widthfor the
+component. For heights, this should be the same asgetMaximumSize().height.
+public int minimum
+This field represents the minimum size required for this component. If you are
+calculating widths, this should be the same as
+getMinimumSize().widthfor the
+component. For heights, this should be the same asgetMinimumSize().height.
+public int preferred
+This field represents the preferred size for this component. If you are calculating
+widths, this should be the same as
+getPreferredSize().widthfor the compo-
+nent. For heights, this should be the same asgetPreferredSize().height.
+Constructors
+public SizeRequirements()
+This constructor creates aSizeRequirementsobject with centered alignment and
+all sizes set to0.
+public SizeRequirements(intmin, intpref, intmax, floata)
+This constructor creates aSizeRequirementsobject with the given alignmenta,
+minimum sizemin, preferred sizepref, and maximum sizemax.
+Methods
+public static int[] adjustSizes(intdelta, SizeRequirements[]children)
+Return an array of new preferred sizes for children based ondelta.deltashould
+be a change in the allocated space. The children are shortened or lengthened to
+accommodate the new allocation.
+public static void calculateAlignedPositions(intallocated, SizeRequirementstotal,
+SizeRequirements[]children, int[]offsets, int[]spans)
+public static void calculateTiledPositions(intallocated, SizeRequirementstotal,
+SizeRequirements[]children, int[]offsets, int[]spans)
+These methods calculate the
+offsets(x or y coordinates) andspans(widths or
+heights) for components that are to be laid out in an aligned or tiled manner,
+respectively. For example, if you were laying out a single row of buttons, you
+could use this method to calculate the x coordinate for the upper-left corner
+and the width of the button. The allocated parameter dictates how much
+space is allocated while total determines the overall
+SizeRequirementsfor the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+354 | Chapter 11: Specialty Panes and Layout Managers
+children. (This value can benullor can be easily retrieved by calling
+getAlignedSizeRequirements() orgetTiledSizeRequirements(), respectively.)
+public static SizeRequirements
+getAlignedSizeRequirements(SizeRequirements[]children)
+This method calculates the space required for a group of children (themselves
+described by aSizeRequirementsobject in the array) that should be aligned
+according to their individual alignments. The resultingSizeRequirementsobject
+hasanalignmentof0.5.Ifchildrenhaszeroelements,adefaultSizeRequirements
+object is returned.
+public static SizeRequirements getTiledSizeRequirements(SizeRequirements[]children)
+This method calculates the space required for a group of children (themselves
+described by a
+SizeRequirementsobject in the array) that should be placed end to
+end, or tiled. The resultingSizeRequirementsobject has an alignment of0.5.I f
+children has zero elements, a defaultSizeRequirements object is returned.
+The SpringLayout Class
+With SDK 1.4, a new—but not really new—layout manager was added. The
+SpringLayoutmanager uses the notion of springs and struts to keep everything in
+place. A version ofSpringLayoutexisted in the early alpha and betas of the Swing
+package, but it was not included because the Swing team felt it still needed too much
+work. While it still needs a bit of work, it has come a long way. Its inclusion in SDK
+1.4 is a testament to that progress. The class diagram for
+SpringLayoutand its help-
+ers is shown in Figure11-17.
+Figure11-17.The SpringLayout manager classes
+Key: Interface Class Abstract Class
+extends
+implements
+other relationInner Class
+java.awt
+uses
+1.4
+LayoutManager
+LayoutManager2
+javax.swing
+SpringLayout
+Constraints
+Spring
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The SpringLayout Class | 355
+Before you dive too deeply into this layout manager, you should know that its pur-
+pose in life is to aid GUI builders and other code-generating tools. It can certainly be
+hand-coded—and we have the examples to prove it—but you’ll often leave this lay-
+out manager to the aforementioned tools. (If you want a flexible replacement for the
+GridBagLayout, you might want to take a look at theRelativeLayoutmanager written
+by our own Jim Elliott. The complete package with docs, tutorial, and source code
+can be found on this book’s web site,http://www.oreilly.com/catalog/jswing2/.)
+Springs and Struts
+Now that you’re here for the long haul, let’s look at the core of theSpringLayout
+manager’s approach to component layout: spring and struts. Aspringis effectively a
+triplet representing a range of values. It contains its minimum, preferred, and maxi-
+mum lengths. Astrutis a spring with all the spring removed—its minimum, pre-
+ferred, and maximum lengths are identical. With
+SpringLayoutat the helm, you use
+springs and struts to specify the bounds (x, y, width, height) of all your components.
+(You can mimic the null layout manager by using only struts.)
+The not-so-obvious big win in this layout manager is that springs can be anchored
+between the edges of components and will maintain their relationship even when the
+container is resized. This makes it possible to create layouts that would be difficult in
+other managers. While you could probably use a grand
+GridBagLayoutto do the trick,
+SpringLayout should provide better performance once it’s all fixed up and finalized.
+Figure11-18 shows a simple application that usesSpringLayout. We position direc-
+tional buttons over a large picture for navigation. Notice how the North button stays
+horizontally centered and anchored to the top edge of the application after we resize
+the frame. The other buttons behave similarly. Just to reiterate, you could certainly
+accomplish this with nested containers or a properly constructed
+GridBagLayout; the
+SpringLayoutshould simply prove to be the most maintainable over the long haul.
+We’ll look at the source code for this example after we examine the API in more
+detail.
+Constants
+TheSpringLayoutclass thinks of components in terms of their edges. Several con-
+stants have been defined for the edges, as shown in Table11-14.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+356 | Chapter 11: Specialty Panes and Layout Managers
+Constructor
+The only constructor forSpringLayoutis the default constructor. Similar to the way
+one usesGridBagLayoutandCardLayout, you’ll want to keep a reference to your
+SpringLayout manager handy.
+public SpringLayout()
+Create a newSpringLayout manager.
+Figure11-18.A SpringLayout-managed container at two different sizes
+Table11-14.SpringLayout constants
+Constant Type Description
+NORTH String The top edge of the component. Corresponds to the y value of the component’s bounding box.
+SOUTH String The bottom edge of the component. Corresponds to the y value of the bounding box plus the
+height of the component.
+WEST String The left edge of the component. Corresponds to the x value of the component’s bounding box.
+EAST String The right edge of the component. Corresponds to the x value of the bounding box plus the width of
+the component.
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The SpringLayout Class | 357
+Constraint Methods
+As with other layout managers, a majority of the methods inSpringLayoutare
+devoted to meeting the contract of theLayoutManagerandLayoutManager2interfaces.
+The methods that make this manager interesting, however, are the methods dealing
+with components’ constraints.
+public SpringLayout.Constraints getConstraints(Component c)
+This method returns the entire set of constraints (the springs on all four edges)
+for the given component. We discuss theConstraintsinner class in the next
+section.
+public Spring getConstraint(String edgeName, Component c)
+This method returns a particular spring for the specified edge (edgeName)o ft h e
+given component (c).
+public void putConstraint(Stringe1, Componentc1, int pad, Stringe2, Componentc2)
+public void putConstraint(Stringe1, Componentc1, Springs, Stringe2, Componentc2)
+These methods place a constraint (spring) between two edges. The first method
+is just a convenience method that uses
+padto create a strut.e1andc1are associ-
+ated with the dependent component whilee2 andc2 refer to the anchor.
+No method exists for setting all of the constraints at one time, but you can use the
+object returned by the
+getConstraints()method to manipulate all of the edges on a
+component.
+Here’s the source code for the example application shown in Figure11-18. Notice
+the three primary means of positioning components in aSpringLayout. We add the
+North and South buttons to the container with prebuilt constraints. The East and
+West buttons are positioned by retrieving their existing constraints and setting up
+the bounding box for the component. For example, the North and East buttons are
+set up like this:
+// Add North button.
+c.add(nb, new SpringLayout.Constraints(northX, offsetS, widthS, heightS));
+// Add East button.
+c.add(eb);
+sl.getConstraints(eb).setX(eastX);
+sl.getConstraints(eb).setY(eastY);
+sl.getConstraints(eb).setWidth(widthS);
+sl.getConstraints(eb).setHeight(heightS);
+As an example of the third mechanism for positioning components, the viewport for
+the graphics image is laid out using severalputConstraint() calls:
+c.add(viewport);
+// The order here is important. You need to have a valid width and height
+// in place before binding the (x,y) location.
+sl.putConstraint(SpringLayout.SOUTH, viewport, Spring.minus(borderS),
+                 SpringLayout.SOUTH, c);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+358 | Chapter 11: Specialty Panes and Layout Managers
+sl.putConstraint(SpringLayout.EAST, viewport, Spring.minus(borderS),
+                 SpringLayout.EAST, c);
+sl.putConstraint(SpringLayout.NORTH, viewport, topBorder, SpringLayout.NORTH, c);
+sl.putConstraint(SpringLayout.WEST, viewport, leftBorder, SpringLayout.WEST, c);
+You might notice some funky springs in this example. We’ll explain the centering
+spring and thesum() andminus() methods in the section on theSpring class itself.
+// CompassButtons.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class CompassButtons extends JFrame {
+  JButton nb = new JButton("North");
+  JButton sb = new JButton("South");
+  JButton eb = new JButton("East");
+  JButton wb = new JButton("West");
+  JViewport viewport = new JViewport();
+  public CompassButtons() {
+    super("SpringLayout Compass Demo");
+    setSize(500,300);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    SpringLayout sl = new SpringLayout();
+    Container c = getContentPane();
+    c.setLayout(sl);
+    int offset = 50;  // Gap between buttons and outside edge
+    int w      = 80;  // Width of buttons
+    int h      = 26;  // Height of buttons
+    int border =  3;  // Border around viewport
+    Spring offsetS     = Spring.constant(offset);
+    Spring borderS     = Spring.constant(border);
+    Spring widthS      = Spring.constant(w);
+    Spring halfWidthS  = FractionSpring.half(widthS);
+    Spring heightS     = Spring.constant(h);
+    Spring halfHeightS = FractionSpring.half(heightS);
+    Spring leftEdgeS   = sl.getConstraint(SpringLayout.WEST, c);
+    Spring topEdgeS    = sl.getConstraint(SpringLayout.NORTH, c);
+    Spring rightEdgeS  = sl.getConstraint(SpringLayout.EAST, c);
+    Spring bottomEdgeS = sl.getConstraint(SpringLayout.SOUTH, c);
+    Spring xCenterS    = FractionSpring.half(rightEdgeS);
+    Spring yCenterS    = FractionSpring.half(bottomEdgeS);
+    Spring leftBorder  = Spring.sum(leftEdgeS, borderS);
+    Spring topBorder   = Spring.sum(topEdgeS, borderS);
+    Spring northX = Spring.sum(xCenterS, Spring.minus(halfWidthS));
+    Spring southY = Spring.sum(bottomEdgeS, Spring.minus(Spring.sum(heightS,
+                                                                    offsetS)));
+    Spring eastX = Spring.sum(rightEdgeS, Spring.minus(Spring.sum(widthS, offsetS)));
+    Spring eastY = Spring.sum(yCenterS, Spring.minus(halfHeightS));
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The SpringLayout Class | 359
+    c.add(nb, new SpringLayout.Constraints(northX, offsetS, widthS, heightS));
+    c.add(sb, new SpringLayout.Constraints(northX, southY, widthS, heightS));
+    c.add(wb);
+    sl.getConstraints(wb).setX(offsetS);
+    sl.getConstraints(wb).setY(eastY);
+    sl.getConstraints(wb).setWidth(widthS);
+    sl.getConstraints(wb).setHeight(heightS);
+    c.add(eb);
+    sl.getConstraints(eb).setX(eastX);
+    sl.getConstraints(eb).setY(eastY);
+    sl.getConstraints(eb).setWidth(widthS);
+    sl.getConstraints(eb).setHeight(heightS);
+    c.add(viewport); // This sets a bounds of (0,0,pref_width,pref_height)
+    // The order here is important. You need to have a valid width and height
+    // in place before binding the (x,y) location.
+    sl.putConstraint(SpringLayout.SOUTH, viewport, Spring.minus(borderS),
+                     SpringLayout.SOUTH, c);
+    sl.putConstraint(SpringLayout.EAST, viewport, Spring.minus(borderS),
+                     SpringLayout.EAST, c);
+    sl.putConstraint(SpringLayout.NORTH, viewport, topBorder,
+                     SpringLayout.NORTH, c);
+    sl.putConstraint(SpringLayout.WEST, viewport, leftBorder,
+                     SpringLayout.WEST, c);
+    ImageIcon icon = new ImageIcon(getClass().getResource("terrain.gif"));
+    viewport.setView(new JLabel(icon));
+    // Hook up the buttons. See the CompassScroller class (online) for details
+    // on controlling the viewport.
+    nb.setActionCommand(CompassScroller.NORTH);
+    sb.setActionCommand(CompassScroller.SOUTH);
+    wb.setActionCommand(CompassScroller.WEST);
+    eb.setActionCommand(CompassScroller.EAST);
+    CompassScroller scroller = new CompassScroller(viewport);
+    nb.addActionListener(scroller);
+    sb.addActionListener(scroller);
+    eb.addActionListener(scroller);
+    wb.addActionListener(scroller);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    new CompassButtons();
+  }
+}
+The SpringLayout.Constraints Inner Class
+SpringLayout.Constraintsembodies the spring constraints placed on a single com-
+ponent in aSpringLayout-managed container. It holds the bounding box for a
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+360 | Chapter 11: Specialty Panes and Layout Managers
+component, but it usesSpringreferences rather thanints for thex, y, width, and
+height properties.
+Properties
+TheConstraintsinner class consists entirely of the properties shown in Table11-15.
+With the exception of theconstraintproperty, these properties mimic theRectangle
+class often used to describe the bounds of components. The constraint property is
+indexed by edge name (aString). See Table11-14 for a list of valid edge names and
+their respective relationships to thex,y,width, andheight properties.
+Constructors
+There are several constructors for building aConstraintsobject. You might want to
+do this if you intend to build the constraints before adding the component to its con-
+tainer. (You can use the
+Container.add(Component, Object)method to accomplish
+this.)
+public SpringLayout.Constraints()
+public SpringLayout.Constraints(Springx, Springy)
+public SpringLayout.Constraints(Springx, Springy, Springwidth, Springheight)
+These constructors all build
+Constraintsobjects. Any unspecified property is left
+as anullvalue. The first constructor creates a completely emptyConstraints
+object while the second leaves the width and height propertiesnull.
+The Spring Class
+So what are theseSpringobjects we keep seeing everywhere? Recall that they are
+essentially a collection of three values: a minimum, a maximum, and a preferred
+value. You can use a spring to describe the height property of a text area, for exam-
+ple. Its minimum is
+25 pixels; its maximum is the height of the screen, say1024, and
+its preferred height is 8 rows, or200. By the same token, you can create a strut by
+specifying a spring with identical values for all three properties. For example, a text
+field might have
+25 for its minimum, maximum, and preferred height.
+Table11-15.SpringLayout.Constraints properties
+Property Data type
+get
+is
+set Default value
+constrainti Spring •• null
+height Spring •• null
+width Spring •• null
+x Spring •• null
+y Spring •• null
+iindexed (byString values; see Table 11-14)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The SpringLayout Class | 361
+Beyond the basic expandability of a spring, you can do some fun things with them.
+Springs can be manipulated using mathematical concepts (and achieve a semanti-
+cally correct result). For example, you can add two springs together. The new spring
+consistsofthesumoftheminimums,thesumofthepreferredvalues,andthesumof
+the preferred maximums. You can also negate a spring and effectively multiply each
+of its values by –1. Summing with a negated spring, then, becomes a difference
+operation.
+Now here’s where things get really interesting. When you sum two springs, the result
+is not calculated immediately. The resulting spring stores a reference to the two oper-
+and springs. When needed, the summed spring queries its subsprings, which has the
+practical upshot of making springs dynamic. If you change one spring in a sum, the
+sum changes too. This turns out to be very useful in layout managers. Attach a
+spring to the bottom of the container, and it stretches whenever the container
+stretches.
+Consider the
+yproperty for the South button in the application shown in
+Figure11-18. We can use subtraction to keep the button 50 pixels above the bottom
+of the frame, even after the frame has been resized:
+Spring offset = Spring.sum(buttonHeight, Spring.constant(50));
+Spring southY = Spring.sum(bottom, Spring.minus(offset));
+Figure11-19 shows the details of each spring behind this button. (You can refer back
+to the code for the syntax when creating all the springs you see in the diagram.)
+Constant
+Only one constant is defined for theSpring class, as shown in Table11-16.
+Figure11-19.Constructing the x, y, width, and height springs (and struts) for the South button
+Table11-16.Spring constant
+Constant Type Description
+UNSET int An indicator that this property has not yet been calculated. (Its internal value isInteger.MIN_VALUE.)
+Can be used as a notification to recalculate any cached values.
+x = xCenter - halfWidth
+y = bottom-
+(offset+buttonHeight) height = buttonHeight
+width = buttonWidth
+contentPane
+South
+Strut
+Spring
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+362 | Chapter 11: Specialty Panes and Layout Managers
+Properties
+The properties forSpringshown in Table11-17 are fairly straightforward. In addi-
+tion to theminimum, maximum, andpreferredproperties, you can read and write the
+currentvalueof the spring. Notice that theminimum, maximumandpreferredproper-
+ties are read-only. You can extendSpring if you need a more dynamic spring.
+Creating springs
+The default constructor forSpringisprotected. It’s (obviously) meant for sub-
+classes. To create a spring, use the factory-styleconstant() methods:
+public static Spring constant(intpref)
+This method creates a strut. Theminimum, preferred, andmaximumproperties are
+all set topref.
+public static Spring constant(intmin, intpref, intmax)
+This method creates a spring. Theminimum,preferred, andmaximumproperties are
+set frommin,pref andmax, respectively.
+Manipulation methods
+Three manipulations are defined for springs. Recall that the calculated values are not
+actually hardcoded into the resulting springs. References tos1ands2are stored so
+that if either spring changes, the resulting springs also change. (This is done with the
+help of a private inner class extension of
+Spring known as a “proxy spring.”)
+public static Spring max(Springs1, Springs2)
+This method returns a new spring whose properties represent theMath.max()of
+the respective properties ofs1ands2. In other words, theminimumproperty of
+the new spring is the max ofs1.getMinimum() ands2.getMinimum().
+public static Spring minus(Springs)
+This method returns a new spring whose properties represent the negative of the
+respective properties of
+s1. In other words, theminimumproperty of the new
+spring is-s1.getMinimum().
+public static Spring sum(Springs1, Springs2)
+This method returns a new spring whose properties represent the sum of the
+respective properties of
+s1ands2. In other words, theminimumproperty of the
+new spring is equal tos1.getMinimum()+ s2.getMinimum().
+Table11-17.Spring properties
+Property Data type
+get
+is
+set Default value
+maximum int • UNSET
+minimum int • UNSET
+preferred int • UNSET
+value int •• UNSET
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The SpringLayout Class | 363
+Other operations
+As mentioned earlier, you can combine the manipulation methods to create other
+operations. In particular,Spring.sum(s1, Spring.minus(s2))returns the difference of
+the respective properties ins1ands2. TheMath.min()function can be mimicked
+usingSpring.minus(Spring.max(Spring.minus(s1), Spring.minus(s2))). Try it on
+paper—it really works!
+Arranging Components
+The combination of Spring math operations and constraints can make certain lay-
+outs easy to create (and easy to manipulate). We say “easy” in the “if you’re design-
+ing a GUI builder” sense, of course. Figure11-20 shows four buttons laid out in a
+vertical row with various Spring constraints holding them in place.
+To show off more of the Spring constraint combinations, we varied the layout code
+for these buttons:
+// We'll leave all buttons at their preferred widths and heights. b1 is placed at
+// (10,10).
+c.add(b1);
+sl.getConstraints(b1).setX(offsetS);
+sl.getConstraints(b1).setY(offsetS);
+// b2 is placed at (10, offset + b1.height + offset).
+c.add(b2);
+sl.getConstraints(b2).setX(offsetS);
+sl.getConstraints(b2).setY(Spring.sum(Spring.sum(offsetS,
+                           sl.getConstraints(b1).getHeight()), offsetS));
+// b3 is placed at (10, b2.south + offset).
+c.add(b3);
+sl.getConstraints(b3).setX(offsetS);
+sl.getConstraints(b3).setY(Spring.sum(offsetS,
+                           sl.getConstraint(SpringLayout.SOUTH, b2)));
+Figure11-20.Vertically stacked buttons in a SpringLayout
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+364 | Chapter 11: Specialty Panes and Layout Managers
+// b4 is placed at (b3.west, b3.south + offset).
+c.add(b4);
+sl.putConstraint(SpringLayout.WEST, b4, 0, SpringLayout.WEST, b3);
+sl.putConstraint(SpringLayout.NORTH, b4, offsetS, SpringLayout.SOUTH, b3);
+You can use any one of the techniques shown on all the buttons, if you are so
+inclined. That said, there are a few consequences to the constraints we created in this
+example. For example, look at the
+yconstraint ofb2. It is simply the sum of two
+offsets and the height ofb1. It is not dependent on the bottom edge ofb1. It doesn’t
+care whereb1 is placed. Theyconstraints ofb3 andb4, however, are dependent. Ifb2
+moves down, so doesb3—and ifb3 moves down, so doesb4.
+One other fun constraint in this example is the left edge ofb4. We tied it to the left
+edge ofb3. If you change thex constraint ofb3,b4 follows.
+Custom Springs
+There are some things that cannot be duplicated usingsum(), minus(), andmax().
+For those things, you can simply extend theSpringclass. The compass navigation
+example in Figure11-18 keeps the North and South buttons horizontally centered.
+(The East and West buttons are vertically centered.) To keep the buttons centered
+even after the user resizes the frame, we need a new
+Springthat returns the center of
+a parent spring:
+// FractionSpring.java
+//
+import javax.swing.Spring;
+public class FractionSpring extends Spring {
+  protected Spring parent;
+  protected double fraction;
+  public FractionSpring(Spring p, double f) {
+    if (p == null) {
+      throw new NullPointerException("Parent spring cannot be null");
+    }
+    parent = p;
+    fraction = f;
+  }
+  public int getValue() {
+    return (int)Math.round(parent.getValue() * fraction);
+  }
+  public int getPreferredValue() {
+    return (int)Math.round(parent.getPreferredValue() * fraction);
+  }
+  public int getMinimumValue() {
+    return (int)Math.round(parent.getMinimumValue() * fraction);
+  }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Other Panes | 365
+  public int getMaximumValue() {
+    return (int)Math.round(parent.getMaximumValue() * fraction);
+  }
+  public void setValue(int val) {
+    // Uncomment this next line to watch when our spring is resized:
+    // System.err.println("Value to setValue: " + val);
+    if (val == UNSET) {
+      return;
+    }
+    throw new UnsupportedOperationException("Cannot set value on a derived spring");
+  }
+  public static FractionSpring half(Spring s) {
+    return new FractionSpring(s, 0.5);
+  }
+}
+If you look a bit closer, this class can actually handle any multiplier value. The fac-
+tory methodhalf()produces the spring we need most often, but you can use the
+public constructor to supply an alternative. You could certainly write other factory
+methods for common values you find useful. Maybe a
+goldenMean()method is in
+your future?
+One method that you should pay attention to issetValue(). In several derived
+springs (like ourFractionSpring), thesetValue()call does not make sense. Nor-
+mally, we throw anUnsupportedOperationExceptionto indicate that this required
+method from our abstract parent does not really apply. However, the special value
+UNSET can be used to help in a particular scenario: value caching. If the current value
+of the spring comes from an expensive operation, you can cache that value. If your
+spring is bound to another spring, such as the border of your container, changing the
+size of the container causes a chain of
+UNSET values to be passed to dependent
+springs. You could watch forUNSET and recalculate your spring values only when you
+receive it. (Try uncommenting theprintln()in oursetValue()method and rerun
+the example. You should see fourUNSET calls each time you resize the frame—one for
+each button.)
+While it may take a few tries to wrap your brain aroundSpringLayoutandSpring
+math, you can accomplish some complex layouts with one container and a single,
+efficient layout manager.
+Other Panes
+Chapter10 showed you the basic “panes” such asJOptionPane. With the containers
+and layout managers shown in this chapter, you can create just about any pane you
+like. However, there are some very common application panes that we have not yet
+discussed. Chapter12describes some of the other panes available, including a file
+chooser and a color chooser.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+366
+Chapter12In this chapter:
+• The JFileChooser Class
+• The File Chooser Package
+• The Color Chooser
+• The JColorChooser Class
+• Developing a Custom Chooser Panel
+• Developing a Custom Preview Panel
+• Developing a Custom Dialog
+CHAPTER 12
+Chooser Dialogs
+Just about every application you write these days needs to have a mechanism for
+opening and saving files. In the AWT, you can use theFileDialogclass, but this is a
+heavyweight dialog that lacks the flexibility of the Swing components we’ve seen so
+far. The
+JFileChooseris Swing’s answer to theFileDialog. The Swing package also
+contains a helper dialog for choosing colors (a common task during application con-
+figuration). We’ll look at both of these dialogs in this chapter.
+To get things started, Figure12-1 shows the class hierarchy of the pieces we’ll be
+looking at in this chapter.
+Figure12-1.Class diagram for JFileChooser and JColorChooser
+javax.swingJComponent
+JFileChooser JPanel JColorChooser
+javax.swing.filechooser javax.swing.colorchooser
+FileView
+FileSystemView
+FileFilter AbstractColorChooserPane
+ColorChooserComponentFactory
+DefaultColorSelectionModel
+ColorSelectionModel
+uses
+1
+1 uses
+uses
+contains
+1
+uses
+1*
+creates
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A A
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 367
+The JFileChooser Class
+Since it plays such an integral role in just about every commercial application, let’s
+look at the file chooser first. TheJFileChooserclass bundles a directory pane and
+typical selection buttons into a handy interface. Figure12-2 shows the dialog win-
+dow you get when you select the Save option of a simple application. As you might
+expect, other L&Fs can also be applied to this chooser.
+Figure12-3 shows sample file choosers for open and save dialogs in the Windows,
+Motif, and Mac OS X L&Fs.
+The application itself reports only which file (or files, if you use the Open option)
+you chose to open or save. Our application has a Pick Directory button that restricts
+the chooser to directories. The event handlers for each button do most of the inter-
+esting work. In each case, we create a new
+JFileChooserobject, make any changes to
+the default properties that we need for the particular action, and then show the dia-
+log. As you will see from the constants discussed later, the
+intreturned from the
+showDialog()method indicates whether the user accepted a file selection or can-
+celed the dialog. If we have a successful selection, our example application puts the
+name of the file into a display label.
+Here’s the code that generated the application. For this quick test, we create each file
+chooser dialog as we need it. You do not have to do this. You can save a reference to
+these dialogs and reuse them, just as you would other pop ups.
+// SimpleFileChooser.java
+// A simple file chooser to see what it takes to make one of these work
+//
+Figure12-2.The JFileChooser save dialog (Metal L&F)
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+368 | Chapter 12: Chooser Dialogs
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+public class SimpleFileChooser extends JFrame {
+   public SimpleFileChooser() {
+    super("File Chooser Test Frame");
+    setSize(350, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout());
+    JButton openButton = new JButton("Open");
+    JButton saveButton = new JButton("Save");
+    JButton dirButton = new JButton("Pick Dir");
+    final JLabel statusbar =
+                 new JLabel("Output of your selection will go here");
+    // Create a file chooser that opens up as an Open dialog.
+    openButton.addActionListener(new ActionListener() {
+Figure12-3.JFileChooser in the Metal, Motif, and Mac L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 369
+      public void actionPerformed(ActionEvent ae) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setMultiSelectionEnabled(true);
+        int option = chooser.showOpenDialog(SimpleFileChooser.this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          File[] sf = chooser.getSelectedFiles();
+          String filelist = "nothing";
+          if (sf.length > 0) filelist = sf[0].getName();
+          for (int i = 1; i < sf.length; i++) {
+            filelist += ", " + sf[i].getName();
+          }
+          statusbar.setText("You chose " + filelist);
+        }
+        else {
+          statusbar.setText("You canceled.");
+        }
+      }
+    });
+    // Create a file chooser that opens up as a Save dialog.
+    saveButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        JFileChooser chooser = new JFileChooser();
+        int option = chooser.showSaveDialog(SimpleFileChooser.this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          statusbar.setText("You saved " + ((chooser.getSelectedFile()!=null)?
+                            chooser.getSelectedFile().getName():"nothing"));
+        }
+        else {
+          statusbar.setText("You canceled.");
+        }
+      }
+    });
+    // Create a file chooser that allows you to pick a directory
+    // rather than a file.
+    dirButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int option = chooser.showOpenDialog(SimpleFileChooser.this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          statusbar.setText("You opened " + ((chooser.getSelectedFile()!=null)?
+                            chooser.getSelectedFile().getName():"nothing"));
+        }
+        else {
+          statusbar.setText("You canceled.");
+        }
+      }
+    });
+    c.add(openButton);
+    c.add(saveButton);
+    c.add(dirButton);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+370 | Chapter 12: Chooser Dialogs
+    c.add(statusbar);
+  }
+  public static void main(String args[]) {
+    SimpleFileChooser sfc = new SimpleFileChooser();
+    sfc.setVisible(true);
+  }
+}
+Properties
+TheJFileChooserclass uses the properties shown in Table12-1 for configuring most
+of the dialog’s functionality.
+Table12-1.FileChooser properties
+Property Data type
+get
+is
+set Default value
+acceptAllFileFilter FileFilter• From L&F
+acceptAllFileFilterUsedb, 1.3 boolean •• true
+accessibleContextAccessibleContext• FileChooser.
+accessibleJFileChooser()
+accessoryb JComponent •• null
+actionListeners1.4 ActionListener[]• Empty array
+approveButtonMnemonicb, # int •• 0 (no mnemonic)
+approveButtonTextb String •• null
+approveButtonToolTipTextb String •• null
+choosableFileFiltersb, * FileFilter[]• {getAcceptAllFileFilter()}
+controlButtonsAreShownb, 1.3 boolean •• true
+currentDirectoryb File •• User’s home directory
+dialogTitle String •• null
+dialogTypeb int •• OPEN_DIALOG
+directorySelectionEnabled* boolean • false
+dragEnabled1.4 boolean •• false
+fileFilterb FileFilter •• AcceptAllFileFilter()
+fileHidingEnabledb boolean •• true
+fileSelectionEnabled+ boolean • true
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+#This property also has a set method that accepts achar argument.
+*File filters are set using separate add, remove, and reset methods, which are discussed later.
++These properties are based on thefileSelectionMode property.
+$Exists but is not implemented in 1.2, is partially implemented in 1.3, and is fully implemented in 1.4.
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 371
+TheacceptAllFileFilterproperty provides access to the most common filter which,
+not surprisingly, accepts all files. You can set a more restrictive filter through the
+fileFilterproperty, or get a list of all the filters this dialog knows about with the
+choosableFileFiltersproperty. The filters can also be affected by the
+fileHidingEnabledproperty,which,iftrue,doesnotdisplayhiddenfiles(suchasfiles
+starting with “.” on Unix systems). You can determine whether the dialog looks for
+files, directories, or both during the selection using thedirectorySelectionEnabled
+andfileSelectionEnabledconvenience properties. ThefileSelectionModeproperty is
+the real determining factor. You can use this property to select files, directories, or
+bothwithsomeoftheconstantspresentedlater.Regardlessofwhetherdirectoriesare
+selectable, double-clicking a directory opens that directory and makes it the new
+currentDirectoryfor the chooser. The number of files that can be selected (one or
+many) is determined by themultiSelectionEnabledproperty, which was fully imple-
+mented in the 1.4 release. (It was not implemented at all in 1.2. In 1.3, it can select
+multiple files, but the text field indicating which files are currently selected is not
+updated after the first file.) The
+selectedFileproperty contains the lead selection
+while theselectedFilesproperty holds several filenames, if multiple selections are
+allowed.
+The remaining properties dictate the visual appearance of the dialog. You can create
+save, open, and custom dialogs with thedialogTypeproperty and some of the con-
+stants discussed later. The icons and descriptions used for files and folders are man-
+aged with the
+fileViewandfileSystemViewproperties. (The data types supporting
+fileSelectionModeb int •• FILES_ONLY
+fileSystemViewb FileSystemView•• FileSystemView.
+getFileSystemView()
+fileViewb FileView •• null
+multiSelectionEnabledb, $ boolean •• false
+selectedFileb File •• null
+selectedFilesb File[] •• Empty array
+UIb SplitPaneUI •• From L&F
+UIClassIDo String • "FileChooserUI"
+Table12-1.FileChooser properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+#This property also has a set method that accepts achar argument.
+*File filters are set using separate add, remove, and reset methods, which are discussed later.
++These properties are based on thefileSelectionMode property.
+$Exists but is not implemented in 1.2, is partially implemented in 1.3, and is fully implemented in 1.4.
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+372 | Chapter 12: Chooser Dialogs
+these properties are discussed in more detail in the next section.) You can customize
+the text in the dialog by setting thedialogTitleproperty for the pop up’s title, the
+approveButtonTextproperty for the OK button, and theapproveButtonToolTipText
+property for the button’s tooltip text. TheapproveButtonMnemonicproperty is a vir-
+tual key value (one of theVK_ constants fromKeyEvent) representing the letter you
+want underscored in the Approve button. Note that in setting this property, you can
+alternatively pass a
+char value to the set method.
+File Chooser Accessories
+Theaccessoryproperty provides developers with an interesting hook into the dia-
+log. You can create a custom component and attach it to the dialog. A typical exam-
+ple of such an accessory is an image viewer that shows you a thumbnail of any image
+file you have selected in the file selection window. Figure12-4 shows a similar com-
+ponent that allows you to play music (.au, .wav, .aiff) files.
+Here’s the code for the accessory. To react to the user selecting a new file, your acces-
+sory needs to implement the
+PropertyChangeListenerinterface. (We attach it as a lis-
+tener in the main application following this code.) Notice how we check the property
+change being reported in the
+propertyChange()method, so that we react only to new
+file selections. If it is a file selection event, we grab the new filename from the
+PropertyChangeEventobject. ThepropertyChange()method is the heart of the pro-
+gram.Youshouldusethismethodtoupdateyouraccessoryastheusermovesaround
+the filesystem. We also use the
+setCurrentClip()method to keep the accessory’s GUI
+Figure12-4.A file chooser with an audio accessory that can play a selected .au file
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 373
+in sync with the selected file. This keeps the Play and Stop buttons inactive for non-
+audio files so that users don’t try to play a text file.
+// AudioAccessory.java
+// A simple accessory for JFileChooser that lets you play music clips
+//
+import javax.swing.*;
+import java.awt.*;
+import java.net.*;
+import java.beans.*;
+import java.io.*;
+import java.applet.*;
+import java.awt.event.*;
+public class AudioAccessory extends JPanel implements PropertyChangeListener,
+ActionListener {
+  AudioClip currentClip;
+  String currentName="";
+  JLabel fileLabel;
+  JButton playButton, stopButton;
+  public AudioAccessory() {
+    // Set up the accessory. The file chooser will give us a reasonable size.
+    setLayout(new BorderLayout());
+    add(fileLabel = new JLabel("Clip Name"), BorderLayout.NORTH);
+    JPanel p = new JPanel();
+    playButton = new JButton("Play");
+    stopButton = new JButton("Stop");
+    playButton.setEnabled(false);
+    stopButton.setEnabled(false);
+    p.add(playButton);
+    p.add(stopButton);
+    add(p, BorderLayout.CENTER);
+    playButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (currentClip != null) {
+          currentClip.stop();
+          currentClip.play();
+        }
+      }
+    });
+    stopButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        if (currentClip != null) {
+          currentClip.stop();
+        }
+      }
+    });
+  }
+  public void propertyChange(PropertyChangeEvent e) {
+    String pname = e.getPropertyName();
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+374 | Chapter 12: Chooser Dialogs
+    if (JFileChooser.SELECTED_FILE_CHANGED_PROPERTY.equals(pname)) {
+      // The user selected a file in the chooser.
+      File f = (File)e.getNewValue();
+      // Be reasonably sure it’s an audio file.
+      if ((f != null) &&
+          (f.getName().toLowerCase().endsWith(".au") ||
+           f.getName().toLowerCase().endsWith(".wav") ||
+           f.getName().toLowerCase().endsWith(".aif") ||
+           f.getName().toLowerCase().endsWith(".aiff"))
+         ) {
+        setCurrentClip(f);
+      }
+      else {
+        setCurrentClip(null);
+      }
+    }
+  }
+  public void setCurrentClip(File f) {
+    if (currentClip != null) { currentClip.stop(); }
+    // Make sure we have a real file; otherwise, disable the buttons.
+    if ((f == null) || (f.getName() == null)) {
+      fileLabel.setText("no audio selected");
+      playButton.setEnabled(false);
+      stopButton.setEnabled(false);
+      return;
+    }
+    // It seems that the audio file is real, so load it and enable the buttons.
+    String name = f.getName();
+    if (name.equals(currentName)) {
+      // Same clip they just loaded; make sure the player is enabled
+      fileLabel.setText(name);
+      playButton.setEnabled(true);
+      stopButton.setEnabled(true);
+      return;
+    }
+    currentName = name;
+    try {
+      URL u = new URL("file:///" + f.getAbsolutePath());
+      currentClip = Applet.newAudioClip(u);
+    }
+    catch (Exception e) {
+      e.printStackTrace();
+      currentClip = null;
+      fileLabel.setText("Error loading clip.");
+    }
+    fileLabel.setText(name);
+    playButton.setEnabled(true);
+    stopButton.setEnabled(true);
+  }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 375
+  public void actionPerformed(ActionEvent ae) {
+    // Be a little cavalier here. We're assuming the dialog was just
+    // approved or canceled, so we should stop any playing clip.
+    if (currentClip != null) { currentClip.stop(); }
+  }
+}
+Here’s the application code that inserts the accessory into the chooser. The only real
+change we makeisto the Openbutton’sactionPerformed()method. Beforewe make
+the chooser visible, we usesetAccessory()to get our audio accessory in place. We
+then attach the accessory as a property change listener to the chooser. This step
+ensures that the accessory is notified as the user selects new files.
+// AccessoryFileChooser.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+public class AccessoryFileChooser extends JFrame {
+  JFileChooser chooser = null;
+  JLabel statusbar;
+  public AccessoryFileChooser() {
+    super("Accessory Test Frame");
+    setSize(350, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout());
+    JButton accButton = new JButton("Accessory");
+    statusbar = new JLabel("Output of your selection will go here");
+    chooser = new JFileChooser();
+    AudioAccessory aa = new AudioAccessory();
+    chooser.setAccessory(aa);
+    chooser.addPropertyChangeListener(aa);  // To receive selection changes
+    chooser.addActionListener(aa);   // To receive Approve/Cancel button events
+    accButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        int option = chooser.showOpenDialog(AccessoryFileChooser.this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          statusbar.setText("You chose " +
+           ((chooser.getSelectedFile()!=null)?
+            chooser.getSelectedFile().getName():"nothing"));
+        }
+        else {
+          statusbar.setText("You canceled.");
+        }
+      }
+    });
+    c.add(accButton);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+376 | Chapter 12: Chooser Dialogs
+    c.add(statusbar);
+  }
+  public static void main(String args[]) {
+    AccessoryFileChooser afc = new AccessoryFileChooser();
+    afc.setVisible(true);
+  }
+}
+Events
+In addition to the property change events generated by most other Swing compo-
+nents, theJFileChooseralso generates action events when the user clicks on the OK
+or Cancel buttons. The event is fired after the dialog is hidden.
+public void addActionListener(ActionListener l)
+public void removeActionListener(ActionListener l)
+If you want to listen directly to the OK or Cancel button events, you can add an
+ActionListenerto the dialog. The accessory example listens to such events to
+stop playing any active audio clip.
+public void approveSelection()
+public void cancelSelection()
+You can programmatically fire an approval or a cancelation using these meth-
+ods, simulating clicking on the OK or Cancel buttons. This can be useful if your
+accessory provides its own way of saying yes or no to the current selection. Both
+methods use the
+fireActionPerformed()method to send out the events. The
+APPROVE_SELECTION andCANCEL_SELECTION constants (listed later) are used for the
+appropriate command string.
+protected void fireActionPerformed(String command)
+This protected method fires off a newly generatedActionEventwith the given
+command as theactionCommand of the event.
+Constants
+TheJFileChooserclass has several constants. These constants can be broken into
+two categories:
+• The constants used for property change events, shown in Table12-2
+• The constants used as various property values, shown in Table12-3
+Table12-2.FileChooser property names (for property change events)
+Constant Type Description
+ACCEPT_ALL_FILE_FILTER_USED_CHANGED_PROPERTY String The name used for the
+acceptAllFileFilterUsed property
+ACCESSORY_CHANGED_PROPERTY StringThe name used for theaccessory
+property
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 377
+The constants in Table12-3 provide values for many of the properties in theJFile-
+Chooser class.
+APPROVE_BUTTON_MNEMONIC_CHANGED_PROPERTY String The name used for the
+approveButtonMnemonic property
+APPROVE_BUTTON_TEXT_CHANGED_PROPERTY StringThe name used for the
+approveButtonText property
+APPROVE_BUTTON_TOOL_TIP_TEXT_CHANGED_PROPERTY String The name used for the
+approveButtonToolTipText
+property
+CHOOSABLE_FILE_FILTER_CHANGED_PROPERTY StringThe name used for the
+choosableFileFilters property
+CONTROL_BUTTONS_ARE_SHOWN_CHANGED_PROPERTY String The name used for the
+controlButtonsAreShown property
+DIALOG_TITLE_CHANGED_PROPERTY StringThe name used for thedialogTitle
+property
+DIALOG_TYPE_CHANGED_PROPERTY StringThe name used for thedialogType
+property
+DIRECTORY_CHANGED_PROPERTY StringThe name used for the
+currentDirectory property
+FILE_FILTER_CHANGED_PROPERTY StringThe name used for thefileFilter
+property
+FILE_HIDING_CHANGED_PROPERTY StringThe name used for thefileHiding-
+Enabled property
+FILE_SELECTION_MODE_CHANGED_PROPERTY StringThe name used for the
+fileSelectionMode property
+FILE_SYSTEM_VIEW_CHANGED_PROPERTY StringThe name used for the
+fileSystemView property
+FILE_VIEW_CHANGED_PROPERTY StringThe name used for thefileViewproperty
+MULTI_SELECTION_ENABLED_CHANGED_PROPERTY String The name used for the
+multiSelectionEnabled property
+SELECTED_FILE_CHANGED_PROPERTY StringThe name used for theselectedFile
+property
+SELECTED_FILES_CHANGED_PROPERTY StringThe name used for theselectedFiles
+property
+Table12-3.FileChooser dialog constants
+Constant Type Description
+APPROVE_OPTION int The return value from theshowDialog() methods, indicating that the
+user selected the approve option
+APPROVE_SELECTION String The string to be used for theactionCommand property of the
+ActionEvent generated when the user approves the current selection
+Table12-2.FileChooser property names (for property change events) (continued)
+Constant Type Description
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+378 | Chapter 12: Chooser Dialogs
+Constructors
+public JFileChooser()
+Create a file chooser starting at the user’s home directory. File choosers do not
+make a distinction between open and save at creation time. That aspect of a
+chooser is dictated by the
+dialogType property, which can be set at any time.
+public JFileChooser(File currentDirectory)
+public JFileChooser(String currentDirectoryPath)
+These constructors create new choosers starting at the specified directory.
+public JFileChooser(FileSystemView fsv)
+public JFileChooser(File currentDirectory, FileSystemView fsv)
+public JFileChooser(String currentDirectoryPath, FileSystemView fsv)
+These constructors are similar to their above counterparts, but you can now
+specify the particular filesystem view you want to use. While the default filesys-
+tem views are not very interesting, this would be the easiest way to instantiate a
+file chooser using any custom view you might build from scratch.
+FileSystemView
+is discussed in more detail later in this chapter.
+FileFilter Methods
+ThechoosableFileFiltersproperty does not have a proper “set” method, but you
+can modify the set of available filters using these methods:
+CANCEL_OPTION int The return value from theshowDialog() methods, indicating that the
+user selected the cancel option
+CANCEL_SELECTION String The string to be used for theactionCommand property of the
+ActionEvent generated when the user cancels the current selection
+CUSTOM_DIALOG StringA valid option for thedialogType property, indicating that this dialog
+supports a user-defined operation
+DIRECTORIES_ONLY int A valid option for thefileSelectionModeproperty, indicating that only
+directories can be selected
+ERROR_OPTION int The return value from theshowDialog() methods, indicating that an
+error occurred
+FILES_AND_DIRECTORIES int A valid option for thefileSelectionMode property, indicating that
+both files and directories can be selected
+FILES_ONLY int A valid option for thefileSelectionModeproperty, indicating that only
+files can be selected
+OPEN_DIALOG int A valid option for thedialogType property, indicating that this dialog is
+selecting files to be opened
+SAVE_DIALOG int A valid option for thedialogType property, indicating that this dialog is
+selecting a file to be saved
+Table12-3.FileChooser dialog constants (continued)
+Constant Type Description
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JFileChooser Class | 379
+public void addChoosableFileFilter(FileFilter filter)
+public void removeChoosableFileFilter(FileFilter filter)
+Add or remove filters. TheFileFilterclass is discussed in detail later in this
+chapter.
+public void resetChoosableFileFilters()
+Reset the list of choosable file filters to contain only the original “accept all” filter.
+File and Directory Methods
+The file methods check files to find the appropriate names, descriptions, and icons to
+display in the chooser according to the active
+FileViewandFileFilterobjects. If you
+open aJFileChooserand switch to the detail view of the files, you’ll see many of
+these methods in action.
+public boolean accept(File f)
+Returntrue if filef should be displayed.
+public void changeToParentDirectory()
+Programmatically move the current directory up one level. At the root level, this
+method has no effect.
+public void ensureFileIsVisible(File f)
+Ensure filefis visible in the chooser, which may mean changing the scroll loca-
+tion of the file list.
+public String getDescription(File f)
+Return a description of filef. A common description is simply the file’s name.
+public Icon getIcon(File f)
+Return an icon to display in the chooser for filef. The icon could change
+depending on the type of file.
+public String getName(File f)
+Return the name of filef. The chooser relies on the activeFileViewobject to
+decide a file’s name. TheFileViewobject could alter the file’s name for display—
+for example, to create an ISO 9660–compliant name.
+public String getTypeDescription(File f)
+Return a brief description of the type of filef. The detail view of a directory
+might use this information.
+public boolean isTraversable(File f)
+Returntrue if the file is a folder and can be opened.
+public void rescanCurrentDirectory()
+Reload the current directory if its contents have changed.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+380 | Chapter 12: Chooser Dialogs
+Dialog Methods
+protected JDialog createDialog(Component parent) throws HeadlessException
+This method allows you to easily create a dialog from subclasses that override
+JFileChooser’s behavior. (For example, you can create a subclass that always
+produces choosers with a particular set of file filters.)
+public int showDialog(Component parent, String approveButtonText)
+Make the dialog visible. Ifparentis not an instance ofFrame, then the containing
+Frameobject forparentis located and used. This method returnsACCEPT_OPTION if
+the user accepts a file,CANCEL_OPTION if the user cancels, orERROR_OPTION if the
+user closes the dialog. Use this version ofshowDialog()to create a custom dia-
+log with text you specify for the OK button (as opposed to one of the other show
+methods).
+public int showOpenDialog(Component parent)
+public int showSaveDialog(Component parent)
+You can use these methods to display chooser dialogs that have Open or Save on
+the Approve button. The dialogs are shown relative to the
+parent component.
+The File Chooser Package
+Underjavax.swing, you’ll find a package of helper classes for theJFileChooser. The
+javax.swing.filechooserpackage contains several classes for displaying and filtering
+files.
+The FileFilter Class
+TheFileFilterclass can be used to create filters forJFileChooserdialogs. The class
+contains only two abstract methods. It’s important to note that extensions are not
+the only way to judge a file’s fitness for a particular filter. The Mac filesystem, for
+example, can understand the creator of a file regardless of the file’s name. On Unix
+systems, you might write a filter to display only files that are readable by the current
+user.
+Constructor
+public FileFilter()
+TheFileFilterclass receives this default constructor at compile time; it is not
+defined in the class itself.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The File Chooser Package | 381
+Filter methods
+public abstract boolean accept(File f)
+Returntrueif filefmatches this filter. Note that you must explicitly accept
+directories (f.isDirectory() == true) if you want to allow the user to navigate
+into any subfolders.
+public abstract String getDescription()
+Return a short description to appear in the filters pulldown on the chooser. An
+example would be “Java Source Code” for any.java files.
+Figure12-5 shows a file chooser with custom filters for multimedia file types.
+Here’s the code for the application. Before we make this chooser visible, we create
+and insert the three new filters for our media types. Other than that, it’s pretty much
+the same code as our previous applications. The Swing demos included in the SDK
+provide access to a similar extension-based file filter class. However, we use this
+example anyway, as it illustrates the inner workings of a filter that should seem
+familiar to most programmers.
+// MyFilterChooser.java
+// Just a simple example to see what it takes to make one of these filters work
+//
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+Figure12-5.A custom set of filters for use with JFileChooser
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+382 | Chapter 12: Chooser Dialogs
+public class MyFilterChooser extends JFrame {
+  public MyFilterChooser() {
+    super("Filter Test Frame");
+    setSize(350, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout());
+    JButton openButton = new JButton("Open");
+    final JLabel statusbar = new JLabel("Output of your selection will go here");
+    openButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        String[] pics = new String[] {"gif", "jpg", "tif"};
+        String[] audios = new String[] {"au", "aiff", "wav"};
+        JFileChooser chooser = new JFileChooser();
+        chooser.addChoosableFileFilter(new SimpleFileFilter(pics,
+                                       "Images (*.gif, *.jpg, *.tif)"));
+        chooser.addChoosableFileFilter(new SimpleFileFilter(“.MOV”));
+        chooser.addChoosableFileFilter(new SimpleFileFilter(audios,
+                                       "Sounds (*.aiff, *.au, *.wav)"));
+        int option = chooser.showOpenDialog(MyFilterChooser.this);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          if (chooser.getSelectedFile()!=null)
+            statusbar.setText("You chose " + chooser.getSelectedFile().getName());
+        }
+        else {
+          statusbar.setText("You canceled.");
+        }
+      }
+    });
+    c.add(openButton);
+    c.add(statusbar);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    MyFilterChooser mfc = new MyFilterChooser();
+  }
+}
+Here’s the implementation of the filter class. You pass in an extension (or list of
+extensions) and a description of the extension(s) to the constructor. If you don’t sup-
+ply a description, the constructor builds a simple one for you based on the extensions
+you passed in. The only real work this class does happens in the
+accept()method,
+where we look to see if the file presented matches one of the supplied extensions.
+// SimpleFileFilter.java
+// A straightforward, extension-based example of a file filter. This should be
+// replaced by a "first class" Swing class in a later release of Swing.
+//
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The File Chooser Package | 383
+import javax.swing.filechooser.*;
+import java.io.File;
+public class SimpleFileFilter extends FileFilter {
+  String[] extensions;
+  String description;
+  public SimpleFileFilter(String ext) {
+    this (new String[] {ext}, null);
+  }
+  public SimpleFileFilter(String[] exts, String descr) {
+    // Clone and lowercase the extensions
+    extensions = new String[exts.length];
+    for (int i = exts.length - 1; i >= 0; i--) {
+      extensions[i] = exts[i].toLowerCase();
+    }
+    // Make sure we have a valid (if simplistic) description.
+    description = (descr == null ? exts[0] + " files" : descr);
+  }
+  public boolean accept(File f) {
+    // We always allow directories, regardless of their extensions.
+    if (f.isDirectory()) { return true; }
+    // It’s a regular file, so check the extension.
+    String name = f.getName().toLowerCase();
+    for (int i = extensions.length - 1; i >= 0; i--) {
+      if (name.endsWith(extensions[i])) {
+        return true;
+      }
+    }
+    return false;
+  }
+  public String getDescription() { return description; }
+}
+The FileView Class
+Another abstract helper class in thejavax.swing.filechooserpackage is theFileView
+class. This class is implemented by the various L&Fs to supply icons and descrip-
+tions for the basic file and folder entries in the filesystem. While each L&F has a
+default implementation of this class, you can write your own and attach it to a file
+chooser to supply custom icons and descriptions for interesting types of files.
+Constructor
+public FileView()
+TheFileView class has only this default constructor.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+384 | Chapter 12: Chooser Dialogs
+Methods
+All of the methods for theFileViewclass are abstract and take oneFileas an argu-
+ment. You fill in these methods to present a clean, consistent view of all files
+throughout the file chooser. Most custom views end up making decisions based on
+file information, such as the file’s name or extension, before returning a result from
+these methods.
+public abstract String getName(File f)
+Return the name of file
+f. While it’s quite easy to returnf.getName(), you might
+want to return an all-uppercase version or a cross-platform, CD-ROM–compliant
+(ISO 9660) name, etc.
+public abstract String getDescription(File f)
+Return a description of the file. The description could be a short abstract of the
+file’s contents. Your file chooser might not necessarily display this information.
+public abstract String getTypeDescription(File f)
+Return a description of the type of the file, such as “Directory” or “Bitmap
+Image.”
+public abstract Icon getIcon(File f)
+Return an icon appropriate for file
+f. This could be a folder icon, a file icon, or
+some specific icon based on other file information, such as its extension.
+public abstract boolean isTraversable(File f)
+Answer questions about whether a directory can be opened. For example, Unix
+and Windows NT/2000 can prevent users from accessing directories for which
+they don’t have permission. You could check permissions and return
+falseif the
+user is not allowed to open a given folder. Rather than get an error when trying
+to open the folder, the user doesn’t get the chance to try.
+Figure12-6 is an example of a custom
+FileViewthat (slowly!) displays tiny represen-
+tations of any.gifor.jpgfiles in the directory instead of the generic icons. Since it
+loads the real image and scales it, rather than storing some separate set of real icons,
+you shouldn’t try this on your collection of 5,000 JPEG clip-art images. It’s great for
+smalldirectories,though.Thisexamplealsoreliesonthe
+MetalIconFactory,soitdoes
+not run (properly) under other L&Fs. To avoid this problem, we force the use of the
+Metal L&F in the
+main() method by setting theswing.defaultlaf system property.
+Following is the code for this particular file view. Look at thegetIcon()method.
+That’s where we decide which icon to return for a particular file. In this implementa-
+tion, we list all directories as traversable and return a rather generic type description
+for our files. Notice that in the
+getName()method we check for an empty string. On
+Windows platforms, this empty string corresponds to one of the drive letters. The
+“name” of the file is empty, but the path contains the appropriate information, so we
+return that. If you’re curious about the
+MetalIconFactorythat we use to get the file
+and folder icons, check out Chapter26.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The File Chooser Package | 385
+You might notice that we store aComponentobject (rather thanJComponent) as our
+image observer. The reason for this is twofold. First, that’s one class the
+createImage()method is defined in. Second, one obvious choice for the observer is
+the frame containing the application, which is frequently aJFrame, andJFramedoes
+not descend fromJComponent.
+// ThumbNailFileView.java
+// A simple implementation of the FileView class that provides a 16 x 16 image of
+// each GIF or JPG file for its icon. This could be SLOW for large images, as we
+// simply load the real image and then scale it.
+//
+import java.io.File;
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.filechooser.*;
+import javax.swing.plaf.metal.MetalIconFactory;
+public class ThumbNailFileView extends FileView {
+  private Icon fileIcon = MetalIconFactory.getTreeLeafIcon();
+  private Icon folderIcon = MetalIconFactory.getTreeFolderIcon();
+  private Component observer;
+  public ThumbNailFileView(Component c) {
+    // We need a component to create our icon's image.
+    observer = c;
+  }
+Figure12-6.A custom file view for a file chooser that displays icons of image files
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+386 | Chapter 12: Chooser Dialogs
+  public String getDescription(File f) {
+    // We won’t store individual descriptions, so just return the
+    // type description.
+    return getTypeDescription(f);
+  }
+  public Icon getIcon(File f) {
+    // Is it a folder?
+    if (f.isDirectory()) { return folderIcon; }
+    // It's a file, so return a custom icon if it's an image file.
+    String name = f.getName().toLowerCase();
+    if (name.endsWith(".jpg") || name.endsWith(".gif")) {
+      return new Icon16(f.getAbsolutePath());
+    }
+    // Return the generic file icon if it’s not.
+    return fileIcon;
+  }
+  public String getName(File f) {
+    String name = f.getName();
+    return name.equals("") ? f.getPath() : name;
+  }
+  public String getTypeDescription(File f) {
+    String name = f.getName().toLowerCase();
+    if (f.isDirectory()) { return "Folder"; }
+    if (name.endsWith(".jpg")) { return "JPEG Image"; }
+    if (name.endsWith(".gif")) { return "GIF Image"; }
+    return "Generic File";
+  }
+  public Boolean isTraversable(File f) {
+    // We’ll mark all directories as traversable.
+    return f.isDirectory() ? Boolean.TRUE : Boolean.FALSE;
+  }
+  public class Icon16 extends ImageIcon {
+    public Icon16(String f) {
+      super(f);
+      Image i = observer.createImage(16, 16);
+      i.getGraphics().drawImage(getImage(), 0, 0, 16, 16, observer);
+      setImage(i);
+    }
+    public int getIconHeight() { return 16; }
+    public int getIconWidth() { return 16; }
+    public void paintIcon(Component c, Graphics g, int x, int y) {
+      g.drawImage(getImage(), x, y, c);
+    }
+  }
+}

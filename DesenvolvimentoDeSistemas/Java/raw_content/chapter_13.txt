@@ -1,0 +1,1048 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The File Chooser Package | 387
+Here’s the application that uses this file view implementation. The only real change
+from the previous applications is in the properties we set for the chooser and our
+forced use of the Metal L&F.
+// MyViewChooser.java
+// A simple example to see what it takes to make one of these FileViews work
+//
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import javax.swing.*;
+public class MyViewChooser extends JFrame {
+  JFrame parent;
+  public MyViewChooser() {
+    super("File View Test Frame");
+    setSize(350, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    parent = this;
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout());
+    JButton openButton = new JButton("Open");
+    final JLabel statusbar = new JLabel("Output of your selection will go here");
+    openButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        JFileChooser chooser = new JFileChooser();
+        // Set up our own file view for the chooser.
+        chooser.setFileView(new ThumbNailFileView(MyViewChooser.this));
+        int option = chooser.showOpenDialog(parent);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          statusbar.setText("You chose " + chooser.getSelectedFile().getName());
+        }
+        else {
+          statusbar.setText("You cancelled.");
+        }
+      }
+    });
+    c.add(openButton);
+    c.add(statusbar);
+  }
+  public static void main(String args[]) {
+    System.setProperty("swing.defaultlaf",
+                       "javax.swing.plaf.metal.MetalLookAndFeel");
+    MyViewChooser vc = new MyViewChooser();
+    vc.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+388 | Chapter 12: Chooser Dialogs
+The FileSystemView Class
+AnotherdetailmissingfromthenormalFileChooserdialogisasystem-independentway
+of asking for a look at the entire filesystem. On Windows machines, for example, there
+are several “root” directories—one for each floppy drive, hard drive, CD drive, etc. On
+Unix systems (which includes Mac OS X), there is only one root directory, named “/”.
+The abstract
+FileSystemViewclass is meant to be a source for system-independent views
+thatmapnicelytotherealfilesystemunderneathyourapplication.Currently,bothUnix
+and Win32systems have real implementations, and others are planned for release.
+(MacOS X relies on a Unix view of things.) Systems that do not have a full implementa-
+tion use a generic filesystem view, similar to what is available through the standard
+java.io.File class.
+Class instantiation method
+public static FileSystemView getFileSystemView()
+The default implementation checks the file separator character to decide which
+filesystem view to return. A
+/ returns a Unix view,\ returns a Win32view, and
+everything else gets the generic view.
+File and folder methods
+If you do plan to build your own filesystem view, the following methods are the key
+pieces to look at:
+public abstract File createNewFolder(File containingDir) throws IOException
+Create a new folder with some default name appropriate to the filesystem.
+public File[] getFiles(File dir, boolean useFileHiding)
+Return a list of all of the files in
+dir.I fuseFileHidingistrue, each file indiris
+checked withisHiddenFile() before being added to the list.
+public File[] getRoots()
+Returnalistof“root”directories.OnUnixorMacOSXsystems,thisisthe/direc-
+tory. On Windows machines, this is a list of the active drive letters. In OS X, sec-
+ondary partitions (including mounted removable media) are listed in the/Volumes
+directory. Users are accustomed to thinking of these as separate entities, so you
+might want to add your own code to include them as separate “roots.”
+public boolean isHiddenFile(File f)
+Return
+trueif filefis a hidden file. What makes a file a hidden file differs from
+system to system.
+public boolean isRoot(File f)
+Returntrue if filef maps to a root directory.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Color Chooser | 389
+The Color Chooser
+As the name indicates, theJColorChoosercomponent is designed to allow users to
+pick a color. If your application supports customized environments (like the fore-
+ground, background, and highlight colors for text), this control might come in
+handy. You can pick a color from a palette and then look at that color in a preview
+panelthatshowsyouhowyourcolorlookswithblackandwhite.Thedialogalsohas
+an RGB mode that allows you to pick the exact amounts of red, blue, and green
+using sliders. The standard color chooser window looks like Figure12-7.
+The
+JColorChooserclass provides a static method for getting this pop up going
+quickly. Here’s the code that produced the screens in Figure12-7:
+// ColorPicker.java
+// A quick test of the JColorChooser dialog
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class ColorPicker extends JFrame {
+  public ColorPicker() {
+    super("JColorChooser Test Frame");
+    setSize(200, 100);
+    final Container contentPane = getContentPane();
+    final JButton go = new JButton("Show JColorChooser");
+    go.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent e) {
+        Color c;
+        c = JColorChooser.showDialog(((Component)e.getSource()).getParent(),
+                    "Demo", Color.blue);
+Figure12-7.The default JColorChooser dialog in Swatches (left) and RGB (right) modes
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+390 | Chapter 12: Chooser Dialogs
+        contentPane.setBackground(c);
+      }
+    });
+    contentPane.add(go, BorderLayout.SOUTH);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+  public static void main(String args[]) {
+    ColorPicker cp = new ColorPicker();
+    cp.setVisible(true);
+  }
+}
+One way to get a color out of this dialog is to wait for it to close (theshowDialog()
+method blocks) and store the result ofshowDialog(). But you are not limited to a
+modal dialog that produces a single color. You can create your own color choosers to
+which you attach aChangeListenerobject that can detect any change in the current
+color property while the pop up is active, or even after it has been closed. We’ll look
+at examples of such custom choosers later in this chapter.
+The ColorSelectionModel Interface
+In keeping with the MVC architecture, theJColorChooseruses a model to represent
+the currently selected color. TheColorSelectionModelinterface (in thejavax.swing.
+colorchooserpackage) is quite simple, having only one property (the selected color)
+and support for notifying listeners that the color has changed.
+Property
+TheColorSelectionModelclass supports one property, shown in Table12-4. The
+selectedColor property lets you access the color currently stored in the model.
+Events
+To indicate that the selected color has changed, implementations ofColorSelection-
+Model should fire aChangeEvent whenever theselectedColor property changes.
+Following the standard naming conventions, the following methods are required for
+managing
+ChangeEvent listeners:
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+As you might expect, these methods allow you to add and remove listener
+objects interested in receiving event notifications.
+Table12-4.ColorSelectionModel property
+Property Data type
+get
+is
+set Description
+selectedColorColor ••
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JColorChooser Class | 391
+The DefaultColorSelectionModel Class
+TheDefaultColorSelectionModelclass (injavax.swing.colorchooser) provides a
+straightforward implementation of theColorSelectionModelinterface. This is the
+selection model used by default in theJColorChooser class.
+Properties
+Table12-5 shows the default valueDefaultColorSelectionModelprovides for the
+property inherited fromColorSelectionModel.
+Events
+BecauseDefaultColorChooserModelimplementsColorChooserModel, it fires aChange-
+Event whenever theselectedColor property changes.
+In addition to theaddChangeListener()andremoveChangeListener()methods
+required byColorChooserModel, the following method is provided to aid in dispatch-
+ing change events:
+protected fireStateChanged()
+You can use this method to fire aChangeEventwhenever the color in the model is
+updated.
+Constructors
+public DefaultColorSelectionModel()
+public DefaultColorSelectionModel(Color color)
+These constructors create newDefaultColorSelectionModelobjects. If you call
+the first constructor with no color,Color.white is used.
+The JColorChooser Class
+TheJColorChooserclass allows you to create a standard dialog with a color palette
+from which users can select a color.
+Properties
+In addition to the typical UI properties of Swing components, the color chooser has
+the properties listed in Table12-6. The
+chooserPanelsproperty contains an array of
+Table12-5.DefaultColorSelectionModel properties
+Property Data type
+get
+is
+set Default value
+changeListeners1.4 ChangeListener[]• Empty array
+selectedColoro Color •• Color.white
+1.4since 1.4, ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+392 | Chapter 12: Chooser Dialogs
+all the chooser panels currently associated with this color chooser. You can get and
+set the entire array at once or, more commonly, you can add and remove chooser
+panels using some of the methods described later. The
+colorproperty contains the
+currently selected color in the chooser. (This property is just a convenient access
+point for the
+selectedColorproperty of theselectionModel.) ThepreviewPanelprop-
+erty contains theJComponentsubclass that previews your color choice. (You can see
+an example of the default preview panel in Figure12-7.) TheselectionModelprop-
+erty dictates which selection model the chooser uses. ThedragEnabledproperty
+allows you to drag colors from the chooser to another part of your application, but
+no
+transferHandler(inherited fromJPanel) is in place to support this feature yet.
+You would need to supply a handler to make this property meaningful.
+Events (Inherited from JComponent)
+On its own,JColorChoosersupports onlyPropertyChangeEvents, like all other Swing
+components.UsingthestaticcreateDialog()methoddescribedbelow,youcanattach
+your ownChangeListenerto the color selection model for your chooser and react to
+changesincoloranywhereinyourprogram.Youcanevencreateastandalonechooser
+and add it to the container of your choice.
+Constants
+TheJColorChooserclass defines several constants for the property names used when
+firingPropertyChangeEvents, as shown in Table12-7.
+Table12-6.JColorChooser properties
+Property Data type
+get
+is
+set Default value
+accessibleContext AccessibleContext• JColorChooser.AccessibleJCol-
+orChooser()
+chooserPanelsb AbstractColorChooser-
+Panel[]
+•• null
+color Color •• Color.white
+dragEnabled1.4 boolean •• false
+previewPanelb JComponent •• null
+selectionModelb ColorSelectionModel•• DefaultColorSelectionModel
+UIb ColorChooserUI •• From L&F
+UIClassIDo String • "ColorChooserUI"
+1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JColorChooser Class | 393
+Constructors
+public JColorChooser()
+public JColorChooser(Color initialColor)
+public JColorChooser(ColorSelectionModel model)
+These constructors create new
+JColorChooserpanes. The first two versions use a
+DefaultColorSelectionModel. In the first two versions, where you do not specify
+an initial color,Color.whiteis used. In the last version, the color is extracted
+from themodel.
+Dialog Methods
+public static JDialog createDialog(Componentc, Stringtitle, booleanmodal,
+JColorChooserchooserPane, ActionListenerokListener,
+ActionListenercancelListener)
+Create a (possibly
+modal) dialog window, withchooserPaneas its main compo-
+nent. With this convenience method, you can add your own action listeners for
+the OK and Cancel buttons.
+public static Color showDialog(Component c, String title, Color initialColor)
+Create a modal dialog that waits for the user to press either the OK or Cancel
+button. If the user clicks on OK, the current color in the chooser is returned;
+otherwise,
+null is returned. No errors or exceptions are raised if the user cancels.
+Chooser Methods
+public void addChooserPanel(AbstractColorChooserPanelpanel)
+Add a new tab to the color chooser and placepanelon that tab. An example
+using a custom chooser panel appears later in this chapter.
+public AbstractColorChooserPanel removeChooserPanel(AbstractColorChooserPanel
+panel)
+Remove a panel from the chooser. Ifpanelis found on one of the tabs, it is
+removed and returned. If the panel is not found,null is returned.
+public void setColor(int c)
+public void setColor(int r, int g, int b)
+You can use these methods as alternate ways of setting the color. They both
+affect the
+colorproperty ofJColorChooser. The first method expects a single
+Table12-7. JColorChooser property names for property change events
+Constant Type Description
+CHOOSER_PANELS_PROPERTY String The name of thechooserPanels property
+PREVIEW_PANEL_PROPERTY String The name of thepreviewPanel property
+SELECTION_MODEL_PROPERTY String The name of theselectionModel property
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+394 | Chapter 12: Chooser Dialogs
+RGB color (where the 1-byte alpha channel is ignored). The second method
+takes red, green, and blue values ranging from 0 to 255.
+The AbstractColorChooserPanel Class
+If you don’t find the two chooser panels sufficient for your needs, you can write your
+own chooser panel and add it to the chooser along with the others. If you decide to
+do that, the
+AbstractColorChooserPanel(in thejavax.swing.colorchooserpackage) is
+your starting point. This class has several properties you can fill in and a few abstract
+methods you must supply. Both of the panels in Figure12-7 are based on this class.
+Later, we’ll take a look at writing our own custom chooser panel.
+Properties
+TheAbstractColorChooserPanelsupports the properties shown in Table12-8. The
+smallDisplayIconanddisplayNameproperties should return values used in the tabs of
+theJColorChooser’s tabbed pane. They can benull, but you should have at least one
+return a valid object, so that your tab contains some form of identification. The
+colorSelectionModelproperty accesses thecolorSelectionModelof the enclosing
+chooser. ThemnemonicanddisplayedMnemonicIndexproperties are hints to the L&F
+to provide keyboard shortcuts to access this panel. The defaults simply mean that no
+mnemonic is available—the panel must be activated via the mouse or Tab/arrow key
+navigation.
+Protected helper method
+protected Color getColorFromModel()
+This protected method retrieves the current color from theColorSelectionModel
+attached to this chooser panel.
+Table12-8.AbstractColorChooserPanel properties
+Property Data type
+get
+is
+set Default value
+colorSelectionModel ColorSelectionModel• DefaultColorSelection-
+Model()
+displayedMnemonicIndex1.4 int • -1
+displayName* String •
+largeDisplayIcon* Icon •
+mnemonic1.4 int • 0 (no mnemonic)
+smallDisplayIcon* Icon •
+1.4since 1.4
+*The get call is abstract and must be supplied by the programmer, so no default value is available.
+See also properties from theJPanel class (Table 8-1).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JColorChooser Class | 395
+Chooser panel methods
+You’ll need to override and use the following methods when developing your own
+panels. (You can see an example of a custom panel in the next section.)
+protected abstract void buildChooser()
+Called to build your chooser panel when the color chooser is ready for it. It
+should be called only once.
+public void installChooserPanel(JColorChooser enclosingChooser)
+This method is called when you add your chooser panel to the color chooser’s
+tabbedpane.Itregistersthispanelasalistenerforchangeeventscomingfromthe
+chooser’s
+ColorSelectionModel.Youdon’tnormallyneedtooverridethismethod,
+but if you do, be sure to call the corresponding method from the superclass.
+public void uninstallChooserPanel(JColorChooserenclosingChooser)
+Called when the panel is removed from the chooser’s tabbed pane. As you might
+expect, the panel is unregistered from the selection model. And, as with
+installChooserPanel(),callthecorrespondingmethodfromthesuperclassifyou
+plan to override this. (You aren’t required to call the superclass, but if you don’t,
+you need to be sure that your
+install() anduninstall() methods cooperate.)
+public abstract void updateChooser()
+This method should update your chooser panel to reflect the current color in the
+ColorSelectionModel. It is called automatically when the panel is added to the
+chooser, so you do not have to figure out the current color in the constructor or
+buildChooser() method.
+The ColorChooserComponentFactory Class
+TheColorChooserComponentFactoryclass provides a few small methods for creating
+components common to a color chooser panel. The default chooser panels you see in
+JColorChoosercomefromthisclass,butyouarecertainlynotrestrictedtousingthese
+components.
+Methods
+public static AbstractColorChooserPanel[] getDefaultChooserPanels()
+Return an array containing instances of the package-privateDefaultRGBChooser-
+Panel, DefaultSwatchChooserPanel, andDefaultHSBChooserPanelclasses. These
+are the panels attached to the RGB, HSB, and Swatches tabs in Figure12-7.
+public static JComponent getPreviewPanel()
+Return an instance of the package-privateDefaultPreviewPanelclass. This is the
+preview panel used in the screenshots in Figure12-7.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+396 | Chapter 12: Chooser Dialogs
+Developing a Custom Chooser Panel
+If you look at theJColorChoosercomponent, you’ll realize that it is really just a
+tabbed pane with a color previewer below it. You can have as many chooser panels
+in it as you like. Let’s take a brief look at a panel that can be added to a color
+chooser. We’ll create a simple panel for selecting a shade of gray with one slider
+rather than pushing each slider for red, green, and blue to the same value.
+Figure12-8 shows the resulting panel; its source code is presented here.
+// GrayScalePanel.java
+// A simple implementation of the AbstractColorChooserPanel class. This class
+// provides a slider and a text field for picking out a shade of gray.
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.colorchooser.*;
+public class GrayScalePanel extends AbstractColorChooserPanel
+                            implements ChangeListener, ActionListener {
+  JSlider scale;
+  JTextField percentField;
+  // Set up our list of grays. We'll assume we have all 256 possible shades,
+  // and we'll do it when the class is loaded.
+  static Color[] grays = new Color[256];
+  static {
+    for (int i=0; i<256; i++) { grays[i] = new Color(i, i, i); }
+  }
+  public GrayScalePanel() {
+    setLayout(new GridLayout(0, 1));
+    // Create the slider and attach us as a listener.
+    scale = new JSlider(JSlider.HORIZONTAL, 0, 255, 128);
+    scale.addChangeListener(this);
+    // Set up our display for the chooser.
+    add(new JLabel("Pick your shade of gray:", JLabel.CENTER));
+    JPanel jp = new JPanel();
+    jp.add(new JLabel("Black"));
+    jp.add(scale);
+    jp.add(new JLabel("White"));
+    add(jp);
+    JPanel jp2 = new JPanel();
+    percentField = new JTextField(3);
+    percentField.setHorizontalAlignment(SwingConstants.RIGHT);
+    percentField.addActionListener(this);
+    jp2.add(percentField);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Developing a Custom Chooser Panel | 397
+    jp2.add(new JLabel("%"));
+    add(jp2);
+  }
+  // We did this work in the constructor, so we can skip it here.
+  protected void buildChooser() { }
+  // Make sure the slider is in sync with the other panels.
+  public void updateChooser() {
+    Color c = getColorSelectionModel().getSelectedColor();
+    scale.setValue(toGray(c));
+  }
+  protected int toGray(Color c) {
+    int r = c.getRed();
+    int g = c.getGreen();
+    int b = c.getBlue();
+    // Grab the luminance the same way GIMP does.
+    return (int)Math.round(0.3 * r + 0.59 * g + 0.11 * b );
+  }
+  // Pick a name for our tab in the chooser.
+  public String getDisplayName() { return "Gray Scale"; }
+  // No need for an icon
+  public Icon getSmallDisplayIcon() { return null; }
+  public Icon getLargeDisplayIcon() { return null; }
+  // Finally, update the selection model as our slider changes.
+  public void stateChanged(ChangeEvent ce) {
+    getColorSelectionModel().setSelectedColor(grays[scale.getValue()]);
+    percentField.setText("" + (100-(int)Math.round(scale.getValue() / 2.55)));
+  }
+  public void actionPerformed(ActionEvent ae) {
+    int val = 100 - Integer.parseInt(ae.getActionCommand());
+    getColorSelectionModel().setSelectedColor(grays[(int)(val * 2.55)]);
+  }
+}
+Here’s the application that produced the new chooser. The only real change is that
+we manually build the list of chooser panels for our chooser in theColorPicker2
+constructor:
+// ColorPicker2.java
+// A quick test of the JColorChooser dialog
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.colorchooser.*;
+public class ColorPicker2 extends JFrame {
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+398 | Chapter 12: Chooser Dialogs
+  JFrame parent;
+  Color c;
+  public ColorPicker2() {
+    super("JColorChooser Test Frame");
+    setSize(200, 100);
+    parent=this;
+    final JButton go = new JButton("Show JColorChoser");
+    final Container contentPane = getContentPane();
+    go.addActionListener(new ActionListener() {
+      final JColorChooser chooser = new JColorChooser();
+      boolean first = true;
+      public void actionPerformed(ActionEvent e) {
+        if (first) {
+          first = false;
+          GrayScalePanel gsp = new GrayScalePanel();
+          chooser.addChooserPanel(gsp);
+        }
+        JDialog dialog = JColorChooser.createDialog(parent, "Demo 2", true,
+                         chooser, new ActionListener() {
+                            public void actionPerformed(ActionEvent e) {
+                              c = chooser.getColor();
+                            }}, null);
+        dialog.setVisible(true);
+        contentPane.setBackground(c);
+Figure12-8.A custom chooser panel added directly to a JColorChooser object
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Developing a Custom Preview Panel | 399
+      }
+    });
+    contentPane.add(go);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+  public static void main(String args[]) {
+    ColorPicker2 cp2 = new ColorPicker2();
+    cp2.setVisible(true);
+  }
+}
+Developing a Custom Preview Panel
+In addition to creating custom color chooser panels, you can create your own pre-
+view panel. You can use anyJComponent—just set thepreviewPanelproperty. As you
+update the color in the chooser, theforegroundproperty of the preview panel
+changes. You can extend a container likeJPaneland override thesetForeground()
+method to gain more control over what parts of the pane are updated. Figure12-9
+shows a simple custom preview pane. We add two labels: one to show the fore-
+ground color (this label says, “This is a custom preview pane”) and one to show the
+background color.
+Figure12-9.A custom preview panel added in a JColorChooser object
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+400 | Chapter 12: Chooser Dialogs
+Rememberthat someL&Fs don’tallow youtosettheforegroundorbackgroundcol-
+ors of some components. If you’re on a Mac OS X system, for example, you can run
+ColorPicker3 this way:
+% java -Dswing.defaultlaf=javax.swing.plaf.metal.MetalLookAndFeel ColorPicker3
+This custom pane is added to ourColorPicker3chooser by setting thepreviewPanel
+property after we create thechooser object:
+chooser.setPreviewPanel(new CustomPane());
+Here’s the code for theCustomPane class. We build it as an inner class.
+public class CustomPane extends JPanel {
+  JLabel j1 = new JLabel("This is a custom preview pane", JLabel.CENTER);
+  JLabel j2 = new JLabel("This label previews the background", JLabel.CENTER);
+  public CustomPane() {
+    super(new GridLayout(0,1));
+    j2.setOpaque(true);  // Otherwise, the background color won't show up
+    add(j1);
+    add(j2);
+  }
+  public void setForeground(Color c) {
+    super.setForeground(c);
+    if (j1 != null) {
+      j1.setForeground(c);
+      j2.setBackground(c);
+    }
+  }
+}
+Developing a Custom Dialog
+While you might rely entirely on the standard color chooser dialog, it is possible to
+create a color chooser component and use it inside your own dialogs or applications.
+Let’s take a look at a fancy font chooser that lets you pick the face, style, and color.
+Figure12-10 shows an example of such a dialog.
+It looks like a lot is going on in the code that built this dialog window, but it’s not
+really that bad. The first part of the code is devoted to the tedious business of setting
+up the graphical-interface pieces. Notice that we create a regular
+JColorChooser
+object and never call either theshowDialog()orcreateDialog()methods. You can
+also see the piece of code required to catch color updates in that section. We attach a
+ChangeListenerto theColorSelectionModelfor the chooser. The event handler for
+that listener simply callsupdatePreviewColor()to keep our custom previewer in sync
+with the color shown in the chooser.
+You’ll notice that we’re storing our font information in aSimpleAttributeSetobject.
+This object is used with theJTextPaneclass (and you can find out more about it in
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Developing a Custom Dialog | 401
+Chapter22). For right now, just know that it has some convenient methods for stor-
+ing text attributes, such as the font name, bold/italic, and size.
+Here’s the startup code:
+// FontChooser.java
+// A font chooser that allows users to pick a font by name, size, style, and color.
+// The color selection is provided by a JColorChooser pane. This dialog builds an
+// AttributeSet suitable for use with JTextPane.
+//
+import javax.swing.*;
+import javax.swing.event.*;
+import javax.swing.colorchooser.*;
+import javax.swing.text.*;
+import java.awt.*;
+import java.awt.event.*;
+public class FontChooser extends JDialog implements ActionListener {
+  JColorChooser colorChooser;
+  JComboBox fontName;
+  JCheckBox fontBold, fontItalic;
+  JTextField fontSize;
+  JLabel previewLabel;
+Figure12-10.A custom dialog window, with a JColorChooser as one piece of it
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+402 | Chapter 12: Chooser Dialogs
+  SimpleAttributeSet attributes;
+  Font newFont;
+  Color newColor;
+  public FontChooser(Frame parent) {
+    super(parent, "Font Chooser", true);
+    setSize(450, 450);
+    attributes = new SimpleAttributeSet();
+    // Make sure that if the user cancels, the window does the right thing.
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        closeAndCancel();
+      }
+    });
+    // Start the long process of setting up our interface.
+    Container c = getContentPane();
+    JPanel fontPanel = new JPanel();
+    fontName = new JComboBox(new String[] {"TimesRoman", "Helvetica", "Courier"});
+    fontName.setSelectedIndex(1);
+    fontName.addActionListener(this);
+    fontSize = new JTextField("12", 4);
+    fontSize.setHorizontalAlignment(SwingConstants.RIGHT);
+    fontSize.addActionListener(this);
+    fontBold = new JCheckBox("Bold");
+    fontBold.setSelected(true);
+    fontBold.addActionListener(this);
+    fontItalic = new JCheckBox("Italic");
+    fontItalic.addActionListener(this);
+    fontPanel.add(fontName);
+    fontPanel.add(new JLabel(" Size: "));
+    fontPanel.add(fontSize);
+    fontPanel.add(fontBold);
+    fontPanel.add(fontItalic);
+    c.add(fontPanel, BorderLayout.NORTH);
+    // Set up the color chooser panel and attach a change listener so that color
+    // updates are reflected in our preview label.
+    colorChooser = new JColorChooser(Color.black);
+    colorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent e) {
+        updatePreviewColor();
+      }
+    });
+    c.add(colorChooser, BorderLayout.CENTER);
+    JPanel previewPanel = new JPanel(new BorderLayout());
+    previewLabel = new JLabel("Here’s a sample of this font.");
+    previewLabel.setForeground(colorChooser.getColor());
+    previewPanel.add(previewLabel, BorderLayout.CENTER);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Developing a Custom Dialog | 403
+    // Add in the OK and Cancel buttons for our dialog box.
+    JButton okButton = new JButton("Ok");
+    okButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        closeAndSave();
+      }
+    });
+    JButton cancelButton = new JButton("Cancel");
+    cancelButton.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        closeAndCancel();
+      }
+    });
+    JPanel controlPanel = new JPanel();
+    controlPanel.add(okButton);
+    controlPanel.add(cancelButton);
+    previewPanel.add(controlPanel, BorderLayout.SOUTH);
+    // Give the preview label room to grow.
+    previewPanel.setMinimumSize(new Dimension(100, 100));
+    previewPanel.setPreferredSize(new Dimension(100, 100));
+    c.add(previewPanel, BorderLayout.SOUTH);
+  }
+Let’s pause and take a look at the next section of code. TheactionPerformed()
+method monitors our font choices from the buttons and text field at the top of our
+dialog. As font attributes change, we keep theAttributeSetobject updated and
+update our display label. (The listener for the color part of our dialog was attached
+directly to the color chooser in the above code.) The
+updatePreviewFont()and
+updatePreviewColor()methods allow us to change the font and color of the preview
+label separately. That’s a bit more efficient, especially when the user is picking a
+color with an RGB slider.
+  // Something in the font changed, so figure out what and make a
+  // new font for the preview label.
+  public void actionPerformed(ActionEvent ae) {
+    // Check the name of the font.
+    if (!StyleConstants.getFontFamily(attributes)
+                       .equals(fontName.getSelectedItem())) {
+      StyleConstants.setFontFamily(attributes, (String)fontName.getSelectedItem());
+    }
+    // Check the font size (no error checking yet).
+    if (StyleConstants.getFontSize(attributes) !=
+                                   Integer.parseInt(fontSize.getText())) {
+      StyleConstants.setFontSize(attributes, Integer.parseInt(fontSize.getText()));
+    }
+    // Check to see if the font should be bold.
+    if (StyleConstants.isBold(attributes) != fontBold.isSelected()) {
+      StyleConstants.setBold(attributes, fontBold.isSelected());
+    }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+404 | Chapter 12: Chooser Dialogs
+    // Check to see if the font should be italic.
+    if (StyleConstants.isItalic(attributes) != fontItalic.isSelected()) {
+      StyleConstants.setItalic(attributes, fontItalic.isSelected());
+    }
+    // And update our preview label
+    updatePreviewFont();
+  }
+  // Get the appropriate font from our attributes object and update
+  // the preview label.
+  protected void updatePreviewFont() {
+    String name = StyleConstants.getFontFamily(attributes);
+    boolean bold = StyleConstants.isBold(attributes);
+    boolean ital = StyleConstants.isItalic(attributes);
+    int size = StyleConstants.getFontSize(attributes);
+    // Bold and italic don’t work properly in beta 4.
+    Font f = new Font(name, (bold ? Font.BOLD : 0) + (ital ? Font.ITALIC : 0), size);
+    previewLabel.setFont(f);
+  }
+  // Get the appropriate color from our chooser and update previewLabel.
+  protected void updatePreviewColor() {
+    previewLabel.setForeground(colorChooser.getColor());
+    // Manually force the label to repaint.
+    previewLabel.repaint();
+  }
+The last segment of code helps us with the shutdown stage for our dialog. The
+getNewFont()andgetNewColor()methods allow us to retrieve the selected font and
+color once the dialog is closed. We can also get the complete attribute set using
+getAttributes(). ThecloseAndSave()method stores the font and color information
+from our preview label intonewFontandnewColorwhilecloseAndCancel()putsnull
+into both fields. After showing this dialog, the application using it should check the
+value ofnewFont ornewColor to determine whether the user accepted a font choice.
+  public Font getNewFont() { return newFont; }
+  public Color getNewColor() { return newColor; }
+  public AttributeSet getAttributes() { return attributes; }
+  public void closeAndSave() {
+    // Save font and color information.
+    newFont = previewLabel.getFont();
+    newColor = previewLabel.getForeground();
+    // Close the window.
+    setVisible(false);
+  }
+  public void closeAndCancel() {
+    // Erase any font information and then close the window.
+    newFont = null;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Developing a Custom Dialog | 405
+    newColor = null;
+    setVisible(false);
+  }
+}
+Here’s the application that puts this dialog to use. It’s similar to our first color
+picker. A single button in the application causes the font chooser dialog to be dis-
+played, and whatever font the user picks through the dialog becomes the font for the
+button. As with that first program, the main work is done here in the
+actionPerformed()method of the button’s event handler. Notice how the applica-
+tion checks the new font choice to see if it isnull.
+// FontPicker.java
+// A quick test of the FontChooser dialog
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.colorchooser.*;
+public class FontPicker extends JFrame {
+  Color c;
+  public FontPicker() {
+    super("JColorChooser Test Frame");
+    setSize(200,100);
+    final JButton go = new JButton("Show FontChooser");
+    go.addActionListener(new ActionListener() {
+      final FontChooser chooser = new FontChooser(FontPicker.this);
+      boolean first = true;
+      public void actionPerformed(ActionEvent e) {
+        chooser.setVisible(true);
+        // If we got a real font choice, then update our go button.
+        if (chooser.getNewFont() != null) {
+          go.setFont(chooser.getNewFont());
+          go.setForeground(chooser.getNewColor());
+        }
+      }
+    });
+    getContentPane().add(go);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+  }
+  public static void main(String args[]) {
+    FontPicker fp = new FontPicker();
+    fp.setVisible(true);
+  }
+}
+As you develop more commercial applications, you may end up writing some of your
+own choosers. (ADateChooserwould be a good start!) Following the API style for the
+file and color choosers described in this chapter will make it easier to write your own
+chooser.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+406
+Chapter13In this chapter:
+• Introducing Borders
+• Painting Borders Correctly
+• Swing Borders
+• Creating Y our Own Border
+CHAPTER 13
+Borders
+Swing provides eight unique styles of borders and allows you to combine them to
+form more elaborate versions. This chapter introduces you to the Swing borders and
+shows you how to work with and configure them. At the end of the chapter, we
+show you how to create a border of your own.
+Introducing Borders
+Figure13-1 shows the standard borders that Swing provides. There are eight border
+styles: bevel, soft bevel, empty, etched, line, matte, titled, and compound. The
+MatteBordergives you two borders in one: the border area can be filled with either a
+solid color or an icon. (This figure shows only the icon; you can see a better example
+of both in Figure13-11.)
+Figure13-1.Borders in Swing
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Introducing Borders | 407
+You can place a border around any Swing component that extendsJComponent. The
+JComponentclass contains aborderproperty that is inherited by all Swing compo-
+nents. (Top-level components that don’t inherit fromJComponent, likeJFrameand
+JDialog, can’t have borders.) By default, theborderproperty isnull(no border), but
+you can access and modify it. Once you’ve set a component’s border, the compo-
+nent paints itself using that border from that point on, and the insets of the border
+replace the component’s default insets.
+Here’s how to set a component’s border:
+JLabel label = new JLabel("A Border");
+mylabel.setBorder(new BevelBorder(BevelBorder.LOWERED));
+Borders are grouped into a separate package within the Swing hierarchy,javax.
+swing.border. Figure13-2shows the classes within this package. The borders
+included with Swing directly or indirectly extend theAbstractBorderclass, which in
+turn implements the fundamentalBorderinterface and provides a number of helpful
+housekeeping methods that any implementation can use. (This is an example of the
+usefulskeletal implementationpattern for working with interfaces described in
+Joshua Bloch’s outstandingEffective Java Programming Language Guide[Addison-
+Wesley].) You’ll almost certainly want to use the same technique if you develop your
+own border.
+Borders can be combined to form more elaborate compound borders. The lower-right
+corner of Figure13-1 shows an example of a compound border. We combined an
+etchedborder(ontheinside)witharaisedbevelborder(ontheoutside).Swingallows
+you to mix any number of border styles into a single border object. This gives Swing
+borders a useful compositional feature not often found in other graphical toolkits.
+Figure13-2.Border class diagram
+javax.swing.border
+AbstractBorder
+Border
+BevelBorder
+SoftBevelBorder
+EmptyBorder
+MatteBorder
+EtchedBorder
+TitledBorder
+LineBorder
+CompoundBorder
+BorderFactory
+javax.swing
+creates
+contains
+contains1
+2
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+408 | Chapter 13: Borders
+The Border Interface
+TheBorder interface contains three methods.
+Methods
+public abstract void paintBorder(Componentc, Graphicsg, intx, inty, intwidth,
+intheight)
+Draw the border. The border is drawn onto the graphics contextgwith the loca-
+tion and dimensions provided.paintBorder()must calculate exactly what area it
+can paint by checking the border’s insets.
+public abstract Insets getBorderInsets(Componentc)
+Return anInsetsobject that reports the minimum amount of space the border
+needs to paint itself around the given component. Borders must never paint out-
+side this insets region (shown shaded in Figure13-3). When theborderproperty
+is set, it replaces the native insets of the component with those of the border.
+public abstract boolean isBorderOpaque()
+Return abooleanindicating whether the border is opaque. Just as components
+can be opaque or transparent, so can their borders. Opaque borders typically fill
+the entire border area (the shaded region in Figure13-3), erasing any contents
+drawn there previously. Nonopaque borders draw in only part of the region
+given by their insets and let the rest show through. In the areas left untouched,
+the background graphics of the bordered component are preserved. Note that if
+aborderreturns
+trueforitsopaqueproperty,Swingexpectsittopainteverypixel
+assigned to it.
+Painting Borders Correctly
+The golden rule of creating borders is: “Never paint in the component’s region.”
+Here’s a border that violates this rule:
+public class WrongBorder extends AbstractBorder {
+    public WrongBorder() {}
+Figure13-3.A border is allowed to paint itself only within the insets it declares
+top
+bottom
+left right Component
+Border Insets
+Border insets
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Painting Borders Correctly | 409
+    public void paintBorder(Component c, Graphics g, int x, int y,
+                            int width, int height) {
+        g.setColor(Color.black);
+        g.fillRect(x, y, width, height);      // Bad
+    }
+    public boolean isBorderOpaque() { return true;}
+    public Insets getBorderInsets(Component c) {
+        return new Insets(20, 20, 20, 20);
+    }
+}
+Look carefully at thepaintBorder()method. The last four parameters passed in to
+the method can be used to calculate the total screen area of the component—includ-
+ingthe border insets. We decided to paint our border by creating a single filled rect-
+angle that fills the entire component space. While drawing the border, however, we
+painted over the underlying component and violated the golden rule.
+The correct approach is to obtain the insets of the border region and draw rectangles
+only in that space, as shown:
+public void paintBorder(Component c, Graphics g, int x, int y,
+                        int width, int height) {
+    Insets insets = getBorderInsets(c);
+    g.setColor(Color.black);
+    //  Draw rectangles around the component, but do not draw
+    //  in the component area itself.
+    g.fillRect(x, y, width, insets.top);
+    g.fillRect(x, y, insets.left, height);
+    g.fillRect(x+width-insets.right, y, insets.right, height);
+    g.fillRect(x, y+height-insets.bottom, width, insets.bottom);
+}
+The AbstractBorder Class
+AbstractBorderis the superclass that all Swing borders extend. Although not manda-
+tory, borders of your own design can also extendAbstractBorder. You will probably
+want to do this in order to take advantage of the utility methods it contains.
+AbstractBorderprovides default implementations of the three methods of theBorder
+interface. If you subclassAbstractBorderto create your own border, you should over-
+ride at least thepaintBorder()andgetBorderInsets()methods.AbstractBorderalso
+provides methods to calculate the area of the component being bordered and to sim-
+plify determining the orientation of a component (important for internationalization).
+Property
+AbstractBorderhastheproperty shownin Table13-1.Thedefaultimplementationof
+theborderOpaqueproperty returnsfalse. If you create a border that is opaque, you
+should override it and returntrue.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+410 | Chapter 13: Borders
+Constructor
+public AbstractBorder()
+The only constructor; it takes no arguments.
+Methods
+public void paintBorder(Componentc, Graphicsg, intx, inty, intwidth, intheight)
+This empty method is required by theBorderinterface; it should be overridden
+by a subclass to perform the actual rendering of the border.
+public Insets getBorderInsets(Componentc)
+public Insets getBorderInsets(Componentc, Insetsi)
+Return anInsetsobject with0 for each inset. Subclasses should override both of
+these methods to report the true area required by their border. The second ver-
+sion of this method modifies and returns the supplied
+Insetsobject,i(this
+allows you to reuse the same object for efficiency).
+public Rectangle getInteriorRectangle(Componentc, intx, inty, intwidth, intheight)
+This nonstatic method calls the static version, using a reference to the compo-
+nent’s current border.
+public static Rectangle getInteriorRectangle(Borderb, intx, inty, intwidth, intheight)
+This static method calculates the area representing a component being bordered
+by the supplied border. It returns the result as a
+Rectangleobject. This method is
+useful for pinpointing the area of the inner component in which borders
+shouldn’t draw (or as a component author, where to draw).
+Now that we’re done with the preliminaries, let’s look at the borders that Swing
+provides.
+Swing Borders
+The following sections discuss Swing’s built-in border classes in detail.
+The BevelBorder and SoftBevelBorder Classes
+A bevelis another name for a slanted edge. TheBevelBorderclass can be used to sim-
+ulate a raised or lowered edge with a slant surrounding the component, similar to the
+appearance of a button. The default bevel edge is two pixels wide on all sides.
+Figure13-4 shows two bevel borders, the first raised and the second lowered.
+Table13-1.AbstractBorder property
+Property Data type
+get
+is
+setDefault value
+borderOpaqueo boolean • false
+ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Borders | 411
+Notice how the border creates the illusion of three dimensions. The bevel border
+simulates a light source above and to the left of the object (this light source location
+must be consistent for all 3D components in order to be effective). The border is then
+drawn with four colors: an outer and innerhighlightcolor and an outer and inner
+shadowcolor. The highlight colors represent the two surfaces of the bevel facing
+toward the light while the shadow colors represent the surfaces facing away from the
+light. Figure13-5 shows how a bevel border uses the highlight and shadow colors.
+When the bevel is raised, the top and left sides of the border are highlighted, and the
+bottom and right sides of the border are shadowed. This presents the appearance of
+the surface protruding above the background. When the bevel is lowered, the high-
+lighted and shadowed surfaces are reversed, and the border appears to sink into the
+background. A bevel border is two pixels wide on all sides. Theinnercolor repre-
+sents the inner pixels for the border; theouter color represents the outer pixels.
+The beveled border in Swing has a subclass,
+SoftBevelBorder, that can be used to
+simulate a subtle raised or lowered edge around a component. In fact, the only differ-
+ence from the regular
+BevelBorderis that the soft beveled edge is slightly thinner on
+two of its four sides and provides for small rounded corners. Figure13-6 shows a
+pair of soft bevel borders; if your eyes are really good, you may be able to tell the dif-
+ference between these and the plain bevel borders.
+Properties
+Table13-2shows the properties ofBevelBorderandSoftBevelBorder. ThebevelType
+property shows whether the border appears raised or lowered. TheborderOpaque
+property istrue by default for a bevel border andfalse for a soft bevel border.
+Figure13-4.Raised and lowered bevel borders
+Figure13-5.The four colors of a bevel border
+HighlightOuterColor
+HighlightInnerColor
+ShadowOuterColor
+ShadowInnerColor
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+412 | Chapter 13: Borders
+Constants
+TheBevelBorderandSoftBevelBorderclasses define two constants used to initialize
+thebevelType property, as shown in Table13-3.
+Default colors
+If colors are not specified in the constructor, they are derived from the component
+using the border, as shown in Table13-4. In this table,backgroundrefers to the com-
+ponent’s background color.
+Figure13-6.Soft bevel borders in Swing
+Table13-2.BevelBorder and SoftBevelBorder properties
+Property Data type
+get
+is
+setDefault value
+bevelType int • BevelBorder.RAISED
+borderOpaqueo boolean • See text
+highlightInnerColor1.3 Color • See Table 13-4
+highlightOuterColor1.3 Color • See Table 13-4
+shadowInnerColor1.3 Color • See Table 13-4
+shadowOuterColor1.3 Color • See Table 13-4
+1.3since 1.3, ooverridden
+Table13-3.BevelBorder and SoftBevelBorder constants
+Constant Data type Definition
+RAISED int Raised bevel border
+LOWERED int Lowered bevel border
+Table13-4.Default colors for bevel borders
+Property Color
+highlightOuterColorbackground.brighter().brighter()
+highlightInnerColorbackground.brighter()
+shadowOuterColor background.darker().darker()
+shadowInnerColor background.darker()
+

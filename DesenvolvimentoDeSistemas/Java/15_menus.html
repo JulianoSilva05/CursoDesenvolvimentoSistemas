@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 15: Menus e Barras de Ferramentas</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Aula 15: Menus e Barras de Ferramentas</h1>
+            <h2>JMenuBar, JToolBar, KeyStroke</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 15</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Acesso Rápido e Atalhos</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Conceitos Fundamentais -->
+        <div class="slide">
+            <h2>Conceitos Fundamentais (Teoria)</h2>
+            <div class="grid-layout">
+                
+                <div class="grid-item">
+                    <h3>JToolBar</h3>
+                    <p>Barra de botões com ícones (arrastável por padrão).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Aceleradores</h3>
+                    <p>Atalhos globais (Ctrl+S) configurados via <code>setAccelerator</code>.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Separadores</h3>
+                    <p>Linhas visuais para agrupar itens de menu.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>JCheckBoxMenuItem</h3>
+                    <p>Item de menu que funciona como toggle (ligar/desligar).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Aprofundamento -->
+        <div class="slide">
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. Aceleradores de Teclado</h3>
+            <p>Diferente de mnemônicos (navegação visual), aceleradores disparam a ação diretamente.</p>
+            <div class="code-block">
+            sair.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_F4, ActionEvent.ALT_MASK));
+            </div>
+            
+            <h3>2. Barra de Ferramentas</h3>
+            <p>Geralmente duplicam as ações mais comuns do menu. Devem usar ícones claros.</p>
+        
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
+            <div class="code-block">
+// ToolBar
+JToolBar tools = new JToolBar();
+JButton btnSave = new JButton(new ImageIcon("save.png"));
+tools.add(btnSave);
+add(tools, BorderLayout.NORTH);
+
+// Menu com Checkbox
+JCheckBoxMenuItem grade = new JCheckBoxMenuItem("Exibir Grade");
+grade.addActionListener(e -> toggleGrade(grade.isSelected()));
+menuExibir.add(grade);
+            </div>
+        </div>
+
+        <!-- Slide 5: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Crie um 'Editor de Texto Completo'. Menu (Arquivo -> Sair, Editar -> Copiar/Colar). Toolbar com botões de ícone. Área de texto no centro.
+            </div>
+            
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
+            </div>
+
+            <textarea id="activity-15" class="code-input">
+/*
+ * ATIVIDADE PRÁTICA - AULA 15
+ * Tempo estimado: 60 minutos
+ */
+
+import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File; 
+
+public class EditorFinal extends JFrame {
+    public EditorFinal() {
+        super("Super Editor");
+        setSize(600, 500);
+        
+        // 1. JMenuBar com Arquivo e Editar
+        // 2. Atalhos (Ctrl+C, Ctrl+V)
+        // 3. JToolBar com botões equivalentes
+        // 4. JTextArea no Center
+    }
+    public static void main(String[] args) { new EditorFinal().setVisible(true); }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final -->
+        <div class="slide">
+            <h2>Aula Concluída!</h2>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-15': [
+                { id: 'tool', text: 'Criar JToolBar', pattern: /JToolBar/ },
+{ id: 'key', text: 'Definir Acelerador (KeyStroke)', pattern: /KeyStroke/ },
+{ id: 'check', text: 'Menu Checkbox', pattern: /JCheckBoxMenuItem/ }
+            ]
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1248 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+82 | Chapter 3: Swing Component Basics
+public void remove(KeyStroke keyStroke)
+Remove the mapping defined for the specifiedkeyStrokefrom thisInputMap.
+Looking up thatkeyStrokein the future returns a value that is determined by the
+parentchain (which isnotaffected by this method). If you want to “block” a
+mapping in a sharedInputMapthat is part of yourparentchain, define a map-
+ping for thatKeyStroketo the stringnone. By convention, there is never anAction
+associatedwithnoneinanyActionMap, so its presencein yourInputMapcauses the
+parent check to be skipped without allowing any action to take place.
+public int size()
+Return the number of mappings defined in thisInputMap(not counting any that
+might be defined in theparentchain). For a new or newly clearedInputMap, this
+returns0.
+The ActionMap Class
+ActionMapis responsible for mapping logical action names to concreteAction
+instances that carry them out. When the user types a key combination, it’s looked up
+in theInputMapof a component, and the result is looked up as a key in the corre-
+spondingActionMap.
+Although any object can be used as a key in anActionMap, in practice they are
+Strings. By convention, their content is a descriptive name for the action to be per-
+formed (such ascopy, print, save, or the like), often obtained by callinggetName()
+on the correspondingAction.
+ActionMaps can be chained together so that common functionality can be shared in a
+basicActionMap; specialized components can add unique actions to their own
+ActionMapand delegate the common cases to the shared map through theparent
+property.
+A component’sActionMapcan also be used to configure auditory cues to be played at
+appropriate points by the component, as described in Chapter26.
+Property
+The single property defined byActionMapis shown in Table3-11. Theparentprop-
+erty establishes a fallbackActionMapthat is consulted if an action name is not found
+in the current map, much as the inheritance chain is followed when looking up the
+members of Java classes. If you create a cycle in theparentchain (for example, by
+setting twoActionMapsto beparents of each other), many of the method calls crash
+with aStackOverflowError.
+Table3-11.ActionMap property
+Property Data type
+get
+is
+set Default value
+parent ActionMap •• null
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Responding to Keyboard Input | 83
+Constructor
+public ActionMap()
+The default constructor is the only constructor available. It creates an empty
+ActionMap with noparent.
+Methods
+public Object[] allKeys()
+Return an array of all logical action names defined in theActionMap, either
+directly or anywhere along theparentchain. If there are no mappings, this
+method returns either an empty array ornull, depending on the history of the
+ActionMap(s). Each key appears only once even if it overrides another on the par-
+ent chain.
+public void clear()
+Remove all action mappings from the localActionMap(does not affect any in the
+parent chain).
+public Action get(Object key)
+Look up the specified action name in theActionMap(and theparentchain),
+returning the correspondingActionto be executed. If no match is found, returns
+null. The keys are often obtained by looking up aKeyStroke in anInputMap.
+public Object[] keys
+Return an array of the logical action names locally defined in thisActionMap.
+That is to say, it doesnotfollow theparentchain. If there are no mappings, this
+returns either an empty array ornull, depending on the history of theActionMap.
+public void put(Object key, Action action)
+Define a new mapping for the specifiedaction. Future calls to theget()method
+return it as theActionassociated with the logical namekey. By convention,key
+should be aStringwhose value is descriptive of the action. AppendixB lists the
+standardActionMapkeys supported by Swing components; your own classes can
+use these as well, or define their own, as appropriate. Passing anull keyhas the
+same effect as callingremove(action).
+public void remove(Object Key)
+Remove the mapping defined for the specifiedkeyfrom thisActionMap. Looking
+up that logical action name in the future returns a value determined by the
+parent chain (which isnot affected by this method).
+public int size()
+Return the number of mappings defined in thisActionMap(not counting any that
+might be defined in theparentchain). For a new or newly clearedActionMap, this
+method returns0.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+84
+Chapter4In this chapter:
+• Labels
+• Working with Images
+• Support for HTML
+• Icons
+• Implementing Y our Own Icons
+• Dynamic Icons
+• The ImageIcon Class
+CHAPTER 4
+Labels and Icons
+We’ll begin our look at the Swing components with theJLabelclass. In addition,
+we’ll look at Swing’sIconinterface and an implementation of this interface called
+ImageIcon. With just these few constructs, you’ll begin to see how Swing aids in the
+sophisticated UI development in Java.
+Labels
+Swing allows you to create labels that can contain text, images, or both. We’ll begin
+this chapter with a look at theJLabel class.
+TheJLabelclass allows you to add basic, noninteractive labels to a user interface.
+Because of its inherent simplicity, there is no model class forJLabel. Figure4-1
+shows a class diagram forJLabel. We’ll get into the two relationships toIcona little
+later.
+JLabelobjects may consist of both text and graphics (icons), but for simple text-only
+labels, the interface withJLabelis very similar to that ofjava.awt.Label. The code to
+create and display a very simple text label looks like this:
+Figure4-1.JLabel class diagram
+0..1
+0..1
+Key:
+javax.swing
+has defaultIcon
+SwingConstants
+JLabelJComponent Icon
+has disabledIcon
+Interface Class Abstract Class
+extends
+implements
+other relation
+A
+A
+accessible
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Labels | 85
+// SimpleJLabelExample.java
+//
+import javax.swing.*;
+public class SimpleJLabelExample {
+  public static void main(String[] args) {
+    JLabel label = new JLabel("A Very Simple Text Label");
+    JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    frame.getContentPane().add(label); // Adds to CENTER
+    frame.pack();
+    frame.setVisible(true);
+  }
+}
+Running this simple program produces the display shown in Figure4-2.
+Properties
+TheJLabelclass contains the properties shown in Table4-1. Theiconand
+disabledIconproperties specify the icon to be displayed by default and when the
+label is disabled, respectively. If aniconis specified without adisabledIcon,a
+disabledIconis automatically created by converting the defaulticonto grayscale.
+Thefontproperty is shown in this table only because thesetFont()method is over-
+ridden to callrepaint() after callingsuper.setFont().
+Figure4-2.A simple JLabel
+Table4-1.JLabel properties
+Property Data type
+get
+is
+set Default value
+UI LabelUI •• From L&F
+UIClassIDo String "LabelUI"
+accessibleContexto AccessibleContext• JLabel.AccessibleJLabel
+disabledIconb Icon •• null
+displayedMnemonicb int •• KeyEvent.VK_UNDEFINED
+displayedMnemonicIndex1.4, b int -1
+fonto Font •• From L&F
+horizontalAlignmentb int •• LEADING1.3
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+86 | Chapter 4: Labels and Icons
+displayedMnemonicindicates the character to be used as an accelerator key, which
+typically means that an occurrence of this character is decorated with an underline in
+the label text.displayedMnemonicIndexis the index of the character that receives the
+decoration; it is set automatically to the first occurrence of thedisplayedMnemonic
+character in the label text. You can override this behavior by setting
+displayedMnemonicIndexto another index, or to-1 to force no decoration. (L&Fs are
+not technically required to honor thedisplayedMnemonicIndexproperty, but most of
+them do.)
+ThedisplayedMnemonicproperty isintbecause its value is intended to be
+one of theVK_ “virtual keycode” constants defined injava.awt.KeyEvent
+(see Table27-6). However, asetDisplayedMnemonic()method, which takes
+acharis also defined. It’s usually easier to callsetDisplayedMnemonic('a')
+than it is to callsetDisplayedMnemonic(KeyEvent.VK_A). If you use thechar
+version, it doesn’t matter if you specify an uppercase or lowercase character.
+If thelabelForproperty has been set, the referenced component gains focus when
+the mnemonic is pressed in conjunction with the Alt key.*One common use of this
+feature is to apply mnemonics to labels appearing next to text fields, allowing the
+fields to gain focus when the shortcut key is pressed. We’ll see an example of this
+strategy later in this section.
+The
+horizontalAlignmentandverticalAlignmentproperties are used to specify the
+alignment of the label’s content (text and icon) within its interior. If a label is sized to
+be just large enough for its content (asFlowLayoutdoes), setting these properties
+makes no difference. The values for these properties are defined inSwingConstants
+horizontalTextPositionb int •• TRAILING1.3
+iconb Icon •• null
+iconTextGapb int •• 4
+labelForb Component •• null
+textb String •• null
+verticalAlignmentb int •• CENTER
+verticalTextPositionb int •• CENTER
+* ThisisactuallyuptotheL&F,buttheBasicL&Fimplementsitthisway,andnoneoftheotherSwingL&Fs
+change this behavior. On the Macintosh, the Option key is used for Alt; newer keyboards have both labels.
+Table4-1.JLabel properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Labels | 87
+and must beLEADING, TRAILING, LEFT, RIGHT,o rCENTER forhorizontalAlignment, and
+TOP, BOTTOM,o rCENTER forverticalAlignment. TheLEADING andTRAILING constants
+were introduced in SDK 1.3 to accommodate locales in which text does not flow left-
+to-right. In the default locale,LEADING acts the same asLEFT, andTRAILING acts the
+same asRIGHT. In right-to-left locales, they are reversed. Prior to the introduction of
+these values,horizontalAlignmentdefaulted toLEFT, andhorizontalTextPosition
+defaulted toRIGHT.
+horizontalTextPosition,verticalTextPosition, andiconTextGapare meaningful only
+if bothiconandtextare defined. They designate the position of the label’s text rela-
+tive to its icon. Like the alignment properties, the valid values for the text position
+properties are
+LEFT, RIGHT, TOP, BOTTOM, andCENTER. (We’ll cover these properties in
+more detail in the sections that follow.) TheiconTextGapproperty reflects the space
+(in pixels) between the label’s icon and text. Note thatJLabelimplements
+SwingConstants, so you can refer to the constant values listed in this paragraph as
+eitherSwingConstants.XYZ orJLabel.XYZ—whichever you prefer.
+TheUI property holds a reference to theLabelUI object used to render the label.
+displayedMnemonic and labelFor properties
+The following example shows how thedisplayedMnemonicandlabelForproperties
+can be used to direct focus to a component based on the mnemonic assigned to a
+label. All we do here is create three labels and three text fields, assigning one field to
+each label:
+// MnemonicLabels.java
+//
+import javax.swing.*;
+import java.awt.*;
+// Shows how displayedMnemonic and labelFor properties work together
+public class MnemonicLabels {
+  public static void main(String[] args) {
+    JTextField firstField = new JTextField(10);
+    JTextField middleField = new JTextField(10);
+    JTextField lastField = new JTextField(10);
+    // Create labels and mnemonics.
+    JLabel firstLabel = new JLabel("First Name", JLabel.RIGHT);
+    firstLabel.setDisplayedMnemonic('F');
+    firstLabel.setLabelFor(firstField);
+    JLabel middleLabel = new JLabel("Middle Initial", JLabel.RIGHT);
+    middleLabel.setDisplayedMnemonic('I');
+    middleLabel.setDisplayedMnemonicIndex(7); // Requires 1.4
+    middleLabel.setLabelFor(middleField);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+88 | Chapter 4: Labels and Icons
+    JLabel lastLabel = new JLabel("Last Name", JLabel.RIGHT);
+    lastLabel.setDisplayedMnemonic('L');
+    lastLabel.setLabelFor(lastField);
+    // Layout and display
+    JPanel p = new JPanel();
+    p.setLayout(new GridLayout(3, 2, 5, 5));
+    p.add(firstLabel);
+    p.add(firstField);
+    p.add(middleLabel);
+    p.add(middleField);
+    p.add(lastLabel);
+    p.add(lastField);
+    JFrame f = new JFrame("MnemonicLabels");
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setContentPane(p);
+    f.pack();
+    f.setVisible(true);
+  }
+}
+When executed, this example produces the display shown in Figure4-3. The first let-
+terineachlabelisunderlined,basedontheassignedmnemonic.PressingAlt-F,Alt-I,
+or Alt-L causes focus to shift to the corresponding text field.
+Note that calling
+middleLabel.setDisplayedMnemonicIndex(7)is incompatible with
+SDKs prior to 1.4, so remove that line of code if you want the program to run on
+older SDKs without throwing aNoSuchMethodError. Doing so will decorate the lower-
+case “i” in “Middle” instead of the uppercase “I” in “Initial,” though.
+Alignment
+The following example shows the effects ofJLabel horizontal and vertical alignment:
+// AlignmentExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class AlignmentExample {
+  public static void main(String[] args) {
+Figure4-3.JLabels with mnemonics
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Labels | 89
+    // Create the labels and set alignment.
+    JLabel label1 = new JLabel("BottomRight", SwingConstants.RIGHT);
+    JLabel label2 = new JLabel("CenterLeft", SwingConstants.LEFT);
+    JLabel label3 = new JLabel("TopCenter", SwingConstants.CENTER);
+    label1.setVerticalAlignment(SwingConstants.BOTTOM);
+    label2.setVerticalAlignment(SwingConstants.CENTER);
+    label3.setVerticalAlignment(SwingConstants.TOP);
+    // Add borders to the labels (more on Borders later in the book).
+    label1.setBorder(BorderFactory.createLineBorder(Color.black));
+    label2.setBorder(BorderFactory.createLineBorder(Color.black));
+    label3.setBorder(BorderFactory.createLineBorder(Color.black));
+    // Put it all together.
+    JFrame frame = new JFrame("AlignmentExample");
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JPanel p = new JPanel(new GridLayout(3, 1, 8, 8));
+    p.add(label1);
+    p.add(label2);
+    p.add(label3);
+    p.setBorder(BorderFactory.createEmptyBorder(8, 8, 8, 8));
+    frame.setContentPane(p);
+    frame.setSize(200,200);
+    frame.setVisible(true);
+  }
+}
+Figure4-4 shows the result of running this program.
+Ifyou’refamiliarwithpre-Swingjava.awt.Labels,you’llappreciatetheabilitytospec-
+ify a vertical alignment; thejava.awt.Labelclass sets only horizontal alignment. (A
+java.awt.Label’s horizontal alignment can be set via an argument to its constructors.
+Because theJLabelconstructors are modeled after those ofjava.awt.Label, theJLabel
+class provides the same type of flexibility and has constructors that support specify-
+ing the horizontal position of the label. In contrast, the vertical position of aJLabel
+can be set only through thesetVerticalAlignment() method.)
+Figure4-4.JLabel alignment
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+90 | Chapter 4: Labels and Icons
+Working with Images
+JLabelsmakeitverysimpletoaddgraphicstoyouruserinterface.ImagesusedinJLabels
+(and also in other Swing components, such as buttons) are of typejavax.swing.Icon,a n
+interface described in detail in the next section.
+These two lines of code show how simple it is to create a label containing an image:
+ImageIcon icon = new ImageIcon("images/smile.gif");
+JLabel label = new JLabel(icon);
+For labels that contain both graphics and text, Swing provides considerable flexibil-
+ity with respect to the relative location of the text and image. The text for the label
+may be displayed at any one of nine locations relative to the image. These locations
+are specified via the
+setVerticalTextPosition()andsetHorizontalTextPosition()
+methods, which take values from theSwingConstantsclass discussed earlier. Note the
+distinction between the label’s text position and its alignment; text position reflects
+the position of the text relative to the image while alignment specifies the location of
+the label’s contents (image and text) relative to the borders of the label.
+Another useful feature of the
+JLabelclass is the ability to enable and disable the label
+by “graying out” the label and text. By default, a call toJLabel.setEnabled(false)
+switches the image to an automatically generated grayscale version of the original
+image and alters the text rendering in some (L&F-specific) way. However, the gray-
+scale image is used only if no disabled icon has been set. The
+setDisabledIcon()
+method can be used to set an alternate image for the disabled label.
+Additionally, the spacing between the image and the text can be specified by a call to
+setIconTextGap(), which takes a single parameter specifying the number of pixels
+between the image and the icon. This setting has no effect if both the horizontal and
+vertical text positions are set toSwingConstants.CENTERsince, in this case, the text is
+placed directly over the image.
+Figure4-5 shows a group of labels with text and images, with the text at each of the
+nine locations relative to the image. Labels 0 and 1 are disabled, the first one using
+the default disabled image and the second one using an explicitly specified alternate
+image. Labels 2and 3 show nondefault text gap settings. Here’s the source code that
+produces these labels:
+// ImageLabelExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class ImageLabelExample {
+  private static Icon icon = new ImageIcon("images/smile.gif");
+  public static void main(String[] args) {
+    JLabel[] labels= new JLabel[9];
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Working with Images | 91
+    labels[0] = makeLabel(JLabel.TOP, JLabel.LEFT);
+    labels[1] = makeLabel(JLabel.TOP, JLabel.CENTER);
+    labels[2] = makeLabel(JLabel.TOP, JLabel.RIGHT);
+    labels[3] = makeLabel(JLabel.CENTER, JLabel.LEFT);
+    labels[4] = makeLabel(JLabel.CENTER, JLabel.CENTER);
+    labels[5] = makeLabel(JLabel.CENTER, JLabel.RIGHT);
+    labels[6] = makeLabel(JLabel.BOTTOM, JLabel.LEFT);
+    labels[7] = makeLabel(JLabel.BOTTOM, JLabel.CENTER);
+    labels[8] = makeLabel(JLabel.BOTTOM, JLabel.RIGHT);
+    // Disable label 0.
+    labels[0].setEnabled(false);
+    // Disable label 1 with a disabled icon.
+    labels[1].setDisabledIcon(new ImageIcon("images/no.gif"));
+    labels[1].setEnabled(false);
+    // Change text gap on labels 2 and 3.
+    labels[2].setIconTextGap(15);
+    labels[3].setIconTextGap(0);
+    // Add the labels to a frame and display it.
+    JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container c = frame.getContentPane();
+    c.setLayout(new FlowLayout(FlowLayout.CENTER, 3, 3));
+    for (int i=0;i<9;i++)
+      c.add(labels[i]);
+    frame.setSize(350,150);
+    frame.setVisible(true);
+  }
+  protected static JLabel makeLabel(int vert, int horiz) {
+    JLabel l = new JLabel("Smile", icon, SwingConstants.CENTER);
+    l.setVerticalTextPosition(vert);
+    l.setHorizontalTextPosition(horiz);
+    l.setBorder(BorderFactory.createLineBorder(Color.black));
+    return l;
+  }
+}
+Figure4-5.JLabel text position and properties
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+92 | Chapter 4: Labels and Icons
+Don’t worry if you don’t understand everything we did in this example. We’ll
+explain icons in more detail in this chapter and will get to borders and frames later in
+the book. For now, just concentrate on the various properties we set on the different
+labels and compare the code to the display it produced in Figure4-5.
+Events
+The only events explicitly fired byJLabel arePropertyChangeEvents.
+Constant
+JLabeldefines a single constant, shown in Table 4-2. A client property set with this
+constant as a key is used byJComponent.AccessibleJComponentto derive a name for
+components that haven’t explicitly set one. If the component has a defined
+LABELED_BY_PROPERTY, the text from theJLabelreferenced by the property value is
+used as the accessible name of the component.
+Constructors
+JLabel()
+Create a label with no text or icon.
+JLabel(Icon image)
+JLabel(Iconimage, inthorizontalAlignment)
+Createlabelsdisplayingthegivenicon.Thehorizontalalignmentdefaultsto
+CENTER.
+If specified, it must be one of the following values taken fromSwingConstants:
+LEADING,TRAILING,LEFT,RIGHT, orCENTER.
+JLabel(String text)
+JLabel(String text, inthorizontalAlignment)
+Create labels displaying the supplied
+text. If specified, the horizontal alignment
+must be one of the following values taken fromSwingConstants: LEADING,
+TRAILING,LEFT,RIGHT, orCENTER.
+JLabel(String text, Icon image, int horizontalAlignment)
+Create a label with animage,text, and specified horizontal alignment. The hori-
+zontal alignment must be one of the following values taken fromSwingConstants:
+LEADING,TRAILING,LEFT,RIGHT, orCENTER.
+Table4-2.JLabel constant
+Constant Type Description
+LABELED_BY_PROPERTY String Client property key used as a back-pointer by thelabelFor property
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Support for HTML | 93
+Public Method
+public void setDisplayedMnemonic(char mnemonic)
+A convenient way to set themnemonicproperty by passing in achar(instead of
+the property’s actual type,int). The character is converted to the equivalent
+integer “virtual keycode” (defined in thejava.awt.KeyEventclass) and passed to
+the othersetDisplayedMnemonic() method.
+Support for HTML
+The use of HTML is supported by most Swing components. For example, it is possi-
+ble to use HTML markup to create multiline and multifont labels:
+JLabel label = new JLabel("<html>line 1<p><font color=blue size=+2>"
+                         + "big blue</font> line 2<p>line 3</html>");
+There are a number of things to watch out for when taking advantage of Swing’s
+HTML support:
+• The text is interpreted as HTML only if the first six characters are<html>(case
+doesn’t matter).
+• The font of components using HTML may not match that of components that
+don’t.
+• Bad HTML may throwRuntimeExceptions, so test your code thoroughly. (Older
+SDKs are especially fragile in this respect. SDK 1.2can’t even handle an
+unknown tag.)
+• There is no good way to determine if a particular component supports HTML
+programmatically.
+• XHTML-style self-closing tags (such as
+<br />) insert a spurious> character into
+the output, at least as of SDK 1.4.1.
+• SDKs prior to 1.3 are unable to size properly in the presence of<br>tags, so for
+maximum compatibility use<p>tags instead. Newer SDKs treat the two tags
+identically.
+HTML support keeps improving with each release of Swing, but serious bugs
+remain. Slightly older releases are riddled with bugs in their HTML implementa-
+tions. (Versions 1.1 and earlier don’t support HTML at all. The
+JLabelwould be dis-
+played as 77 characters of verbatim text, just like thejava.awt.Label in Figure4-6.)
+As of SDK 1.4.1 the following components support HTML text:* JLabel, JButton,
+JToggleButton, JCheckBox, JRadioButton, JMenu, JMenuItem, JCheckBoxMenuItem,
+* The list for 1.3 is the same, but with several more sizing problems. 1.2does not support HTML with
+JToggleButton,JCheckBox, orJRadioButton.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+94 | Chapter 4: Labels and Icons
+JRadioButtonMenuItem, JComboBox, JList, the tabs ofJTabbedPane, JTable,*JTree, and
+JToolTip. (And, of course,JEditorPanewas designed to support HTML from day
+one.)
+Icons
+Swing introduces the concept of an icon for use in a variety of components. TheIcon
+interface andImageIcon class make dealing with simple images extremely easy.
+TheIconinterface is very simple, specifying just three methods used to determine the
+size of theIconand display it. Implementations of this interface are free to store and
+display the image in any way, providing a great deal of flexibility. In other words,
+icons don’t have to be bitmaps or GIF images, but are free to render themselves any
+way they choose. As we’ll see later, an icon can simply draw on the component if
+that’s more efficient. The examples at the end of this section show a couple of differ-
+ent ways the interface might be implemented.
+Properties
+TheIconinterface defines the properties listed in Table4-3. TheiconHeightand
+iconWidth properties specify the size of theIcon in pixels.
+Figure4-6.A JLabel and a java.awt.Label displaying the same text
+* HTML works in table rows and in the table header, but as of SDK 1.4.1, neither is automatically resized if
+theHTMLneedsmoreverticalspacethanasinglelineofplaintext.Youmighthavetomanuallyresizethem.
+Table4-3.Icon properties
+Property Data type
+get
+is
+set Default value
+iconHeight int •
+iconWidth int •
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Implementing Your Own Icons | 95
+Method
+public void paintIcon(Component c, Graphics g, int x, int y)
+Paint theIconat the specified location on the givenGraphics. For efficiency rea-
+sons, theGraphicsobject will (probably) not be clipped, so be sure not to draw
+“outside the lines.” You must make sure to keep your horizontal position
+betweenxandx + getIconWidth() - 1, and your vertical position betweenyand
+y + getIconHeight() - 1while painting. TheComponentis provided to allow its
+properties (such as foreground or background color) to be used when painting
+or so it can be used as an image observer (see “The ImageIcon Class” later in
+this chapter).
+Implementing Your Own Icons
+Here’s a class that implements theIcon interface and uses ovals as simple icons:
+// OvalIcon.java
+//
+import javax.swing.*;
+import java.awt.*;
+// A simple icon implementation that draws ovals
+public class OvalIcon implements Icon {
+  private int width, height;
+  public OvalIcon(int w, int h) {
+    width = w;
+    height = h;
+  }
+  public void paintIcon(Component c, Graphics g, int x, int y) {
+    g.drawOval(x, y, width-1, height-1);
+  }
+  public int getIconWidth() { return width; }
+  public int getIconHeight() { return height; }
+}
+A simple class that creates a few labels shows how it works:
+// TestOval.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class TestOval {
+  public static void main(String[] args) {
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+96 | Chapter 4: Labels and Icons
+    JLabel label1 = new JLabel(new OvalIcon(20,50));
+    JLabel label2 = new JLabel(new OvalIcon(50,20));
+    JLabel label3 = new JLabel("Round!", new OvalIcon(60,60), SwingConstants.CENTER);
+    label3.setHorizontalTextPosition(SwingConstants.CENTER);
+    Container c = f.getContentPane();
+    c.setLayout(new FlowLayout());
+    c.add(label1);
+    c.add(label2);
+    c.add(label3);
+    f.pack();
+    f.setVisible(true);
+  }
+}
+Running this test program produces the display shown in Figure4-7.
+Dynamic Icons
+Icons are under no obligation to paint themselves the same way every time they are
+displayed. It’s perfectly reasonable (and often quite useful) to have an icon that uses
+some sort of state information to determine how to display itself. In the next exam-
+ple, we create two sliders (
+JSlideris explained in detail in Chapter6) that can be
+used to change the width and height of a dynamic icon:
+// DynamicIconExample.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+// Example of an icon that changes form.
+public class DynamicIconExample {
+  public static void main(String[] args) {
+    // Create a couple of sliders to control the icon size.
+    final JSlider width = new JSlider(JSlider.HORIZONTAL, 1, 150, 75);
+    final JSlider height = new JSlider(JSlider.VERTICAL, 1, 150, 75);
+Figure4-7.OvalIcon labels
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Dynamic Icons | 97
+    // A little icon class that uses the current slider values
+    class DynamicIcon implements Icon {
+      public int getIconWidth() { return width.getValue(); }
+      public int getIconHeight() { return height.getValue(); }
+      public void paintIcon(Component c, Graphics g, int x, int y) {
+        g.fill3DRect(x, y, getIconWidth(), getIconHeight(), true);
+      }
+    };
+    Icon icon = new DynamicIcon();
+    final JLabel dynamicLabel = new JLabel(icon);
+    // A listener to repaint the icon when sliders are adjusted
+    class Updater implements ChangeListener {
+      public void stateChanged(ChangeEvent ev) {
+        dynamicLabel.repaint();
+      }
+    };
+    Updater updater = new Updater();
+    width.addChangeListener(updater);
+    height.addChangeListener(updater);
+    // Lay it all out.
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container c = f.getContentPane();
+    c.setLayout(new BorderLayout());
+    c.add(width, BorderLayout.NORTH);
+    c.add(height, BorderLayout.WEST);
+    c.add(dynamicLabel, BorderLayout.CENTER);
+    f.setSize(210,210);
+    f.setVisible(true);
+  }
+}
+Figure4-8 shows the dynamic icon in its initial state, and then after we’ve moved the
+sliders around a bit.
+The important thing to notice is that theDynamicIconclass does not actually store
+any information. In this case, we made theIconclass an inner class, giving it direct
+access to the sliders. Whenever the icon is told to paint itself, it gets its width and
+height from the values of the sliders. You could also choose to make yourIconclass
+an event listener and have it update itself according to changes in certain events. The
+options here are wide open.
+No matter how your icon gets its data, you need to make sure that any time you
+want to change the way it looks, you trigger a repaint of the icon. In this example,
+we’ve done this by listening to change events from the sliders and calling
+repaint()
+on the label that’s holding the icon whenever one of the sliders changes.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+98 | Chapter 4: Labels and Icons
+The ImageIcon Class
+Swing provides a concrete implementation of theIconinterface that is considerably
+more useful than ourOvalIconclass.ImageIconuses ajava.awt.Imageobject to store
+and display any graphic and provides synchronous image loading (i.e., theImageis
+loaded completely before returning), makingImageIcons very powerful and easy to
+use. You can even use anImageIconto display an animated GIF89a, making the ubiq-
+uitous “animation applet” as simple as this:
+// AnimationApplet.java
+//
+import javax.swing.*;
+// A simple animation applet
+public class AnimationApplet extends JApplet {
+  public void init() {
+    ImageIcon icon = new ImageIcon("images/rolling.gif");  // Animated gif
+    getContentPane().add(new JLabel(icon));
+  }
+}
+All we did here was load an animated GIF in theinit()method and then add it to
+the applet. For more information onJApplet, see Chapter8.
+ImageIconcurrently supports the JPEG, GIF (including animation and transpar-
+ency), PNG, and XBM image formats. TIFF support should be coming soon. SVG
+might be supported eventually.
+Properties
+TheImageIconclass defines the properties listed in Table4-4. Thedescriptionprop-
+erty allows an arbitrary description of the image to be specified. One possible use of
+this property might be to give a blind user an audio description of the image.
+Figure4-8.A dynamic icon’s size is controlled by the sliders
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The ImageIcon Class | 99
+TheiconHeightandiconWidthproperties default to–1if no image is loaded by the
+constructor, while theimageproperty simply contains theImageobject rendered by
+the icon.ImageLoadStatusindicates the success or failure of the image load process
+using the constants defined injava.awt.MediaTracker(ABORTED,ERRORED,o rCOMPLETE).
+The default for this property is0, which does not map to any of these constants.
+TheimageObserverproperty contains theImageObserverthat should receive notifica-
+tions of changes to the image. If this property isnull(as it is by default), the compo-
+nent containing the icon will be treated as the image observer when the image is
+painted.
+Figure4-9 shows a class diagram forImageIcon and the classes related to it.
+Serialization
+Like most Swing classes,ImageIconimplementsSerializable. The keen observer may
+see a problem with this: thejava.awt.Imageclass used byImageIconisnotserializ-
+able. By default, this would keepImageIconobjects from serializing properly. The
+Table4-4.ImageIcon properties
+Property Data type
+get
+is
+set Default value
+description String •• null
+iconHeighto int • -1
+iconWidtho int • -1
+image Image •• null
+imageLoadStatus int • 0
+imageObserver ImageObserver •• null
+ooverridden
+Figure4-9.ImageIcon class diagram
+java.awt.image
+Image
+uses
+javax.swing
+Icon ImageIcon
+java.awt
+MediaTracker
+displays
+ImageObservernotifies
+0..1
+0..1
+1
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+100 | Chapter 4: Labels and Icons
+good news is thatImageIconimplements its ownreadObject()andwriteObject()
+methods so that the pixel representation of the image is stored and retrieved correctly.
+Constructors
+ImageIcon()
+Create an uninitializedImageIcon.
+ImageIcon(Image image)
+ImageIcon(Image image, String description)
+CreateImageIconobjects from an existing image. A textual description of the
+image may be provided. If no description is provided, an attempt is made to
+retrieve the “comment” property from the input
+Image. If this is a non-null
+string, it is used as the description.
+ImageIcon(String filename)
+ImageIcon(String filename, String description)
+Create
+ImageIconobjects from the contents of the specified JPEG, PNG, GIF, or
+XBM file. The image is guaranteed to be completely loaded (unless an error
+occurs) when the constructor returns.
+ImageIcon(URL location)
+ImageIcon(URL location, String description)
+Create
+ImageIconobjects from the contents of the specifiedjava.net.URL. The
+image is guaranteed to be completely loaded (unless an error occurs) when the
+constructor returns.
+public ImageIcon(byte imageData[])
+public ImageIcon(byte imageData[], String description)
+Create
+ImageIconobjects from an array of bytes containing image data in a sup-
+ported format, such as JPEG, PNG, GIF, or XBM.
+User Interface Method
+public void paintIcon(Component c, Graphics g, int x, int y)
+Paint theImageat the specified location on the suppliedGraphics. The given
+Componentis passed to theGraphics’sdrawImage()method as theImageObserver
+(recall thatjava.awt.ComponentimplementsImageObserver) if no image observer
+has been explicitly set.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+101
+Chapter5In this chapter:
+• The ButtonModel Interface
+• The DefaultButtonModel Class
+• The AbstractButton Class
+• The JButton Class
+• The JToggleButton Class
+• The JCheckBox Class
+• The JRadioButton Class
+• The ButtonGroup Class
+CHAPTER 5
+Buttons
+Buttons are simple UI components used to generate events when the user presses
+them. Swing buttons can display icons, text, or both. In this section, we’ll introduce
+the
+ButtonModelinterface andDefaultButtonModelclass (which define the state of the
+button). Next, we’ll look at theAbstractButtonclass (which defines much of the
+functionality for all button types). Finally, we’ll look at four concrete subclasses of
+AbstractButton and see how they can be grouped together using aButtonGroup.
+Figure5-1showstheclasshierarchy,withsignificantrelationshipsbetweenthebutton-
+related Swing classes. As we discussed in the introductory chapters, each button
+(
+AbstractButton) keeps a reference to aButtonModel, which represents its state.
+TheJMenuItemclass shown here (and its subclasses, not shown) is not covered in this
+chapter; see Chapter14 for details.
+The ButtonModel Interface
+The state of any Swing button is maintained by aButtonModelobject. This interface
+defines methods for reading and writing a model’s properties and for adding and
+removing various types of event listeners.
+Properties
+ThepropertiesfortheButtonModelinterfacearelistedinTable5-1.TheactionCommand
+property specifies the name of the command to be sent as part of theActionEventthat
+is fired when the button is pressed. This can be used by event handlers that are listen-
+ing to multiple buttons to determine which button is pressed.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+102 | Chapter 5: Buttons
+If noactionCommandis specified, anActionEventtakes the button’s text for its com-
+mand string, so it is usually not necessary to specify an explicitactionCommand. You
+may find it useful to do so for buttons that have icons but no text or for multiple but-
+tons with the same text.actionCommandproperties can also be handy for internation-
+alization. For example, if you need to change a button’s text from"Hot"to
+"Caliente", you won’t have to change any event-handling code if you set the
+actionCommand to"Hot".
+Figure5-1.Button class diagram
+Table5-1.ButtonModel properties
+Property Data type
+get
+is
+set Default value
+actionCommand String ••
+armed boolean ••
+enabled boolean ••
+group ButtonGroup •
+mnemonic int ••
+pressed boolean ••
+rollover boolean ••
+selected boolean ••
+See alsojava.awt.ItemSelectable.
+java.swing
+java.awt
+ItemSelectable
+SwingConstants
+JComponent JMenuItem
+AbstractButton JButton
+JToggleButton
+ButtonModel
+contains
+1
+ButtonGroup
+groups
+0..*
+DefaultButtonModel JToggleButton.
+ToggleButtonModel
+JRadioButton
+JCheckBox
+Action
+configures
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+A
+A
+MenuElement
+*
+0..1
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The ButtonModel Interface | 103
+Thegroupproperty refers to theButtonGroupthat contains the button (if any).
+mnemoniccontains the key that can be pressed in conjunction with a L&F-specific
+modifier key in order to produce the same effect as clicking the button with the
+mouse. The modifier key is currently the Alt* key for all Swing L&Fs.
+The type of themnemonicproperty isintbecause its value is intended
+to be one of theVK_ “virtual keycode” constants defined injava.awt.
+KeyEvent(see Table27-6). However, asetMnemonic()method that
+takes acharis defined inAbstractButton. It’s usually easier to call
+setMnemonic('a')than it is to callsetMnemonic(KeyEvent.VK_A)unless
+you are working with the model directly. If you use thecharversion, it
+doesn’t matter if you specify an uppercase or lowercase character.
+The other properties arebooleanflags that reflect certain aspects of the button’s
+state. The properties are:
+armed
+Indicates whether releasing the button causes an action to be performed. This
+becomes
+falseifthecursorismovedawayfromthebuttonwhilethemousebut-
+ton is still being held down.
+enabled
+Indicates whether the button is currently enabled. A button must be enabled to
+be pressed.
+pressed
+Indicates whether the button is currently being pressed (meaning that the but-
+ton is being held down).
+rollover
+Indicates whether the mouse cursor is currently over the button. This allows an
+alternate image to be displayed.
+selected
+Indicates whether the button is currently selected. This is used only by
+JToggleButtonand its subclasses. This property toggles betweentrueandfalse
+each time the button is clicked.
+Events
+Objects implementing theButtonModelinterface fire action events, change events,
+and item events, as shown in Table5-2.
+* On the Macintosh, the Option key is used for Alt. Newer Mac keyboards have both labels.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+104 | Chapter 5: Buttons
+TheButtonModelinterface contains the following standard methods for maintaining
+event subscribers:
+public void addActionListener(ActionListener l)
+public void removeActionListener(ActionListener l)
+public void addItemListener(ItemListener l)
+public void removeItemListener(ItemListener l)
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+The DefaultButtonModel Class
+SwingprovidesanimplementationoftheButtonModelinterfacecalledDefaultButtonModel.
+This class is used directly by theAbstractButtonclass and indirectly by the other button
+classes.JToggleButtondefines an inner class extendingDefaultButtonModelthat it and its
+descendants use to manage their state data.
+Properties
+TheDefaultButtonModelclass gets most of its properties fromButtonModel. The
+default values set by this class are shown in Table5-3.
+Table5-2.ButtonModel events
+Event Description
+ActionEventThe button is pressed.
+ChangeEventA change has occurred in one or more properties of the button model.
+ItemEvent The button is toggled on or off.
+Table5-3.DefaultButtonModel properties
+Property Data type
+get
+is
+set Default value
+actionCommando String •• null
+armedo boolean •• false
+enabledo boolean •• true
+groupo,* ButtonGroup •• null
+mnemonico int •• KeyEvent.VK_UNDEFINED
+pressedo boolean •• false
+rollovero boolean •• false
+selectedo boolean •• false
+selectedObjects Object[] • null
+ooverridden, *getter was introduced in SDK 1.3
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The DefaultButtonModel Class | 105
+The only property here that does not come from theButtonModelinterface is the
+selectedObjectsproperty.DefaultButtonModelprovides agetSelectedObjects()
+method because it is mandated by theItemSelectableinterface, but it always returns
+null. SDK 1.3 added thegetGroup() method.
+Events
+The events fired byDefaultButtonModelare those required byButtonModeland listed
+in Table 5-2. AnActionEventis fired when the button is pressed, anItemEventis fired
+when the button’s state is changed, and aChangeEventis fired when a change has
+occurred to the button’s properties.
+This class implements the following standard methods:
+public void addActionListener(ActionListener l)
+public void removeActionListener(ActionListener l)
+public ActionListener[] getActionListeners()
+ (added in SDK 1.3)
+public void addItemListener(ItemListener l)
+public void removeItemListener(ItemListener l)
+public ItemListener[] getItemListeners()
+ (added in SDK 1.3)
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+public ChangeListener[] getChangeListeners()
+ (added in SDK 1.3)
+public EventListener[] getListeners(Class listenerType) (added in SDK 1.4)
+Note that theButtonModelproperties are not technically “bound properties” as
+defined by the JavaBeans specification because the lighter-weightChangeEventis sent
+when they change, rather than the standardPropertyChangeEvent.
+Constants
+DefaultButtonModel uses the constants shown in Table5-4 to store internal state.
+.Table5-4.DefaultButtonModel constants
+Constant Type
+ARMED int
+ENABLED int
+PRESSED int
+ROLLOVER int
+SELECTED int
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+106 | Chapter 5: Buttons
+Constructor
+public DefaultButtonModel()
+Instantiates a new model. The model’s properties are shown in Table5-3.
+The AbstractButton Class
+AbstractButtonis an abstract base class for all button components (JButton,
+JToggleButton, JCheckBox, JRadioButton, andJMenuItemand its subclasses). Since it
+provides functionality common to all types of buttons, we’ll cover it here before get-
+ting to the concrete button classes.
+AbstractButtonprovides much of the functionality associated with the interaction
+between the various concrete button classes and theirButtonModelobjects. As we
+mentioned earlier, buttons in Swing can be made up of an image (Icon), text, or
+both. The relative positions of the text and icon are specified exactly as they are with
+the
+JLabel class.
+Image buttons may specify as many as seven different images, allowing the button to
+be displayed differently depending on its current state. The seven icons are described
+in Table5-5, with the other properties defined by
+AbstractButton.
+Properties
+TheAbstractButton class defines the properties shown in Table5-5.
+Table5-5.AbstractButton properties
+Property Data type
+get
+is
+set Default value
+action1.3 Action •• null
+actionCommand String •• null
+borderPaintedb boolean •• true
+contentAreaFilledb boolean •• true
+disabledIconb Icon •• null
+disabledSelectedIconb Icon •• null
+displayedMnemonicIndex1.4 int •• -1
+enabledo boolean •• true
+focusPaintedb boolean •• true
+horizontalAlignmentb int •• CENTER
+horizontalTextPositionb int •• TRAILING1.4
+iconb Icon •• null
+1.3since 1.3, 1.4since 1.4, bbound, ddeprecated, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The AbstractButton Class | 107
+There are seven different icons available for a button. Each is shown when the but-
+ton is in a certain state:*
+icon
+The default icon for the button, ornull for no icon.
+disabledIcon
+The icon shown when the button is disabled. If none is specified, a grayscale ver-
+sion of the default icon is generated automatically.
+selectedIcon
+The icon shown when the button is selected.
+disabledSelectedIcon
+The icon shown when the button is selected and also disabled. If none is speci-
+fied, a grayscale version of the selected icon is generated. If no selected icon is
+set, it uses the value returned by
+getDisabledIcon().
+iconTextGap1.4 int •• 4
+labeld String •• Same astext
+marginb Insets •• null
+mnemonicb int •• KeyEvent.VK_UNDEFINED
+modelb ButtonModel•• null
+multiClickThreshhold1.4 long •• 0
+pressedIconb Icon •• null
+rolloverEnabledb boolean •• false
+rolloverIcon Icon •• null
+rolloverSelectedIconb Icon •• null
+selected boolean •• false
+selectedIconb Icon •• null
+selectedObjects Object[] • null
+textb String •• ""
+UIb ButtonUI •• From L&F
+verticalAlignmentb int •• CENTER
+verticalTextPositionb int •• CENTER
+* Prior to SDK 1.4,disabledSelectedIcon androlloverSelectedIcon were ignored by the Swing L&Fs.
+Table5-5.AbstractButton properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, 1.4since 1.4, bbound, ddeprecated, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+108 | Chapter 5: Buttons
+pressedIcon
+The icon shown while the button is being pressed.
+rolloverIcon
+The icon shown (ifrolloverEnabledistrue) when the cursor is moved over the
+unselected button.
+rolloverSelectedIcon
+The icon shown (ifrolloverEnabledistrue) when the cursor is moved over the
+selected button.
+Thetextproperty contains the text, if any, displayed on the button (note that this
+property replaces the deprecatedlabelproperty). Themodelproperty is the
+ButtonModel containing the state information for the button.
+Setting theactionproperty does a lot of work in one step. The newly attachedAction
+receives anyActionEvents fired by the button, and the previousAction(if any) is
+deregistered. The button almost completely resets its properties based on theAction
+(see theconfigurePropertiesFromAction()method and Table5-8). Furthermore, the
+button registers aPropertyChangeListeneron theActionso it can automatically
+update itself when changes are made to theAction in the future.
+ThehorizontalAlignmentandverticalAlignmentproperties specify where the but-
+ton’s content (text, icon, or both) should be drawn within the button’s borders.
+These properties are significant only when the button is larger than the default size.
+horizontalTextPositionandverticalTextPositionspecifythelocationofthetextrel-
+ative to the icon, andiconTextGapspecifies the amount of space (in pixels) separat-
+ing thetextand theicon. These are meaningful only if both an icon and text have
+been specified.*
+ThemultiClickThreshholdproperty is the length of time (in milliseconds) during
+which multiple mouse clicks are coalesced into a singleActionEvent. A value of0 (the
+default) indicates that each click generates anActionEventno matter how quickly it
+follows its predecessor.
+Themarginproperty specifies the distance between the button’s borders and its con-
+tents (text, icon, or both). However, it’s up to the border implementation to take
+advantage of the value of this property. The Swing L&Fs define borders that take the
+value of
+margininto account, but if you replace a button’s border with one of your
+own, be aware that the margin space is not used unless you access it explicitly in
+your border code.
+borderPaintedindicates whether a border (recall from Chapter3
+thatborderis inherited fromJComponent) should be painted around the button. This
+property is meaningful only if the button actually has a border (it does by default).
+* See “Labels” in Chapter4 for an example of the alignment and text position properties.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The AbstractButton Class | 109
+ThecontentAreaFilledproperty indicates whether the rectangular content area of
+the button should be filled. This should be set tofalseif you want to define an
+image-only button. Note that this is preferable to callingsetOpaque(false)because
+the value of the opaque property for buttons is set by the L&F.focusPaintedindi-
+cates whether something special (such as a dashed line inside the button’s border)
+should be painted to show that the button has focus.
+Finally, therolloverEnabledproperty indicates whether moving the cursor over the
+button should cause therolloverIconorrolloverSelectedIconto be displayed. Call-
+ingsetRolloverIcon() causes this property to be set totrue.
+TheactionCommand, mnemonic, andselectedproperties are taken directly from the
+AbstractButton’sButtonModelobject. ThedisplayedMnemonicIndexproperty behaves
+the same way it does inJLabel(see “Labels” in Chapter4).AbstractButtonadds its
+own implementation ofsetEnabled(), inherited fromjava.awt.Component, which
+updates theenabled property of itsButtonModel.
+UI holds theButtonUI used to render the button.
+Events
+AbstractButtonfires the events required by theButtonModelinterface (see Table5-6).
+AnActionEventis fired when the button is pressed, anItemEventis fired when the
+button’s state is changed, and aChangeEventis fired when a change has occurred to
+the button’s properties.
+Alloftheseeventsaregeneratedbythebutton’smodel.AbstractButtonregisterswith
+the model as a listener for each type of event and refires any events fired by the
+model to any registered listeners. The following standard listener management meth-
+ods are implemented in this class:
+public void addActionListener(ActionListener l)
+public void removeActionListener(ActionListener l)
+public ActionListener[] getActionListeners()
+ (Added in SDK 1.4)
+public void addItemListener(ItemListener l)
+public void removeItemListener(ItemListener l)
+public ItemListener[] getItemListeners()
+ (Added in SDK 1.4)
+public void addChangeListener(ChangeListener l)
+Table5-6.AbstractButton events
+Event Description
+ActionEvent The button is pressed.
+ChangeEvent A change has occurred in one or more properties of the button’s model.
+ItemEvent The button is toggled on or off.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+110 | Chapter 5: Buttons
+public void removeChangeListener(ChangeListener l)
+public ChangeListener[] getChangeListeners() (Added in SDK 1.4)
+Constants
+The constants shown in Table5-7 are defined byAbstractButtonfor use in
+PropertyChangeEvents. SomePropertyChangeEvents generated byAbstractButtonuse
+strings other than these. There’s no constant defined to indicate that theaction
+property has changed, so thesetAction()method fires aPropertyChangeEventwith
+the string"action". Accessibility-related change events use strings defined in the
+AccessibleContext class.
+Table5-7.AbstractButton constants
+Constant Type Description
+BORDER_PAINTED_CHANGED_PROPERTY String borderPainted property has changed
+CONTENT_AREA_FILLED_CHANGED_PROPERTY String contentAreaFilled property has
+changed
+DISABLED_ICON_CHANGED_PROPERTY String disabledIcon property has changed
+DISABLED_SELECTED_ICON_CHANGED_PROPERTY String disabledSelectedIcon property has
+changed
+FOCUS_PAINTED_CHANGED_PROPERTY String focusPainted property has changed
+HORIZONTAL_ALIGNMENT_CHANGED_PROPERTY String horizontalAlignment property has
+changed
+HORIZONTAL_TEXT_POSITION_CHANGED_PROPERTY String horizontalTextPosition property has
+changed
+ICON_CHANGED_PROPERTY String icon property has changed
+MARGIN_CHANGED_PROPERTY String margin property has changed
+MNEMONIC_CHANGED_PROPERTY String mnemonic property has changed
+MODEL_CHANGED_PROPERTY String model property has changed
+PRESSED_ICON_CHANGED_PROPERTY String pressedIcon property has changed
+ROLLOVER_ENABLED_CHANGED_PROPERTY String rolloverEnabled property has changed
+ROLLOVER_ICON_CHANGED_PROPERTY String rolloverIcon property has changed
+ROLLOVER_SELECTED_ICON_CHANGED_PROPERTY String rolloverSelectedIcon property has
+changed
+SELECTED_ICON_CHANGED_PROPERTY String selectedIcon property has changed
+TEXT_CHANGED_PROPERTY String text property has changed
+VERTICAL_ALIGNMENT_CHANGED_PROPERTY String verticalAlignment property has
+changed
+VERTICAL_TEXT_POSITION_CHANGED_PROPERTY String verticalTextPosition property has
+changed
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JButton Class | 111
+Public Methods
+public void doClick(int pressTime)
+Programmatically simulate a user pressing the button for a specified number of
+milliseconds. Calling this method has the same effect as pressing the button—
+the button even appears to be pressed.
+public void doClick()
+This version of
+doClick() calls the first version with a value of 68 milliseconds.
+public void setMnemonic(char mnemonic)
+Thismethodprovidesaconvenientwaytosetthemnemonicpropertybypassingin
+achar(as opposed to the property’s actual type,int). The character is converted
+to the equivalent integer “virtual keycode” (defined in thejava.awt.KeyEvent
+class) and passed to the othersetMnemonic() method.
+Action Conﬁguration Methods
+These protected methods do most of the work to supportActions. Subclasses that
+wish to alter the way they behave withActions should override these methods.
+(These methods were added in SDK 1.3.)
+protected PropertyChangeListener createActionPropertyChangeListener(Action a)
+Return aPropertyChangeListenerthat will be responsible for reconfiguring the
+button in response to changes in the button’saction.
+protected void configurePropertiesFromAction(Action a)
+The values of several properties are pulled from the givenActionand applied to
+this button. The specific properties are listed in Table5-8, though the concrete
+subclasses ofAbstractButton can and do add and remove from this list.
+The JButton Class
+JButtonis the simplest of the button types, adding very little to what is provided by
+theAbstractButtonclass.JButtons are buttons that are not toggled on and off but
+Table5-8.Properties set by configurePropertiesFromAction()
+Button property Value taken from Action Value if Action is null
+text a.getValue(NAME) null
+icon a.getValue(SMALL_ICON) null
+mnemonic a.getValue(MNEMONIC_KEY) KeyEvent.VK_UNDEFINED
+toolTipText a.getValue(SHORT_DESCRIPTION) null
+actionCommand a.getValue(ACTION_COMMAND_KEY) null
+enabled a.isEnabled() true
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+112 | Chapter 5: Buttons
+instead act as push buttons, which invoke some action when clicked. Figure5-2
+shows what these buttons look like in four of the Swing L&Fs.
+Properties
+TheJButtonclass inherits most of its properties and default values from its super-
+classes. The exceptions to this are shown in Table5-9. Themodelproperty is set to a
+new instance ofDefaultButtonModel when aJButton is created.
+ThedefaultButtonproperty indicates whether the button is activated by default
+when some event occurs within theJRootPanecontaining the button. Typically, the
+Figure5-2.JButtons in four L&Fs
+Table5-9.JButton properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JButton.AccessibleJButton()
+defaultButton boolean • false
+defaultCapable boolean •• true
+modelo ButtonModel •• DefaultButtonModel()
+UIClassIDo String • "ButtonUI"
+ooverridden
+See also properties fromAbstractButton (Table 5-5).
+Metal Look-and-Feel JButtons
+Motif Look-and-Feel JButtons
+Windows Look-and-Feel JButtons
+Mac Look-and-Feel JButtons
+

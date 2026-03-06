@@ -1,0 +1,1403 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+206 | Chapter 7: Lists, Combo Boxes, and Spinners
+List methods
+These methods require that the combo box use aMutableComboBoxModel; otherwise,
+an exception is thrown:
+public void addItem(Object anObject)
+Add a specific object to the end of the list.
+public void insertItemAt(Object anObject, int index)
+Insert an object into the list after the specified index.
+public void removeItem(Object anObject)
+Remove the specified object from the list after the specified index.
+public void removeItemAt(int anIndex)
+Remove an object from the list at the specified index.
+public void removeAllItems()
+Remove all items from the list.
+Key selection
+protected JComboBox.KeySelectionManager createDefaultKeySelectionManager()
+Return a new instance of the default key selection manager. This selection man-
+ager matches keystrokes against the first character of each item in the list start-
+ing with the first item below the selected item (if there is one).
+public boolean selectWithKeyChar(char keyChar)
+Attempt to select a list item that corresponds to the character passed in. If the
+method is successful, it returns
+true. If there is no list item that corresponds to
+that character, the method returnsfalse.
+Internal methods
+Because theJComboBoxuses a number of other components to build its interface
+(often a text field, a pop-up menu, and a list), it implements several methods needed
+to interact with these constituent components. These methods must be public so the
+components can call them, but they arenotintended to be invoked by you or me.
+But if you are tempted to use one of these anyway, be aware that since the previous
+publication of this book, a number of such methods have been removed, and your
+code would have broken had you relied on them.
+public void processKeyEvent(KeyEvent e)
+Override
+processKeyEvent()inJComponent. This method callshidePopup()if the
+user presses the Tab key. It should not be invoked by the programmer.
+public void actionPerformed(ActionEvent e)
+Monitor internal action events from the embedded list component. Although it
+is public, you should not invoke or overridde this method.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JComboBox Class | 207
+public void contentsChanged(ListDataEvent e)
+Monitor model events from the list component. Although it is public, you
+should not invoke or overridde this method.
+public void firePopupMenuWillBecomeVisible()
+public void firePopupMenuWillBecomeInvisible()
+public void firePopupMenuCanceled()
+These methods help the combo box track the state of its pop-up menu. They
+should not be called by the programmer.
+Java Books Revisited
+Here is the list of some O’Reilly Java books implemented as a combo box. We use
+our new combo box editor to allow the user to see which book is selected.
+//  EditableComboBox.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+public class EditableComboBox extends JPanel {
+    private BookEntry books[] = {
+      // Include same book information as in ListExample above.
+    };
+    Map bookMap = new HashMap();
+    public EditableComboBox() {
+      // Build a mapping from book titles to their entries.
+      for (int i = 0 ; i < books.length; i++) {
+        bookMap.put(books[i].getTitle(), books[i]);
+      }
+      setLayout(new BorderLayout());
+      JComboBox bookCombo = new JComboBox(books);
+      bookCombo.setEditable(true);
+      bookCombo.setEditor(
+        new ComboBoxEditorExample(bookMap, books[0]));
+      bookCombo.setMaximumRowCount(4);
+      bookCombo.addActionListener(new ActionListener() {
+          public void actionPerformed(ActionEvent e) {
+              System.out.println("You chose " + ((JComboBox)e.getSource()).
+                                                getSelectedItem()  + "!");
+          }
+      });
+      bookCombo.setActionCommand("Hello");
+      add(bookCombo, BorderLayout.CENTER);
+    }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+208 | Chapter 7: Lists, Combo Boxes, and Spinners
+    public static void main(String s[]) {
+         JFrame frame = new JFrame("Combo Box Example");
+         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+         frame.setContentPane(new EditableComboBox());
+         frame.pack();
+         frame.setVisible(true);
+    }
+}
+The code to initialize the combo box is relatively simple. After the combo box is
+instantiated, we set theeditableproperty totrueand inform the combo box of our
+custom editor. Finally, we set themaximumRowCountproperty to4, ensuring that the
+user cannot see more than four books in the list at a time. If the user types in a book
+that cannot be found in our list, the example displays a question mark instead of a
+cover. Whenever a selection is made, the results are printed on the screen.
+Figure7-12 shows the result.
+Spinners
+You might be wondering just what a spinner is. It’s a new 1.4 component similar to
+the
+JComboBox, but it shows only one item. It includes up and down arrows to
+“scroll” through its set of values. AJFormattedTextFieldis used to edit and render
+those values. Spinners are quite flexible. They work nicely with a set of choices (such
+as the months of the year) as well as with unbounded ranges such as a set of inte-
+gers. Figure7-13 shows several examples of spinners in different L&Fs. The Mac
+L&F is missing from this figure because the SDK 1.4 was not available on OS X at
+the time we went to press.
+The classes involved in spinners are shown in Figure7-14.
+Figure7-12.A custom JComboBox component
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinners | 209
+Properties
+JSpinnerhas several properties related to the values it displays (see Table7-16). Most
+of the properties are easy to understand from their names alone. The currently
+selected value is available through the read/writevalue property.
+Figure7-13.Various JSpinner instances in three L&Fs
+Figure7-14.JSpinner class diagram
+Windows Look-and-Feel
+Metal Look-and-Feel Motif Look-and-Feel
+javax.swing
+JComponent
+Key: Interface Class Abstract Class
+extends
+implements
+other relation accessible
+uses SpinnerModelJSpinner
+DefaultEditor
+DateEditor
+ListEditor
+NumberEditor
+JFormattedTextField
+AbstractSpinnerModel
+SpinnerDateModel SpinnerListModel
+SpinnerNumberModel
+A
+1
+editsAndRendersWith
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+210 | Chapter 7: Lists, Combo Boxes, and Spinners
+Events
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+AddorremoveaspecificlistenerforChangeEventnotificationsfromthecomponent.
+Constructors
+public JSpinner()
+Create a spinner for numeric values that has no bounds, an initial value of0, and
+an increment of1. (This constructor uses an instance of theSpinnerNumberModel
+that we’ll see later in this section.)
+public JSpinner(SpinnerModelmodel)
+Create a spinner with the specifiedmodel. An editor for the model is installed
+using the protectedcreateEditor()method, which is discussed later in this
+chapter.
+Editing Methods
+The following methods may be of use to developers:
+public void commitEdit()
+Commit the current value to the spinner model. With aJFormattedTextFieldas
+your editor, you can commit the value you typed by pressing the Enter key. The
+model then stores the value internally. If you type in an invalid value (bad date,
+not a number, etc.), the editor does not accept the change, and you have to con-
+tinue editing. You can also cancel the edit using the Esc key.
+Your model might also reject the value you tried to commit. For example, you
+might type in a perfectly valid date, but that date is outside the range of dates the
+Table7-16.JSpinner properties
+Property Data type
+get
+is
+setDefault value
+changeListeners ChangeListener[]• Empty array
+editorb JComponent •• JPspinner.NumberEditor()
+modelb SpinnerModel •• SpinnerNumberModel()
+nextValue Object •
+previousValue Object •
+UI SpinnerUI • L&F-dependent
+UIClassID String • "SpinnerUI"
+value Object ••
+bbound
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinners | 211
+model expects. In this case,JFormattedTextFielddoes not complain, but the
+value is still unacceptable.
+protected JComponent createEditor(SpinnerModelmodel)
+Create an editor appropriate for the specified model. “Appropriate” currently
+means aJFormattedTextFieldwith a format designed for dates, numbers, or
+Stringrepresentations of elements in a list. Ifmodelis not an instance of one of
+the known models, a default editor (which uses aStringrepresentation of the
+value) is used. To install your own editor based on a model, you’ll have to sub-
+class
+JSpinnerand override this method. (You could always callsetEditor()for
+one of the editors.)
+Simple Spinners
+The code for the spinner examples in Figure7-13 is shown below. Notice that we use
+various model constructors to build the different spinners. The spinner models are
+discussed in the next section.
+// SpinnerTest.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+public class SpinnerTest extends JFrame {
+  public SpinnerTest() {
+    super("JSpinner Test");
+    setSize(300,180);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new GridLayout(0,2));
+    c.add(new JLabel(" Basic Spinner"));
+    c.add(new JSpinner());
+    c.add(new JLabel(" Date Spinner"));
+    c.add(new JSpinner(new SpinnerDateModel()));
+    String weekdays[] = new String[] { "Sunday", "Monday", "Tuesday",
+       "Wednesday", "Thursday", "Friday", "Saturday" };
+    c.add(new JLabel(" List Spinner"));
+    c.add(new JSpinner(new SpinnerListModel(weekdays)));
+    c.add(new JLabel(" Number Spinner"));
+    c.add(new JSpinner(new SpinnerNumberModel(0, 0, 100, 5)));
+    c.add(new JLabel(" Rollover List Spinner"));
+    c.add(new JSpinner(new RolloverSpinnerListModel(weekdays)));
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+212 | Chapter 7: Lists, Combo Boxes, and Spinners
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    new SpinnerTest();
+  }
+}
+Spinner Models
+Thejavax.swingpackage includes several pre-built models for many common data
+types suited to spinners. Figure7-15 shows the hierarchy of these models.
+The SpinnerModel Interface
+TheSpinnerModelinterface includes methods required to successfully store and
+retrieve spinner data. It includes a read/write value and next and previous proper-
+ties, and it forces implementing models (such asAbstractSpinnerModel) to support a
+ChangeListener.
+Properties
+Not surprisingly, the properties forSpinnerModelare centered on the value being
+shown in the spinner. Notice in Table7-17 that the model stores only the current
+value and the next/previous values. The actual list (or other object) behind these val-
+ues is not part of the model.
+Figure7-15.SpinnerModel class diagram
+Key:
+javax.swing
+AbsractSpinnerModelSpinnerModel
+SpinnerDateModel SpinnerListModel SpinnerNumberModel
+Date
+uses
+1
+List
+uses
+1 javax.util
+Number
+uses
+1 javax.lang
+extends
+implements
+other relation
+Abstract ClassClassInterface
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Models | 213
+Events
+Any changes to the selected value should be reported throughChangeEvent objects.
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+AddorremoveaspecificlistenerforChangeEventnotificationsfromthecomponent.
+The AbstractSpinnerModel Class
+TheAbstractSpinnerModelclass implements the event parts of theSpinnerModel.
+Implementations ofaddChangeListener(), removeChangeListener(), andgetChange-
+Listeners()are all present. Two expected methods,fireStateChange()andget-
+Listeners(), have been added. All the other models subclassAbstractSpinnerModel,
+as shown in Figure7-15.
+The SpinnerDateModel
+If you’re retrieving dates from users, a date spinner can make the input process much
+simpler. You can supply minimum and maximum dates along with an increment
+value (to increment by day, week, month, year, etc.).
+Properties
+Table7-18 shows the properties forSpinnerDateModel. Apart from the properties
+inherited fromAbstractSpinnerModel, startandendproperties have been added to
+make it possible to work within a bounded range of dates. Either of these properties
+can be set to
+nullto indicate that you do not want a minimum or maximum. The
+calendarFieldproperty determines the increment/decrement step size and uses con-
+stants defined in thejava.util.Calendarclass. The valid step sizes are shown in
+Table7-19. Thedateproperty is a convenience property that allows you to retrieve
+the current value of the spinner as aDate object.
+Table7-17.SpinnerModel properties
+Property Data type
+get
+is
+setDefault value
+nextValue Object •
+previousValue Object •
+value Object ••
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+214 | Chapter 7: Lists, Combo Boxes, and Spinners
+Constructors
+public SpinnerDateModel()
+This constructor creates a date model with no start or end point that uses the
+current date for the current value. The spin increment/decrement value is one
+day.
+public SpinnerDateModel(Date value, Comparable start, Comparableend,
+intcalendarField)
+This constructor builds a model with the specified current
+value,start, andend
+points, and an increment ofcalendarField. Note thatstartandendcan benull
+to indicate that no minimum or maximum dates are applicable.
+The SpinnerListModel Class
+This model allows you to spin through the (Stringrepresentation of) items in aList
+(or an array—which gets turned into aList). When you hit the start or the end, trying
+to go past them results in a null next or previous value that effectively stops the spin-
+ner from spinning; in other words, you can’t go past the bounds of the array.
+Table7-18.SpinnerDateModel properties
+Property Data type
+get
+is
+setDefault value
+calendarField int •• Calendar.DAY_OF_MONTH
+date java.util.Date • Current date
+end Comparable •• null (no end)
+nextValueo Object •
+previousValueo Object •
+start Comparable •• null (no start)
+valueo Object ••
+ooverridden
+Table7-19.Calendar constants for SpinnerDateModel
+Calendar.AM_PM Calendar.MILLISECOND
+Calendar.DAY_OF_MONTH Calendar.MINUTE
+Calendar.DAY_OF_WEEK Calendar.MONTH
+Calendar.DAY_OF_WEEK_IN_MONTH Calendar.SECOND
+Calendar.DAY_OF_YEAR Calendar.WEEK_OF_MONTH
+Calendar.ERA Calendar.WEEK_OF_YEAR
+Calendar.HOUR Calendar.YEAR
+Calendar.HOUR_OF_DAY
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Models | 215
+The Javadoc makes a point worth repeating here: the model stores only a reference
+to the list of items, not a copy. If the list changes, it’s up to the programmer to deal
+with the consequences. The benefit, of course, is that the items shown by the spin-
+ner stay in near-perfect sync with the list. We say near-perfect because if you’re sit-
+ting on the item that changed, it won’t show up until you spin away and spin back.
+Properties
+The only new property added toSpinnerListModelis, not surprisingly, thelistitself.
+See Table7-20.
+Constructors
+Three constructors exist for creating newSpinnerListModel objects:
+public SpinnerListModel()
+This constructor creates a spinner with an effectively empty list. (The list is built
+by calling the
+Objectarray version of the constructor with a one-elementString
+array containing the wordempty.)
+public SpinnerListModel(List values)
+public SpinnerListModel(Object[] values)
+These constructors build
+SpinnerListModelobjects associated with the specified
+values. Note that only a reference to values is kept in the model, so you can
+update the content somewhat dynamically. In the case of theObjectarray ver-
+sion, the list returned from the list property is a private inner class from the
+java.util.Arraysclass that does not override the defaultadd()behavior (which
+simply throws anUnsupportedOperationException). To be honest, you really
+should rethink using aJSpinneron dynamic lists—or at least make your own
+model that pays proper attention to changing contents.
+The SpinnerNumberModel Class
+The number model allows you to spin numbers (both integers and decimals). The
+range can be bounded, or you can selectively leave off the minimum, maximum, or
+both. While you normally use
+Numberobjects to fill the model, special case constructors
+Table7-20.SpinnerListModel properties
+Property Data type
+get
+is
+setDefault value
+list java.util.List•• List with one entry:"empty"
+nextValueo Object •
+previousValueo Object •
+valueo Object ••
+ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+216 | Chapter 7: Lists, Combo Boxes, and Spinners
+exist for the very commonintanddoubletypes. For those types, you specify the start-
+ingposition,theminimumandmaximum,andthestepsize.(Notethatfordoubles,the
+step size is also adouble, so you can increment by 0.1, 0.05, 2.5, etc.)
+Properties
+Table7-21 shows the properties for the number model. Beyond the standard proper-
+ties,minimumandmaximumproperties are added to provide a range for the spinner. As
+with theSpinnerDateModel, either of these values can benullto indicate that no limit
+exists. ThestepSizeproperty allows you to specify the increment/decrement value
+for the spinner. Thenumberproperty is a convenience property that allows you to
+retrieve the current value as aNumber object.
+Constructors
+public SpinnerNumberModel()
+Construct aSpinnerNumberModelwith nominimumormaximumvalue, astepSize
+equal to one, and an initialvalue of0.
+public SpinnerNumberModel(intvalue, intminimum, intmaximum, intstepSize)
+public SpinnerNumberModel(doublevalue, doubleminimum, doublemaximum,
+doublestepSize)
+public SpinnerNumberModel(Numbervalue, Comparableminimum,
+Comparablemaximum, NumberstepSize)
+Build number models with a starting point of
+value, the specifiedminimumand
+maximumpoints, and the givenstepSize. Theintanddoubleconstructors are for
+convenience only. If you need an openminimumormaximum, you’ll have to use the
+Number/Comparable version.
+Table7-21.SpinnerNumberModel properties
+Property Data type
+get
+is
+setDefault value
+maximum Comparable •• null (no max)
+minimum Comparable •• null (no min)
+nextValueo Object •
+number Number • Integer(0)
+previousValueo Object •
+stepSize Number •• Integer(1)
+valueo Object •• Integer(0)
+ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Editors | 217
+A Custom Model: Rollover Lists
+As an example of how simple it can be to extend the functionality of these spinner
+models, here’s aRolloverListModelthat you can use. Like theSpinnerListModel,i t
+takes a list, but rather than returnnullif you try to go past the end (or the begin-
+ning, for that matter), it “rolls over” to the beginning (or the end). Here’s the source
+code for this model:
+// RolloverSpinnerListModel.java
+//
+import javax.swing.*;
+import java.util.List;
+public class RolloverSpinnerListModel extends SpinnerListModel {
+  public RolloverSpinnerListModel(Object[] items) { super(items); }
+  public RolloverSpinnerListModel(List items) { super(items); }
+  public Object getNextValue() {
+    Object nv = super.getNextValue();
+    if (nv != null) {
+      return nv;
+    }
+    return getList().get(0);
+  }
+  public Object getPreviousValue() {
+    Object pv = super.getPreviousValue();
+    if (pv != null) {
+      return pv;
+    }
+    List l = getList();
+    return l.get(l.size() - 1);
+  }
+}
+This model is used for the last spinner shown in Figure7-13. In that example, we use
+theweekdaysarrayforbothastandardlistmodelandthisrolloverlistmodel.You’llhave
+to play with the spinner to get the effect—static screen shots just don’t do it justice.
+Spinner Editors
+YouprobablynoticedthattheJSpinnerclassalsoincludesseveralinnerclasses.These
+inner classes provide basic editors (and renderers) for spinners for each of the major
+model types. While you’ll typically rely on the editor picked by your spinner when
+you create it, you can override that decision if you like. Here’s a simple example of a
+modified
+DateEditor. This spinner displays anmm/yydate, and the step size is one
+month. Figure7-16 shows such a spinner.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+218 | Chapter 7: Lists, Combo Boxes, and Spinners
+Here’s the source code that built this editor:
+// MonthSpinner.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.util.*;
+public class MonthSpinner extends JFrame {
+  public MonthSpinner() {
+    super("Month Spinner");
+    setSize(200,100);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout(FlowLayout.LEFT, 4,4));
+    c.add(new JLabel("Expiration Date:"));
+    Date today = new Date();
+    // Start the spinner today, but don’t set a min or max date.
+    // The increment should be a month.
+    JSpinner s = new JSpinner(new SpinnerDateModel(today,
+                 null, null, Calendar.MONTH));
+    JSpinner.DateEditor de = new JSpinner.DateEditor(s, "MM/yy");
+    s.setEditor(de);
+    c.add(s);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    new MonthSpinner();
+  }
+}
+DefaultEditor
+All of the other inner class editors descend from theDefaultEditorclass, as shown in
+Figure7-14. That’s exactly why you would use this class: it’s a starting point for cre-
+ating other simple editors. It’s based on a singleJFormattedTextField.
+Figure7-16.A customized DateEditor used in a JSpinner
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Editors | 219
+Constructors
+This editor takes a single constructor:
+public JSpinner.DefaultEditor(JSpinner spinner)
+Build an editor for the givenspinner. This constructor registers itself as a lis-
+tener tospinner’s change events and displays the current value ofspinner’s
+model.
+Properties
+TheDefaultEditor has two read-only properties, which are shown in Table7-22.
+Editing methods
+public void commitEdit() throws ParseException
+Send the current value in the editor to the model for the spinner.
+public void dismiss(JSpinner spinner)
+Disconnect the editor from the specifiedspinner. (This should be the same spin-
+ner as the one passed to the constructor.) By default, this simply detaches the
+editor from spinner’sChangeListenerlist. For example, if you want to cancel
+your edits, youdismiss() the spinner.
+DateEditor
+As you can see in the previous example, theDateEditorinner class provides simple
+display and edit functionality for dates. The supported formats follow those in the
+java.text.SimpleDateFormat class.
+Note that the editor is just looking for valid date formats. You can set up a
+SpinnerDateModelthat increments dates on a week-by-week basis, e.g., every Sun-
+day. If you type in a date that should be a Monday, theDateEditorallows it, and the
+default model sets the new date. Now when you use the spinner’s up/down buttons,
+you’ll bounce forward and backward on Mondays—not Sundays. Check out the
+ListEditordiscussion for an example of stopping the user from editing spinner val-
+ues by hand.
+Table7-22.JSpinner.DefaultEditor properties
+Property Data type
+get
+is
+setDefault value
+spinner JSpinner •
+textField JFormattedTextField•
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+220 | Chapter 7: Lists, Combo Boxes, and Spinners
+Constructors
+public JSpinner.DateEditor(JSpinner spinner)
+Createastandardeditor(aformattedtextfield)fordatesusingthemodelfromthe
+givenspinner. The format of the date (in the U.S. English locale) isM/d/yy h:mm a
+(for example, 4/13/07 3:14 PM).
+public JSpinner.DateEditor(JSpinner spinner, StringdateFormatPattern)
+Create a standard editor for dates using the model from the specifiedspinner.
+ThedateFormatPatterndetermines how dates are shown as well as how they
+can be entered by a user. The pattern must match the specifications of the
+java.text.SimpleDateFormatclass. Table 7-23 shows some of the more com-
+mon elements you might use in such a pattern.
+Properties
+Two read-only properties exist for theDateEditor. These are shown in Table7-24.
+ListEditor
+This simple editor works on spinners with aSpinnerListModelinstalled. Its primary
+function is to make sure typed values match up with values in the actual model. If
+you start typing in a list spinner, the text field tries to auto-complete. If you type a
+value that does not exist in the model, the typed value is discarded when you press
+Enter.
+Table7-23.SimpleDateFormat common formats
+Code Description Example usage
+d Day in month d -> "7", "17"; dd -> "07", "17"
+E Day in week E -> "Monday"; EEE -> "Mon"
+M Month in year M -> "4", "12"; MM -> "04", "12";
+MMM -> "Apr", "Dec"; MMMM -> "April", "December"
+y Year yy -> "02", "99"; yyyy -> "2002", "1999"
+h Hours (1–12) h -> "5", "10"; hh -> "05", "10"
+m Minutes (0–59) mm -> "15", "32"
+a A.M./P.M. marker a -> "AM", "PM"
+Table7-24.JSpinner.DateEditor properties
+Property Data type
+get
+is
+setDefault value
+format SimpleDateFormat• "M/d/yy h:mm a"
+model SpinnerDateModel•
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Editors | 221
+This editor works only on strings. If your list is numeric (like denominations of paper
+money) or composed of arbitrary objects, they will be represented and edited as
+strings. For non-
+Stringobjects, then, typing values into the spinner is a futile exer-
+cise. Even if you type the representation of a valid object, theListunderneath it will
+not recognize the value. (The editor handed over aString, but theListis composed
+ofNumberobjects, so how can they be equivalent?) In cases such as this, you should
+either build your own editor or, more simply, disable the editing features of the spin-
+ner to restrict the user to the up/down buttons:
+Integer[] bills = new Integer[] { new Integer(1), new Integer(2), new Integer(5),
+                                  new Integer(10), new Integer(20) };
+JSpinner spinner = new JSpinner(new SpinnerListModel(bills));
+((JSpinner.DefaultEditor)spinner.getEditor()).getTextField().setEditable(false);
+For the record, this code snippet happily removes the editing capacity from any spin-
+ner—not just those built on theListSpinnerModel.
+Constructor
+public JSpinner.ListEditor(JSpinner spinner)
+Create an editor forspinnerand register for change events coming from the
+spinner.
+Property
+As you can see in Table7-25, the spinner’smodelis the only property for the
+ListEditor inner class.
+NumberEditor
+TheNumberEditorclosely resembles theDateEditor. It creates a formatted text field
+for the display and input of numeric data and can use a custom formatter to alter the
+syntax of acceptable information.
+Constructors
+public JSpinner.NumberEditor(JSpinner spinner)
+Create a standard editor (a formatted text field) for decimal numbers using the
+model from the given
+spinner. The format of the number (in the U.S. English
+locale) is#,##0.### (for example, 6,789.125).
+Table7-25.JSpinner.ListEditor property
+Property Data type
+get
+is
+setDefault value
+model SpinnerListModel•
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+222 | Chapter 7: Lists, Combo Boxes, and Spinners
+public JSpinner.NumberEditor(JSpinner spinner, StringdecimalFormatPattern)
+Create a standard editor for numbers using the model from the specified
+spinner. ThedecimalFormatPatterndetermines how numbers are shown as well
+as how they can be entered by a user. The pattern must match the specifications
+of thejava.text.DecimalFormatclass. Table7-26 shows some of the more com-
+mon elements you might use in such a pattern. Note that the pattern is local-
+ized. If your locale uses “,” for the decimal separator, that’s precisely what
+appears on the screen. The code you enter should follow the (nonlocalized!) syn-
+tax in the
+DecimalFormat class.
+Properties
+TheNumberEditorhas two read-only properties (see Table7-27). Note that these are
+the same properties theDateEditor has.
+A Custom Editor
+“Custom editor” is a bit of a misnomer in this case. While we will install our own
+editor for a
+JSpinner, it doesn’t allow editing. What we’re really after is the render-
+ing facilities that are provided by the editor component. This example does lay out
+the pieces of the custom editor that make it interesting if you need to build an editor
+that is not based on
+JFormattedTextField.
+One of the most obvious things missing fromJFormattedTextFieldis the ability to
+display graphics. We’ll build a simple “editor” that displaysIconobjects. Figure7-17
+is a quick look at the spinner in action.
+The code to build a custom editor is not too difficult if you can base your editor on
+existing components. OurIconEditorclass is based onJLabel. The most important
+Table7-26.DecimalFormat common formats
+Code Description Example usage
+# Digit, zeros don’t show # -> "4", "123456"
+0 Digit, zeros show as zeros 0.00 -> "3.14", "250.00"
+, Grouping separator #,##0 -> "25", "1,250", "3,141,593"
+. Decimal separator 0.# -> "25", "3.1"
+- A (required) minus sign -#.0## -> "-25.0", "-1.414"
+; Positive and negative pattern separator #;(#) -> "25", "(32)"
+Table7-27.JSpinner.NumberEditorproperties
+Property Data type
+get
+is
+setDefault value
+format DecimalFormat • "#,##0.###"
+model SpinnerNumberModel•
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Spinner Editors | 223
+step in making the editor render the proper image is registering aChangeListener
+with the spinner. (Recall that the spinner fires aChangeEventany time the user alters
+the current value.) Here’s the code forIconEditor:
+//IconEditor.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+public class IconEditor extends JLabel implements ChangeListener {
+  JSpinner spinner;
+  Icon icon;
+  public IconEditor(JSpinner s) {
+    super((Icon)s.getValue(), CENTER);
+    icon = (Icon)s.getValue();
+    spinner = s;
+    spinner.addChangeListener(this);
+  }
+  public void stateChanged(ChangeEvent ce) {
+    icon = (Icon)spinner.getValue();
+    setIcon(icon);
+  }
+  public JSpinner getSpinner() { return spinner; }
+  public Icon getIcon() { return icon; }
+}
+Ofcourse,actualeditorsthatletyoumodifythevalueofthespinnerwithoutusingthe
+up/down buttons require quite a bit more code. But you do have a reference to the
+spinnerforthiseditor.Onceyouhaveavalidvalueinyourcustomeditor,youjustcall
+spinner.setValue()to pass the value back to the spinner’s model. (ThecommitEdit()
+method ofJSpinner works only on subclasses ofJSpinner.DefaultEditor.)
+To put your editor into play with a particular spinner, you just callsetEditor()for
+the spinner. Here’s the code that sets up the simple example shown in Figure7-17.
+// IconSpinner.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class IconSpinner extends JFrame {
+Figure7-17.Our IconEditor used in a JSpinner (before and after pressing the up arrow)
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+224 | Chapter 7: Lists, Combo Boxes, and Spinners
+  public IconSpinner() {
+    super("JSpinner Icon Test");
+    setSize(300,80);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container c = getContentPane();
+    c.setLayout(new GridLayout(0,2));
+    Icon nums[] = new Icon[] {
+      new ImageIcon("1.gif"),
+      new ImageIcon("2.gif"),
+      new ImageIcon("3.gif"),
+      new ImageIcon("4.gif"),
+      new ImageIcon("5.gif"),
+      new ImageIcon("6.gif")
+    };
+    JSpinner s1 = new JSpinner(new SpinnerListModel(nums));
+    s1.setEditor(new IconEditor(s1));
+    c.add(new JLabel(" Icon Spinner"));
+    c.add(s1);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    new IconSpinner();
+  }
+}
+Notice we didn’t have to build a new model for our icons. We certainly could, but
+theSpinnerListModeldoes exactly what we need—except for rendering the icons.
+(Try it once without thesetEditor()line. You should get a standard text field with
+the name of the image file displayed.) We just set the editor to a new instance of our
+IconEditor class and we’re off and rolling.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+225
+Chapter8In this chapter:
+• A Simple Container
+• The Root Pane
+• Basic RootPaneContainers
+• The JFrame Class
+• The JWindow Class
+• The JApplet Class
+CHAPTER 8
+Swing Containers
+In this chapter, we’ll take a look at a number of components Swing provides for group-
+ingothercomponentstogether.InAWT,suchcomponentsextendedjava.awt.Container
+and includedPanel,Window,Frame, andDialog. With Swing, you get a whole new set of
+options, providing greater flexibility and power.
+A Simple Container
+Not everything in this chapter is more complex than its AWT counterpart. As proof
+of this claim, we’ll start the chapter with a look at the
+JPanelclass, a very simple
+Swing container.
+The JPanel Class
+JPanelis an extension ofJComponent(which, remember, extendsjava.awt.Container)
+used for grouping together other components. It gets most of its implementation
+from its superclasses. Typically, using
+JPanelamounts to instantiating it, setting a
+layout manager (this can be set in the constructor and defaults to aFlowLayout), and
+adding components to it using theadd() methods inherited fromContainer.
+Properties
+JPaneldoes not define any new properties. Table8-1 shows the default values that
+differ from those provided byJComponent.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+226 | Chapter 8: Swing Containers
+ThedoubleBufferedandopaqueproperties default totrue, while thelayoutManager
+defaults to a newFlowLayout.
+Constructors
+public JPanel()
+Create a new panel with aFlowLayout and double buffering.
+public JPanel(boolean isDoubleBuffered)
+CreateanewpanelwithaFlowLayout.DoublebufferingisenabledifisDoubleBuffered
+istrue.
+public JPanel(LayoutManager layout)
+Create a new panel with the specified layout manager and double buffering.
+public JPanel(LayoutManager layout, boolean isDoubleBuffered)
+This constructor (called by all the others) creates a new panel with the specified
+layout manager and double-buffering policy.
+Opacity
+Here’s a simple program showing what it means for aJPanelto be opaque. All we do
+is create a fewJPanels. Inside the firstJPanel, we place anotherJPanel, which is
+opaque. In the second, we place a transparent (nonopaque)JPanel. In both cases, we
+setthebackgroundoftheouterpaneltowhiteandthebackgroundoftheinnerpanel
+to black. We’ll place a
+JButtoninside each inner panel to give it some size. Figure8-1
+shows the result.
+On the left, we see the black panel inside the white one. But on the right, since the
+inner panel is not opaque, its black background is never painted, and the back-
+ground of the outer panel shows through. Here’s the code:
+// OpaqueExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+Table8-1.JPanel properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JPanel.AccessibleJPanel()
+doubleBufferedo boolean •• true
+layouto LayoutManager •• FlowLayout()
+opaqueo, b boolean •• true
+UI1.4 PaneUI •• From L&F
+UIClassID String • "PanelUI"
+1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+A Simple Container | 227
+public class OpaqueExample extends JFrame {
+  public OpaqueExample() {
+    super("Opaque JPanel Demo");
+    setSize(400, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Create two JPanels (opaque), one containing another opaque JPanel and the
+    // other containing a nonopaque JPanel.
+    JPanel opaque = createNested(true);
+    JPanel notOpaque = createNested(false);
+    // Throw it all together.
+    getContentPane().setLayout(new FlowLayout());
+    getContentPane().add(opaque);
+    getContentPane().add(notOpaque);
+  }
+  public static void main(String[] args) {
+    OpaqueExample oe = new OpaqueExample();
+    oe.setVisible(true);
+  }
+  // Create a JPanel containing another JPanel. The inner JPanel’s opacity is set
+  // according to the parameter. A JButton is placed inside the inner JPanel to give
+  // it some content.
+  public JPanel createNested(boolean opaque) {
+    JPanel outer = new JPanel(new FlowLayout());
+    JPanel inner = new JPanel(new FlowLayout());
+    outer.setBackground(Color.white);
+    inner.setBackground(Color.black);
+    inner.setOpaque(opaque);
+    inner.setBorder(BorderFactory.createLineBorder(Color.gray));
+    inner.add(new JButton("Button"));
+    outer.add(inner);
+    return outer;
+  }
+}
+Figure8-1.Opaque and nonopaque JPanels (in Metal and Mac L&Fs)
+Metal Look-and-Feel Mac Look-and-Feel
+,swing2.book.8435  Page 227  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+228 | Chapter 8: Swing Containers
+The Root Pane
+Now that we’ve seen the simplest example of a Swing container, we’ll move on to
+something a bit more powerful. Most of the other Swing containers (JFrame,JApplet,
+JWindow, JDialog, and evenJInternalFrame) contain an instance of another class,
+JRootPane, as their only component, and implement a common interface,
+RootPaneContainer. In this section, we’ll look atJRootPaneandRootPaneContainer,a s
+well as another classJRootPane uses,JLayeredPane.
+Before jumping into the descriptions of these classes, let’s take a look at how the
+classes and interfaces that make up the Swing root containers fit together. Figure8-2
+shows that
+JApplet, JFrame, JDialog, andJWindowdo not extendJComponentas the
+other Swing components do. Instead, they extend their AWT counterparts, serving
+as top-level user interface windows. This implies that these components (unlike the
+lightweight Swing components) have native AWT peer objects.
+Figure8-2.Swing “root” container class diagram
+javax.swingWindowConstants
+contains
+RootPaneContainer
+java.applet
+Applet
+Frame
+Dialog
+Window
+Component
+Container
+java.awt
+JApplet
+JFrame
+JDialog
+JWindow
+JInternalFrame
+JComponent
+JButton
+JRootPane
+JMenuBar
+JLayeredPane
+contains
+contains
+contains
+contains
+contains (GlassPane)
+defaultButton
+manages
+manages (ContentPane)
+contains
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+A
+A
+A
+A
+A
+A
+A
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 229
+Notice that these Swing containers (as well asJInternalFrame) implement a com-
+mon interface,RootPaneContainer. This interface gives access to theJRootPane’s
+properties. Furthermore, each of the five containers uses aJRootPaneas the “true”
+container of child components managed by the container. This class is discussed
+later in this chapter.
+The JRootPane Class
+JRootPaneis a special container that extendsJComponentand is used by many of the
+other Swing containers. It’s quite different from most containers you’re probably
+used to using. The first thing to understand about
+JRootPaneis that it contains a
+fixed set of components: aComponentcalled the glass pane and aJLayeredPanecalled,
+logically enough, the layered pane. Furthermore, the layered pane contains two more
+components: a
+JMenuBarand aContainercalled the content pane.*Figure8-3 shows a
+schematic view of the makeup of aJRootPane.
+Attempts to add additional components to aJRootPaneare ignored by its custom lay-
+outmanager (aprotectedinner classcalledRootLayout).†Instead,children oftheroot
+pane should be added to its content pane. In fact, for most uses ofJRootPane, all you
+need to do is get the content pane and add your components to it. Here’s a simple
+example (using a
+JFrame) that adds a single button to the content pane.
+// RootExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class RootExample {
+  public static void main(String[] args) {
+* In general,
+JLayeredPanes can contain any components they wish. This is why Figure8-2does not show
+JLayeredPanecontainingthemenubarandcontentpane.InthecaseoftheJRootPane,aJLayeredPaneisused
+to hold these two specific components.
+Figure8-3.JRootPane breakout
+†It is possible to change the layout manager forJRootPaneto one of your own choosing, but it would be
+responsibleforhandlingalldetailsoflayingoutthepane.UsinganyoftheotherAWTorSwinglayoutswill
+not work properly.
+glassPane
+layeredPane
+menuBar
+contentPane
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+230 | Chapter 8: Swing Containers
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JRootPane root = f.getRootPane();          // XXX Pay attention to these
+    Container content = root.getContentPane(); // XXX lines. They are
+    content.add(new JButton("Hello"));         // XXX explained below.
+    f.pack();
+    f.setVisible(true);
+  }
+}
+This may seem like a lot of complexity just to add something to a frame. Thankfully,
+(as we’ll see in the next section) each of the containers that useJRootPaneimplement
+theRootPaneContainerinterface, which provides direct access to each of the root’s
+subcomponents. This allows the three lines marked with “XXX” to be replaced with:
+f.getContentPane().add(new JButton("Hello"));
+In the next example, we’ll see how to add a menu to a root pane, producing a dis-
+play like the one in Figure8-4.
+As with
+RootExample.java, we can get at these pieces using the root component:
+  // Snippet from RootExample2.java
+  JRootPane root = getRootPane();
+  // Create a menu bar.
+  JMenuBar bar = new JMenuBar();
+  JMenu menu = new JMenu("File");
+  bar.add(menu);
+  menu.add("Open");
+  menu.add("Close");
+  root.setJMenuBar(bar);
+  // Add a button to the content pane.
+  root.getContentPane().add(new JButton("Hello World"));
+In this case, thegetRootPane()andsetJMenuBar()calls could have been replaced
+with a singlesetJMenuBar(bar)call. Note that the menu bar property on the Swing
+containers is calledJMenuBar.
+The previous two root pane examples were intended to give you an understanding of
+how theJRootPanereally works. Typically, however, your code does not work with
+Figure8-4.JRootPane with a JMenuBar
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 231
+JRootPanedirectly. We’ll get a better understanding of why when we get to the dis-
+cussion ofRootPaneContainer. For now, here’s a version of the last example that
+shows how you’d really write that code:
+// RootExample3.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class RootExample3 extends JFrame {
+  public RootExample3() {
+    super("RootPane Menu Demo");
+    setSize(220,100);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Create a menu bar.
+    JMenuBar bar = new JMenuBar();
+    JMenu menu = new JMenu("File");
+    bar.add(menu);
+    menu.add("Open");
+    menu.add("Close");
+    setJMenuBar(bar);
+    // Add a button to the content pane.
+    getContentPane().add(new JButton("Hello World"));
+  }
+  public static void main(String[] args) {
+    RootExample3 re3 = new RootExample3();
+    re3.setVisible(true);
+  }
+}
+The Glass Pane
+JRootPanemay seem a bit confusing at first glance. The important thing to remem-
+ber is that in most cases, all you need to worry about is adding your component to
+the content pane and possibly setting a menu bar. As we noted earlier, the menu bar
+and content pane are part of the layered pane, which we’ll look at in detail in the
+next section. In this section, we’ll explain the other component contained by
+JRootPane: the “glass pane.”
+The glass pane is a component that is laid out to fill the entire pane. By default, it is
+an instance of
+JPanel, but it can be replaced with anyComponent.JRootPane’s imple-
+mentation of theaddImpl()method ensures that the glass pane is the first compo-
+nent in the container, meaning that it will be painted last. In other words, the glass
+pane allows you to place components “above” any other components in the pane.
+Because of this, it generally makes sense for the glass pane to be nonopaque; other-
+wise, it will cover everything in the layered pane. It’s important to remember that
+when the layout of the
+JRootPaneis performed, the placement of the contents of the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+232 | Chapter 8: Swing Containers
+glass pane will have no effect on the placement of the contents of the layered pane
+(and its content pane). Both sets of components are placed within the same compo-
+nent space, overlapping each other as necessary. It’s also important to realize that the
+components in the various panes are all equal when it comes to receiving input:
+mouse events are sent to any component in the
+JRootPane, whatever part of the pane
+it happens to be in.
+This last note brings us a common use of the glass pane: blocking mouse events from
+the other components. As a rule, mouse events are sent to the “top” component if
+components are positioned on top of each other. If the top component has regis-
+tered mouse listeners, the events are not sent to the covered components. We’ll cre-
+ate a new
+JPanelto use as the glass pane. The panel will listen for all mouse events
+(and do nothing with them). Once the Start button is clicked, the glass pane is made
+visible—and none of the buttons in the main application work. The main applica-
+tion is not technically disabled, but the mouse events are going only to the glass pane
+and its components. After a few seconds, the glass pane will be hidden, allowing the
+underlying components to be used again. Figure8-5 shows the application with the
+glass pane activated.
+Thisdemosimulatessituationsinwhichyourapplicationstartsanactionthattakesa
+long time to complete, and you don’t want the user clicking on everything in sight if
+he gets impatient. Database queries and network resource lookups are great exam-
+ples of tasks that can require a lot of time. You can adapt the glass pane for any simi-
+lar scenario in your own programs. You should also remember that it is a regular
+JPanelcomponent. As you can see in Figure8-5, we show a Please wait... message
+and a progress bar to keep the user informed about what’s going on. You could add
+other components, or even a Cancel button that the user can press to halt the opera-
+tion if he gets tired of waiting.
+Here’s the code for this example. Of course, this one is more fun to run.
+Figure8-5.JRootPane with an active glass pane (which contains the progress bar)
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 233
+// GlassExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+// Show how a glass pane can be used to block mouse events.
+public class GlassExample extends JFrame {
+  JPanel glass = new JPanel(new GridLayout(0, 1));
+  JProgressBar waiter = new JProgressBar(0, 100);
+  Timer timer;
+  public GlassExample() {
+    super("GlassPane Demo");
+    setSize(500, 300);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    // Set up the glass pane with a little message and a progress bar.
+    JPanel controlPane = new JPanel(new GridLayout(2,1));
+    controlPane.setOpaque(false);
+    controlPane.add(new JLabel("Please wait..."));
+    controlPane.add(waiter);
+    glass.setOpaque(false);
+    glass.add(new JLabel()); // Padding...
+    glass.add(new JLabel());
+    glass.add(controlPane);
+    glass.add(new JLabel());
+    glass.add(new JLabel());
+    glass.addMouseListener(new MouseAdapter() {});
+    glass.addMouseMotionListener(new MouseMotionAdapter() {});
+    setGlassPane(glass);
+    // Now set up a few buttons and images for the main application.
+    JPanel mainPane = new JPanel();
+    mainPane.setBackground(Color.white);
+    JButton redB = new JButton("Red");
+    JButton blueB = new JButton("Blue");
+    JButton greenB = new JButton("Green");
+    mainPane.add(redB);
+    mainPane.add(greenB);
+    mainPane.add(blueB);
+    mainPane.add(new JLabel(new ImageIcon("oreilly.gif")));
+    // Attach the pop-up debugger to the main app buttons so you
+    // see the effect of making a glass pane visible.
+    PopupDebugger pd = new PopupDebugger(this);
+    redB.addActionListener(pd);
+    greenB.addActionListener(pd);
+    blueB.addActionListener(pd);
+    // And last but not least, our button to launch the glass pane
+    JButton startB = new JButton("Start the big operation!");
+    startB.addActionListener(new ActionListener() {
+        public void actionPerformed(java.awt.event.ActionEvent A) {
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+234 | Chapter 8: Swing Containers
+          glass.setVisible(true);
+          startTimer();
+        }
+      });
+    Container contentPane = getContentPane();
+    contentPane.add(mainPane, BorderLayout.CENTER);
+    contentPane.add(startB, BorderLayout.SOUTH);
+  }
+  // A quick method to start up a 10-second timer and update the progress bar
+  public void startTimer() {
+    if (timer == null) {
+      timer = new Timer(1000, new ActionListener() {
+          int progress = 0;
+          public void actionPerformed(ActionEvent A) {
+            progress += 10;
+            waiter.setValue(progress);
+            // Once we hit 100%, remove the glass pane and reset the progress bar
+            // stuff.
+            if (progress >= 100) {
+              progress = 0;
+              timer.stop();
+              glass.setVisible(false);
+              waiter.setValue(0);
+            }
+          }
+        });
+    }
+    if (timer.isRunning()) {
+      timer.stop();
+    }
+    timer.start();
+  }
+  // A graphical debugger that pops up whenever a button is pressed
+  public class PopupDebugger implements ActionListener {
+    private JFrame parent;
+    public PopupDebugger(JFrame f) {
+      parent = f;
+    }
+    public void actionPerformed(ActionEvent ae) {
+      JOptionPane.showMessageDialog(parent, ae.getActionCommand());
+    }
+  }
+  public static void main(String[] args) {
+    GlassExample ge = new GlassExample();
+    ge.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 235
+Note that the lines:
+glass.addMouseListener(new MouseAdapter() {});
+glass.addMouseMotionListener(new MouseMotionAdapter() {});
+block mouse events from reaching the hidden components (remember, the glass
+pane fills the entire frame) because the events are sent to the first component (start-
+ing at the top) with registered listeners. Any time a mouse event method is called, it
+will do nothing since we just extended the empty-implementation adapter classes.
+However, forgetting these lines allows the events to pass through to our application.
+Avoiding Unnecessary Layers
+The following code fragment shows a common mistake:
+JPanel panel = new JPanel();
+panel.add(someStuff);
+JFrame f = new JFrame();
+f.getContentPane().add(panel);
+There’s nothing fundamentally wrong with this code. It will work just fine. How-
+ever, there’s an extra layer that’s just not necessary. Recall from the beginning of this
+section that the content pane is initialized to an instance of
+JPanel. There’s nothing
+special about that panel, and you should feel free to use it. A better implementation
+of the code fragment would be:
+JFrame f = new JFrame();
+Container panel = f.getContentPane(); // Cast to JPanel if you want to.
+panel.add(someStuff);
+It’s also important to keep in mind that the content pane can be any arbitrary con-
+tainer—it doesn’t have to be aJPanel. If you want to fill the content pane with a
+scrollable region, or perhaps with a tabbed pane, you can replace the content pane
+with a
+JScrollPane orJTabbedPane. For example:
+JScrollPane scroll = new JScrollPane(new JTextPane());
+JFrame f = new JFrame();
+f.setContentPane(scroll); // Not f.getContentPane().add(scroll);
+A reasonable rule of thumb is that if you are only going to add a single component to
+the content pane and you want it to fill the entire pane, don’t add to the content
+pane—replace it. Of course, replacing the content pane does leave you in charge of
+the background color and opacity as well. Sometimes the defaults for these proper-
+ties are not what you want, so you should be aware you may need to tweak the pane
+before final production.
+Properties
+Table8-2shows the properties and default values defined byJRootPane. The
+backgroundproperty is set to the default “control” (component) color defined in the
+UIManager.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+236 | Chapter 8: Swing Containers
+ThecontentPaneis initially set to aJPanelwith aBorderLayout, whileglassPaneis set
+to a nonopaque, invisibleJPanelwith a default (FlowLayout) layout manager. A new
+instance ofJLayeredPaneis the default value forlayeredPane, and by default the
+JMenuBarproperty is set tonull. ThecontentPaneis contained by the layered pane’s
+FRAME_CONTENT_LAYER (see “The JLayeredPane Class” for further explanation).
+Note that theset()methods for theJMenuBarandcontentPaneproperties take care
+of placing these components within theJLayeredPane, so you typically don’t have to
+worry about the layered pane at all.
+The inheriteddoubleBufferedproperty (see “Double Buffering” in Chapter3) istrue
+by default, and you’ll usually leave it that way unless you do some fancy background
+painting. Thelayoutproperty defaults to a new instance of the protected inner class
+RootLayout. Since the glass pane and the content pane occupy the same bounds, no
+optimization is needed, sooptimizedDrawingEnabled returnsfalse.
+ThedefaultButtonproperty was introduced in Chapter5. This property allows a
+JButtonto be specified as the default for the container. The default button is pressed
+if the user presses Enter (or some other UI-defined key) while the pane has focus
+(unless some other focused component, like a
+JTextField, handles the key). This is a
+very convenient feature when presenting a user with information to be viewed and
+acknowledged because it keeps the user from having to use the mouse.
+Table8-2.JRootPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JRootPaneAccessibleJRoot-
+Pane()
+backgroundo Color •• UIManager.getColor("control")
+contentPane Container •• JPanel()
+defaultButtonb JButton •• null
+doubleBuffered boolean •• true
+glassPane Component •• JPanel()
+JMenuBar* JMenuBar •• null
+layeredPane JLayeredPane •• JLayeredPane()
+layouto LayoutManager•• RootLayout()
+optimizedDrawingEnabled boolean• false
+validateRooto boolean • true
+windowDecorationStyle1.4 int •• JRootPane.NONE
+1.4since 1.4, bbound, ooverridden
+*This property replaces the deprecatedmenuBar property.
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 237
+Introduced in SDK 1.4, thewindowDecorationStyleproperty allows you to set the
+border and window controls shown from the root pane. Classes likeJOptionPaneand
+JFileChooserset this property for you. If you start with a genericJWindoworJDialog
+though, you can now control the look of the window. The decoration style options
+are shown in Table8-3.
+Revalidate
+The remaining property listed in Table8-2is thevalidateRootproperty.JRootPane
+overridesisValidateRoot()to returntrue. This causes the container to be validated
+(meaning that its contents will be redisplayed) as a result of any call torevalidate()
+on one of its children or their descendants. This simplifies the process of dealing
+with components that change dynamically.
+In older versions (prior to 1.2), if the font size of a component changed (for exam-
+ple), you needed to call
+invalidate()on the component and thenvalidate()on its
+container to ensure that the component would be resized appropriately. With
+revalidate(), only one call is necessary. Furthermore, the wayrevalidate()is
+implemented allows multiplerevalidate()calls to be handled at once, much like
+multiplerepaint() calls are handled at the same time by the AWT.
+Here’s a simple example usingrevalidate():
+// RevalidateExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+public class RevalidateExample extends JFrame {
+  public RevalidateExample() {
+    super("Revalidation Demo");
+    setSize(300,150);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+Table8-3.JRootPane constants
+Constant Type Description
+COLOR_CHOOSER_DIALOG int Color chooser decoration type
+ERROR_DIALOG int Error dialog decoration type
+FILE_CHOOSER_DIALOG int File chooser decoration type
+INFORMATION_DIALOG int Error dialog decoration type
+NONE int Type indicating no decorations
+PLAIN_DIALOG int Plain dialog decoration type
+QUESTION_DIALOG int Question dialog decoration type
+WARNING_DIALOG int Warning dialog decoration type
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+238 | Chapter 8: Swing Containers
+    // Create a single button.
+    Font font = new Font("Dialog", Font.PLAIN, 10);
+    final JButton b = new JButton("Add");
+    b.setFont(font);
+    Container c = getContentPane();
+    c.setLayout(new FlowLayout());
+    c.add(b);
+    // Increase the size of the button’s font each time it’s clicked.
+    b.addActionListener(new ActionListener() {
+      int size = 10;
+      public void actionPerformed(ActionEvent ev) {
+        b.setFont(new Font("Dialog", Font.PLAIN, ++size));
+        b.revalidate();   // Invalidates the button and validates its root pane
+      }
+    });
+  }
+  public static void main(String[] args) {
+    RevalidateExample re = new RevalidateExample();
+    re.setVisible(true);
+  }
+}
+In this example, we create a single button and add it to the content pane of aJFrame
+(which uses aJRootPane). Each time the button is clicked, we increase the size of the
+button’s font. As a result, the button needs to be resized to accommodate the larger
+label. To make this happen, we simply callrevalidate()on the button. Note that
+the button could have been nested inside any number of other containers below the
+root pane, and this would still work properly. As long as there is an ancestor of the
+revalidated component that returns
+truetoisValidateRoot(), the container is vali-
+dated. It would require a very specific effort on your part (maybe because you want
+complete control over component painting) to ignore a call for revalidation. You
+would have to be sure to unset the
+validateRootproperty (by subclassing) on all of
+your component’s parents.
+Constructor
+Only one constructor is available for the JRootPane class:
+public JRootPane()
+Create a new pane with the default property values specified in Table8-2.
+The RootPaneContainer Interface
+As we’ve said, the top-level Swing containers all use theJRootPaneclass as their sin-
+gle child component. In order to make it easier to work with these containers, Swing
+provides a common interface that each of them implement. This interface,
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Root Pane | 239
+RootPaneContainer, defines methods for accessing the common properties available
+inJRootPane, as well as for the root pane itself. This is what allows for the shortcuts
+we described in the previous section.
+The classes that implement this interface typically delegate the methods to their con-
+tainedJRootPane. For example,getContentPane() would be implemented like this:
+public Container getContentPane() {
+    return getRootPane().getContentPane();
+}
+Properties
+This interface is made up entirely of accessors for theJRootPaneand its properties,
+shown in Table8-4. Notice that the root pane’sJMenuBaris not available in this inter-
+face. This is because certain containers (JWindow, specifically) don’t typically contain
+menus. This is not to say that you couldn’t use one if you really wanted to (accessing
+it from theJRootPane), but access to the menu bar is not directly supported by the
+interface.
+The JLayeredPane Class
+We have already seen some of the panes (the glass and content panes, for example)
+accessible through the
+JRootPaneclass. Though it doesn’t make much use of it
+directly,JRootPaneintroduces a class calledJLayeredPane. JLayeredPaneis a con-
+tainer that manages its components via layers so that components in the upper lay-
+ers are painted on top of components in the lower layers. This gives you something
+that was difficult to get with AWT: complete control over which components are
+painted on top and which are hidden.
+The easiest way to understand how this works is to look at a very simple example.
+// SimpleLayers.java
+//
+import javax.swing.*;
+import java.awt.Color;
+public class SimpleLayers extends JFrame {
+  public SimpleLayers() {
+    super("LayeredPane Demonstration");
+Table8-4.RootPaneContainer properties
+Property Data type
+get
+is
+set Default value
+contentPane Container ••
+glassPane Component ••
+layeredPane JLayeredPane ••
+rootPane JRootPane •

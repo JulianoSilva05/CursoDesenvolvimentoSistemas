@@ -1,0 +1,2045 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using JOptionPane | 295
+Table10-3.JOptionPane constants for specifying the desired message type
+Constant Type Description
+ERROR_MESSAGE int Used for error messages
+INFORMATION_MESSAGE int Used for informational messages
+PLAIN_MESSAGE int Used for arbitrary messages
+QUESTION_MESSAGE int Used for question dialogs
+WARNING_MESSAGE int Used for warning messages
+Table10-4.JOptionPane constants for specifying the user’s options
+Constant Type Descriptiona
+a The actual button labels are determined by the L&F. Currently, Swing L&Fs use the strings shown here. In future releases, these strings will
+be internationalized.
+DEFAULT_OPTION int OK button
+OK_CANCEL_OPTION int OK and Cancel buttons
+YES_NO_CANCEL_OPTION int Yes, No, and Cancel buttons
+YES_NO_OPTION int Yes and No buttons
+Table10-5.JOptionPane selected option (and other “value”) constants
+Constant Type Description
+CANCEL_OPTION int Cancel button pressed
+CLOSED_OPTION int No button pressed, e.g., when the window is closed
+NO_OPTION int No button pressed
+OK_OPTION int OK button pressed
+YES_OPTION int Yes button pressed
+UNINITIALIZED_VALUE Object Value indicating that no value has been set for the pane
+Table10-6.JOptionPane bound property name constants
+Constant Type Description
+ICON_PROPERTY StringDisplayed icon
+INITIAL_SELECTION_VALUE_PROPERTY String Initially selected value
+INITIAL_VALUE_PROPERTY StringInitially focused button
+INPUT_VALUE_PROPERTY StringValue entered by the user
+MESSAGE_PROPERTY StringMessage displayed to the user
+MESSAGE_TYPE_PROPERTY StringType of message displayed
+OPTION_TYPE_PROPERTY StringType of options provided
+OPTIONS_PROPERTY StringList of nondefault options provided
+SELECTION_VALUES_PROPERTY StringSelection values available to user
+VALUE_PROPERTY StringOption selected by user
+WANTS_INPUT_PROPERTY StringWhether pane requires input
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+296 | Chapter 10: Swing Dialogs
+Four Dialog Types
+JOptionPaneprovides static methods for creating four types of dialogs (see Table10-7
+and the examples that follow).*Each of these types can be automatically enclosed in
+either aJDialog or aJInternalFrame. The four types are:
+Input Dialog
+Provides some way (typically aJTextField, JComboBox,o rJList) for the user to
+enter data. Always includes two buttons: OK and Cancel.
+Confirm Dialog
+Asks a user to confirm some information. Includes buttons such as Yes, No, OK,
+and Cancel.
+Message Dialog
+Displays information to the user. Includes a single OK button.
+Option Dialog
+Displays arbitrary data to the user. May contain any set of buttons for the user to
+choose from.
+The first three types are somewhat restrictive, making it easy to create the most com-
+mon types of dialogs. Option Dialog is more flexible, giving you complete control.
+Also, keep in mind that you can use the constructors to instantiate
+JOptionPane
+objects directly. These objects will then be Option Dialogs, again allowing you com-
+plete control.
+Constructors
+public JOptionPane()
+public JOptionPane(Object message)
+public JOptionPane(Object message, int messageType)
+public JOptionPane(Object message, int messageType, int optionType)
+public JOptionPane(Object message, int messageType, int optionType, Icon icon)
+public JOptionPane(Object message, int messageType, int optionType, Icon icon,
+Object[]options)
+public JOptionPane(Object message, int messageType, int optionType, Icon icon,
+Object[]options, ObjectinitialValue)
+These constructors allow
+JOptionPanes to be created and held over time (unlike
+the static methods listed below, which create panes that are used only once).
+* Note that these dialog types are not different Java classes. They simply represent common types of dialog
+boxes used in applications.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using JOptionPane | 297
+Static Dialog Display Methods
+There are more static “show” methods (used to create and displayJDialogand
+JInternalFrameobjects that containJOptionPanes) than can be listed here; chances
+are good that there is a variant that does what you want with the parameters you
+have available. The authoritative list is in theJOptionPaneJavadoc, and a summary is
+presented in Table10-7.
+Dialog Creation Method Parameters
+Table10-7 summarizes the parameter types, names, and default values for
+JOptionPane’s constructors and static dialog creation methods. The parameters are
+listed (top to bottom) in the order they occur in the methods. Parameters that do not
+apply to a given column are left blank. In the rest of this section, we’ll explain how
+each of these parameters affects the dialog’s display. After that, we’ll show some
+examples of dialogs and internal frames created using specific
+JOptionPanemethods
+and constructors.
+Component parentComponent
+ForJDialogs, this is the dialog’s parent. The dialog is centered on this compo-
+nent when it is displayed. ForJInternalFrames, this parameter is used to find a
+container for the frame. IfparentComponentis aJDesktopPane, the internal frame
+is added to itsMODAL_LAYER. Otherwise, an attempt is made to see if
+parentComponentis contained (possibly recursively) by aJDesktopPane.*If so, the
+frame is added to the containing desktop’sMODAL_LAYER.
+If neither of these apply, theparentComponent’s parent (if it has no parent, a
+RuntimeExceptionis thrown) is used as the container, and the frame is added
+withBorderLayout.CENTER constraints.
+This last option, while supported, rarely gives you what you’re looking for. Since
+the dialog is added with
+BorderLayoutconstraints, yourparentComponent’s par-
+ent should be using aBorderLayout, or you may have various problems (e.g.,
+GridBagLayoutthrows an exception if you add a component with constraints,
+other than aGridBagConstraintsobject). Even if you have a container with a
+BorderLayout, remember that the dialog fills the entire center of the container
+causing it to be resized as necessary, possibly to an unusable size. All of this
+leads to a simple rule: to make your life easier, create only internal dialogs within
+JDesktopPanes. See the example at the end of the chapter to see how to do this
+when you’re not already using aJDesktopPane in your interface.
+*getDesktopPaneForComponentsearches a parent component chain for aJDesktopPane. It is static and public,
+so you are free to use it yourself. It takes a singleComponent as its parameter.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+298 | Chapter 10: Swing Dialogs
+Table10-7.JOptionPane constructor/dialog creation method parameters, defaults, and return types
+Parameter type
+Parameter
+name
+JOptionPane
+constructors
+InputDialog ConfirmDialog MessageDialog
+Option-
+Dialog
+ComponentparentComponent nulla
+a Ifnull, a defaultFrame is used. ThisFrame is returned by the staticgetRootFrame method and can be set using the staticsetRootFrame method.
+Requireda Requireda Requireda
+Object message "JOptionPane
+Message"
+Required Required Required Required
+String title "Input" "Select an Option""Message" Required
+int optionType PLAIN_MESSAGEb
+b The order of theoptionType andmessageType parameters for the constructors is reversed; messageType must come first.
+YES_NO_CANCEL_OPTION Required
+int messageType DEFAULT_OPTIONb QUESTION_MESSAGE QUESTION_MESSAGE INFORMATION_MESSAGE Required
+Icon icon null null null null Required
+Object[] selectionValues null
+Object initialSelectionValue null
+Object[] options null Required
+Object initialValue null Required
+Return type String/Object int void int
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using JOptionPane | 299
+parentComponentis allowed to benull, in which case a defaultFrameis used. This
+Frameis returned by the static methodgetRootFrame, and the default can be
+changed by calling the static methodsetRootFrame.
+Object message
+This is the message that will be displayed in the dialog. Typically, it is a simple
+Stringobject.However,themethodsallowthistobeanyarbitraryobject.It’sup
+to the L&F to determine how to handle other objects. Typically (for the Swing
+L&Fs), if the message is aComponent, it is displayed as is. If it is anIcon,i ti s
+wrapped in aJLabeland displayed. Ifmessageis anObject[], the elements of the
+array are recursively expanded (applying these same rules) and added to form a
+vertical column. Any other types passed in are added as strings by calling the
+object’s
+toString() method.
+Note that the flexibility of this parameter allows you to use any arbitrary compo-
+nent (including containers with many other components inside) as the “mes-
+sage” for the dialog. Figure10-6 shows an internal dialog that was created by
+passing in a custom calendar component as the message parameter.
+String title
+This parameter contains the string that appears on the dialog’s title bar. Note
+that this parameter does not apply to the
+JOptionPaneconstructors since
+JOptionPane itself does not have a title bar.
+int optionType
+This parameterdetermineswhich optionsthe user is given for dismissingthe dia-
+log. This parameter applies only to Confirm Dialogs, Option Dialogs, and
+JOptionPaneconstructors.Asarule,InputDialogshaveanOKbuttonandaCan-
+cel button. Message Dialogs have only an OK button. For the other types of dia-
+logs, this parameter may be one of these values:
+DEFAULT_OPTION, YES_NO_OPTION,
+YES_NO_CANCEL_OPTION,o rOK_CANCEL_OPTION. Again, it’s up to the L&F to deter-
+mine how to interpret these, but you can confidently assume thatYES_NO_OPTION
+Figure10-6.Custom component in a JOptionPane internal dialog
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+300 | Chapter 10: Swing Dialogs
+provides a Yes and a No button, and so on. TheDEFAULT_OPTION value provides a
+single OK button.
+If you want a different set of buttons, you need to use an Option Dialog, which
+allows you to specify any arbitrary set of buttons via theoptions parameter.
+int messageType
+This parameter indicates the type of dialog to create. The possible values are:
+WARNING_MESSAGE, QUESTION_MESSAGE, INFO_MESSAGE, ERROR_MESSAGE, andPLAIN_
+MESSAGE. It’s up to the L&F to determine how to interpret these options. Usu-
+ally, the value of the parameter determines the icon displayed in the dialog.
+Figure10-7 shows the icons used by several L&Fs (note that in some cases there
+isn’t a distinct icon for each
+messageType). This default icon can be overridden by
+passing in a non-nullvalue for theiconparameter. There is no icon associated
+withPLAIN_MESSAGE.
+Icon icon
+This parameter specifies theIconto display in the dialog, allowing you to fur-
+ther customize the display. If it is set tonull, the icon is determined based on the
+messageType. To have no icon displayed, passPLAIN_MESSAGE as themessageType.
+Object[] selectionValues
+This parameter is used only inInputdialogs. It allows you to specify a set of
+selectionsfortheusertochoosefrom.Asyoumightexpect,it’suptotheL&Fto
+determine how to supply these options to the user. It’s common for a
+JComboBox
+to be used when there are only a few values and to have it replaced by a scroll-
+ing
+JList(with a selection mode ofMULTIPLE_INTERVAL_SELECTION) when there
+are many. In either case, the array of objects is passed directly to the list or
+combo box for interpretation. (See the documentation of these components for
+details on how different object types are interpreted.) If the
+selectionValues
+parameter isnull, aJTextField is used for data entry.
+Figure10-7.JOptionPane icons (Warning, Question, Info, and Error)
+Metal Icons
+Motif Icons
+Windows Icons
+Mac Icons
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Simple Examples | 301
+Object initialSelectionValue
+This parameter also applies only to Input Dialogs. It allows you to specify which
+of the options supplied inselectionValues should be initially selected.
+Object[] options
+This parameter applies only toJOptionPaneconstructors and Option Dialogs. It
+allows you to specify the set of option buttons the user will see. Usingnullhere
+indicates that theoptionTypeshould be used to determine the set of buttons dis-
+played. Useful parameter types for this parameter areStringandIcon. These are
+used to constructJButtonobjects.Components passed in via this parameter are
+added as is.*Any other input objects are used to createJButtons with a label gen-
+erated by callingtoString() on the object.
+Object initialValue
+This parameter (also available only for constructors and Option Dialogs) allows
+you to specify a default option from the list supplied by the
+optionsparameter.
+Note that this works only if theoptionsparameter is non-null. This value deter-
+mines which button has initial focus. In addition, if the initial value is aJButton,
+it becomes the default button on the root pane that contains it (if there is one).
+For example, specifying
+{"Register", "Not yet"}as theoptionsandRegisteras
+theinitialValuecauses theRegisterbutton to have initial focus and be the
+default button.
+Simple Examples
+The following are a few examples that show some of things you can do with
+JOptionPane static methods and constructors.
+Here’s an input dialog with more than 20 selection values. This results in the cre-
+ation of a
+JList (Figure10-8):
+JOptionPane.showInputDialog(null, "Please choose a name", "Example 1",
+  JOptionPane.QUESTION_MESSAGE, null, new Object[] {
+    "Amanda", "Colin", "Don", "Fred", "Gordon", "Janet", "Jay", "Joe",
+    "Judie", "Kerstin", "Lotus", "Maciek", "Mark", "Mike", "Mulhern",
+    "Oliver", "Peter", "Quaxo", "Rita", "Sandro", "Tim", "Will"}, "Joe");
+Here’s another input dialog. This time, we don’t provide any selection values, so we
+getaJTextField.Thedefaultvaluewesupplyisenteredinthefieldwhenitcomesup
+(Figure10-9).
+JOptionPane.showInputDialog(null, "Please enter your name", "Example 2",
+  JOptionPane.QUESTION_MESSAGE, null, null, "Shannon");
+* This is not as useful as it sounds, as no event listeners are added for the components. It would be nice if a
+futurereleaseatleastsupportedpassingJButtonsbyhavingtheL&Faddanactionlistenerforthem,likethe
+one it adds toJButtons it creates.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+302 | Chapter 10: Swing Dialogs
+Next, we’ll try a message dialog with a custom icon (Figure10-10):
+JOptionPane.showMessageDialog(null, "Have a nice day.", "Example 3",
+  JOptionPane.INFORMATION_MESSAGE, new ImageIcon("images/smile.gif"));
+Here’s a very simple confirm dialog (Figure10-11):
+JOptionPane.showConfirmDialog(null, "Are you sure?", "Example 4",
+  JOptionPane.YES_NO_CANCEL_OPTION);
+Figure10-8.Input dialog (JList)
+Figure10-9.Input dialog (JTextField)
+Figure10-10.Message dialog with a custom Icon
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Getting the Results | 303
+Next, we’ll get a little fancy and create an internal frame dialog with custom option
+buttons (Figure10-12):
+JOptionPane.showInternalOptionDialog(desk, "Please select a color",
+  "Example 5", JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE,
+  null, new Object[] {"Red", "Green", "Blue"}, "Blue");
+Finally, let’s use aJOptionPaneconstructor and place the new pane inside a regular
+Swing container. This is a strange thing to do, but it’s perfectly valid (Figure10-13).
+JFrame f = new JFrame();
+Container c = f.getContentPane();
+c.setLayout(new BorderLayout());
+JOptionPane op = new JOptionPane("Stop!", JOptionPane.WARNING_MESSAGE);
+JPanel p = new JPanel(new FlowLayout());
+p.add(op);
+c.add(p);
+c.add(new JLabel("Example 6", JLabel.CENTER), BorderLayout.NORTH);
+f.setVisible(true);
+Getting the Results
+Now that we’ve seen how to create all sorts of useful dialog boxes, it’s time to take a
+look at how to retrieve information about the user’s interaction with the dialog.
+Table10-7 showed the return types of the various methods. Here’s a quick summary
+of what the returned values mean.
+Figure10-11.Confirm dialog
+Figure10-12.Internal frame dialog with custom buttons
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+304 | Chapter 10: Swing Dialogs
+Input Dialogs
+The versions that do not take an array of selection values return aString. This is
+the data entered by the user. The methods that do take an array of selection val-
+ues return anObjectreflecting the selected option. It’s up to the L&F to deter-
+mine the component used for presenting the options. Typically, aJComboBoxis
+used if there are fewer than 20 choices, and aJListis used if there are 20 or
+more.* In any case, if the user presses the Cancel button,null is returned.
+Confirm Dialogs
+These methods return anintreflecting the button pressed by the user. The possi-
+blevaluesare:YES_OPTION,NO_OPTION,CANCEL_OPTION,andOK_OPTION.CLOSED_OPTION
+is returned if the user closes the window without selecting anything.
+Message Dialogs
+These methods havevoidreturn types because they do not request a user
+response.
+Option Dialogs
+If no options are specified, this method returns one of the constant values
+YES_OPTION, NO_OPTION, CANCEL_OPTION, andOK_OPTION. If options are explicitly
+defined, the return value gives the index to the array of options that matches
+the button selected by the user.
+CLOSED_OPTION is returned if the user closes the
+window without selecting anything.
+Getting a value from aJOptionPaneyou’ve instantiateddirectly is also very simple. The
+value is obtained by calling the pane’sgetValue()method. This method returns an
+Integervalue using the same rules as those described for option dialogs with two
+smallvariations.InsteadofreturninganIntegercontainingCLOSED_OPTION,getValue()
+returnsnullif the dialog is closed. Also, if you callgetValue()before the user has
+made a selection (or before displaying the dialog at all, for that matter), it will return
+UNINITIALIZED_VALUE. To get the value of user input (from aJTextField,JComboBox,o r
+JList), callgetInputValue(). This will return the enteredStringor the selectedObject
+Figure10-13.A JOptionPane inside a Swing container
+* PriortoSDK1.4,theJListallowedtheusertohighlightmultipleselectionseventhoughonlythefirstcould
+be detected. This has been fixed to allow only a single selection to be highlighted.
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Comparison: Constructors Versus Static Methods | 305
+(which may also be aString). Note that, just as with the static “show” methods,
+there’s no way to find out about multiple selections the user may have made when
+there are more than 20 choices.
+The following example contains code to retrieve results fromJOptionPanes.
+A Comparison: Constructors
+Versus Static Methods
+We’ve talked quite a bit about the two fundamental ways to create dialogs using
+JOptionPane: instantiate aJOptionPaneand ask it to put itself into aJDialogor
+JInternalFrame, which you then display, or create and display the dialog in a single
+step by invoking one of the many static “show” methods.
+The basic trade-off is this: using the static methods is a bit easier, but using a con-
+structor allows you to hold onto and reuse theJOptionPaneinstance, a tempting fea-
+ture if the pane is fairly complex and you expect to display it frequently (if you use
+the static methods, the option pane is recreated each time you call). The significance
+of this difference depends largely on the complexity of the pane. Because of lingering
+issues that make reusing
+JOptionPaneproblematic, it’s still best to avoid this feature
+(see the note in the discussion following this example program for details).
+The following example shows the differences between usingJOptionPane’s static
+methods and its constructors. It allows both internal and noninternal dialogs to be
+created, showing how each is done.
+// OptPaneComparison.java
+//
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+import java.beans.*;
+public class OptPaneComparison extends JFrame {
+  public static void main(String[] args) {
+    JFrame f = new OptPaneComparison("Enter your name");
+    f.setVisible(true);
+  }
+  public OptPaneComparison(final String message) {
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    final int msgType = JOptionPane.QUESTION_MESSAGE;
+    final int optType = JOptionPane.OK_CANCEL_OPTION;
+    final String title = message;
+    setSize(350, 200);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+306 | Chapter 10: Swing Dialogs
+    // Create a desktop for internal frames.
+    final JDesktopPane desk = new JDesktopPane();
+    setContentPane(desk);
+    // Add a simple menu bar.
+    JMenuBar mb = new JMenuBar();
+    setJMenuBar(mb);
+    JMenu menu = new JMenu("Dialog");
+    JMenu imenu = new JMenu("Internal");
+    mb.add(menu);
+    mb.add(imenu);
+    final JMenuItem construct = new JMenuItem("Constructor");
+    final JMenuItem stat = new JMenuItem("Static Method");
+    final JMenuItem iconstruct = new JMenuItem("Constructor");
+    final JMenuItem istat = new JMenuItem("Static Method");
+    menu.add(construct);
+    menu.add(stat);
+    imenu.add(iconstruct);
+    imenu.add(istat);
+    // Create our JOptionPane. We’re asking for input, so we call setWantsInput.
+    // Note that we cannot specify this via constructor parameters.
+    optPane = new JOptionPane(message, msgType, optType);
+    optPane.setWantsInput(true);
+    // Add a listener for each menu item that will display the appropriate
+    // dialog/internal frame.
+    construct.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        // Create and display the dialog.
+        JDialog d = optPane.createDialog(desk, title);
+        d.setVisible(true);
+        respond(getOptionPaneValue());
+      }
+    });
+    stat.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        String s = JOptionPane.showInputDialog
+          (desk, message, title, msgType);
+        respond(s);
+      }
+    });
+    iconstruct.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        // Create and display the dialog.
+        JInternalFrame f = optPane.createInternalFrame(desk, title);
+        f.setVisible(true);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Comparison: Constructors Versus Static Methods | 307
+        // Listen for the frame to close before getting the value from it.
+        f.addPropertyChangeListener(new PropertyChangeListener() {
+          public void propertyChange(PropertyChangeEvent ev) {
+            if ((ev.getPropertyName().equals(JInternalFrame.IS_CLOSED_PROPERTY))
+            && (ev.getNewValue() == Boolean.TRUE)) {
+              respond(getOptionPaneValue());
+            }
+          }
+        });
+      }
+    });
+    istat.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        String s = JOptionPane.showInternalInputDialog
+          (desk, message, title, msgType);
+        respond(s);
+      }
+    });
+  }
+  // This method gets the selected value from the option pane and resets the
+  // value to null so we can use it again.
+  protected String getOptionPaneValue() {
+    // Get the result . . .
+    Object o = optPane.getInputValue();
+    String s = "<Unknown>";
+    if (o != null)
+      s = (String)o;
+    Object val = optPane.getValue(); // which button?
+    // Check for Cancel button or closed option.
+    if (val != null) {
+      if (val instanceof Integer) {
+        int intVal = ((Integer)val).intValue();
+        if((intVal == JOptionPane.CANCEL_OPTION) ||
+           (intVal == JOptionPane.CLOSED_OPTION))
+          s = "<Cancel>";
+      }
+    }
+    // A little trick to clean the text field. It is updated only if the initial
+    // value is changed. To do this, we’ll set it to a dummy value ("X")
+    // and then clear it.
+    optPane.setValue("");
+    optPane.setInitialValue("X");
+    optPane.setInitialValue("");
+    return s;
+  }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+308 | Chapter 10: Swing Dialogs
+  protected void respond(String s) {
+    if (s == null)
+      System.out.println("Never mind.");
+    else
+      System.out.println("You entered: " + s);
+  }
+  protected JOptionPane optPane;
+}
+The user interface for this example (Figure10-14) is simple. We provide two menus:
+one to create standard dialogs and one to create internal frame dialogs. Each menu
+allows us to create a dialog using the
+JOptionPanewe’re holding (created via a con-
+structor) or create a new dialog with a static method call.
+There are a few details here worth pointing out. First, notice that we called
+setWantsInput(true)on ourJOptionPaneobject. This is how we create a pane that
+looks like those created by theshowInputDialog()methods. Without this call, there
+would not be a text field in our dialog.
+The next point of interest is the way we handle theJInternalFramewe get from the
+JOptionPane. Since this is just an ordinary internal frame, we don’t have any simple
+waytoblockwhilewewaitforinput.Instead,weaddapropertychangelistenertothe
+frame,whichwillwaitfortheframetobeclosed.Alternatively,wecouldhaveaddeda
+property change listener to the
+JOptionPane and listened for theINPUT_VALUE_PROPERTY.
+One last thing to point out is the little trick at the end of ourgetOptionPaneValue()
+method. We want to clear the value from the text field so that it won’t show up there
+the next time we use the same option pane. Since we have no way of getting to the
+text field directly, and no way of explicitly clearing the value,
+* we resort to making
+two changes to the initial value of the field. The reason we have to make two calls is
+Figure10-14.OptPaneComparison display
+* ThesetValue() call with an empty string might seem promising, but it isn’t enough.
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Comparison: Constructors Versus Static Methods | 309
+that the text field is cleared only when theinitialValuepropertychanges. If we just
+set it to an empty string every time, that wouldn’t be considered a change, so the
+field wouldn’t be updated.
+In this example, we held onto theJOptionPaneobject. You might be tempted to hold
+onto theJDialogyou get from the pane instead. This is generally not a good idea.
+TheJOptionPane“disposes” of the dialog when it closes, meaning that, among other
+things, its peer is destroyed. It’s easier to reuse theJOptionPane. Similar difficulties
+arise if you try to reuse theJInternalFramecreated by theJOptionPane. Reusing the
+JOptionPane seems like a safer strategy, but there are still problems.
+Reusing aJOptionPaneis not recommended. Read this section for
+details.
+If you experiment with the program carefully, you’ll discover some lingering and
+subtle problems with any attempt to reuse a singleJOptionPanefor multiple interac-
+tions with the user—for example, use theConstructormethod in theDialogmenu,
+enter a name, and then click on OK. Then try the same method again, enter some
+text (or not, it doesn’t make a difference), and close the window manually instead of
+clicking on either of the buttons. The program will report that you entered the same
+name as when you last clicked on OK, and there’s no way to get it to forget this! You
+can even show the dialog multiple times and click on Cancel. If you then show it and
+close the window again, you’ll see that the program still believes you entered the
+name you last said “OK” to.
+This problem, on top of the fact that we needed to resort to trickery to get an empty
+initial value displayed at all, suggests that any savings in efficiency we might gain by
+reusing a
+JOptionPaneare more than offset by the fact that, at least as it is currently
+implemented, this is not a safe or well-supported thing to do.
+If you want to see even more disturbing behavior, remove the line in the “little trick”
+that readsoptPane.setValue(""). The program seems at first to work the same way,
+but if you use the Constructor option in the Internal menu and try to enter the same
+name more than once, the OK button fails to work, leaving the internal frame open.
+Trying to cancel that method twice in a row fails in the same way.
+Nonstatic Methods
+Most of the methods defined inJOptionPaneare static (or accessors for the pane’s
+properties). Here are the only other nonstatic methods in the class:
+public JDialog createDialog(Component parentComponent, String title)
+CreateanewJDialogcontainingthisJOptionPane.Thedialog’sparentisthespec-
+ified component, and the input string is used as the window’s title. The dialog is
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+310 | Chapter 10: Swing Dialogs
+centered on the input parent component. This method is used by all of the static
+“show dialog” methods, and it is also the method to use when you construct a
+JOptionPane directly and want to use it in a dialog.
+public JInternalFrame createInternalFrame(Component parentComponent, String title)
+Create a newJInternalFramecontaining thisJOptionPane. The frame’s parent is
+the specified component, and the input string is used as the frame’s title. The
+parent component is used to search (up the parent chain) for an enclosing
+JDesktopPane. (See the detailed discussion of theparentComponentparameter ear-
+lier in this chapter.) This method is used by all of the static “show internal
+frame” methods; it is the method to use when you construct a
+JOptionPane
+directly and want to use it in an internal frame.
+public void selectInitialValue()
+Select the initial value, causing the default button to receive focus. If you are
+going to use a
+JOptionPaneto display a dialog multiple times, you should call this
+method before making the dialog visible.
+public void updateUI()
+Called to indicate that the L&F has changed.
+Miscellaneous Static Methods
+In addition to all of the static methods defined for showing dialogs (of which we saw
+some examples earlier), several other static methods are also defined:
+public static Frame getFrameForComponent(Component parentComponent)
+Search the parent hierarchy of the given
+Componentuntil it finds aFrame, which it
+returns. If it encounters anullparent (or if the input component isnull), it
+returns the result of a call togetRootFrame().
+public static JDesktopPane getDesktopPaneForComponent(Component parentCompo-
+nent)
+Search the parent hierarchy of the givenComponentuntil it finds aJDesktopPane,
+which it returns. If it encounters anullparent (or if the input component is
+null), it returnsnull.
+public static void setRootFrame(Frame newRootFrame)
+Set a defaultFrameto be used when an attempt is made to create a dialog and a
+parentFrame cannot be found.
+public static Frame getRootFrame()
+Return the value set bysetRootFrame(). The value is initially determined by the
+L&F.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using Internal Frame Dialogs with JDesktopPane | 311
+Using Internal Frame Dialogs
+with JDesktopPane
+In order to get the best results when using internal frame dialogs created by
+JOptionPane, the dialogs need to be placed in aJDesktopPane. However, this may not
+be convenient if your application does not use aJDesktopPane. In this section, we’ll
+show how you can easily adapt your application to use aJDesktopPaneso that you
+can use internal frame dialogs.
+Recall thatJDesktopPanehas anulllayout manager, leaving the management of the
+location of its contents up to theDesktopManagerand the user. This makes
+JDesktopPanea poor choice when you just need a container in which to build your
+main application. As a result, if you want to have an internal frame dialog displayed
+in a “normal” container, you need a solution that gives you the features of both
+JDesktopPane and a more layout-friendly container.
+This is actually a pretty straightforward goal to achieve. You need to create a
+JDesktopPaneand add your application container to it so that it fills an entire layer of
+the desktop. When there are no internal frames displayed, this looks the same as if
+you were displaying the application container alone. The benefit is that when you
+need to add an internal frame dialog, you have a desktop to add it to.
+Here’s a simple example that shows how this works. It also shows how you can
+make sure your container fills the desktop, even if the desktop changes size (since
+there’s no layout manager, this won’t happen automatically).
+// DialogDesktop.java
+//
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
+// A frame that can easily support internal frame dialogs
+public class DialogDesktop extends JFrame {
+  public DialogDesktop(String title) {
+    super(title);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    final JDesktopPane desk = new JDesktopPane();
+    setContentPane(desk);
+    // Create our "real" application container; use any layout manager we want.
+    final JPanel p = new JPanel(new GridBagLayout());
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+312 | Chapter 10: Swing Dialogs
+    // Listen for desktop resize events so we can resize p. This will ensure that
+    // our container always fills the entire desktop.
+    desk.addComponentListener(new ComponentAdapter() {
+      public void componentResized(ComponentEvent ev) {
+        Dimension deskSize = desk.getSize();
+        p.setBounds(0, 0, deskSize.width, deskSize.height);
+        p.validate();
+      }
+    });
+    // Add our application panel to the desktop. Any layer below the MODAL_LAYER
+    // (where the dialogs will appear) is fine. We’ll just use the default in
+    // this example.
+    desk.add(p);
+    // Fill out our app with a few buttons that create dialogs.
+    JButton input = new JButton("Input");
+    JButton confirm = new JButton("Confirm");
+    JButton message = new JButton("Message");
+    p.add(input);
+    p.add(confirm);
+    p.add(message);
+    input.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        JOptionPane.showInternalInputDialog(desk, "Enter Name");
+      }
+    });
+    confirm.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        JOptionPane.showInternalConfirmDialog(desk, "Is this OK?");
+      }
+    });
+    message.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        JOptionPane.showInternalMessageDialog(desk, "The End");
+      }
+    });
+  }
+  // A simple test program
+  public static void main(String[] args) {
+    DialogDesktop td = new DialogDesktop("Desktop");
+    td.setSize(350, 250);
+    td.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Using Internal Frame Dialogs with JDesktopPane | 313
+Most of this class is just a sample program proving that the strategy works. The key
+ideas come early on in the code. The first important thing is the creation of a
+JDesktopPane, which we set as the frame’s content pane. We then add the “real”
+application container to the desktop. The last important detail is the little
+ComponentListenerwe add to the desktop pane to ensure that our main application
+container is resized when the size of the desktop changes. Figure10-15 shows what
+the simple test program looks like after expanding it slightly, with two of the internal
+dialogs open.Figure10-15.DialogDesktop display
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+314
+Chapter11In this chapter:
+• The JSplitPane Class
+• The JScrollPane Class
+• The JTabbedPane Class
+• Layout Managers
+• The SpringLayout Class
+• Other Panes
+CHAPTER 11
+Specialty Panes and
+Layout Managers
+With all the spiffy Swing components out there, you might expect to see a few new
+layout managers to help place them, and you wouldn’t be disappointed. The Swing
+package includes several layout managers. However, most of these managers are
+designed for specific containers—
+JScrollPanehas its ownScrollPaneLayoutman-
+ager, for example. The Swing package also includes several new convenience con-
+tainers that handle things such as scrolling and tabs. (We’ll take a close look at these
+containers and their associated layout managers in this chapter.) Figure11-1 shows a
+class diagram of Swing’s specialty panes and their layout managers. The
+OverlayLayoutandSpringLayoutgeneral layout managers can be used with any con-
+tainers. We tackle them separately at the end of this chapter. (SpringLayoutwas
+added in SDK 1.4.)
+The JSplitPane Class
+TheJSplitPanecomponent allows you to place two (and only two) components side
+by side in a single pane. You can separate the pane horizontally or vertically, and the
+user can adjust this separator graphically at runtime. You have probably seen such a
+split pane approach in things like a file chooser or a news reader. The top or left side
+holds the list of directories or news subject lines while the bottom (or right side) con-
+tains the files or body of the currently selected directory or article. To get started,
+Figure11-2shows a simple split pane example that shows two text areas with a hori-
+zontal split. You can adjust the width of the split by grabbing the divider and sliding
+it left or right.
+Even with the code required to make the text areas behave (more on that in
+Chapter19), the following example is still fairly simple. If you are looking to get up
+and running with a quick split pane, this is the way to go.
+// SimpleSplitPane.java
+// A quick test of the JSplitPane class
+//
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JSplitPane Class | 315
+Figure11-1.Class diagram for Swing’s specialty panes and their layout managers
+Figure11-2.Simple JSplitPane with two text areas
+java.awt
+contains
+ScrollPaneConstants
+BoxLayout
+Container
+SwingConstants
+OverlayLayout
+ViewportLayout
+ScrollPaneLayout
+Component
+JComponent
+SingleSelectionModel
+ChangeListener
+JScrollPane
+JTabbedPane
+JScrollBar
+JViewport
+JSplitPane
+Box
+LayoutManager
+uses
+uses 1
+contains
+contains
+contains
+contains
+uses
+uses
+1
+1..3
+uses
+1
+* 2 1 * 0..4
+1
+1
+2
+uses
+javax.swing
+javax.swing.event
+Adjustable
+JScrollPane.
+ScrollBar
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+A
+A
+A
+A
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+316 | Chapter 11: Specialty Panes and Layout Managers
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class SimpleSplitPane extends JFrame {
+  static String sometext = "This is a simple text string that is long enough " +
+    "to wrap over a few lines in the simple demo we're about to build.  We'll " +
+    "put two text areas side by side in a split pane.";
+  public SimpleSplitPane() {
+    super("Simple SplitPane Frame");
+    setSize(450, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    JTextArea jt1 = new JTextArea(sometext);
+    JTextArea jt2 = new JTextArea(sometext);
+    // Make sure our text boxes do line wrapping and have reasonable minimum sizes.
+    jt1.setLineWrap(true);
+    jt2.setLineWrap(true);
+    jt1.setMinimumSize(new Dimension(150, 150));
+    jt2.setMinimumSize(new Dimension(150, 150));
+    jt1.setPreferredSize(new Dimension(250, 200));
+    JSplitPane sp = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, jt1, jt2);
+    getContentPane().add(sp, BorderLayout.CENTER);
+  }
+  public static void main(String args[]) {
+    SimpleSplitPane ssb = new SimpleSplitPane();
+    ssb.setVisible(true);
+  }
+}
+Properties
+Table11-1 shows the properties contained in theJSplitPane class.
+Table11-1.JSplitPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JSplitPane.
+AccessibleJSplitPane()
+bottomComponent Component •• null
+continuousLayoutb boolean •• false
+dividerLocationb,* int •• -1
+1.3since 1.3, bbound, ooverridden
+*These properties return-1 only if no UI is defined for this component. Normally, the UI is queried for its current value.
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JSplitPane Class | 317
+The properties ofJSplitPaneprimarily relate to the divider. You can get and set its
+size, location, and orientation, and its minimum and maximum bounds. Of particu-
+lar interest is theoneTouchExpandableproperty. If this value is set totrue, the UI
+should provide a component that can quickly collapse or expand the divider. For
+your programming convenience, four component properties are available. Note that
+the component properties
+bottomComponentandrightComponentrefer to the same
+object, as dotopComponentandleftComponent. This way, you can refer to your com-
+ponents in a fashion that’s consistent with the orientation of your split pane. The
+resizeWeightproperty affects how new space is allocated if the split pane itself is
+resized. The default of0.0 distributes all of the size change to the bottom-right com-
+ponent;1.0 goes entirely to the top-left component. If thecontinuousLayoutprop-
+erty istrue, both sides of the pane are updated as often as possible while the user
+moves the divider. Otherwise, the components are resized and redrawn only after the
+divider location is set. Continuous layout can be a performance problem and is often
+just awkward. The
+lastDividerLocationproperty saves the previous location of the
+divider and can be used to undo a change in the divider’s position.
+Constants
+SeveralconstantsaredefinedforusewiththeJSplitPaneclass(seeTable11-2).Some
+of these constants name the various properties in a split pane while others provide
+constraints for where to place a component or where to place the split.
+dividerSizeb int •• 5
+lastDividerLocation int •• 0
+leftComponent Component •• null
+maximumDividerLocation* int • -1
+minimumDividerLocation* int • -1
+oneTouchExpandableb boolean •• false
+orientationb int •• HORIZONTAL_SPLIT
+resizeWeightb, 1.3 double •• 0.0
+rightComponentComponent •• null
+topComponent Component •• null
+UIb SplitPaneUI • From L&F
+UIClassIDo String • "SplitPaneUI"
+Table11-1.JSplitPane properties (continued)
+Property Data type
+get
+is
+set Default value
+1.3since 1.3, bbound, ooverridden
+*These properties return-1 only if no UI is defined for this component. Normally, the UI is queried for its current value.
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+318 | Chapter 11: Specialty Panes and Layout Managers
+Constructors
+public JSplitPane()
+This constructor is a “demo” constructor. It sets up a horizontal split with a left
+button and right button (bothJButton components) already defined and added.
+public JSplitPane(int orientation)
+public JSplitPane(int orientation, boolean continuousLayout)
+These constructors allow you to pick your initial split (horizontal or vertical)
+using the constants
+HORIZONTAL_SPLIT andVERTICAL_SPLIT. No components are
+added to either pane. If you give atruevalue as thecontinuousLayoutargument
+to the second constructor, both panes are repainted continuously as the user
+moves the divider. (This property is
+falseby default—you just see a line show-
+ing the proposed divider location while you move the divider.)
+Table11-2.JSplitPane constants
+Constant Type Description
+BOTTOM StringAdd a component to the bottom of a vertically split pane.
+CONTINUOUS_LAYOUT_PROPERTY String Used in property change events to specify that the
+continuousLayout property has been changed.
+DIVIDER StringAdd a component as the divider for the pane.
+DIVIDER_LOCATION_PROPERTY1.3 StringUsed in property change events to specify that the
+dividerLocation property has changed.
+DIVIDER_SIZE_PROPERTY StringUsed in property change events to specify that the
+dividerSize property has changed.
+HORIZONTAL_SPLIT int One of the valid values for theorientation property of a
+JSplitPane object. This type of split creates a vertical
+divider, resulting in a set of left/right components.
+LAST_DIVIDER_LOCATION_PROPERTY String Used in property change events to specify that the
+lastDividerLocation property has changed.
+LEFT StringAdd a component to the left of a horizontally split pane.
+ONE_TOUCH_EXPANDABLE_PROPERTY String Used in property change events to specify that the
+oneTouchExpandable property has changed.
+ORIENTATION_PROPERTY StringUsed in property change events to specify that the
+orientation property has changed.
+RESIZE_WEIGHT_PROPERTY1.3 StringUsed in property change events to specify that the
+resizeWeight property has changed.
+RIGHT StringAdd a component to the right of a horizontally split pane.
+TOP StringAdd a component to the top of a vertically split pane.
+VERTICAL_SPLIT int One of the valid values for the orientation property of a
+JSplitPane object. This type of split creates a horizontal
+divider, resulting in a set of top/bottom components.
+1.3since 1.3
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JSplitPane Class | 319
+public JSplitPane(int orientation, Component leftOrTop, Component bottomOrRight)
+public JSplitPane(int orientation, boolean continuousLayout, Component leftOrTop,
+Component bottomOrRight)
+These constructors allow you to pick your orientation and the initial compo-
+nents for each pane. Depending on the orientation you choose, the first compo-
+nent is placed in the left or top pane, and the second component fills the other
+pane. If you give a
+truevalue as thecontinuousLayoutargument to the second
+constructor, both panes are repainted continuously as the user moves the
+divider.
+Control Methods
+public void remove(Component comp)
+public void remove(int index)
+public void removeAll()
+Remove components from the split pane. Typically, you use the first of these
+methods to remove one component at a time.
+public void resetToPreferredSizes()
+Reset the sizes of the components to their preferred sizes. The preferred size of a
+component is determined by the UI manager for the split pane. The preferred
+size of a split pane is the sum of the preferred sizes of its children (including the
+divider).
+public void setDividerLocation(double position)
+Thisconveniencemethoddoesthepixelcalculatingforyousothatyoucanspec-
+ify a position for the divider. The position you give is the fraction of the whole
+pane given to the left of the pane (for a horizontal split) or the top of the pane
+(for a vertical split). For example, with a horizontal split, a value of 0.75 assigns
+75% of the pane to the component on the left. The position must be a value
+between 0 and 1. If it isn’t, you get an
+IllegalArgumentException.
+Minimum and Preferred Sizes
+When setting up your split panes, watch out for the minimum and preferred sizes of
+the two components. If you look back at the code for Figure11-2, you can see we
+forcibly set the minimum sizes of the two text areas. The boundaries observed by the
+divider in a split pane are dictated by the minimum sizes of the two components.
+Some components, such as
+JTextArea, define their minimum size as the size they are
+initially shown with. That often works fine, but in the case of the split pane, it means
+that you cannot adjust the division between the two text areas (as both are already at
+their minimum sizes). The same is true for containers such as panels or the
+JScrollPane we discuss in the next section.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+320 | Chapter 11: Specialty Panes and Layout Managers
+You should also set thepreferredsize of the first component if you want the split
+pane to come up correctly the first time. In the previous example, if you remove the
+line that sets the preferred size ofjt1, thenjt1comes up with room for one row of
+text, andjt2takes everything else. Of course, you could also set thedividerLocation
+property before making the split pane visible. (Note that if you are using an older
+version of the JDK—such as 1.2.2—you have to set the preferred size.)
+The JScrollPane Class
+TheJScrollPaneclass offers a more flexible version of theScrollPaneclass found in
+the AWT package. Beyond the automatic scrollbars, you can put in horizontal and
+vertical headers as well as active components in the corners of your pane.
+(Figure11-6 shows the exact areas available in a
+JScrollPane, which is managed by
+theScrollPaneLayout class.)
+Many Swing components useJScrollPaneto handle their scrolling. TheJListcom-
+ponent, for example, does not handle scrolling on its own. Instead, it concentrates
+on presenting the list and making selection easy, assuming you’ll put it inside a
+JScrollPaneif you need scrolling. Figure11-3 shows a simpleJScrollPanein action
+with aJList object.
+This particular example does not take advantage of the row or column headers. The
+scrollpane adds the scrollbars automatically, but only “as needed.” If we were to
+resize the window to make it much larger, the scrollbars would become inactive.
+Here’s the code that builds this pane:
+// ScrollList.java
+// A simple JScrollPane
+//
+Figure11-3.JScrollPane showing two portions of a list that is too long for one screen
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 321
+import javax.swing.*;
+import java.awt.*;
+public class ScrollList extends JFrame {
+  JScrollPane scrollpane;
+  public ScrollList() {
+    super("JScrollPane Demonstration");
+    setSize(300, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    String categories[] = { "Household", "Office", "Extended Family",
+                            "Company (US)", "Company (World)", "Team",
+                            "Will", "Birthday Card List", "High School",
+                            "Country", "Continent", "Planet" };
+    JList list = new JList(categories);
+    scrollpane = new JScrollPane(list);
+    getContentPane().add(scrollpane, BorderLayout.CENTER);
+  }
+  public static void main(String args[]) {
+    ScrollList sl = new ScrollList();
+    sl.setVisible(true);
+  }
+}
+A similar technique can be used with many of the Swing components, including
+JPanel, JTree, JTable, andJTextArea. Chapter15 discusses theJTableclass and its
+particular use ofJScrollPane.
+While you will certainly useJScrollPanewith many of the Swing components, you
+can also build your own components and drop them into a scrollable area. You may
+bundle up a piece of your user interface into one panel and make that panel
+scrollable.
+Here’s a short example that takes the items from our previous list and turns them
+into a basic census form. As you can see in Figure11-4, the form itself is a panel with
+a size of 600×400 pixels. We display it inside a
+JScrollPaneand make the applica-
+tion 300×200.
+The only change from our first program is that we now have to build the census
+panel from scratch. We build a
+JPanelcontaining various labels and radio buttons,
+and slap it into aJScrollPane. The only logic involved is figuring out whether we’re
+adding a label or a button, and getting the buttons into appropriateButtonGroups
+(one group per row).
+// ScrollDemo.java
+// A simple JScrollPane demonstration
+//
+import javax.swing.*;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+322 | Chapter 11: Specialty Panes and Layout Managers
+import java.awt.*;
+import java.awt.event.*;
+public class ScrollDemo extends JFrame {
+  JScrollPane scrollpane;
+  public ScrollDemo() {
+    super("JScrollPane Demonstration");
+    setSize(300, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    init();
+    setVisible(true);
+  }
+  public void init() {
+    JRadioButton form[][] = new JRadioButton[12][5];
+    String counts[] = { "", "0-1", "2-5", "6-10", "11-100", "101+" };
+    String categories[] = { "Household", "Office", "Extended Family",
+                            "Company (US)", "Company (World)", "Team",
+                            "Will", "Birthday Card List", "High School",
+                            "Country", "Continent", "Planet" };
+    JPanel p = new JPanel();
+    p.setSize(600, 400);
+    p.setLayout(new GridLayout(13, 6, 10, 0));
+    for (int row = 0; row < 13; row++) {
+      ButtonGroup bg = new ButtonGroup();
+      for (int col = 0; col < 6; col++) {
+        if (row == 0) {
+          p.add(new JLabel(counts[col]));
+        }
+        else {
+          if (col == 0) {
+            p.add(new JLabel(categories[row - 1]));
+          }
+          else {
+            form[row - 1][col - 1] = new JRadioButton();
+            bg.add(form[row -1][col - 1]);
+Figure11-4.A JScrollPane with a component larger than the application window
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 323
+            p.add(form[row -1][col - 1]);
+         }
+        }
+      }
+    }
+    scrollpane = new JScrollPane(p);
+    getContentPane().add(scrollpane, BorderLayout.CENTER);
+  }
+  public static void main(String args[]) {
+    new ScrollDemo();
+  }
+}
+Properties
+Table11-3 shows how theJScrollPaneproperties grant you access to the five main
+components (not the corners) and the scrollbar policies. The valid values for
+horizontalScrollBarPolicyandverticalScrollBarPolicyare defined in the
+ScrollPaneConstantsinterface (see Table11-8). ThevalidateRootproperty is always
+truetoensurethatrevalidationcallstoanyofthepane’sdescendantscausethescroll-
+pane and all of its descendants to be validated, and that revalidation doesn’t go any
+further than theJScrollPane, which would be redundant. ThewheelScrollingEnabled
+property, added in SDK 1.4, allows you to enable or disable support for mice with a
+middle-wheel button.
+Table11-3.JScrollPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JScrollPane.
+AccessibleJScrollPane()
+columnHeaderb JViewport •• null
+columnHeaderViewComponent •
+componentOrientationb, o int •• ComponentOrientation.
+UNKNOWN
+horizontalScrollBar
+b JScrollBar • null
+horizontalScrollBarPolicyb int •• HORIZONTAL_SCROLLBAR_AS_
+NEEDED
+layout
+b, o LayoutManager•• new ScrollPaneLayout()
+opaque boolean • false
+rowHeaderb JViewport •• null
+rowHeaderView Component •
+UI ScrollPane-UI•• From L&F
+1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+,swing2.book.8435  Page 323  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+324 | Chapter 11: Specialty Panes and Layout Managers
+Given that you already have a viewport set up for the row and column headers, or
+the main viewport itself, you can use thecolumnHeaderView, rowHeaderView, and
+viewportViewproperties to modify the contents of these viewports. Note that theset
+accessors for these properties don’t create new viewport objects; they simply set the
+view to display the given component.
+Constructors
+public JScrollPane()
+public JScrollPane(Component view)
+public JScrollPane(Component view, intverticalScrollBarPolicy,
+inthorizontalScrollBarPolicy)
+public JScrollPane(int verticalScrollBarPolicy, inthorizontalScrollBarPolicy)
+Create new scrollpanes. You can start off by specifying the
+view(i.e., the compo-
+nent to scroll), the scrollbar policies, or both. Just make sure you get the scroll-
+bar policies in the right order! Of course, any of these pieces can be specified or
+changed after the scrollpane has been created. See the
+setViewportView()
+method later in this chapter.
+Pane Component Methods
+public JScrollBar createHorizontalScrollBar()
+public JScrollBar createVerticalScrollBar()
+Used by the UI for the scrollpane to create the scrollbars you see. You can over-
+ride these methods if you want to use a specific subclass of the
+JScrollBar class.
+UIClassIDo String "ScrollPaneUI"
+validateRoot boolean • true
+verticalScrollbarb JScrollBar • null
+verticalScrollBarPolicyb int •• VERTICAL_SCROLLBAR_AS_
+NEEDED
+viewportb JViewport • null
+viewportBorderb Border •• null
+viewportBorderBounds Rectangle•
+viewportView Component •
+wheelScrollingEnabledb, 1.4 boolean •• true
+Table11-3.JScrollPane properties (continued)
+Property Data type
+get
+is
+set Default value
+1.4since 1.4, bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 325
+public JViewport createViewport()
+Create theJViewportobject that contains the main view you see. You can over-
+ride this to use your own subclass ofJViewport.
+public Component getCorner(String whichCorner)
+public void setCorner(String whichCorner, Componentcorner)
+Get or set the component in the corner of a scrollpane. ThewhichCornerargu-
+ment can be any one of the corner strings from theScrollPaneConstantsclass
+(see Table11-4). You can add any component you like to the corners.
+Headers and Corners
+Neither of the previous examples took advantage of the additional features provided
+by
+JScrollPaneover the AWTScrollPaneclass. You can add headers to your scroll-
+ing panes and even put active components in the corners. Figure11-5 shows an
+expanded example of our census program with headers and an “Information” but-
+ton in the upper-left corner.
+The code to add to the
+init() method for our demo is straightforward:
+    // Add in some JViewports for the column and row headers.
+    JViewport jv1 = new JViewport();
+    jv1.setView(new JLabel(new ImageIcon("columnlabel.gif")));
+    scrollpane.setColumnHeader(jv1);
+    JViewport jv2 = new JViewport();
+    jv2.setView(new JLabel(new ImageIcon("rowlabel.gif")));
+    scrollpane.setRowHeader(jv2);
+    // And throw in an information button
+    JButton jb1 = new JButton(new ImageIcon("question.gif"));
+    jb1.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+Figure11-5.A JScrollPane with a button in the upper-left corner that opens a pop up
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+326 | Chapter 11: Specialty Panes and Layout Managers
+        JOptionPane.showMessageDialog(null,
+               "This is an Active Corner!", "Information",
+               JOptionPane.INFORMATION_MESSAGE);
+      }
+    } );
+    scrollpane.setCorner(ScrollPaneConstants.UPPER_LEFT_CORNER, jb1);
+We use aJLabelinside aJViewportfor each header. The viewport in the headers
+allows theJScrollPaneto synchronize header scrolling with the main viewport. We’ll
+look at theJViewport class in more detail later in this chapter.
+When you set up corner components, remember that if your scrollbars are on an as-
+needed basis, your corners could disappear. In our example, if we moved the infor-
+mation button to the upper-right corner and then made the window tall enough to
+contain the entire census form, the vertical scrollbar would disappear, and so would
+the Information button. You can alleviate this problem by setting the appropriate
+scrollbar policy to “always.” That way, your corners stick around even when the
+scrollbars are not active.
+The Scrollable Interface
+You may have noticed that several Swing components rely onJScrollPaneto do the
+scrolling work for them. Most of those components, likeJList, seem to use the
+scrollpane intelligently. That’s not by accident. These components implement the
+Scrollableinterface. This interface defines five methods that a component can
+implement to get a natural effect out of the scrollpane. By “natural” we mean that
+things like the line and page increments behave the way you would expect.
+A component does not need to implement
+Scrollableto be scrollable. Anything you
+add to aJScrollPanescrolls properly. TheScrollableinterface merely provides some
+intelligence to make scrolling more convenient.
+Increment methods
+public int getScrollableBlockIncrement(Rectangle visibleRect, intorientation,
+intdirection)
+public int getScrollableUnitIncrement(Rectangle visibleRect, intorientation,
+intdirection)
+These methods should be used to return the appropriate increment amount
+required to display the next logical row or column of the component, depending
+onthevalueof
+orientation.orientationcanbeeitherSwingConstants.HORIZONTAL
+orSwingConstants.VERTICAL. The unit increment specifies (in pixels) how to dis-
+play the next logical row or column; the block increment (also pixels) specifies
+how to “page” horizontally or vertically. The current position of the component
+is determined by
+visibleRect. Thedirectionargument has a positive (> 0) value
+for moving down or right and a negative value (< 0) for moving up or left.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 327
+Viewport dimension methods
+The other methods of the interface dictate the relation between the visible area of the
+scrollable component and the viewport it is displayed in:
+public Dimension getPreferredScrollableViewportSize()
+This method should return the preferred size of the viewport containing the
+component. This value may or may not be the same as the value returned by
+getPreferredSize()for the component. If you recallJList, you’ll realize that the
+preferred size of the component itself is a dimension big enough to display all of
+the items in the list. The preferred size for the viewport, however, would only be
+big enough to display some particular number of rows in the list.
+public boolean getScrollableTracksViewportHeight()
+public boolean getScrollableTracksViewportWidth()
+These methods can be used to effectively disable horizontal or vertical scrolling
+in a scrollpane. If you return
+truefor either of these methods, you force the
+component’s height (or width) to match that of its containing viewport. An
+example might be a text area component that supports word wrapping. Since
+the text will wrap regardless of the width of the component, you could have
+getScrollableTracksViewportWidth()returntrue. As the scrollpane is resized,
+the vertical scrollbar still moves up and down through the text, but the horizon-
+tal scrollbar is not used. Returning
+false, then, indicates that the component’s
+height (or width) is determined irrespective of the viewport’s dimensions. A
+scrollpane might then display a scrollbar to allow the user to view the entire
+component.
+The JScrollPane.ScrollBar class
+protected class JScrollPane.ScrollBar extendsJScrollBar implementsUIResource
+By default, the scrollbars used in aJScrollPaneare instances of this class. These
+scrollbars are a bit smarter than regular scrollbars. They check with the view to
+see if it implements the
+Scrollableinterface. If it does (and if you did not explic-
+itly set the unit and block increments), then these scrollbars ask the view to pro-
+vide what it thinks are the appropriate values.
+The ScrollPaneLayout Class
+TheJScrollPaneclass is actually just a panel with a hard-working layout manager
+and some convenient access methods for the manager. While you probably will not
+use this class on its own, the
+ScrollPaneLayoutclass is the manager that provides lay-
+out control for the nine areas of aJScrollPane object:
+• Viewport
+• Row header
+• Column header
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+328 | Chapter 11: Specialty Panes and Layout Managers
+• Vertical scrollbar
+• Horizontal scrollbar
+• Four corners (upper left, upper right, lower left, and lower right)
+These nine components are laid out as shown in Figure11-6.
+The column headers and scrollbars behave like the four compass positions (North,
+South, East, and West) of a
+BorderLayout-managed panel. The vertical components
+are as wide as they need to be and as tall as the viewport. The horizontal compo-
+nents are as tall as they need to be and as wide as the viewport. The difference from
+the
+BorderLayout-managed panels is that theScrollPaneLayoutpanels have four cor-
+ners. Each corner can be a regular component (or blank). The corners appear based
+on the visibility of the headers and scrollbars. For example, if both of the scrollbars
+are visible, the lower-right corner component would be available. The valid values
+for these positions are defined in the
+ScrollPaneConstants interface (see Table11-4).
+Figure11-6.The layout areas managed by ScrollPaneLayout
+Table11-4.ScrollPaneLayout constant values
+Location string from ScrollPaneConstants Component location
+VIEWPORT Main viewing area, typically aJViewport component
+COLUMN_HEADER The column header (a row), typically aJViewport component
+ROW_HEADER The row header (a column), typically aJViewport component
+HORIZONTAL_SCROLLBAR The horizontal scrollbar for the viewport; must be aJScrollBarcomponent
+VERTICAL_SCROLLBAR The vertical scrollbar for the viewport; must be aJScrollBar component
+LOWER_LEFT_CORNER The southwest corner, typically empty
+LOWER_RIGHT_CORNER The southeast corner, typically empty
+UPPER_LEFT_CORNER The northwest corner, typically empty
+UPPER_RIGHT_CORNER The northeast corner, typically empty
+Column Header
+Horizontal Scrollbar
+Row
+Header
+Vertical
+Scrollbar
+Viewport
+Corner Corner
+CornerCorner
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 329
+TheScrollPaneLayoutclass also contains several methods for manipulating the
+scrollbars associated with the viewport (viaJScrollPane’s properties; see Table11-1).
+Both the horizontal and vertical scrollbars have policies that determine when (and if)
+they show up. You can set and retrieve the scrollbar policies using these methods
+with constants defined in the
+ScrollPaneConstants interface listed in Table11-5.
+Properties
+This layout manager treats the various components as properties, with the usual
+property access methods. However, since
+ScrollPaneLayoutis really just a layout
+manager, you don’t set the components, you add them to theJScrollPane.
+Table11-6 shows the components managed by aScrollPaneLayout.
+Table11-5.ScrollPaneLayout policy constants from ScrollPaneConstants
+ScrollPaneConstants constant Type Effect on Scrollbar component
+HORIZONTAL_SCROLLBAR_ALWAYS int Always keeps a horizontal scrollbar around, even if the viewport
+extent area is wide enough to display the entire component
+HORIZONTAL_SCROLLBAR_AS_NEEDED int Shows a horizontal scrollbar whenever the extent area is
+smaller than the full component
+HORIZONTAL_SCROLLBAR_NEVER int Never shows a horizontal scrollbar, even if the component is
+wider than the viewport extent area
+VERTICAL_SCROLLBAR_ALWAYS int Always keeps a vertical scrollbar around, even if the viewport
+extent area is tall enough to display the entire component
+VERTICAL_SCROLLBAR_AS_NEEDED int Shows a vertical scrollbar whenever the extent area is smaller
+than the full component
+VERTICAL_SCROLLBAR_NEVER int Never shows a vertical scrollbar, even if the component is
+taller than the viewport extent area
+HORIZONTAL_SCROLLBAR_POLICY String The name of the horizontal scrollbar policy property for use
+with property change events
+VERTICAL_SCROLLBAR_POLICY String The name of the vertical scrollbar policy property for use with
+property change events
+Table11-6.ScrollPaneLayout properties
+Property Data type
+get
+is
+set Default value
+columnHeader JViewport • null
+corner Component • null
+horizontalScrollBarJScrollBar • null
+rowHeader JViewport • null
+verticalScrollbarJScrollBar • null
+viewport JViewport • null
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+330 | Chapter 11: Specialty Panes and Layout Managers
+ThecolumnHeader, rowHeader, andviewportcomponents are all of typeJViewport.
+(We will look at that class in the next section, but basically, it provides easy access
+for placing a viewable rectangle over a component.) If the entire component fits in
+the rectangle, you can see all of the component. If not, the parts outside the rectan-
+gle are cropped. The
+cornerproperty is indexed using constant values from
+Table11-4.
+As with other layout managers, you rarely add or remove components directly
+through the manager; that task is handled by the container. As you saw earlier, the
+JScrollPaneclass contains the methods necessary to add or replace any of these nine
+components. It also contains methods to retrieve these components, but the retrieval
+methods are provided through the layout manager, too, for convenience.
+public Rectangle getViewportBorderBounds(JScrollPane sp)
+Return the bounding rectangle for
+sp’s viewport border.
+public void syncWithScrollPane(JScrollPane sp)
+This method can be used with your own customized scrollpane layout manager
+to synchronize the components associated with the scrollpanespand this man-
+ager. That way, any components already added tospare appropriately recog-
+nized by your layout manager.
+JViewport
+You use theJViewportclass to create a view of a potentially large component in a
+potentially small place. We say “potentially” because the view can encompass the
+entire component or just a piece of it. In the
+JScrollPaneclass, a viewport is used to
+show a piece of the main component, and the scrollbars provide the user with con-
+trol over which piece they see.
+JViewportaccomplishes this using the normal clip-
+ping techniques, but it guarantees that an appropriately sized view of the component
+is displayed. The
+JScrollPaneclass also usesJViewportobjects for the row and col-
+umn headers.
+Most of the time, you’ll leaveJViewportalone and use one of the other panes, like
+JScrollPane, to display your components. However, nothing prevents you from
+usingJViewportobjects, and you can certainly subclass this to create some interest-
+ing tools, such as an image magnifier pane. In such a pane, you’d still have to write
+the magnifying code—JViewportwould just make it easy to see pieces of a magnified
+image. (The discussion of the newSpringLayoutmanager later in this chapter does
+show an example of using aJViewport on its own.)
+Properties
+TheJViewportclass has the properties shown in Table11-7. The useful properties of
+JViewportdeal with the view component. Theviewproperty lets you get or set the
+component this viewport is viewing.viewSizeandviewPositioncontrol the size and
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollPane Class | 331
+positionoftheareathat’sdisplayed.viewSizeisnormallyequaltothesizeoftheview-
+port, unless the component is smaller than the viewport. In that case,viewSizeequals
+the component’s size, and all of it is displayed.viewPositionis relative to the top-left
+corner of the component being displayed. If thebackingStoreEnabledproperty istrue,
+thisJViewportobject double-buffers the display of its contents. TheisOptimizedDraw-
+ingEnabled()call always returnsfalseto force the viewport’spaint()method to be
+called, rather than allowing repaint calls to notify the viewport’s children individually.
+ThescrollModeproperty can also affect repaint performance. The constants for valid
+scrolling modes are shown in Table11-8.
+Table11-7.JViewport properties
+Property Data type
+get
+is
+set Default value
+accessibleContextAccessibleContext• JViewport.
+AccessibleJViewport()
+backingStoreEnabled boolean •• false
+changeListeners1.4 ChangeListener[]• Empty array
+extentSize Dimension •• Size of the component
+insets* Insets • Insets(0, 0, 0, 0)
+optimizedDrawingEnabledo boolean • false
+scrollMode1.3 int •• BLIT_SCROLL_MODE
+view Component •• null
+viewPosition Point •• Point(0, 0)
+viewRect Rectangle • Rect(getViewPosition(),
+getExtentSize())
+viewSize Dimension
+•• Dimension(0, 0)
+1.3since 1.3, 1.4since 1.4, ooverridden
+*Theseget methods overrideJComponent and are final.
+See also “The ViewportLayout Class” later in the chapter and properties of theJComponent class (Table 3-6).
+Table11-8.JViewport scrolling-mode constants
+JViewport constant Type Effect on Scrollbar component
+BLIT_SCROLL_MODE1.3 int The default scrolling mode; the fastest for most applications.
+BACKINGSTORE_SCROLL_MODE1.3 int Uses an off-screen graphics context to do its scrolling. As the Javadoc
+notes, this can be advantageous, but requires a good deal more RAM.
+SIMPLE_SCROLL_MODE1.3 int Swing 1.0 and 1.1 scrolling behavior. You will almost always want
+one of the other modes.
+1.3since 1.3
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+332 | Chapter 11: Specialty Panes and Layout Managers
+Events
+TheJViewportclass fires aChangeEventwhenever the view size, view position, or
+extent size changes.
+public void addChangeListener(ChangeListenerl)
+public void removeChangeListener(ChangeListenerl)
+Add or remove a change listener for the viewport’sChangeEvents.
+Constructor
+public JViewport()
+Create an emptyJViewportobject. You can put something in the viewport using
+thesetView() method.
+Useful methods
+public void repaint(long delay, intx, inty, intwidth, intheight)
+Override the usualrepaint()call to make sure that only onerepaint()is per-
+formed. This method translates the repaint rectangle to the parent’s coordinate
+system and tells the parent to
+repaint(). Presumably, if the rectangle doesn’t
+need to be repainted, nothing happens, although the parent could have its own
+overridden
+repaint() method.
+public void scrollRectToVisible(Rectangle rect)
+Try to make the area represented byrect visible in the viewport.
+public void setBounds(int x, int y, intwidth, intheight)
+Override the resize method inJComponentto make sure the backing store for this
+image is correct if thewidth orheight changes from the current dimensions.
+public Dimension toViewCoordinates(Dimension size)
+public Point toViewCoordinates(Point p)
+Translate the incoming
+DimensionorPointobjects into corresponding objects
+relative to the current view. If your viewport supported logical coordinates, these
+methods would need to be overridden.
+The ViewportLayout Class
+As with theScrollPaneLayoutclass, this class is meant to be used with aJViewport
+object, not for general use. That is to say, rather than attach this layout manager to
+your container, you should simply use a
+JViewportfor your container. (Recall that
+you can place any component—such as aJPanel—within the viewport area.)
+ViewportLayoutis a straightforward implementation of the AWTLayoutManagerinter-
+face and keeps the view in a useful position during resizing.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTabbedPane Class | 333
+The JTabbedPane Class
+The tabbed pane is now a fixture in applications for option displays, system configu-
+ration displays, and other multiscreen UIs. In the AWT, you have access to the
+CardLayoutlayout manager, which can be used to simulate the multiscreen behavior,
+but it contains nothing to graphically activate screen switching—you must write that
+yourself. Figure11-7 shows that with the
+JTabbedPane, you can create your own
+tabbed pane, with tab activation components, very quickly.
+Here’s the code that generated this simple application. We use the tabbed pane as
+our real container and create new tabs using theaddTab()method. Note that each
+tab can contain exactly one component. As with aCardLayout-managed container,
+you quite often add a container as the one component on the tab. That way, you can
+then add as many other components to the container as necessary.
+// SimpleTab.java
+// A quick test of the JTabbedPane component
+//
+import java.awt.*;
+import java.util.*;
+import java.awt.event.*;
+import javax.swing.*;
+Figure11-7.A simple tabbed pane with three tabs in several L&Fs
+Metal Windows
+MotifMac
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+334 | Chapter 11: Specialty Panes and Layout Managers
+public class SimpleTab extends JFrame {
+  JTabbedPane jtp;
+  public SimpleTab() {
+    super("JTabbedPane");
+    setSize(200, 200);
+    Container contents = getContentPane();
+    jtp = new JTabbedPane();
+    jtp.addTab("Tab1", new JLabel("This is Tab One"));
+    jtp.addTab("Tab2", new JButton("This is Tab Two"));
+    jtp.addTab("Tab3", new JCheckBox("This is Tab Three"));
+    contents.add(jtp);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    new SimpleTab();
+  }
+}
+Constants
+Two constants, shown in Table11-9, were added in SDK 1.4 for use with the new
+tabLayoutPolicyproperty. See Figure11-8 for an example of these constants in
+action.
+Properties
+TheJTabbedPaneclasshasthepropertieslistedinTable11-10.Foratabbedpane,theprop-
+erties are much simpler than for the scrollpane. You have access to the selectionmodel(see
+Chapter14 for a discussion ofSingleSelectionModelandDefaultSingleSelectionModel),
+the currently selected tab—available by component (selectedComponent) or index
+(selectedIndex),andthetotalnumberoftabsforthispanel.ThetabRunCountpropertytells
+youhowmanyrows(orruns)thepaneisusingcurrentlytodisplayallofthetabCounttabs.
+YoucanalsocontrolthelocationofthetabsusingthetabPlacementproperty,whichcanbe
+any of theTOP,BOTTOM,LEFT, orRIGHT constants defined inSwingConstants.
+Table11-9.JTabbedPane constants
+Constant Type Description
+SCROLL_TAB_LAYOUT1.4 int This policy restricts tabs to one row and provides a spinner to access tabs by
+scrolling back and forth.
+WRAP_TAB_LAYOUT1.4 int This policy stacks tabs into multiple rows if they will not fit cleanly on one
+row. This is the default behavior prior to the 1.4 release.
+1.4since 1.4
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTabbedPane Class | 335
+ThetabLayoutPolicy, added in SDK 1.4, allows you choose how to handle large
+numbers of tabs on a pane. Figure11-8 shows an example of the two possibilities for
+this policy. (You’ll find the source code for this example in theTooManyTabs.java
+file for this chapter.) Also new with 1.4,mnemonicAtanddisplayedMnemonicAtadd
+support for mnemonics to the tabs. ThemnemonicAtproperty sets the actual mne-
+monic for the tab. ThedisplayedMnemonicAtproperty provides a hint to the L&F as
+to which character should be decorated in the tab. (For example,X is the mnemonic,
+but you want thesecondX underlined.) Note that not all L&Fs support this feature.
+Table11-10. JTabbedPane properties
+Property Data type
+get
+is
+set Default value
+accessibleContextb, o AccessibleContext• JTabbedPane.
+AccessibleJTabbedPane()
+backgroundAti Color •• L&F-dependent
+boundsAti Rectangle •
+changeListeners1.4 ChangeListener[]• Empty array
+componentAti Component ••
+disabledIconAti Icon ••
+displayed-
+MnemonicAt
+b, i, 1.4
+int •• -1
+enabledAti boolean ••
+foregroundAti Color •• L&F-dependent
+iconAti Icon ••
+mnemonicAtb, i, 1.4 int •• 0 (no mnemonic)
+modelb SingleSelectionModel•• DefaultSingleSelectionModel()
+selectedComponent Component•• null
+selectedIndex int •• -1
+tabCount int • 0
+tabLayoutPolicyb, 1.4 int •• WRAP_TAB_LAYOUT
+tabPlacementb int •• SwingConstants.TOP
+tabRunCount int • 0
+titleAtb,i String ••
+toolTipTextAti, 1.3 String ••
+UI TabbedPaneUI •• null
+UIClassIDo String "TabbedPaneUI"
+1.3since 1.3, 1.4since 1.4, bbound, iindexed, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+336 | Chapter 11: Specialty Panes and Layout Managers
+Events
+In addition to the property change events generated for themodelandtabPlacement
+properties,JTabbedPanealso generates change events whenever the tab selection
+changes. On its own, aJTabbedPanelistens to the change events coming from the tabs
+to keep the user interface in sync with the selected tab. Of course, you can add your
+own listener to the pane.SingleSelectionModeluses theChangeEventclass to report a
+new tab selection.
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+Add or remove a listener for change events from this tabbed pane.
+protected ChangeListener createChangeListener()
+Create a listener that can route change events from the selection model for the
+pane to the
+fireStateChanged()method. The protected inner classJTabbedPane.
+ModelListener is used to accomplish the redirection.
+Constructors
+public JTabbedPane()
+Create an empty tabbed pane to which you can add new tabs with one of the tab
+methods listed below. The tabs are placed along the top of the pane.
+Figure11-8.The two possible layout policies in a tabbed pane
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTabbedPane Class | 337
+public JTabbedPane(int tabPlacement)
+Create an empty tabbed pane to which you can add new tabs with one of the tab
+methods listed below. The tabs are placed according totabPlacement—which
+can be one ofTOP,BOTTOM,LEFT, orRIGHT—from theSwingConstants interface.
+public JTabbedPane(int tabPlacement, inttabLayoutPolicy)
+In 1.4 or later, create an empty tabbed pane to which you can add new tabs with
+one of the tab methods listed below. The tabs are placed according to
+tabPlacement—which can be one ofTOP, BOTTOM, LEFT,o rRIGHT—from the
+SwingConstantsinterface. If there are too many tabs to fit on one row, they will
+wrap or scroll according to thetabLayoutPolicy.
+Tab Methods
+Once you have a tabbed pane set up, you can add, remove, and modify tabs at any
+time.
+public void addTab(String title, Componentcomp)
+public void addTab(String title, IcontabIcon, Componentcomp)
+public void addTab(String title, IcontabIcon, Componentcomp, Stringtip)
+These methods allow you to add (append, really) a tab to the pane. You must
+specify the tab’s component (
+comp) andtitle. If the component isnull, the tab
+still appears, but it does not behave appropriately. When you select a tab with a
+nullcomponent, the previously selected tab’s component remains visible. The
+title may benull. Optionally, you can also specify an icon (tabIcon) and a tool-
+tip (tip) for the tab. As with the title,nullvalues for these arguments do not
+cause any problems. Each of these methods builds up an appropriate call to
+insertTab().
+public int indexAtLocation(int x, int y)
+Added in SDK 1.4, this method returns the index of the tab that contains the
+given coordinates (or
+-1 if no tab contains them).
+public void insertTab(String title, IcontabIcon, Componentcomp, Stringtip, intindex)
+This method does all of the work of getting tabs into place on the pane. You
+specify the tab’s title, icon, tooltip (all of which can be
+null), component, and
+the index to insert the component. If you supply an index larger than the tab
+count, an
+ArrayIndexOutOfBoundsException is thrown.
+public Component add(Componentcomponent)
+public Component add(Stringtitle, Componentcomponent)
+public Component add(Componentcomponent, intindex)
+public void add(Componentcomponent, Objectconstraints)
+public void add(Componentcomponent, Objectconstraints, intindex)
+These methods are alternatives for adding tabs to a tabbed pane, in case you
+don’t want to use
+addTab()orinsertTab(). They are more in keeping with the
+standardadd()method for containers. If you supply anindex, the tab is inserted
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+338 | Chapter 11: Specialty Panes and Layout Managers
+at that index. If you supplyconstraints, it should be either aStringor anIcon
+object for use in the tab. (If theconstraintsobject isn’t aStringor anIcon,i ti s
+ignored.) If you do not supply a title or constraint to label the tab, the tabbed
+pane usescomponent.getName().
+public void remove(Component component)
+Remove the tab with a match tocomponent. If a match cannot be found, nothing
+happens.
+public void removeAll()
+Remove all tabs from the tabbed pane.
+public void removeTabAt(int index)
+This method allows you to remove a given tab. As withinsertTab(), an inappro-
+priateindex value causes anArrayIndexOutOfBoundsException.
+public int indexOfComponent(Component comp)
+public int indexOfTab(String title)
+public int indexOfTab(Icon icon)
+These methods allow you to look up a tab at runtime. If you use the second or
+third methods, the first tab with a matching
+title oricon is returned.
+Miscellaneous Methods
+Tabbed panes also support the notion of tooltips and do most of the work for you.
+However, you do need to set the tooltip text when you add the tab; no
+“
+setToolTipText()” method exists.
+public String getToolTipText(MouseEvent event)
+This method overrides thegetToolTipText()call fromJComponentto return the
+tooltip appropriate for the tab your mouse cursor is on.
+Figure11-9 shows our first tabbed pane with tooltips active.
+Here are the modifications to the code needed to make this work. We just add a null
+icon and the tooltip text (the last arguments) to theaddTab() methods:
+Figure11-9.A tabbed pane with tooltips active
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 339
+jtp = new JTabbedPane();
+jtp.addTab("Tab1", null, new JLabel("This is Tab One"), "Tab #1");
+jtp.addTab("Tab2", null, new JButton("This is Tab Two"), "Tab #2");
+jtp.addTab("Tab3", null, new JCheckBox("This is Tab Three"), "Tab #3");
+contents.add(jtp);
+You should also check out the example for theBoxLayoutclass later in this chapter. It
+contains a tabbed pane interface. One tab dynamically controls theenabledAtprop-
+erty for each of the other tabs.
+Layout Managers
+Beyond these specialty panes with their dedicated layout managers, the Swing pack-
+age also includes some general layout managers you can use with your own code.
+You can use the new
+BoxLayoutto make things like toolbars andOverlayLayoutto
+make things like layered labels.
+TheBoxLayoutclass is a manager that gives you one row or column to put everything
+in. It’s great for toolbars and button ribbons. It also comes with its very own conve-
+nience container calledBox. TheBoxclass is a lightweight container that requires a
+BoxLayoutmanager. While you can certainly use theBoxLayoutclass to control your
+own panel, frame, or other container, theBoxclass provides several shortcuts for
+dealing with components in a boxed layout. You’ll often find that using aBoxis eas-
+ier than creating a panel or frame that you control with aBoxLayout manager.
+The Box Class
+Let’s start with a look at the convenience container that puts theBoxLayoutmanager
+to use. TheBoxclass is a lightweight container object whose primary purpose is to let
+you add components to a horizontal or vertical box without having to think about
+getting the constraints right. (As of SDK 1.4,
+BoxextendsJComponent.) You use the
+normalContainer.add()method to place components in the box. Components are
+placed left to right (or top to bottom) in the order you add them.
+Properties
+Table11-11 shows the properties of theBoxclass. You are not allowed to change a
+box’s layout manager, so thesetLayout accessor always throws anAWTError.
+Table11-11.Box properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• box.AccessibleBox
+layouto layoutManager •• BoxLayout
+ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+340 | Chapter 11: Specialty Panes and Layout Managers
+Constructor
+public Box(int alignment)
+Create a container with aBoxLayoutmanager using the specified alignment. The
+possible values for the alignment areBoxLayout.X_AXIS(a horizontal box) and
+BoxLayout.Y_AXIS(a vertical box). (Refer to Figure11-13 for an example of verti-
+cal and horizontal boxes.) Usually, you use thecreateVerticalBox()or
+createHorizontalBox() methods to make new boxes.
+Creation method
+Two convenience routines exist for creating boxes. You can create your own using
+the constructor, but these are sometimes easier.
+public static Box createHorizontalBox()
+public static Box createVerticalBox()
+These methods create newBox components with the appropriate alignment.
+Spacing and resizing methods
+TheBoxclass provides several static helper components for spacing and resizing con-
+trols. You can add these components as you would add any other component to the
+box.
+public static Component createGlue()
+public static Component createHorizontalGlue()
+public static Component createVerticalGlue()
+These methods create “glue” components that you can place between two fixed-
+size components. Glue might be a misnomer; it doesn’t cause the components to
+stay in one place. Rather, glue acts like a gooey filler: it lets a component shift
+when the parent container is resized and takes up the slack. The idea is that glue
+is malleable and stretchable compared to a strut or rigid area. Rather than forc-
+ing the components to change their sizes to consume new space, you can put
+glue components anywhere you want blank space. It’s important to remember,
+however, that glue components really are components. When resizing a box, all
+of the components—the glue and the buttons in our examples—will have their
+sizes adjusted, up to their minimum or maximum limits.
+The horizontal and vertical glue components stretch along the appropriate axis,
+while the generic glue component can stretch in both directions, if necessary.
+Figure11-10 shows how a resize affects buttons in a
+Box. Without glue, the but-
+tons grow as the contour is resized. With glue, the buttons still change, but they
+don’t change as much; the glue takes up much of the extra space.
+Here’s the code to add glue to both sides of the buttons:
+// HBoxWithGlue.java
+// A quick test of the box layout manager using the Box utility class
+//
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 341
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class HBoxWithGlue extends JFrame {
+  public HBoxWithGlue() {
+    super("Box & Glue Frame");
+    setSize(350, 100);
+    Box box = Box.createHorizontalBox();
+    setContentPane(box);
+    box.add(Box.createHorizontalGlue());
+    for (int i = 0; i < 3; i++) {
+      Button b = new Button("B" + i);
+      box.add(b);
+    }
+    box.add(Box.createHorizontalGlue());
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    HBoxWithGlue bt = new HBoxWithGlue();
+  }
+}
+public static Component createRigidArea(Dimension d)
+public static Component createHorizontalStrut(int width)
+public static Component createVerticalStrut(int width)
+These methods create rigid spaces. You can use these methods to force gaps
+between components. This is useful if you are trying to create groups of compo-
+nents in a toolbar. The rigid area creates an invisible component that has a fixed
+width and height. The horizontal strut has a fixed width and a variable height.
+The vertical strut has a fixed height and a variable width. Figure11-11 has some
+examples of strut components before and after a resize.
+Figure11-10.A Box container after being resized without (top) and with (bottom) glue components
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+342 | Chapter 11: Specialty Panes and Layout Managers
+Here’s the code for the strut example:
+// HBoxWithStrut.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class HBoxWithStrut extends JFrame {
+  public HBoxWithStrut() {
+    super("Box & Strut Frame");
+    setSize(370, 80);
+    Box box = Box.createHorizontalBox();
+    setContentPane(box);
+    for (int i = 0; i < 3; i++) {
+      Button b = new Button("B" + i);
+      box.add(b);
+    }
+    // Add a spacer between the first three buttons and the last three buttons.
+    box.add(Box.createHorizontalStrut(10));
+    for (int i = 3; i < 6; i++) {
+      Button b = new Button("B" + i);
+      box.add(b);
+    }
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    setVisible(true);
+  }
+  public static void main(String args[]) {
+    HBoxWithStrut bt = new HBoxWithStrut();
+  }
+}
+The Box.Filler Class
+The struts and glue components used in the various create methods above use a pub-
+lic inner class calledFiller.T h eFillerinner class extendsComponentand provides
+mechanisms to specify fixed or variable widths and heights. It has no visual presence,
+Figure11-11.Strut components being resized inside a Box container
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 343
+but as you saw in the above examples, it can play a role in the layout process for a
+container.
+While this class is public and can be used directly, the static convenience methods
+found in theBox class are probably easier to use.
+Properties
+Table11-12shows the properties found in theFillerclass. The size properties all
+store their values in protected fields inherited fromComponent. Glue components are
+created by putting zeros in the minimum and preferred sizes, andShort.MAX_VALUEin
+the maximum sizes. Strut (and rigid area) components are created by putting exactly
+the same value in each of the three size categories.
+Constructor
+public Filler(Dimension min, Dimension pref, Dimension max)
+Create a newFillerobject with the given minimum, preferred, and maximum
+sizes.
+Shape method
+TheFillerclass has only one other method beyond those required to support
+accessibility:
+public void changeShape(Dimension min, Dimension pref, Dimension max)
+Set theFiller object’s minimum, preferred, and maximum sizes.
+The BoxLayout Class
+If you want only the layout manager for your own container, this is the class you
+need.TheBoxLayoutclassimplementstheLayoutManager2interfacefromthejava.awt
+package. This class and its predecessor,LayoutManager, are discussed in detail in
+John Zukowski’sJavaAWTReference(O’Reilly), which provides an excellent back-
+ground on layout managers in general. Although it is no longer in print, you can
+Table11-12.Box.Filler properties
+Property Data type
+get
+is
+set Default value
+accessibleContext AccessibleContext• Box.Filler.AccessibleBoxFiller()
+maximumSizeo Dimension • Set by constructor
+minimumSizeo Dimension • Set by constructor
+preferredSizeo Dimension • Set by constructor
+ooverridden
+See also thejava.awt.Component class.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+344 | Chapter 11: Specialty Panes and Layout Managers
+download a copy in PDF format from this book’s web site,http://www.oreilly.com/
+catalog/jswing2/.
+Figure11-12shows an example of a simple form that allows individual rows to be as
+tall as they need to be. Notice that we pad the top and bottom rows with glue, which
+keeps the form vertically centered on the tab.
+Here’s the code for this example:
+// SysConfig.java
+// A demonstration of the JTabbedPane class for displaying and manipulating
+// configuration information. The BoxLayout class is used to lay out the first tab
+// quickly.
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.event.*;
+public class SysConfig extends JFrame {
+  JTabbedPane config = new JTabbedPane();
+  public SysConfig() {
+    super("JTabbedPane & BoxLayout Demonstration");
+    setSize(500,300);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    JPanel configPane = new JPanel();
+    configPane.setLayout(new BoxLayout(configPane, BoxLayout.Y_AXIS));
+    JTextArea question = new JTextArea("Which of the following options\n" +
+                                       "do you have installed?");
+    // Now configure the text area to show up properly inside the box. This is part
+    // of the "high art" of Swing.
+Figure11-12.A BoxLayout attached to a normal JPanel (and active JTabbedPane tooltips)
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Layout Managers | 345
+    question.setEditable(false);
+    question.setMaximumSize(new Dimension(300,50));
+    question.setAlignmentX(0.0f);
+    question.setBackground(configPane.getBackground());
+    JCheckBox audioCB = new JCheckBox("Sound Card", true);
+    JCheckBox nicCB = new JCheckBox("Ethernet Card", true);
+    JCheckBox tvCB = new JCheckBox("Video Out", false);
+    configPane.add(Box.createVerticalGlue());
+    configPane.add(question);
+    configPane.add(audioCB);
+    configPane.add(nicCB);
+    configPane.add(tvCB);
+    configPane.add(Box.createVerticalGlue());
+    JLabel audioPane = new JLabel("Audio stuff");
+    JLabel nicPane = new JLabel("Networking stuff");
+    JLabel tvPane = new JLabel("Video stuff");
+    JLabel helpPane = new JLabel("Help information");
+    audioCB.addItemListener(new TabManager(audioPane));
+    nicCB.addItemListener(new TabManager(nicPane));
+    tvCB.addItemListener(new TabManager(tvPane));
+    config.addTab("System", null, configPane, "Choose Installed Options");
+    config.addTab("Audio", null, audioPane, "Audio system configuration");
+    config.addTab("Networking", null, nicPane, "Networking configuration");
+    config.addTab("Video", null, tvPane, "Video system configuration");
+    config.addTab("Help", null, helpPane, "How Do I...");
+    getContentPane().add(config, BorderLayout.CENTER);
+  }
+  class TabManager implements ItemListener {
+    Component tab;
+    public TabManager(Component tabToManage) {
+      tab = tabToManage;
+    }
+    public void itemStateChanged(ItemEvent ie) {
+      int index = config.indexOfComponent(tab);
+      if (index != -1) {
+        config.setEnabledAt(index, ie.getStateChange() == ItemEvent.SELECTED);
+      }
+      SysConfig.this.repaint();
+    }
+  }
+  public static void main(String args[]) {
+    SysConfig sc = new SysConfig();
+    sc.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+346 | Chapter 11: Specialty Panes and Layout Managers
+Constants
+TheBoxLayout class contains the two constants listed in Table11-13.
+Constructor
+public BoxLayout(Container target, int axis)
+The only constructor for this layout manager; it takes as input the container to
+manage and how the components should be laid out: left to right (X_AXIS) or top
+to bottom (Y_AXIS). Figure11-13 shows an example of a horizontal panel (A)
+and a vertical panel (B). To prove thisBoxLayoutis just a layout manager, we’ll
+use regular AWT panels and buttons.
+Here’s a look at the code to generate the horizontal box. (You need to change the
+axis you use in the constructor to get the vertical box. That example is online as
+VBox.java.)
+// HBox.java
+// A quick test of the BoxLayout manager using the Box utility class
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class HBox extends JFrame {
+Table11-13.BoxLayout constants
+Constant Type Description
+X_AXIS int Used with the constructor to create a manager that lays out components along a horizontal axis. This
+constant can also be used with the constructor for theBox class.
+Y_AXIS int Used with the constructor to create a manager that lays out components along a vertical axis. This con-
+stant can also be used with the constructor for the
+Box class.
+Figure11-13.Horizontal and vertical BoxLayout-managed panels
+A. Horizontal BoxLayout
+B. Vertical BoxLayout
+

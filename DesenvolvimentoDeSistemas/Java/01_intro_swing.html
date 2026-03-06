@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Introdução ao Java Swing</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <!-- Logo SENAI -->
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Introdução ao Java Swing</h1>
+            <h2>Interfaces Gráficas em Java</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 01</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração Estimada:</strong> 2 Horas</p>
+                <p>Teoria e Conceitos Fundamentais</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: O que é Swing? -->
+        <div class="slide">
+            <h2>O que é Swing?</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Definição</h3>
+                    <p>O <strong>Swing</strong> é uma biblioteca gráfica (GUI toolkit) para Java, parte do JFC (Java Foundation Classes).</p>
+                    <p>Ele permite criar janelas, botões, tabelas e interfaces ricas que funcionam em qualquer sistema operacional (Windows, Linux, Mac).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Swing vs AWT</h3>
+                    <ul>
+                        <li><strong>AWT (Abstract Window Toolkit):</strong> A primeira biblioteca do Java. Usava componentes do sistema operacional (peso-pesado). Era limitado e feio.</li>
+                        <li><strong>Swing:</strong> Escrito 100% em Java (peso-leve). Desenha seus próprios componentes, garantindo que o visual seja o mesmo em todas as plataformas.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Arquitetura MVC -->
+        <div class="slide">
+            <h2>Arquitetura MVC no Swing</h2>
+            <p>O Swing utiliza uma variação do padrão <strong>Model-View-Controller</strong>.</p>
+            <div style="background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); margin-top: 20px;">
+                <div style="display: flex; justify-content: space-around; align-items: center; text-align: center;">
+                    <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; width: 30%;">
+                        <h4 style="color: #004587;">Model (Modelo)</h4>
+                        <p style="font-size: 0.9rem;">Guarda os DADOS.</p>
+                        <p style="font-size: 0.8rem;">Ex: O texto de um botão, os itens de uma lista.</p>
+                    </div>
+                    <div style="font-size: 2rem; color: #666;">↔</div>
+                    <div style="background: #fce4ec; padding: 15px; border-radius: 5px; width: 30%;">
+                        <h4 style="color: #c2185b;">View (Visão)</h4>
+                        <p style="font-size: 0.9rem;">Mostra na TELA.</p>
+                        <p style="font-size: 0.8rem;">Ex: O desenho do botão, a cor, o tamanho.</p>
+                    </div>
+                    <div style="font-size: 2rem; color: #666;">↔</div>
+                    <div style="background: #e8f5e9; padding: 15px; border-radius: 5px; width: 30%;">
+                        <h4 style="color: #2e7d32;">Controller (Controle)</h4>
+                        <p style="font-size: 0.9rem;">Gerencia EVENTOS.</p>
+                        <p style="font-size: 0.8rem;">Ex: O clique do mouse, digitar no teclado.</p>
+                    </div>
+                </div>
+                <p style="margin-top: 15px; text-align: center; font-style: italic;">No Swing, View e Controller muitas vezes são combinados no componente (Delegate).</p>
+            </div>
+        </div>
+
+        <!-- Slide 4: Principais Pacotes -->
+        <div class="slide">
+            <h2>Pacotes e Classes Principais</h2>
+            <p>Para programar em Swing, você vai importar muito esses pacotes:</p>
+            
+            <div style="background: #2d2d2d; color: #fff; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 1.1rem;">
+                <span style="color: #569cd6;">import</span> javax.swing.*; <span style="color: #6a9955;">// O principal. Tem JButton, JFrame, etc.</span><br>
+                <span style="color: #569cd6;">import</span> java.awt.*; <span style="color: #6a9955;">// Tem Layouts, Cores, Fontes.</span><br>
+                <span style="color: #569cd6;">import</span> java.awt.event.*; <span style="color: #6a9955;">// Para lidar com cliques e ações.</span>
+            </div>
+
+            <h3 style="margin-top: 30px;">A Hierarquia Básica</h3>
+            <ul>
+                <li><strong>java.awt.Component:</strong> O avô de todos.</li>
+                <li><strong>java.awt.Container:</strong> Pode conter outros componentes.</li>
+                <li><strong>javax.swing.JComponent:</strong> A base de quase tudo no Swing. Suporta bordas, tooltips, atalhos.</li>
+            </ul>
+        </div>
+
+        <!-- Slide 5: Features do Swing -->
+        <div class="slide">
+            <h2>Recursos Poderosos (Features)</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3>Pluggable Look and Feel (PLAF)</h3>
+                    <p>Você pode mudar a "cara" da sua aplicação com uma linha de código.</p>
+                    <p>Pode parecer Windows, Mac, Linux ou ter um visual próprio (Nimbus, FlatLaf).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Acessibilidade</h3>
+                    <p>Suporte nativo para leitores de tela e tecnologias assistivas.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Componentes Ricos</h3>
+                    <p>Tabelas editáveis, Árvores de diretórios, Editores de texto com estilo (HTML/RTF).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Double Buffering</h3>
+                    <p>Desenho suave sem "piscar" a tela (flicker-free).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Quiz Rápido -->
+        <div class="slide">
+            <h2>Quiz Rápido</h2>
+            <p>Responda abaixo:</p>
+            
+            <textarea id="activity-01" class="code-input">
+/*
+ * 1. O Swing é "Peso-Pesado" ou "Peso-Leve"? Por quê?
+ * 
+ * 2. Qual o pacote principal que devemos importar para usar JFrame?
+ * 
+ * 3. O que significa MVC?
+ */
+
+// Respostas:
+</textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final: Conclusão -->
+        <div class="slide">
+            <h2>Parabéns! Você concluiu esta aula.</h2>
+            <p>Agora você já conhece os conceitos básicos do Swing e sua arquitetura MVC.</p>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Controles de Navegação -->
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/script.js"></script>
+</body>
+</html>

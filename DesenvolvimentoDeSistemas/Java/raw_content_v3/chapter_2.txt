@@ -1,0 +1,1131 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+20
+Chapter2In this chapter:
+• Upgrading Your AWT Programs
+• A Simple AWT Application
+• Including Y our First Swing
+Component
+• Beyond Buttons
+• What Is an Internal Frame?
+• A Bigger Application
+CHAPTER 2
+Jump-Starting a Swing
+Application
+Now that you have an overview of Swing, let’s look at a few Swing components you
+can put into your applications right now. This chapter shows you how to add images
+to buttons and how to create a rudimentary Swing application using internal frames.
+We won’t belabor the theory and background. You’ll find everything we talk about
+now (and tons more we don’t discuss here) presented in later chapters in much
+greater detail. We just want to show you some of the fun stuff right away.
+This chapter, and only this chapter, assumes that you have prior experience with
+AWT and AWT-based programs that you’d like to upgrade to use lightweight Swing
+components. If you are new to Java, this may not be the case; you are probably inter-
+ested in learning Swing without the need to upgrade AWT applications. You can
+either skim this chapter or skip ahead to Chapter 3, which lays a foundation for the
+rest of your work in Swing.
+If you want to see how easily Swing components can be dropped into existing AWT
+applications, though, read on.
+Upgrading Your AWT Programs
+One of the benefits of object-oriented languages is that you can upgrade pieces of a
+program without rewriting the rest. While practice is never as simple as theory, with
+Swing it’s close. You can use most of the Swing components as drop-in replace-
+ments for AWT components with ease. The components sport many fancy new fea-
+tures worth exploiting, but they still maintain the functionality of the AWT
+components you’re familiar with. As a general rule, you can stick a “J” in front of
+your favorite AWT component and put the new class to work as a Swing compo-
+nent. Constructors for components such as
+JButton, JTextField, andJListcan be
+used with the same arguments and generate the same events asButton, TextField,
+andList. Some Swing containers, likeJFrame, take a bit of extra work, but not much.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Simple AWT Application | 21
+Graphical buttons are essential to modern user interfaces. Nice monitors and cheap
+hardware have made icons almost a necessity. The AWT package in Java does not
+directly support image buttons. You could write an extension to support them easily
+enough, but why bother when Swing’s
+JButtonclass provides a standard way to add
+image buttons?
+A Simple AWT Application
+You probably have some programs lying around that use regular AWT buttons that
+you’d love to replace with image buttons, but you don’t have the time or, honestly,
+the necessity to produce your own image button class. Let’s look at a simple applica-
+tion that demonstrates an upgrade path you can use on your own programs.
+First, let’s look at the code for this very simple application:
+// ToolbarFrame1.java
+// A simple frame containing a "toolbar" made up of several java.awt.Button
+// objects. We'll be converting the Buttons to JButtons in the ToolbarFrame2.java
+// file.
+//
+import java.awt.*;
+import java.awt.event.*;
+public class ToolbarFrame1 extends Frame {
+  Button cutButton, copyButton, pasteButton;
+  public ToolbarFrame1() {
+    super("Toolbar Example (AWT)");
+    setSize(450, 250);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    ActionListener printListener = new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        System.out.println(ae.getActionCommand());
+      }
+    };
+    Panel toolbar = new Panel();
+    toolbar.setLayout(new FlowLayout(FlowLayout.LEFT));
+    cutButton = new Button("Cut");
+    cutButton.addActionListener(printListener);
+    toolbar.add(cutButton);
+    copyButton = new Button("Copy");
+    copyButton.addActionListener(printListener);
+    toolbar.add(copyButton);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+22 | Chapter 2: Jump-Starting a Swing Application
+    pasteButton = new Button("Paste");
+    pasteButton.addActionListener(printListener);
+    toolbar.add(pasteButton);
+    // The "preferred" BorderLayout add call
+    add(toolbar, BorderLayout.NORTH);
+  }
+  public static void main(String args[]) {
+    ToolbarFrame1 tf1 = new ToolbarFrame1();
+    tf1.setVisible(true);
+  }
+}
+Our application has the very simple interface that is in Figure2-1.
+These buttons don’t really do anything except report that they’ve been pressed. A
+standard 1.1-style handler for action events reports button presses to standard out-
+put. It’s not exciting, but it lets us demonstrate that Swing buttons work the same
+way as AWT buttons. If you examine the code you’ll notice that we had to register a
+window listener to tell when the user is trying to close the window, and explicitly
+exit the program in response. Once you update your programs to use Swing’s
+JFrame
+rather than AWT’sFrame(as we will for the final example in this chapter), you get
+this capability “for free” withJFrame’sdefaultCloseOperationproperty, described in
+Table8-8.
+Including Your First Swing Component
+The first step in adding a Swing component to your application is preparing the
+Swing package for use. As long as you have installed SDK 1.2or later, you don’t have
+to take any special steps to use the Swing classes. If you’re preparing an application
+to run with JDK 1.1, you’ll need to put theswingall.jarfile on the
+CLASSPATH so that
+the Swing components are available during compilation and at runtime.
+In your source code, you include the Swing package by adding an import statement:
+import javax.swing.*;
+Figure2-1.A simple application using three java.awt.Button objects
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Including Your First Swing Component | 23
+Now you’re ready to replace yourButtonobjects withJButtonobjects. We’ll also set
+up the application to take advantage of Swing’s L&F capabilities; we’ve put another
+row of buttons at the bottom of the frame that let you select one of the standard
+L&Fs:
+// ToolbarFrame2.java
+// The Swing-ified button example
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class ToolbarFrame2 extends Frame {
+  // This time, let's use JButtons!
+  JButton cutButton, copyButton, pasteButton;
+  JButton javaButton, macButton, motifButton, winButton;
+  public ToolbarFrame2() {
+    super("Toolbar Example (Swing)");
+    setSize(450, 250);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    ActionListener printListener = new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        System.out.println(ae.getActionCommand());
+      }
+    };
+    // JPanel works similarly to Panel, so we'll use it.
+    JPanel toolbar = new JPanel();
+    toolbar.setLayout(new FlowLayout(FlowLayout.LEFT));
+    cutButton = new JButton("Cut");
+    cutButton.addActionListener(printListener);
+    toolbar.add(cutButton);
+    copyButton = new JButton("Copy");
+    copyButton.addActionListener(printListener);
+    toolbar.add(copyButton);
+    pasteButton = new JButton("Paste");
+    pasteButton.addActionListener(printListener);
+    toolbar.add(pasteButton);
+    add(toolbar, BorderLayout.NORTH);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+24 | Chapter 2: Jump-Starting a Swing Application
+    // Add the L&F controls.
+    JPanel lnfPanel = new JPanel();
+    LnFListener lnfListener = new LnFListener(this);
+    macButton = new JButton("Mac");
+    macButton.addActionListener(lnfListener);
+    lnfPanel.add(macButton);
+    javaButton = new JButton("Metal");
+    javaButton.addActionListener(lnfListener);
+    lnfPanel.add(javaButton);
+    motifButton = new JButton("Motif");
+    motifButton.addActionListener(lnfListener);
+    lnfPanel.add(motifButton);
+    winButton = new JButton("Windows");
+    winButton.addActionListener(lnfListener);
+    lnfPanel.add(winButton);
+    add(lnfPanel, BorderLayout.SOUTH);
+  }
+  public static void main(String args[]) {
+    ToolbarFrame2 tf2 = new ToolbarFrame2();
+    tf2.setVisible(true);
+  }
+}
+As you can see in Figure2-2, the application is more or less the same. All we did was
+changeButtontoJButtonand add four moreJButtons for L&F selection. We update
+the application’s L&F in theLnFListenerclass, which gets its events from the simple
+Swing buttons at the bottom of the application. Apart from figuring out which but-
+ton was pressed, we must also force the L&F to change. That’s pretty simple. The
+first step is setting the new L&F using the
+UIManager.setLookAndFeel()method.
+(This is the method that needs the correct name for the L&F we want.) Once the
+L&F is set, we want to make the change visible immediately, so we update the L&F
+for all of the components using the
+SwingUtilities.updateComponentTreeUI()
+method:
+// LnFListener.java
+// A listener that can change the L&F of a frame based on the actionCommand of an
+// ActionEvent object. Supported L&Fs are: Mac, Metal, Motif, and Windows. Not all
+// L&Fs will be available on a given machine. Notably, the Mac and Windows L&Fs work
+// only on their specific platforms.
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class LnFListener implements ActionListener {
+  Frame frame;
+  public LnFListener(Frame f) {
+    frame = f;
+  }
+  public void actionPerformed(ActionEvent e) {
+    String lnfName = null;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Including Your First Swing Component | 25
+    if (e.getActionCommand().equals("Mac")) {
+      lnfName = "com.apple.mrj.swing.MacLookAndFeel";
+    } else if (e.getActionCommand().equals("Metal")) {
+      lnfName = "javax.swing.plaf.metal.MetalLookAndFeel";
+    } else if (e.getActionCommand().equals("Motif")) {
+      lnfName = "com.sun.java.swing.plaf.motif.MotifLookAndFeel";
+    } else if (e.getActionCommand().equals("Windows")) {
+      lnfName = "com.sun.java.swing.plaf.windows.WindowsLookAndFeel";
+    } else {
+      System.err.println("Unrecognized L&F request action: " +
+        e.getActionCommand());
+      return;
+    }
+    try {
+      UIManager.setLookAndFeel(lnfName);
+      SwingUtilities.updateComponentTreeUI(frame);
+    }
+    catch (UnsupportedLookAndFeelException ex1) {
+      System.err.println("Unsupported LookAndFeel: " + lnfName);
+    }
+    catch (ClassNotFoundException ex2) {
+      System.err.println("LookAndFeel class not found: " + lnfName);
+    }
+    catch (InstantiationException ex3) {
+      System.err.println("Could not load LookAndFeel: " + lnfName);
+    }
+    catch (IllegalAccessException ex4) {
+      System.err.println("Cannot use LookAndFeel: " + lnfName);
+    }
+  }
+}
+With theJButton objects in place we get the application shown in Figure2-2.
+When we run the new version of the application, we still getActionEventobjects
+from pressing the buttons, and the events are still delivered to theactionPerformed()
+method. OK, big deal. Now we have buttons that work just like before and don’t
+look particularly great. So what? Well, for one thing, we can now take advantage of
+the new UI management capabilities of Swing components. Swing provides L&Fs
+that we can use with any of its components. If you press the Mac, Metal, Motif, or
+Figure2-2.The same application with JButtons for Cut, Copy, and Paste (in the Metal L&F)
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+26 | Chapter 2: Jump-Starting a Swing Application
+Windows button in this application, it switches from the current L&F to the appro-
+priate version (if it’s available on your system). Figure2-3 shows theeffect.
+Now we’ve got a bunch ofJButtons. We’re still using the old AWTPanelandFrame
+objects as containers for our applications. You can change them easily, too. Chang-
+ingPaneltoJPanelis as simple as updating the buttons: just do a global replace, and
+you’re done. UpdatingFrameis a little more complex. Once you’ve replacedFrame
+withJFrame, you must also look at the calls toadd()that put things in theJFrame.A
+JFramehas something in it called a “content pane”; when we add something to a
+JFrame, we usually want to add it to this content pane:
+getContentPane().add(something);    // Formerly just add(something)
+With these changes, theJFrameandJPanelalso change their appearance when you
+change the application’s L&F. It may not be noticeable. But you’ll also get the other
+new features that Swing gives you. We’ll stick with the old
+FrameandPanelfor now,
+but we’ll useJFrame andJPanel later in this chapter and throughout the book.
+This is all very nice, but it’s still not what we came for. We weren’t interested in
+making minor changes in the way our buttons look, though that’s a nice side effect.
+So let’s get to those images! First, we need to create what the Swing components
+refer to as an
+Icon. You can get the details on icons in Chapter4, but for now, just
+think of them as nicely self-contained images we can use inside just about any of the
+Swing components that can display normal text (such as labels, buttons, and menu
+items). We’ll start out by adding an image to the text we’re currently displaying in
+each button. We can use all of the graphics formats Java supports (GIF, JPEG, and
+others) with icons, including transparent and animated GIF-89a images. Here’s the
+code to add images to each of our buttons:
+cutButton = new JButton("Cut", new ImageIcon("cut.gif"));
+cutButton.addActionListener(this);
+toolbar.add(cutButton);
+Figure2-3.JButtons using the Mac (left), Motif (right), and Windows (bottom) L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Including Your First Swing Component | 27
+copyButton = new JButton("Copy", new ImageIcon("copy.gif"));
+copyButton.addActionListener(this);
+toolbar.add(copyButton);
+pasteButton = new JButton("Paste", new ImageIcon("paste.gif"));
+pasteButton.addActionListener(this);
+toolbar.add(pasteButton);
+This creates buttons with little icons to the left of the text. Any L&F can display the
+images. Figure2-4 shows the result.
+Adding the icons hasn’t changed anything. In particular, our action event handlers
+are exactly the same as they were with normal AWT buttons. But you probably see a
+problem developing. Our handler uses the buttons’ text labels to decide which but-
+ton was pressed. That’s not a problem since our buttons still display some text.
+What happens if we throw that text out? How can we tell which button was pressed?
+First, let’s look at the code to create an image-only button:
+copyButton = new JButton(new ImageIcon("copy.gif"));
+copyButton.addActionListener(this);
+toolbar.add(copyButton);
+If we do this for every button, the application looks like Figure2-5.
+Now let’s look back at the event handler we use:
+public void actionPerformed(ActionEvent e) {
+    System.out.println(e.getActionCommand());
+}
+This doesn’t do much. Normally, you would need to distinguish between the vari-
+ous buttons or other components that report to this handler. Since we implement the
+Figure2-4.Icon and text buttons in the Metal (left) and Mac (right) L&Fs
+Figure2-5.Icon-only JButtons in the Metal (left) and Windows (right) L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+28 | Chapter 2: Jump-Starting a Swing Application
+ActionListenerinterface directly in the application class, we can use the simple route
+of checking the source of the event against the buttons we know we have. For exam-
+ple, we could differentiate the Cut, Copy, and Paste buttons like this:
+public void actionPerformed(ActionEvent ae) {
+    if (ae.getSource() == cutButton) {
+    System.out.println("Got Cut event");
+    }
+    else if (ae.getSource() == copyButton) {
+        System.out.println("Got Copy event");
+    }
+    else if (ae.getSource() == pasteButton) {
+        System.out.println("Got Paste event");
+    }
+}
+However, we don’t always have the luxury of implementing the event handler
+directly in our application, and we might not want to pass around a huge list of but-
+ton references to make it possible to write such code in other classes. Instead, you
+can use the
+actionCommandproperty of theButtonclass to distinguish your buttons
+from one another. TheJButtonclass also implements this property, so we can just
+callsetActionCommand()for each of the buttons and pass in a unique string that we
+can check in theactionPerformed()method—regardless of which class that method
+sits in. Using theactionCommandproperty to distinguish a component works for com-
+ponents whose appearance might be changing for any of a variety of reasons. (For
+example, you might be writing an international application in which the text on the
+button changes depending on the user’s native language.)
+Now, this is not the only or even the best way to handle events from our buttons, but
+it’s a slightly more portable version of our simple application. Later, we’ll look at the
+new
+Actioninterface to better support this type of event handling in a more object-
+oriented manner. For now, this code is easy to understand, even if it is a bit clunky.
+// ToolbarFrame3.java
+// The Swing-ified button example. The buttons in this toolbar all carry images
+// but no text.
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class ToolbarFrame3 extends Frame {
+  JButton cutButton, copyButton, pasteButton;
+  JButton javaButton, macButton, motifButton, winButton;
+  public ToolbarFrame3() {
+    super("Toolbar Example (Swing no text)");
+    setSize(450, 250);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Including Your First Swing Component | 29
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    // JPanel works much like Panel does, so we'll use it.
+    JPanel toolbar = new JPanel();
+    toolbar.setLayout(new FlowLayout(FlowLayout.LEFT));
+    CCPHandler handler = new CCPHandler();
+    cutButton = new JButton(new ImageIcon("cut.gif"));
+    cutButton.setActionCommand(CCPHandler.CUT);
+    cutButton.addActionListener(handler);
+    toolbar.add(cutButton);
+    copyButton = new JButton(new ImageIcon("copy.gif"));
+    copyButton.setActionCommand(CCPHandler.COPY);
+    copyButton.addActionListener(handler);
+    toolbar.add(copyButton);
+    pasteButton = new JButton(new ImageIcon("paste.gif"));
+    pasteButton.setActionCommand(CCPHandler.PASTE);
+    pasteButton.addActionListener(handler);
+    toolbar.add(pasteButton);
+    add(toolbar, BorderLayout.NORTH);
+    // Add the L&F controls.
+    JPanel lnfPanel = new JPanel();
+    LnFListener lnfListener = new LnFListener(this);
+    macButton = new JButton("Mac");
+    macButton.addActionListener(lnfListener);
+    lnfPanel.add(macButton);
+    javaButton = new JButton("Metal");
+    javaButton.addActionListener(lnfListener);
+    lnfPanel.add(javaButton);
+    motifButton = new JButton("Motif");
+    motifButton.addActionListener(lnfListener);
+    lnfPanel.add(motifButton);
+    winButton = new JButton("Windows");
+    winButton.addActionListener(lnfListener);
+    lnfPanel.add(winButton);
+    add(lnfPanel, BorderLayout.SOUTH);
+  }
+  public static void main(String args[]) {
+    ToolbarFrame3 tf3 = new ToolbarFrame3();
+    tf3.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+30 | Chapter 2: Jump-Starting a Swing Application
+Here’s the new event handler for this simple application. Notice that we set up some
+constants for the different actions we plan to take. We can now use these constants
+in the
+setActionCommand()call of any application whenever we’re setting up Cut,
+Copy, or Paste buttons—regardless of what we display on the screen for the but-
+tons. We can now easily tell which action to take in the
+actionPerformed()method.
+However, you may still need to pass a reference to objects that contain the buttons
+because you will most likely need to take a real action when the user presses a but-
+ton. We’ll look at such a program a bit later in the chapter.
+// CCPHandler.java
+// A Cut, Copy, and Paste event handler. Nothing too fancy, just define some
+// constants that can be used to set the actionCommands on buttons.
+//
+import java.awt.event.*;
+public class CCPHandler implements ActionListener {
+  public final static String CUT   = "cut";
+  public final static String COPY  = "copy";
+  public final static String PASTE = "paste";
+  public void actionPerformed(ActionEvent e) {
+    String command = e.getActionCommand();
+    if (command == CUT) { // We can do this since we're comparing constants.
+      System.out.println("Got Cut event");
+    }
+    else if (command == COPY) {
+      System.out.println("Got Copy event");
+    }
+    else if (command == PASTE) {
+      System.out.println("Got Paste event");
+    }
+  }
+}
+Finally, we should point out that althoughCCPHandlerillustrates another way of han-
+dling button events, theActionmechanism introduced at the end of this chapter, and
+discussed in depth at the start of Chapter3, is more powerful, object-oriented, and
+far more commonly used.
+Beyond Buttons
+Buttons are very useful, but even with great images forming the buttons, they still
+lack a certain glamour—every application has buttons. For the next example, let’s
+take a look at
+JInternalFrame, which allows you to create free-standing frames with
+menus, title bars, and everything else aFrame needs right inside your application.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+What Is an Internal Frame? | 31
+What Is an Internal Frame?
+Before we start coding, here’s a brief rundown of the features of an internal frame:
+• Same functions as a normalFrameobject, but confined to the visible area of the
+container it is placed in
+• Can be iconified (icon stays inside main application frame)
+• Can be maximized (frame consumes entire main application frame area)
+• Can be closed using the standard controls for application windows
+• Can be placed in a “layer,” which dictates how the frame displays itself relative
+to other internal frames (a frame in layer 1 can never hide a frame in layer 2)
+To be honest, in practice, standalone frames are often more useful than internal
+frames. You’ll want to know about both; we have chapters dedicated to each of these
+topics (Chapters8 and 9, respectively).
+Figure2-6 shows a simple internal frame using the Metal L&F.
+For this first example, we’ll add an empty internal frame to an application. Once
+that’s working, we’ll expand the simple frame to create a couple of different types of
+internal frames and create the framework for a simple application.
+One of the prerequisites for using internal frames is that you need a window capable
+of managing them. The Swing package provides the
+JDesktopPaneclass for this pur-
+pose. You’ll see the details of theJDesktopPanein Chapter9, but for now, here’s how
+to get one started:
+// Set up the layered pane.
+JDesktopPane desktop = new JDesktopPane();
+add(desktop, BorderLayout.CENTER);
+Figure2-6.The SimpleInternalFrame application using the Metal L&F
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+32 | Chapter 2: Jump-Starting a Swing Application
+With the desktop in place, you can create a new internal frame and show it. The
+JInternalFrameconstructor takes five arguments that tailor the look and functional-
+ity of the frame:
+public JInternalFrame(String title,
+                      boolean resizable,
+                      boolean closable,
+                      boolean maximizable,
+                      boolean iconifiable);
+We’ll turn on every feature for the example. The following makes the internal frame
+visible:
+internalFrame = new JInternalFrame("Internal Frame", true, true, true, true);
+internalFrame.setBounds(50, 50, 200, 100);
+desktop.add(internalFrame, new Integer(1));
+Thedesktop.add()call does the real work here. You supply the internal frame and
+the “layer” your frame belongs in. Layers areIntegerobjects. The values determine
+the order of your layers and what shows on top of what. For example, frames in layer
+2always show on top of frames in layer 1, even if the frame in layer 1 has the key-
+board focus. But you do need to remember to give your frame both a size and a loca-
+tion. The internal frames have default preferred and minimum sizes of 0× 0.
+Figure2-7 shows how the
+JInternalFrameclass also takes advantage of Swing’s plug-
+gable L&F feature. You can switch the appearance of the frames, just like you did
+with the buttons.
+You can even iconify these frames. They turn into an “iconified box” appropriate for
+the current L&F. Figure2-8 shows an iconified frame.
+Here’s the complete application with an open button and an internal frame. When
+you click the button, it pops up the internal frame. You can use the button in the
+upper-right corner of the frame to close it (providing you’re using either the Metal or
+the Windows L&F). You can use the other buttons in the main frame to adjust the
+L&F of the internal frame:
+// SimpleInternalFrame.java
+// A quick demonstration of setting up an internal frame in an application
+//
+Figure2-7.The SimpleInternalFrame in the Motif (left) and Windows (right) L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+What Is an Internal Frame? | 33
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class SimpleInternalFrame extends Frame {
+  JButton openButton, macButton, javaButton, motifButton, winButton;
+  JLayeredPane desktop;
+  JInternalFrame internalFrame;
+  public SimpleInternalFrame() {
+    super("Internal Frame Demo");
+    setSize(500,400);
+    openButton = new JButton("Open");
+    macButton = new JButton("Mac");
+    javaButton = new JButton("Metal");
+    motifButton = new JButton("Motif");
+    winButton = new JButton("Windows");
+    Panel p = new Panel();
+    p.add(openButton);
+    p.add(macButton);
+    p.add(javaButton);
+    p.add(motifButton);
+    p.add(winButton);
+    add(p, BorderLayout.SOUTH);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    openButton.addActionListener(new OpenListener());
+    LnFListener lnf = new LnFListener(this);
+    macButton.addActionListener(lnf);
+    javaButton.addActionListener(lnf);
+    motifButton.addActionListener(lnf);
+    winButton.addActionListener(lnf);
+    // Set up the layered pane.
+    desktop = new JDesktopPane();
+    desktop.setOpaque(true);
+    add(desktop, BorderLayout.CENTER);
+  }
+Figure2-8.An iconified internal frame in the Mac (left) and Metal (right) L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+34 | Chapter 2: Jump-Starting a Swing Application
+  // An inner class to handle presses of the Open button
+  class OpenListener implements ActionListener {
+    public void actionPerformed(ActionEvent e) {
+      if ((internalFrame == null) || (internalFrame.isClosed())) {
+        internalFrame = new JInternalFrame("Internal Frame",
+                                           true, true, true, true);
+        internalFrame.setBounds(50, 50, 200, 100);
+        desktop.add(internalFrame, new Integer(1));
+        internalFrame.setVisible(true);
+       }
+    }
+  }
+  public static void main(String args[]) {
+    SimpleInternalFrame sif = new SimpleInternalFrame();
+    sif.setVisible(true);
+  }
+}
+The internal frame examples use the same L&F listener and basic window monitor
+as theJButtonexample. You’ll notice some nasty flickering when you move the inter-
+nal frame around. That’s because we put it inside aFrame, not aJFrame. In our next
+example, the problem disappears.
+A Bigger Application
+Now that you’ve seen how to create internal frames and played around with them a
+bit, let’s tackle a slightly larger problem. We want to build an application that can
+pop up internal frames that you can actually use. This starter application is a web
+site manager that shows us a list of HTML pages at a site and, for any of those pages,
+allows us to pop up the page in a separate frame and edit it. We’ll keep the main list
+of HTML pages in one “site” frame that contains a simple list box.
+Once you have a site built up with a couple of pages, you can click on any entry in
+the list, and if the file exists, we’ll create a new “page” frame and load the file into a
+JTextAreaobject for you to edit. You can modify the text and save the file using the
+File menu in the page frame.
+As a bonus, we’ll put those cut, copy, and paste icons to use as well. You can manip-
+ulate text in any of the open page frames. The icons work asActionobjects by look-
+ing at the selected text and insertion point of the active frame. (We alluded to the
+Actionclass after our last Toolbar example. We’ll demonstrate it here and discuss it
+thoroughly at the start of the next chapter.) If the active frame is a site frame, noth-
+ing happens.
+You could certainly add a lot of features to this application and make it a real work-
+ing program, but we don’t want to get mired down in details just yet. (If you want to
+get really fancy, you could look at some of the editor kits discussed in Chapter23
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Bigger Application | 35
+and build yourself a real HTML editor.) Figure2-9 shows the finished application
+with a couple of open frames.
+We break the code for this application into three separate classes to make discussing
+it more manageable. The first class handles the real application frame. The construc-
+tor handles all of the interface setup work. It sets up the toolbar, as well as the Cut,
+Copy, and Paste buttons. It uses the default L&F for the platform on which it is run.
+(You could certainly attach the
+LnFListener, if you wanted to.) Here’s the source
+code:
+// SiteManager.java
+//
+import java.awt.*;
+import java.io.*;
+import java.util.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class SiteManager extends JFrame {
+  JLayeredPane desktop;
+  Vector popups = new Vector();
+  public SiteManager() {
+    super("Web Site Manager");
+Figure2-9.The SiteManager application running on a platform where Metal is the default L&F
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+36 | Chapter 2: Jump-Starting a Swing Application
+    setSize(450, 250);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    Container contentPane = getContentPane();
+    JToolBar jtb = new JToolBar();
+    jtb.add(new CutAction(this));
+    jtb.add(new CopyAction(this));
+    jtb.add(new PasteAction(this));
+    contentPane.add(jtb, BorderLayout.NORTH);
+    // Add our LayeredPane object for the internal frames.
+    desktop = new JDesktopPane();
+    contentPane.add(desktop, BorderLayout.CENTER);
+    addSiteFrame("Sample");
+  }
+  public static void main(String args[]) {
+    SiteManager mgr = new SiteManager();
+    mgr.setVisible(true);
+  }
+Notice that since we’re finally using Swing’sJFramerather than an AWTFrame,w e
+can replace the cumbersomeWindowAdapter, which handles user close requests, with
+a single call tosetDefaultCloseOperation(EXIT_ON_CLOSE).
+Now for the creation of the site and page frames. TheSiteFrameclass andPageFrame
+class, discussed later in this chapter, extend theJInternalFrameclass. These classes
+handle all of the hard work in getting the frames to look and act correctly. Here, we
+just need to make the internal frame visible and keep a reference to the frame. By
+keeping the
+popupsvector around, we could eventually add Save All, Close Site, and
+other options. For now we just use it to help find the current frame.
+// Methods to create our internal frames
+  public void addSiteFrame(String name) {
+    SiteFrame sf = new SiteFrame(name, this);
+    popups.addElement(sf);
+    desktop.add(sf, new Integer(2));  // Keep sites on top for now.
+    sf.setVisible(true);
+  }
+  public void addPageFrame(String name) {
+    PageFrame pf = new PageFrame(name, this);
+    desktop.add(pf, new Integer(1));
+    pf.setVisible(true);
+    pf.setIconifiable(true);
+    popups.addElement(pf);
+  }
+  public JInternalFrame getCurrentFrame() {
+    for (int i = 0; i < popups.size(); i++) {
+      JInternalFrame currentFrame = (JInternalFrame)popups.elementAt(i);
+      if (currentFrame.isSelected()) {
+        return currentFrame;
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Bigger Application | 37
+      }
+    }
+    return null;
+  }
+}
+ThegetCurrentFrame()method runs through a list of all the frames currently open in
+the site manager and returns the active frame. (Yes, this is a bit inefficient, but we’re
+ignoring that for right now.)
+Notice that we’re using aJToolBarobject in our example. This is a great shortcut if
+you just want a few buttons along the top (or side or bottom) of your application. A
+JToolBarcan contain almost any kind of component, though it’s most often used for
+buttons. We don’t add buttons directly; instead, we addActionobjects, which are
+automatically converted into buttons when placed in a toolbar. TheActioninterface
+encapsulates an icon and anactionPerformed()method so that you don’t have to do
+lengthy if/else-if testing. When you add anActionto the toolbar, the toolbar displays
+theAction’s icon, and when you click on the icon, theAction’sactionPerformed()
+method is called automatically. Here’s the code for theCopyAction class:
+// CopyAction.java
+// A simple Action that copies text from a PageFrame object
+//
+import java.awt.event.ActionEvent;
+import javax.swing.*;
+public class CopyAction extends AbstractAction {
+  SiteManager manager;
+  public CopyAction(SiteManager sm) {
+    super("", new ImageIcon("copy.gif"));
+    manager = sm;
+  }
+  public void actionPerformed(ActionEvent ae) {
+    JInternalFrame currentFrame = manager.getCurrentFrame();
+    if (currentFrame == null) { return; }
+    // Can’t cut or paste sites
+    if (currentFrame instanceof SiteFrame) { return; }
+    ((PageFrame)currentFrame).copyText();
+  }
+}
+The cut and paste action classes work in a similar fashion. (We won’t show them
+here.) Swing provides a large number of pre-builtActions, so you may not even need
+to write your own. We’ll discuss several in Chapter23. AppendixB lists all the
+Actions that are provided by Swing’s components as well as the key bindings (if any)
+with which they can be triggered.
+Next we need a way to create the site frames. We can set up a separate class that
+extends theJInternalFrameclass and contains the functionality appropriate for the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+38 | Chapter 2: Jump-Starting a Swing Application
+site manager. Namely, we must be able to list available pages in the site and open
+any of those pages for editing.
+We can create a frame that has a listbox as its primary component. This won’t be a
+fancy manager, but it will do what we want. The nice thing about internal frames,
+from the frame’s point of view, is that they look just like regular frames. You can use
+the constructor to add all of the graphical interface elements and put in event listen-
+ers. The only difference with internal frames is that they need to be added to an
+appropriate desktop pane, but again, that’s not a difference we can see here in the
+code for the individual frames. You can change existing standalone
+Frameclasses to
+JInternalFrame classes with very little effort:
+// SiteFrame.java
+// A simple extension of the JInternalFrame class that contains a list object.
+// Elements of the list represent HTML pages for a web site.
+//
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.event.*;
+public class SiteFrame extends JInternalFrame {
+  JList nameList;
+  SiteManager parent;
+  // Hardcode the pages of our "site" to keep things simple.
+  String[] pages = {"index.html", "page1.html", "page2.html"};
+  public SiteFrame(String name, SiteManager sm) {
+    super("Site: " + name, true, true, true);
+    parent = sm;
+    setBounds(50,50,250,100);
+    nameList = new JList(pages);
+    nameList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    nameList.addListSelectionListener(new ListSelectionListener() {
+      public void valueChanged(ListSelectionEvent lse) {
+        // We know this is the list, so pop up the page.
+        if (!lse.getValueIsAdjusting()) {
+          parent.addPageFrame((String)nameList.getSelectedValue());
+        }
+      }
+    });
+    Container contentPane = getContentPane();
+    contentPane.add(nameList, BorderLayout.CENTER);
+  }
+}
+In thevalueChanged()method for theListSelectionListener, we handle the basic
+functions of the page list. Single-clicking on an entry in the list creates a new
+PageFrameobject for that file. If the file doesn’t exist, you get a blank text area for cre-
+ating the page from scratch. Note that very little error checking is going on here. But
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Bigger Application | 39
+you probably have already discovered that robust error checking just gets in the way
+of having fun, and that’s all we’re really trying to accomplish with this application.
+Now you have the site frame going. The new page frame needs to be able to open the
+file (if it exists) and display the file for editing. The Cut, Copy, and Paste buttons
+from our earlier example allow you to move text around in a file and between open
+files in the application.
+Like the site frame, we’ll create a subclass of
+JInternalFramefor our page frame. We
+can use the constructor for the interface work again, and then allow the text area to
+manage all of the text display and editing work:
+// PageFrame.java
+// A simple extension of the JInternalFrame class that contains a text area
+// and a local menu to save changes to simple HTML text.
+//
+import java.awt.*;
+import java.io.*;
+import java.awt.event.*;
+import javax.swing.*;
+public class PageFrame extends JInternalFrame {
+  SiteManager parent;
+  String filename;
+  JTextArea ta;
+  public PageFrame(String name, SiteManager sm) {
+    super("Page: " + name, true, true, true, true);
+    parent = sm;
+    setBounds(50,50,300,150);
+    // Use the JFrame's content pane to store our desktop.
+    Container contentPane = getContentPane();
+    // Create a text area to display the contents of our file and put it in a
+    // scrollable pane so we can get to all of it.
+    ta = new JTextArea();
+    JScrollPane jsp = new JScrollPane(ta);
+    contentPane.add(jsp, BorderLayout.CENTER);
+    // Add a "File->Save" option to the menu bar for this frame.
+    JMenuBar jmb = new JMenuBar();
+    JMenu fileMenu = new JMenu("File");
+    JMenuItem saveItem = new JMenuItem("Save");
+    saveItem.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ae) { saveContent(); }
+    });
+    fileMenu.add(saveItem);
+    jmb.add(fileMenu);
+    setJMenuBar(jmb);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+40 | Chapter 2: Jump-Starting a Swing Application
+    // Now get the content, based on the filename that was passed in.
+    filename = name;
+    loadContent();
+  }
+}
+Here, we need to add some load and save routines to thePageFrameclass for the text
+areas. You’ll learn more about theread()andwrite()methods in Chapter19, but
+for now, we’ll just use them since they provide such a convenient way to read and
+write text files:
+  public void loadContent() {
+    try {
+      FileReader fr = new FileReader(filename);
+      ta.read(fr, null);
+      fr.close();
+    }
+    catch (Exception e) { System.err.println("Could not load page: "+filename); }
+  }
+  public void saveContent() {
+    try {
+      FileWriter fw = new FileWriter(filename);
+      ta.write(fw);
+      fw.close();
+    }
+    catch(Exception e) { System.err.println("Could not save page: "+filename); }
+  }
+To make the cut and paste operations simpler, we’ll put in some public access meth-
+ods to manipulate the text. All three of these routines are built to function regardless
+of the clipboard implementation you use. We’ll use the system clipboard (via some
+convenience methods found in
+JTextComponent) for this example, but you could just
+as easily use your own clipboard, or eventually, Drag and Drop text.
+public void cutText() { ta.cut(); }
+public void copyText() { ta.copy(); }
+public void pasteText() { ta.paste(); }
+Now you can start the program and bring up the individual HTML files by selecting
+them from the list. Each file has its own internal frame that you can move around,
+resize, iconify, maximize, and close. You can cut, copy, and paste text between files.
+You can save edits using menus attached to each pop-up frame. You can even detach
+the toolbar and let it “float.” All this for about 250 lines of code!
+Well, now that we’ve had a bit of fun, it’s time to move on to the details. The next
+chapter plunges into the world of Swing with the
+JComponentclass. Good luck, and
+have fun!
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+41
+Chapter3In this chapter:
+• Understanding Actions
+• Graphical Interface Events
+• Graphics Environments
+• Sending Change Events in Swing
+• The JComponent Class
+• Responding to Keyboard Input
+CHAPTER 3
+Swing Component
+Basics
+The previous chapter showed how easy it is to create some impressive programs with
+Swing components. Now it’s time to dig in a little deeper. We begin this chapter by pre-
+senting an overview of a few key (but lower-level) helper classes such as
+Action,
+GraphicsContext,ChangeEvent,andPropertyChangeEvent,aswellastheHeadlessException
+exception. We spend the remainder of the chapter introducing theJComponentclass, the
+heart and soul of all Swing components.
+Understanding Actions
+Actions are a popular addition to Swing. An action allows a programmer to bundle a
+commonly used procedure and its bound properties (such as its name and an image
+to represent it) into a single class. This construct comes in handy if an application
+needs to call upon a particular function from multiple sources. For example, let’s say
+that a Swing programmer creates an action that saves data to disk. The application
+could then invoke this action from both the Save menu item on the File menu and
+the Save button on a toolbar. Both components reference the same action object,
+which saves the data. If the Save function is disabled for some reason, this property
+can be set in the action as well. The menu and toolbar objects are automatically noti-
+fied that they can no longer save any data, and they can relay that information to the
+user.
+Actions and Containers
+Swing containers, such asJMenu, JPopupMenu, andJToolBar, can each accept action
+objects with theiradd()methods. When an action is added, these containers auto-
+matically create a GUI component, which theadd()method then returns to you for
+customization. For example, aJMenuor aJPopupMenucreates and returns aJMenuItem
+from anActionwhile aJToolBarcreates and returns aJButton. The action is then
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+42 | Chapter 3: Swing Component Basics
+paired with the newly created GUI component in two ways: the GUI component reg-
+isters as aPropertyChangeListenerfor any property changes that might occur in the
+action object, while the action object registers as anActionListeneron the GUI com-
+ponent. Figure3-1 shows the interactions between a menu item or toolbar and an
+Action.
+Essentially, this means that if the menu item or button is selected by the user, the
+functionality inside the action is invoked. On the other hand, if the action is dis-
+abled, it sends a
+PropertyChangeEventto both the menu item and the toolbar, caus-
+ing them to disable and turn gray. Similarly, if the action’s icon or name is changed,
+the menu and toolbar are automatically updated.
+The Action Interface
+An action is defined by the interface it implements, in this casejavax.swing.Action.
+Actionextends theActionListenerinterface from AWT; this forces concrete classes
+that implementActionto provide anactionPerformed()method. The programmer
+uses theactionPerformed()method to implement whatever behavior is desired. For
+example, if you are creating a Save action, you should put the code that saves the
+data inside of your
+actionPerformed() method.
+When the action is added to an accepting container such asJMenu, JPopupMenu,o r
+JToolBar, the container automatically registers the action as anActionListenerof the
+GUI component it creates. Consequently, if the GUI component is selected by the
+user, it simply invokes the
+actionPerformed() method of the action to do its job.
+Figure3-1.An action in conjunction with a Swing item and toolbar
+JMenu menu=new JMenu();
+JMenuItem item=
+menu.add(action);
+JToolBar toolbar=
+new JToolBar()
+JButton button=
+toolbar.add(action)
+Menu Item
+Save Ctrl+S
+Toolbar Button
+Save Action
+Action
+Event
+Property Change
+EventsAction
+Event
+This is the Title of the Book, eMatter Edition
+Copyright © 2012 O’Reilly & Associates, Inc. All rights reserved.
+Understanding Actions | 43
+TheActioninterface defines five constants (shown in Table3-1), which serve as keys
+for storing standardizedActionproperties. The method of storage varies from imple-
+menter to implementer, but aHashtableis common. These properties store informa-
+tion such as the name of the action, its description, and a representative icon. Also,
+theActioninterface defines abooleanproperty that indicates whether the action is
+enabled or disabled. Recall that the GUI component created for the action registers
+itself as a
+PropertyChangeListener. Hence, if any of these properties are modified, the
+GUI component is notified and can react accordingly.
+Property
+TheAction interface defines the property shown in Table3-2.
+Theenabledproperty defines whether anyone can invoke the action. When this
+property changes, the action should fire aPropertyChangeEventdescribing the
+change.
+Note that the properties whose keys appear in Table3-1 are not also shown here.
+Thesearereally properties because changing one should fire aPropertyChangeEvent.
+However, because they do not use standard accessors, they do not fit the true Java-
+Beans property model, so we have omitted them from Table3-2.
+Methods
+public abstract Object getValue(String key)
+public abstract void putValue(String key, Object value)
+Storevariouskeyedpropertiesfortheaction.Astring-basedkeyisusedtoindexthe
+values. Several string constants representing the keys are shown in Table3-1. When
+putValue()is called with any property, and the value passed in is different than
+Table3-1.String-based key constants for the Action interface
+Constant Meaning
+DEFAULT Default setting
+NAME Name of the action
+SHORT_DESCRIPTION Short text description of what the action does
+LONG_DESCRIPTION Long text description of what the action does
+SMALL_ICON Represents a small icon; typically used in a toolbar
+Table3-2.Action property
+Property Data type
+get
+is
+set Default value
+enabled boolean ••
+See alsojava.awt.event.ActionListener.
+,swing2.book.8435  Page 43  Wednesday, March 7, 2012  11:42 AM
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+44 | Chapter 3: Swing Component Basics
+whatwastherepreviously,theimplementingobjectmustfireaPropertyChangeEvent
+describing the change to all registered listeners.
+public abstract void actionPerformed(ActionEvent e)
+This method is required by theActionListenerinterface (it does not actually
+exist in theActioninterface). Any concrete class that implements theAction
+interface must provide anactionPerformed()method that performs whatever
+task the action is supposed to accomplish.
+Events
+Objects implementing theActioninterface must fire aPropertyChangeEventwhen any
+keyed property is changed, or when the action is enabled or disabled. Containers
+that accept actions typically listen for thesePropertyChangeEventnotifications so they
+can update their own properties or appearances.
+public abstract void addPropertyChangeListener(PropertyChangeListener listener)
+public abstract void removePropertyChangeListener(PropertyChangeListener listener)
+Add or remove the specifiedPropertyChangeListener from the event listener list.
+The AbstractAction Class
+TheAbstractActionclass is an abstract implementation of theActioninterface.
+AbstractActionprovides the default functionality for almost all methods in the
+Actioninterface. You can extend this class to create your own specific actions. If you
+do so, the only method for which you must provide an implementation is the
+actionPerformed()method, which provides the functionality for the action. Here is a
+simple example:
+class MyAction extends AbstractAction {
+    public MyAction(String text, Icon icon) {
+        super(text,icon);
+    }
+    public void actionPerformed(ActionEvent e) {
+        System.out.println("Action [" + e.getActionCommand() + "]!");
+    }
+}
+Here, we simply print the action command sent with theActionEvent. You can add
+more features based on the contents of theActionEvent.
+Properties
+TheAbstractActionclass stores its keyed properties in aHashtableobject. Beyond
+that, theAbstractActionobject contains a few properties, as shown in Table3-3. The
+enabledproperty defines whether the application can invoke the action. When this
+property changes,AbstractActionfires aPropertyChangeEvent. The mutator for this
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Understanding Actions | 45
+property,setEnabled(), is synchronized. If you want a list of the current property lis-
+teners, use thepropertyChangeListeners property.
+Events
+TheAbstractActionclass fires aPropertyChangeEventwhen any property in the hash-
+table is changed or when the action is enabled or disabled.
+public void addPropertyChangeListener(PropertyChangeListenerlistener)
+public void removePropertyChangeListener(PropertyChangeListenerlistener)
+Add or remove the specifiedPropertyChangeListener from the event listener list.
+Constructors
+public AbstractAction()
+public AbstractAction(String name)
+public AbstractAction(String name, Icon icon)
+The constructors for the
+AbstractActionobject can be used to set the name and
+icon hashtable properties of the action under theNAME orSMALL_ICON keys,
+respectively.
+Methods
+public Object getValue(String key)
+public void putValue(String key, Object value)
+These methods store or retrieve various elements in a private
+Hashtable. A string-
+based key is used to index theHashtablevalues. See theActioninterface earlier
+in the chapter for an enumeration of common string-based keys.
+Using an Action
+This example creates anActionfor both a menu item and a toolbar, displaying both
+components and allowing the user to click on either one. When the components are
+clicked, the
+actionPerformed()method of the action is called. Don’t worry if you
+don’t understand all the methods behind the toolbar or the menu; these classes are
+discussed later. For now, it is important to see that selecting either one performs the
+action.
+Table3-3.AbstractAction properties
+Property Data type
+get
+is
+setDefault value
+enabledb boolean •• true
+keysb, 1.3 Object[] • null
+propertyChangeListeners1.4 PropertyChangeListener[]• Empty array
+1.3since 1.3, 1.4since 1.4, bbound
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+46 | Chapter 3: Swing Component Basics
+// ActionExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class ActionExample extends JPanel {
+    public JMenuBar menuBar;
+    public JToolBar toolBar;
+    public ActionExample() {
+        super(true);
+        // Create a menu bar and give it a bevel border.
+        menuBar = new JMenuBar();
+        menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
+        // Create a menu and add it to the menu bar.
+        JMenu menu = new JMenu("Menu");
+        menuBar.add(menu);
+        // Create a toolbar and give it an etched border.
+        toolBar = new JToolBar();
+        toolBar.setBorder(new EtchedBorder());
+        // Instantiate a sample action with the NAME property of "Download" and the
+        // appropriate SMALL_ICON property.
+        SampleAction exampleAction = new SampleAction("Download",
+                                         new ImageIcon("action.gif"));
+        // Finally, add the sample action to the menu and the toolbar. These methods
+        // are no longer preferred:
+        //    menu.add(exampleAction);
+        //    toolBar.add(exampleAction);
+        // Instead, you should create actual menu items and buttons:
+        JMenuItem exampleItem = new JMenuItem(exampleAction);
+        JButton exampleButton = new JButton(exampleAction);
+        menu.add(exampleItem);
+        toolBar.add(exampleButton);
+    }
+    class SampleAction extends AbstractAction {
+        // This is our sample action. It must have an actionPerformed() method, which
+        // is called when the action should be invoked.
+        public SampleAction(String text, Icon icon) {
+            super(text,icon);
+        }
+        public void actionPerformed(ActionEvent e) {
+          System.out.println("Action [" + e.getActionCommand() + "] performed!");
+        }
+    }

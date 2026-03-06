@@ -1,0 +1,800 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+1
+Chapter1In this chapter:
+• What Is Swing?
+• Swing Features
+• Swing Packages and Classes
+• The Model-View-Controller
+Architecture
+• Working with Swing
+• The Swing Set Demo
+• Reading This Book
+CHAPTER 1
+Introducing Swing
+Welcome to Swing! By now, you’re probably wondering what Swing is and how you
+can use it to spice up your Java applications. Or perhaps you’re curious as to how
+the Swing components fit into the overall Java strategy. Then again, maybe you just
+want to see what all the hype is about. Well, you’ve come to the right place; this
+book is all about Swing and its components. So let’s dive right in and answer the first
+question that you’re probably asking right now, which is…
+What Is Swing?
+If you poke around the Java home page (http://java.sun.com/), you’ll find Swing
+described as a set of customizable graphical components whose look-and-feel (L&F)
+can be dictated at runtime. In reality, however, Swing is much more than this. Swing
+is the next-generation GUI toolkit that Sun Microsystems created to enable enter-
+prise development in Java. Byenterprise development, we mean that programmers
+can use Swing to create large-scale Java applications with a wide array of powerful
+components. In addition, you can easily extend or modify these components to con-
+trol their appearance and behavior.
+Swing is not an acronym. The name represents the collaborative choice of its design-
+ers when the project was kicked off in late 1996. Swing is actually part of a larger
+family of Java products known as the Java Foundation Classes (JFC), which incorpo-
+rate many of the features of Netscape’s Internet Foundation Classes (IFC) as well as
+design aspects from IBM’s Taligent division and Lighthouse Design. Swing has been
+in active development since the beta period of the Java Development Kit (JDK) 1.1,
+circa spring of 1997. The Swing APIs entered beta in the latter half of 1997 and were
+initially released in March 1998. When released, the Swing 1.0 libraries contained
+nearly 250 classes and 80 interfaces. Growth has continued since then: at press time,
+Swing 1.4 contains 85 public interfaces and 451 public classes.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+2 | Chapter 1: Introducing Swing
+Although Swing was developed separately from the core Java Development Kit, it
+doesrequireatleastJDK1.1.5torun.Swingbuildsontheeventmodelintroducedin
+the 1.1 series of JDKs; you cannot use the Swing libraries with the older JDK 1.0.2.
+In addition, you must have a Java 1.1–enabled browser to support Swing applets.
+The Java 2SDK 1.4 release includes many updated Swing classes and a few new fea-
+tures. Swing is fully integrated into both the developer’s kit and the runtime environ-
+ment of all Java 2 releases (SDK 1.2 and higher), including the Java Plug-In.
+What Are the Java Foundation Classes?
+The FC is a suite of libraries designed to assist programmers in creating enterprise
+applications with Java. The Swing API is only one of five libraries that make up the
+JFC. The JFC also consists of the Abstract Window Toolkit (AWT), the Accessibil-
+ity API, the 2D API, and enhanced support for Drag and Drop capabilities. While the
+Swing API is the primary focus of this book, here is a brief introduction to the other
+elements in the JFC:
+AWT
+The Abstract Window Toolkit is the basic GUI toolkit shipped with all versions
+of the Java Development Kit. While Swing does not reuse any of the older AWT
+components, it does build on the lightweight component facilities introduced in
+AWT 1.1.
+Accessibility
+The accessibility package provides assistance to users who have trouble with tra-
+ditional user interfaces. Accessibility tools can be used in conjunction with
+devices such as audible text readers or braille keyboards to allow direct access to
+the Swing components. Accessibility is split into two parts: the Accessibility API,
+which is shipped with the Swing distribution, and the Accessibility Utilities API,
+which is distributed separately. All Swing components support accessibility, so
+this book dedicates an entire chapter (Chapter25) to accessibility design and
+use.
+2D API
+The 2D API contains classes for implementing various painting styles, complex
+shapes, fonts, and colors. This Java package is loosely based on APIs that were
+licensed from IBM’s Taligent division. The 2D API classes are not part of Swing,
+so they are not covered in this book.
+Drag and Drop
+Drag and Drop (DnD) is one of the more common metaphors used in graphical
+interfaces today. The user is allowed to click and “hold” a GUI object, moving it
+to another window or frame in the desktop with predictable results. The DnD
+API allows users to implement droppable elements that transfer information
+between Java applications and native applications. Although DnD is not part of
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+What Is Swing? | 3
+Swing, it is crucial to a commercial-quality application. We tackle this topic in
+Chapter24.
+Figure1-1 enumerates the various components of the Java Foundation Classes.
+Because part of the Accessibility API is shipped with the Swing distribution, we show
+it overlapping Swing.
+Is Swing a Replacement for AWT?
+No. Swing is actually built on top of the core AWT libraries. Because Swing does not
+contain any platform-specific (native) code, you can deploy the Swing distribution
+on any platform that implements the Java 1.1.5 or above virtual machine. In fact, if
+you have JDK 1.2or higher on your platform, then the Swing classes are already
+available, and there’s nothing further to download. If you use a JDK version prior to
+1.2, you can download the entire set of Swing libraries as a set of Java Archive (JAR)
+files from the Swing home page,http://java.sun.com/products/jfc. In either case, it is
+generally a good idea to visit this URL for any extra packages or L&Fs that may be
+distributed separately from the core Swing libraries.
+Figure1-2shows the relationship between Swing, AWT, and the Java Development
+Kit in the 1.1 and higher JDKs. In JDK 1.1, the Swing classes must be downloaded
+separately and included as an archive file on the classpath (swingall.jar).
+* JDK 1.2
+(and higher) comes with a Swing distribution.
+Figure1-1.The five APIs of the JFC
+* ThestandaloneSwingdistributionscontainseveralotherJARfiles.swingall.jariseverything(exceptthecon-
+tents ofmulti.jar) wrapped into one lump and is all you normally need to know about. For completeness,
+the other JAR files are:swing.jar, which contains everything but the individual L&F packages;motif.jar,
+which contains the Motif (Unix) L&F;windows.jar, which contains the Windows L&F;multi.jar, which
+contains a special L&F that allows additional (often nonvisual) L&Fss to be used in conjunction with the
+primary L&F; andbeaninfo.jar, which contains special classes used by GUI development tools.
+Java Foundation Classes
+AWT Swing Accessibility Java
+2D
+Drag
+and
+Drop
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+4 | Chapter 1: Introducing Swing
+Swing contains many more graphical components than its immediate predecessor,
+AWT 1.1. Many are components that were scribbled on programmer wishlists since
+Java first debuted—including tables, trees, internal frames, and a plethora of
+advanced text components. In addition, Swing contains many design advances over
+AWT. For example, Swing introduced an
+Actionclass that makes it easier to coordi-
+nate GUI components with their functionality. You’ll also find that a much cleaner
+design prevails throughout Swing; this cuts down on the number of unexpected sur-
+prises that you’re likely to face while coding.
+Swing depends extensively on the event-handling mechanism of AWT 1.1, although
+it does not define a comparatively large amount of events for itself. Each Swing com-
+ponent also contains a variable number of exportable properties. This combination
+of properties and events in the design was no accident. Each of the Swing compo-
+nents, like the AWT 1.1 components before them, adhere to the popular JavaBeans
+specification. As you might have guessed, this means that you can import all of the
+Swing components into various GUI builder tools, which is useful for powerful
+visual programming.
+Rethinking the AWT
+To understand why Swing exists, it helps to understand the market forces that drive
+Java as a whole. The Java Programming Language was developed in 1993 and 1994,
+largely under the guidance of James Gosling and Bill Joy at Sun Microsystems, Inc.
+WhenSunreleasedtheJavaDevelopmentKitontheInternet,itignitedafirestormof
+excitement that swept through the computing industry. At first, developers prima-
+rily experimented with Java forapplets, mini-programs embedded in web browsers.
+However, as Java matured over the course of the next two years, many developers
+began using Java to develop full-scale applications.
+Oratleasttheytried.AsdevelopersportedJavatomoreandmoreplatforms,itsweak
+points started to show. The language was robust and scalable, extremely powerful as
+Figure1-2.Relationships between Swing, AWT, and the JDK in the 1.1 and higher SDKs
+AWT classes
+JDK
+CLASSPATH
+Swing classes
+swingall.jar
+JDK 1.1
+AWT classes
+JFC
+JDK 1.2 and higher
+Swing classes
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Features | 5
+a networking tool, and served well as an easy-to-learn successor to the more estab-
+lished C++. The primary criticism, however, was that it was an interpreted language,
+which means that by definition it executed code slower than its native, compiled
+equivalents. Consequently, many developers flocked to just-in-time (JIT) compilers—
+highly optimized interpreters—to speed up their large-scale applications. This solved
+many problems, but one weak point that continually received scathing criticism was
+the graphical widgets that Java was built on: the Abstract Window Toolkit (AWT).
+The primary issue here was that AWT provided only the minimal amount of func-
+tionality necessary to create a windowing application. For enterprise applications, it
+quickly became clear that programmers needed something bigger.
+After nearly a year of intense scrutiny, the AWT classes were ready for a change.
+From Java 1.0 to Java 1.1, the AWT reimplemented its event model from a “chain”
+design to an “event subscriber” design. This meant that instead of propagating
+events through a predefined hierarchy of components, interested classes simply regis-
+tered with other components to receive noteworthy events. Because events typically
+involve only the sender and receiver, this eliminated much of the overhead in propa-
+gating them. When component events were triggered, an event object was passed
+only to those classes interested in receiving them.
+Sun developers also began to see that relying on native widgets for the AWT compo-
+nents was proving to be troublesome. Similar components looked and behaved dif-
+ferently on many platforms, and coding for the ever-expanding differences of each
+platform became a maintenance nightmare. In addition, reusing the component wid-
+gets for each platform limited the abilities of the components and proved to be
+expensive on system memory.
+Clearly, Sun knew that AWT wasn’t enough. It wasn’t that the AWT classes didn’t
+work; they simply didn’t provide the functionality necessary for full-scale enterprise
+applications. At the 1997 JavaOne Conference in San Francisco, JavaSoft announced
+the Java Foundation Classes. Key to the design of the JFC was that the new Swing
+components would be written entirely in Java and have a consistent L&F across plat-
+forms. This allowed Swing and the JFC to be used on any platform that supported
+Java 1.1 or later; all the user had to do was to include the appropriate JAR files on
+the
+CLASSPATH to make each of the components available for use. Since JDK 1.2,
+Swing has been part of the standard Java distribution; no special action is needed to
+use Swing components.
+Swing Features
+Swing provides many features for writing large-scale applications in Java. Here is an
+overview of some of the more popular features.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+6 | Chapter 1: Introducing Swing
+Pluggable Look-and-Feels
+One of the most exciting aspects of the Swing classes is the ability to dictate the L&F
+ofeachofthe components,evenresetting theL&F atruntime.L&Fshave become an
+important issue in GUI development over the past 10 years. Many users are familiar
+with the Motif style of user interface, which was common in Windows 3.1 and is still
+in wide use on Unix platforms. Microsoft created a more optimized L&F in their
+Windows 95/98/NT/2000 operating systems. In addition, the Macintosh computer
+system has its own carefully designed L&F, which most Apple users feel comfortable
+with.
+SwingiscapableofemulatingseveralL&FsandcurrentlysupportstheWindows,Unix
+Motif, and “native” Java Metal L&Fs. Mac OS X comes with full support for its own
+L&FbasedonApple’sAquaHumanInterfaceGuidelines,althoughyoucanstillaccess
+Metalifyouprefer.Inaddition,Swingallowstheuserto switchL&Fsatruntimewith-
+out having to close the application. This way, a user can experiment to see which L&F
+is best for her with instantaneous feedback. (In practice, nobody really does this, but
+it’s still pretty cool from a geeky point of view.) And, if you’re feeling really ambitious
+as a developer (perhaps a game developer), you can create your own L&F for each one
+of the Swing components!
+The Metal L&F combines some of the best graphical elements in today’s L&Fs and
+even adds a few surprises of its own. Figure1-3 shows an example of several L&Fs
+that you can use with Swing, including the Metal L&F. All Swing L&Fs are built
+from a set of base classes called the Basic L&F. However, though we may refer to the
+Basic L&F from time to time, you can’t use it on its own. If you’re lucky enough to
+be developing applications in the Mac OS X environment, you’ll be familiar with the
+L&F shown in Figure1-4.
+Lightweight Components
+Most Swing components are lightweight. In the purest sense, this means that compo-
+nents are not dependent on native peers to render themselves. Instead, they use sim-
+plified graphics primitives to paint themselves on the screen and can even allow
+portions to be transparent.
+The ability to create lightweight components first emerged in JDK 1.1, although the
+majority of AWT components did not take advantage of it. Prior to that, Java pro-
+grammers had no choice but to subclass
+java.awt.Canvasorjava.awt.Panelif they
+wished to create their own components. With both classes, Java allocated an opaque
+peer object from the underlying operating system to represent the component, forc-
+ing each component to behave as if it were its own window, thereby taking on a rect-
+angular, solid shape. Hence, these components earned the name “heavyweight”
+because they frequently held extra baggage at the native level that Java did not use.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Features | 7
+Heavyweight components were unwieldy for two reasons:
+• Equivalent components on different platforms don’t necessarily act alike. A list
+component on one platform, for example, may work differently than a list com-
+ponent on another. Trying to coordinate and manage the differences between
+components was a formidable task.
+• The L&F of each component was tied to the host operating system and could
+not be changed.
+Figure1-3.Various L&Fs in the Java Swing environment
+Metal
+Look-and-Feel
+Windows
+Look-and-Feel
+Motif
+Look-and-Feel
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+8 | Chapter 1: Introducing Swing
+With lightweight components, each component renders itself using the drawing
+primitives of theGraphicsobject (e.g.,drawLine(), fillRect(), etc.). Lightweight
+components always render themselves onto the surface of the heavyweight top-level
+component they are contained in. With the arrival of JDK 1.1, programmers can
+directly extend the
+java.awt.Componentorjava.awt.Containerclasses when creating
+lightweight components. Unlikejava.awt.Canvasorjava.awt.Panel, these classes do
+not depend on a native peer and allow the developer to render quickly to the graph-
+ics context of the container. This results in faster, less memory-intensive compo-
+nents than were previously available in Java.
+Almost all of the Swing components are lightweight; only a few top-level containers
+are not. This design allows programmers to draw (and redraw) the L&F of their
+application at runtime, instead of tying it to the L&F of the host operating system. In
+addition, the design of the Swing components supports easy modification of compo-
+nent behavior. For example, you can tell almost any Swing component whether you
+wish it to accept or decline focus and how it should handle keyboard input.
+Additional Features
+Several other features distinguish Swing from the older AWT components:
+• Swing has wide variety of new components, such as tables, trees, sliders, spin-
+ners, progress bars, internal frames, and text components.
+• Swing components support the replacement of their insets with an arbitrary
+number of nested borders.
+• Swing components can havetooltipsplaced over them. A tooltip is a textual pop
+up that momentarily appears when the mouse cursor rests inside the compo-
+nent’s painting region. Tooltips can be used to give more information about the
+component in question.
+Figure1-4.The new Mac L&F in OS X
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Features | 9
+• You can arbitrarily bind keyboard events to components, defining how they
+react to various keystrokes under given conditions.
+• There is additional debugging support for rendering your own lightweight Swing
+components.
+We discuss each of these features in greater detail as we move through the next three
+chapters.
+How Can I Use Swing?
+Not everyone uses Swing for the same reasons. In fact, the Swing libraries have many
+levels of use, with varying levels of prerequisite knowledge. Here are some potential
+uses:
+• Use the Swing components as they are to build your own enterprise applications.
+• Create your own Swing components—or extend those that already exist.
+• Override or create a new L&F for one or more of the Swing components.
+The first approach is what the vast majority of Swing programmers use. Here, using
+Swing components is just like using the AWT components. A familiar set of compo-
+nents, containers, and layout managers are all available in the Swing packages to help
+you get your application up and running quickly. If you’re adept at AWT program-
+ming, you probably need only a cursory introduction to each component to get
+started. You will we need to get into broader issues only if you use some of the larger
+andnewercomponentfamilies,suchastablesandtext.Ifyouareplanningtouseeach
+component as a JavaBean for visual programming, you also fall into this category.
+Creating your own component, or extending an existing one, requires a deeper
+understanding of Swing. This includes a firm understanding of Swing architecture,
+events, and lower-level classes. Also, if you decide to subclass a Swing component,
+the responsibilities of that component must be adopted and handled accordingly—
+otherwise, your new component may perform erratically.
+Finally, you may wish to change the L&F of one or more Swing components. This is
+arguably the most complex of the three routes that you can take—it requires a thor-
+ough knowledge of the design, architectural fundamentals, and graphical primitives
+of each lightweight component. In addition, you need to understand how Swing’s
+UIManager andUIDefaults classes work together to “set” each component’s L&F.
+This book strives to help you with each of these issues. Because we anticipate that
+the vast majority of readers are in the first category, we spend a great deal of time
+reviewing each component’s properties and methods, as well as providing source
+code for various scenarios that use these components. We try to document and illus-
+trate the useful parts of the components. The online documentation (called Javadoc)
+has matured along with the rest of Java; the current stuff is always there first.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+10 | Chapter 1: Introducing Swing
+Programming your own L&F can get pretty complex; in fact, the source code for an
+entire L&F would far exceed the size of this book. However, we don’t want to leave
+you in the dark. If you are an experienced Swing programmer already, and you’re
+looking for a concise introduction on how to get started, see Chapter26. This chap-
+ter provides details on working with L&Fs as well as examples of how to code your
+own L&F for both simple and complex Swing components.
+Swing Packages and Classes
+Here is a short description of each package in the Swing libraries:
+javax.accessibility
+Contains classes and interfaces that can be used to allowassistivetechnologiesto
+interact with Swing components. Assistive technologies cover a broad range of
+items, fromaudible textreadersto screen magnification.Although the accessibil-
+ity classes are technically not part of Swing, they are used extensively through-
+out the Swing components. We discuss the accessibility package in greater detail
+in Chapter25.
+javax.swing
+Contains the core Swing components, including most of the model interfaces
+and support classes.
+javax.swing.border
+Contains the definitions for the abstract border class as well as eight predefined
+borders. Borders are not components; instead, they are special graphical ele-
+ments that Swing treats as properties and places around components in place of
+their insets. If you wish to create your own border, you can subclass one of the
+existing borders in this package, or you can code a new one from scratch.
+javax.swing.colorchooser
+Contains support for theJColorChooser component, discussed in Chapter12.
+javax.swing.event
+Defines several new listeners and events that Swing components use to commu-
+nicate asynchronous information between classes. To create your own events,
+you can subclass various events in this package or write your own event class.
+javax.swing.filechooser
+Contains support for theJFileChooser component, discussed in Chapter12.
+javax.swing.plaf
+Defines the unique elements that make up the pluggable L&F for each Swing
+component. Its various subpackages are devoted to rendering the individual
+L&Fs for each component on a platform-by-platform basis. (Concrete imple-
+mentations of the Windows and Motif L&Fs are in subpackages of
+com.sun.
+java.swing.plaf, and the Mac OS L&F is undercom.apple.mrj.swing.)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Swing Packages and Classes | 11
+javax.swing.table
+Provides models and views for the table component, which allows you to
+arrange various information in a grid format with an appearance similar to a
+spreadsheet. Using the lower-level classes, you can manipulate how tables are
+viewed and selected, as well as how they display their information in each cell.
+javax.swing.text
+Provides scores of text-based classes and interfaces supporting a common design
+known asdocument/view. The text classes are among the more advanced Swing
+classes to learn, so we devote several chapters (19–23) to both the design funda-
+mentals and the implementation of text applications.
+javax.swing.text.html
+Used specifically for reading and formatting HTML text through an ancillary
+editor kit.
+javax.swing.text.html.parser
+Contains support for parsing HTML.
+javax.swing.text.rtf
+Used specifically for reading and formatting Rich Text Format (RTF) text
+through an ancillary editor kit.
+javax.swing.tree
+Defines models and views for a hierarchal tree component, which may represent
+a file structure or a series of properties.
+javax.swing.undo
+Contains the necessary functionality for implementing undoable functions.
+By far the most widely used package isjavax.swing. In fact, almost all the Swing
+components, as well as several utility classes, are located inside this package. The
+only exceptions are borders and support classes for the trees, tables, and text-based
+components. Because the latter components are much more extensible and often
+have many more classes to work with, these classes have been divided into separate
+packages.
+Class Hierarchy
+Figure1-5 shows a detailed overview of the Swing class hierarchy as it appears in the
+1.4 SDK. At first glance, the class hierarchy looks very similar to AWT. Each Swing
+component with an AWT equivalent shares the same name, except that the Swing
+class is preceded by a capital J. In most cases, if a Swing component supersedes an
+AWT component, it can be used as a drop-in replacement.
+Upon closer inspection, however, you will discover that there are welcome differ-
+ences between the Swing and AWT components. For example, the menu compo-
+nents, including
+JMenuBar, are now descendants of the same base component as the
+others:JComponent. This is a change from the older AWT menu classes. Both the
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+12 | Chapter 1: Introducing Swing
+AWT 1.0 and 1.1 menu classes inherited their own high-level component,
+MenuComponent, which severely limited their capabilities. In addition, this design pre-
+vented menu bars from being positioned with layout managers inside containers;
+instead, Java simply attached menu bars to the top of frames.
+Also, note that Swing has redesigned the button hierarchy. It now includes a
+JToggleButtonclass, used in dual-state components. For example, if you click on a
+toggle button while in the released position, the button switches to the pressed state
+and remains in that state. When it is clicked again, the button returns to the released
+state. Note that
+JToggleButtonoutlines behavior seen in radio buttons and check-
+boxes. Hence, these classes inherit fromJToggleButtonin the new Swing design. Also
+note the addition of theJRadioButtonandJRadioButtonMenuItemclasses in Swing.
+Until now, Java forced developers to use the AWT checkbox equivalent to mimic
+radio buttons.
+Figure1-5.The Swing component hierarchy
+JApplet JDialog JFrame JWindow
+JComponent
+JComboBox JLabel JList JMenuBar
+JPanel JPopupMenu JScrollBar JScrollPane
+JTable JTree JInternalFrame JOptionPane
+JProgressBar JRootPane JSeparator JSlider
+JSplitPane JTabbedPane JToolBar JToolTip
+JViewPort JColorChooser JSpinner (1.4)
+JFileChooser JLayeredPane JTextArea
+JDesktopPane JTextField
+JCheckBox
+JEditorPane
+JToggleButton
+JRadioButton
+JTextPane
+JButton
+JMenu
+JMenuItem
+JRadioButtonMenuItem
+JCheckButtonMenuItem
+JTextComponent
+AbstractButton
+Top-level componets
+JTableHeader
+JPasswordField
+JFormattedTextField
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Model-View-Controller Architecture | 13
+You might have noticed an increase in the number of frames and panes in Swing. For
+example, consider internal frames. Swing supports placing frames inside other
+frames—this is commonly referred to as a multiple document interface (MDI) in the
+Microsoft Windows world. You can assign these internal frames arbitrary vertical
+layers; these layers determine which internal frame appears on top. In fact, even the
+simplest frame,
+JFrame, embraces the concept of layers by including support for lay-
+ered panes on which you can position different elements of your application. These
+topics are discussed in more detail in Chapters 9 and 11.
+There are many other design enhancements in Swing—too many, in fact, to discuss
+here. However, before we go on, we should discuss one of the fundamental designs
+behind every Swing component: the model-view-controller architecture.
+The Model-View-Controller Architecture
+Swing uses themodel-view-controllerarchitecture(MVC) as the fundamental design
+behind each of its components. Essentially, MVC breaks GUI components into three
+elements. Each of these elements plays a crucial role in how the component behaves.
+Model
+The model encompasses the state data for each component. There are different
+models for different types of components. For example, the model of a scrollbar
+component might contain information about the current position of its adjust-
+able “thumb,” its minimum and maximum values, and the thumb’s width (rela-
+tive to the range of values). A menu, on the other hand, may simply contain a list
+of the menu items the user can select from. This information remains the same
+no matter how the component is painted on the screen; model data is always
+independent of the component’s visual representation.
+View
+The view refers to how you see the component on the screen. For a good exam-
+ple of how views can differ, look at an application window on two different GUI
+platforms. Almost all window frames have a title bar spanning the top of the
+window. However, the title bar may have a close box on the left side (like the
+Mac OS platform), or it may have the close box on the right side (as in the Win-
+dows platform). These are examples of different types of views for the same win-
+dow object.
+Controller
+The controller is the portion of the user interface that dictates how the compo-
+nent interacts with events. Events come in many forms—e.g., a mouse click,
+gaining or losing focus, a keyboard event that triggers a specific menu com-
+mand, or even a directive to repaint part of the screen. The controller decides
+how each component reacts to the event—if it reacts at all.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+14 | Chapter 1: Introducing Swing
+Figure1-6 shows how the model, view, and controller work together to create a
+scrollbar component. The scrollbar uses the information in the model to determine
+how far into the scrollbar to render the thumb and how wide the thumb should be.
+Note that the model specifies this information relative to the minimum and the max-
+imum. It does not give the position or width of the thumb in screen pixels—the view
+calculates that. The view determines exactly where and how to draw the scrollbar,
+given the proportions offered by the model. The view knows whether it is a horizon-
+tal or vertical scrollbar, and it knows exactly how to shadow the end buttons and the
+thumb. Finally, the controller is responsible for handling mouse events on the com-
+ponent. The controller knows, for example, that dragging the thumb is a legitimate
+actionforascrollbar,withinthelimitsdefinedbytheendpoints,andthatpushingon
+theendbuttonsisacceptableaswell.TheresultisafullyfunctionalMVCscrollbar.
+MVC Interaction
+With MVC, each of the three elements—the model, the view, and the controller—
+requires the services of another element to keep itself continually updated. Let’s con-
+tinue discussing the scrollbar component.
+We already know that the view cannot render the scrollbar correctly without obtain-
+ing information from the model first. In this case, the scrollbar does not know where
+to draw its “thumb” unless it can obtain its current position and width relative to the
+minimum and maximum. Likewise, the view determines if the component is the
+recipient of user events, such as mouse clicks. (For example, the view knows the
+exact width of the thumb; it can tell whether a click occurred over the thumb or just
+outside of it.) The view passes these events on to the controller, which decides how
+to handle them. Based on the controller’s decisions, the values in the model may
+need to be altered. If the user drags the scrollbar thumb, the controller reacts by
+incrementing the thumb’s position in the model. At that point, the whole cycle
+Figure1-6.The three elements of a model-view-controller architecture
+Model:
+Minimum=0
+Maximum=100
+Value=15
+Width=5
+View: Controller:
+Accept mouse
+clicks on end
+buttons
+Accept mouse
+drag on thumb
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Model-View-Controller Architecture | 15
+repeats. The three elements, therefore, communicate their data as shown in
+Figure1-7.
+MVC in Swing
+Swing actually uses a simplified variant of the MVC design called themodel-delegate.
+This design combines the view and the controller object into a single element, theUI
+delegate, which draws the component to the screen and handles GUI events. Bun-
+dling graphics capabilities and event handling is somewhat easy in Java, since much
+of the event handling is taken care of in AWT. As you might expect, the communica-
+tion between the model and the UI delegate then becomes a two-way street, as
+shown in Figure1-8.
+So let’s review: each Swing component contains a model and a UI delegate. The
+model is responsible for maintaining information about the component’s state. The
+UI delegate is responsible for maintaining information about how to draw the com-
+ponent on the screen. In addition, the UI delegate (in conjunction with AWT) reacts
+to various events that propagate through the component.
+Figure1-7.Communication through the model-view-controller architecture
+Figure1-8.With Swing, the view and the controller are combined into a UI-delegate object
+Controller
+The model passes
+its data to the view
+for rendering.
+Model View
+The controller
+updates the model
+based on the events
+received.
+The view determines
+which events are passed
+to the controller.
+Controller
+Model
+View
+UI-delegateComponent
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+16 | Chapter 1: Introducing Swing
+Note that the separation of the model and the UI delegate in the MVC design is
+extremely advantageous. One unique aspect of the MVC architecture is the ability to
+tie multiple views to a single model. For example, if you want to display the same
+datainapiechartandinatable,youcanbasetheviewsoftwocomponentsonasin-
+gle data model. That way, if the data needs to be changed, you can do so in only one
+place—the views update themselves accordingly (Chapter16 has an example that
+does exactly this). In the same manner, separating the delegate from the model gives
+the user the added benefit of choosing what a component looks like without affect-
+ing any of its data. By using this approach, in conjunction with the lightweight
+design, Swing can provide each component with its own pluggable L&F.
+By now, you should have a solid understanding of how MVC works. However, we
+won’t yet spoil the fun of using MVC. Chapters 2and 3 go into further detail about
+how you can use MVC to your advantage in even the simplest of applications.
+Working with Swing
+Our introduction to Swing wouldn’t be complete unless we briefly mentioned some
+caveats of the Swing libraries. There are two pertinent areas: multithreading and
+lightweight versus heavyweight components. Being aware of these issues will help
+you make informed decisions while working with Swing. Chapter28 gives you in-
+depth guidance in these difficult areas.
+Multithreading
+Shortly before the initial release of Swing, Sun posted an article recommending that
+developers not use independent threads to change model states in components.
+*
+Instead,once a componenthasbeen paintedtothe screen(or isabout tobepainted),
+updates to its model state should occur only from theevent-dispatchingqueue. The
+event-dispatching queue is a system thread used to communicate events to other
+components. It posts GUI events, including those that repaint components.
+The issue here is an artifact of the MVC architecture and deals with performance and
+potential race conditions. As we mentioned, a Swing component draws itself based
+on the state values in its model. However, if the state values change while the com-
+ponent is in the process of repainting, the component may repaint incorrectly—this
+is unacceptable. To compound matters, placing a lock on the entire model, as well as
+on some of the critical component data, or even cloning the data in question, could
+seriously hamper performance for each refresh. The only feasible solution, therefore,
+is to place state changes in serial with refreshes. This ensures that modifications in
+* Hans Muller and Kathy Walrath, “Threads and Swing,” The Swing Connection,http://java.sun.com/
+products/jfc/tsc/swingdoc-archive/threads.html.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Swing Set Demo | 17
+component state do not occur at the same time Swing is repainting any components
+and prevents race conditions.
+The Z-Order Caveat: Lightweight
+and Heavyweight Components
+One of the most frequent issues to come out of lightweight/heavyweight component
+use is the idea of depth, orz-order—that is, a well-defined method for how elements
+are stacked on the screen. Because of z-order, it is not advisable to mix lightweight
+and heavyweight components in Swing.
+To see why, remember that heavyweight components depend on peer objects used at
+the operating system level. However, with Swing, only the top-level components are
+heavyweight:
+JApplet, JFrame, JDialog, andJWindow. Also, recall that heavyweight
+components are always “opaque”—they have a rectangular shape and are nontrans-
+parent. This is because the host operating system typically allocates the entire paint-
+ing region to the component, clearing it first.
+Theremainingcomponents are lightweight.So hereisthe cruxofthe dilemma:when
+a lightweight component is placed inside a heavyweight container, it shares (and
+actually borrows) the graphics context of the heavyweight component. The light-
+weight component must always draw itself on the same plane as the heavyweight
+component that contains it; as a result, it shares the z-order of the heavyweight com-
+ponent. In addition, lightweight components are bound to the clipping region of the
+top-level window or dialog that contains them. In effect, lightweight components are
+all “drawings” on the canvas of a heavyweight component. The drawings cannot go
+beyond the boundaries of the canvas and can always be covered by another canvas.
+Heavyweight components, however, are free from this restriction. Therefore, they
+always appear on top of the lightweight components—whether that is the intent or
+not.
+Heavyweight components have other ramifications in Swing as well. They do not
+work well in scrollpanes, where they can extend beyond the clipping boundaries;
+they also don’t work in front of lightweight menus and menu bars (unless certain
+precautions are taken) or inside internal frames. Some Swing classes, however, offer
+an interesting approach to this problem. These classes allow you to specify whether
+the component draws itself using a lightweight or a heavyweight window. Hence,
+with a bit of judicious programming, you can keep your components correctly ren-
+dered—no matter where they are located.
+The Swing Set Demo
+If you’re in a hurry to see all the components Swing has to offer, be sure to check out
+the Swing Set demonstration. The demonstration is extremely easy to set up. If you
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+18 | Chapter 1: Introducing Swing
+have the 1.3 or 1.4 SDK, the demonstration is included. If you have 1.2, you must
+first download and extract the demo classes and add them to your classpath. Then
+follow these steps:
+1. Change the directory to thedemo/jfc/SwingSet2directory. (For the 1.2release,
+the directory isdemo/jfc/SwingSet.)
+2. Run the SwingSet2 (or SwingSet for 1.2) jar file:
+% java -jar SwingSet2.jar
+You should immediately see a splash screen indicating that the Swing Set demo is
+loading. When it finishes, a window appears, similar to the one in Figure1-9.
+This demo contains a series of tabs that demonstrate almost all of the components in
+the Swing libraries. Be sure to check out the internal frames demo and the Metal
+L&F. In addition, some of the Swing creators have added “Easter eggs” throughout
+the Swing Set demo. See if you can find some!
+Reading This Book
+We’re well aware that most readers don’t read the Preface. You have our permission
+to skip it, provided that you look at the Conventions section. That section is particu-
+larly important because in this book we experiment with a few new techniques for
+explaining the Swing classes. As we said earlier, everything in Swing is a JavaBean.
+Figure1-9.The Swing Set demo
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Reading This Book | 19
+This means that much of an object’s behavior is controlled by a set of properties,
+which are manipulated by accessor methods. For example, the propertycoloris
+accessed by thegetColor()(to find out the color) andsetColor()(to change the
+color) methods. If a property has a boolean value, the get method is often replaced
+by an is method; for example, the
+visibleproperty would have theisVisible()and
+setVisible() methods.
+We found the idea of properties very powerful in helping us understand Swing.
+Therefore, rather than listing all of a class’s accessor methods, we decided to present
+a table for each class, listing the class’s properties and showing the property’s data
+type, which accessor methods are present, whether the property is “bound” (i.e.,
+changing the property generates a
+PropertyChangeEvent), when it was introduced (1.2
+is the default; 1.3 and 1.4 are marked where appropriate), and the property’s default
+value. This approach certainly saves paper (you didn’t really want a 2,000-page
+book, did you?) and should make it easier to understand what a component does
+and how it is structured. Furthermore, if you’re not already in the habit of thinking
+in terms of the JavaBeans architecture, you should get in the habit. It’s a very power-
+ful tool for understanding component design.
+The conventions we use in the property tables—plus some other conventions that
+we use in class diagrams—are explained in the Preface. So you may ignore the rest of
+the Preface as long as you familiarize yourself with the conventions we’re using.
+The next chapter helps AWT developers get a jump on Swing by presenting a simple
+application; those without AWT experience may just want to skim the chapter. In
+Chapter3, we continue our discussion by presenting some of the fundamental
+classes of Swing and discribing how you can use the features inherent in each of
+these classes to shorten your overall development time. Don’t stop now—the best is
+yet to come!
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+20
+Chapter2In this chapter:
+• Upgrading Your AWT Programs
+• A Simple AWT Application
+• Including Y our First Swing
+Component
+• Beyond Buttons
+• What Is an Internal Frame?
+• A Bigger Application
+CHAPTER 2
+Jump-Starting a Swing
+Application
+Now that you have an overview of Swing, let’s look at a few Swing components you
+can put into your applications right now. This chapter shows you how to add images
+to buttons and how to create a rudimentary Swing application using internal frames.
+We won’t belabor the theory and background. You’ll find everything we talk about
+now (and tons more we don’t discuss here) presented in later chapters in much
+greater detail. We just want to show you some of the fun stuff right away.
+This chapter, and only this chapter, assumes that you have prior experience with
+AWT and AWT-based programs that you’d like to upgrade to use lightweight Swing
+components. If you are new to Java, this may not be the case; you are probably inter-
+ested in learning Swing without the need to upgrade AWT applications. You can
+either skim this chapter or skip ahead to Chapter 3, which lays a foundation for the
+rest of your work in Swing.
+If you want to see how easily Swing components can be dropped into existing AWT
+applications, though, read on.
+Upgrading Your AWT Programs
+One of the benefits of object-oriented languages is that you can upgrade pieces of a
+program without rewriting the rest. While practice is never as simple as theory, with
+Swing it’s close. You can use most of the Swing components as drop-in replace-
+ments for AWT components with ease. The components sport many fancy new fea-
+tures worth exploiting, but they still maintain the functionality of the AWT
+components you’re familiar with. As a general rule, you can stick a “J” in front of
+your favorite AWT component and put the new class to work as a Swing compo-
+nent. Constructors for components such as
+JButton, JTextField, andJListcan be
+used with the same arguments and generate the same events asButton, TextField,
+andList. Some Swing containers, likeJFrame, take a bit of extra work, but not much.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+A Simple AWT Application | 21
+Graphical buttons are essential to modern user interfaces. Nice monitors and cheap
+hardware have made icons almost a necessity. The AWT package in Java does not
+directly support image buttons. You could write an extension to support them easily
+enough, but why bother when Swing’s
+JButtonclass provides a standard way to add
+image buttons?
+A Simple AWT Application
+You probably have some programs lying around that use regular AWT buttons that
+you’d love to replace with image buttons, but you don’t have the time or, honestly,
+the necessity to produce your own image button class. Let’s look at a simple applica-
+tion that demonstrates an upgrade path you can use on your own programs.
+First, let’s look at the code for this very simple application:
+// ToolbarFrame1.java
+// A simple frame containing a "toolbar" made up of several java.awt.Button
+// objects. We'll be converting the Buttons to JButtons in the ToolbarFrame2.java
+// file.
+//
+import java.awt.*;
+import java.awt.event.*;
+public class ToolbarFrame1 extends Frame {
+  Button cutButton, copyButton, pasteButton;
+  public ToolbarFrame1() {
+    super("Toolbar Example (AWT)");
+    setSize(450, 250);
+    addWindowListener(new WindowAdapter() {
+      public void windowClosing(WindowEvent e) {
+        System.exit(0);
+      }
+    });
+    ActionListener printListener = new ActionListener() {
+      public void actionPerformed(ActionEvent ae) {
+        System.out.println(ae.getActionCommand());
+      }
+    };
+    Panel toolbar = new Panel();
+    toolbar.setLayout(new FlowLayout(FlowLayout.LEFT));
+    cutButton = new Button("Cut");
+    cutButton.addActionListener(printListener);
+    toolbar.add(cutButton);
+    copyButton = new Button("Copy");
+    copyButton.addActionListener(printListener);
+    toolbar.add(copyButton);

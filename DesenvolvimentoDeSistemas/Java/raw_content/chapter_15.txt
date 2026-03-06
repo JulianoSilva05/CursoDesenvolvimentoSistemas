@@ -1,0 +1,1706 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+470 | Chapter 14: Menus and Toolbars
+selectedObjectspropertycontainsanObjectarrayofsizeone,consistingofthetextof
+the menu item if it is currently in the checked state. If it is not,getSelectedObjects()
+returnsnull. ThegetSelectedObjects()method exists for compatibility with AWT’s
+ItemSelectable interface.
+Constructors
+public JCheckBoxMenuItem()
+public JCheckBoxMenuItem(Actionaction)
+public JCheckBoxMenuItem(Iconicon)
+public JCheckBoxMenuItem(Stringtext)
+public JCheckBoxMenuItem(Stringtext, Iconicon)
+public JCheckBoxMenuItem(Stringtext, booleanchecked)
+public JCheckBoxMenuItem(Stringtext, Iconicon, booleanchecked)
+These constructors initialize the
+JCheckBoxMenuItemwith a specified action (since
+Version 1.3), icon, or string. The additionalbooleanvalue initializes thestate
+property, specifying whether the menu item is initially checked.
+Figure14-14.JCheckBoxMenuItem class diagram
+Table14-9.JCheckBoxMenuItem properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JCheckBoxMenuItem.
+AccessibleJCheckBoxMenuItem()
+selectedObjectso Object[] •
+state boolean •• false
+UIb CheckBoxMenuItemUI•• From L&F
+UIClassIDo String • "CheckBoxMenuItem"
+bbound, ooverridden
+See also properties from theJMenuItem class (Table 14-4).
+javax.swing
+uses 1
+SwingConstants
+JMenuItem JToggleButton.
+ToggleButtonModelJCheckBoxMenuItem
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+AA
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 471
+Miscellaneous
+public void updateUI()
+Force the current UI manager to reset and repaint the delegate for the compo-
+nent, thus updating the component’s L&F.
+Using Checkbox Menu Items
+Here’s a program using theJCheckBoxMenuItemclass. It is similar to theJMenuexam-
+ple, except that each menu item now has a checkmark next to it. We’ve done noth-
+ing to make the items mutually exclusive; that comes next. We have, however,
+reworked the code to use more-portable keyboard accelerators rather than mnemon-
+ics. Note that we used M (middle) as the accelerator for the Center option because C
+is generally reserved for Copy. Figure14-15 shows the result.
+// CheckBoxMenuItemExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class CheckBoxMenuItemExample extends JPanel {
+    public JTextPane pane;
+    public JMenuBar menuBar;
+    public JToolBar toolBar;
+    public CheckBoxMenuItemExample() {
+        menuBar = new JMenuBar();
+        JMenu justifyMenu = new JMenu("Justify");
+        ActionListener actionPrinter = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try { pane.getStyledDocument().insertString(0 ,
+                      "Action ["+e.getActionCommand()+"] performed!\n", null);
+                } catch (Exception ex) { ex.printStackTrace(); }
+            }
+        };
+        JCheckBoxMenuItem leftJustify = new
+               JCheckBoxMenuItem("Left", new ImageIcon("left.gif"));
+        leftJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        leftJustify.setAccelerator(KeyStroke.getKeyStroke('L',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        leftJustify.addActionListener(actionPrinter);
+        JCheckBoxMenuItem rightJustify = new
+               JCheckBoxMenuItem("Right", new ImageIcon("right.gif"));
+        rightJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        rightJustify.setAccelerator(KeyStroke.getKeyStroke('R',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        rightJustify.addActionListener(actionPrinter);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+472 | Chapter 14: Menus and Toolbars
+        JCheckBoxMenuItem centerJustify = new
+               JCheckBoxMenuItem("Center", new ImageIcon("center.gif"));
+        centerJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        centerJustify.setAccelerator(KeyStroke.getKeyStroke('M',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        centerJustify.addActionListener(actionPrinter);
+        JCheckBoxMenuItem fullJustify = new
+               JCheckBoxMenuItem("Full", new ImageIcon("full.gif"));
+        fullJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        fullJustify.setAccelerator(KeyStroke.getKeyStroke('F',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fullJustify.addActionListener(actionPrinter);
+        justifyMenu.add(leftJustify);
+        justifyMenu.add(rightJustify);
+        justifyMenu.add(centerJustify);
+        justifyMenu.add(fullJustify);
+        menuBar.add(justifyMenu);
+        menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
+    }
+    public static void main(String s[]) {
+        CheckBoxMenuItemExample example = new CheckBoxMenuItemExample();
+        example.pane = new JTextPane();
+        example.pane.setPreferredSize(new Dimension(250, 250));
+        example.pane.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        JFrame frame = new JFrame("Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(example.menuBar);
+        frame.getContentPane().add(example.pane, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+The JRadioButtonMenuItem Class
+Swing implements radio button menu items with theJRadioButtonMenuItemclass. As
+you might expect, it shares the characteristics of theJRadioButtonclass and is
+intendedtorepresentagroupofmutuallyexclusivechoices.SomeL&Fsindicatethis
+exclusivity visually by showing circular “buttons” to the left of the selectable choices.
+Even though L&Fs visually distinguish between checkbox and radio
+button items, the distinction can be subtle and unfamiliar to users, so
+it’s a good idea to use separators (see “The JSeparator Class” later in
+this chapter) as well as other visual cues that suggest the logical group-
+ing of mutually exclusive items within the menu.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 473
+Although you might expect otherwise, radio button menu items don’t enforce
+mutual exclusion by themselves. Instead, you need to use aButtonGroupobject to
+limit the user to a single selection. Figure14-16 shows the class diagram for the
+JRadioButtonMenuItem component.
+Properties
+Table14-10 shows the properties of theJRadioButtonMenuItemclass. Unlike
+JCheckBoxMenuItem, there is nostateproperty that indicates the current selection
+state of the menu item. Instead, you typically use this class in conjunction with a
+ButtonGroup, which contains agetSelected()method for extracting the correct
+object.
+Figure14-15.A series of checkbox menu items
+Figure14-16.Radio button menu item class diagram
+javax.swing
+uses 1
+JMenuItem JRadioButtonMenuItem JToggleButton.
+ToggleButtonModel
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+AA
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+474 | Chapter 14: Menus and Toolbars
+Constructor
+public JRadioButtonMenuItem()
+public JRadioButtonMenuItem(Actionaction)
+public JRadioButtonMenuItem(Iconicon)
+public JRadioButtonMenuItem(Stringtext)
+public JRadioButtonMenuItem(Stringtext, Iconicon)
+Initialize the
+JRadioButtonMenuItemwith the specified action (since Version 1.3),
+icon, or string.
+Miscellaneous
+public void updateUI()
+Force the current UI manager to reset and repaint the delegate for the compo-
+nent, thus updating the component’s L&F.
+Enforcing Mutual Exclusion
+The following program shows how to implement the mutually exclusive nature of
+radio button menu items:
+//  RadioButtonMenuItemExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class RadioButtonMenuItemExample extends JPanel {
+    public JTextPane pane;
+    public JMenuBar menuBar;
+    public JToolBar toolBar;
+    public RadioButtonMenuItemExample() {
+        menuBar = new JMenuBar();
+        JMenu justifyMenu = new JMenu("Justify");
+Table14-10.JRadioButtonMenuItem properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JRadioButtonMenuItem.
+AccessibleJRadioButtonMenu-
+Item()
+UI
+b RadioButtonMenuItemUI•• From L&F
+UIClassIDo String • "RadioButtonMenuItem"
+bbound, ooverridden
+See also properties from theJMenuItem class (Table 14-4).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 475
+        ActionListener actionPrinter = new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try { pane.getStyledDocument().insertString(0 ,
+                      "Action ["+e.getActionCommand()+"] performed!\n", null);
+                } catch (Exception ex) { ex.printStackTrace(); }
+            }
+        };
+        JRadioButtonMenuItem leftJustify = new
+               JRadioButtonMenuItem("Left", new ImageIcon("left.gif"));
+        leftJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        leftJustify.setAccelerator(KeyStroke.getKeyStroke('L',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        leftJustify.addActionListener(actionPrinter);
+        JRadioButtonMenuItem rightJustify = new
+               JRadioButtonMenuItem("Right", new ImageIcon("right.gif"));
+        rightJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        rightJustify.setAccelerator(KeyStroke.getKeyStroke('R',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        rightJustify.addActionListener(actionPrinter);
+        JRadioButtonMenuItem centerJustify = new
+               JRadioButtonMenuItem("Center", new ImageIcon("center.gif"));
+        centerJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        centerJustify.setAccelerator(KeyStroke.getKeyStroke('M',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        centerJustify.addActionListener(actionPrinter);
+        JRadioButtonMenuItem fullJustify = new
+               JRadioButtonMenuItem("Full", new ImageIcon("full.gif"));
+        fullJustify.setHorizontalTextPosition(JMenuItem.RIGHT);
+        fullJustify.setAccelerator(KeyStroke.getKeyStroke('F',
+                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fullJustify.addActionListener(actionPrinter);
+        ButtonGroup group = new ButtonGroup();
+        group.add(leftJustify);
+        group.add(rightJustify);
+        group.add(centerJustify);
+        group.add(fullJustify);
+        justifyMenu.add(leftJustify);
+        justifyMenu.add(rightJustify);
+        justifyMenu.add(centerJustify);
+        justifyMenu.add(fullJustify);
+        menuBar.add(justifyMenu);
+        menuBar.setBorder(new BevelBorder(BevelBorder.RAISED));
+    }
+    public static void main(String s[]) {
+        RadioButtonMenuItemExample example = new
+                                        RadioButtonMenuItemExample();
+        example.pane = new JTextPane();
+        example.pane.setPreferredSize(new Dimension(250, 250));
+        example.pane.setBorder(new BevelBorder(BevelBorder.LOWERED));
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+476 | Chapter 14: Menus and Toolbars
+        JFrame frame = new JFrame("Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(example.menuBar);
+        frame.getContentPane().add(example.pane, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+Figure14-17 shows the result. We use aButtonGroupobject to make our
+JRadioButtonMenuItems mutually exclusive. Selecting any of the menu items deselects
+the others. Since text justification is mutually exclusive, this example shows how you
+would implement a real justification menu.
+The JSeparator Class
+You may have noticed that bothJMenuandJPopupMenucontainaddSeparator()meth-
+ods to add separators to menus. In doing so, each class instantiates aJSeparator
+object and positions it in the menu. However,JSeparatorexists as a component unto
+itself outside of menus, and, because it extendsJComponent, it can be positioned
+inside a container like any other Swing component.JSeparatoris a simple compo-
+nent thatprovidesseparation between logicalgroups ofmenuitems. In someL&Fsit
+shows up as a horizontal line drawn across its entire width; in others, it is invisible
+and just adds a little extra space between elements. It has no model, only a delegate.
+Properties
+Table14-11 shows the properties ofJSeparator.
+Figure14-17.An example of radio button menu items
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 477
+Constructor
+JSeparator()
+JSeparator(int orientation)
+Createaseparator.Bydefault,thisseparatorishorizontal;ifyouspecifyanorienta-
+tion, it should be either
+SwingConstants.HORIZONTAL orSwingConstants.VERTICAL.
+Miscellaneous
+public void updateUI()
+Force the current UI manager to reset and repaint the delegate for the compo-
+nent, thus updating the component’s L&F.
+Using a Separator Outside of a Menu
+We’vealreadyseenhowaseparatorcanbeusedinmenustohighlightthegroupingof
+menuitems.However,separatorsare componentsinthemselvesandcanbeusedfora
+variety of tasks. Here is a program that adds a separator between a series of buttons:
+// SeparatorExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+public class SeparatorExample extends JPanel {
+    public SeparatorExample() {
+        super(true);
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
+        Box box1 = new Box(BoxLayout.X_AXIS);
+        Box box2 = new Box(BoxLayout.X_AXIS);
+        Box box3 = new Box(BoxLayout.X_AXIS);
+        box1.add(new JButton("Press Me"));
+        box1.add(new JButton("No Me!"));
+Table14-11.JSeparator properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JSeparator.accessibleJSeparator()
+orientation int •• SwingConstants.HORIZONTAL
+UIb SeparatorUI •• From L&F
+UIClassIDo String • "SeparatorUI"
+bbound, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+478 | Chapter 14: Menus and Toolbars
+        box1.add(new JButton("Ignore Them!"));
+        box2.add(new JSeparator());
+        box3.add(new JButton("I'm the Button!"));
+        box3.add(new JButton("It's me!"));
+        box3.add(new JButton("Go Away!"));
+        add(box1);
+        add(box2);
+        add(box3);
+    }
+    public static void main(String s[]) {
+        SeparatorExample example = new SeparatorExample();
+        JFrame frame = new JFrame("Separator Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(example);
+        frame.pack();
+        frame.setVisible(true);
+    }
+}
+This code yields the interface shown in Figure14-18. Note that on platforms where
+separators are invisible, they are difficult or impossible to notice when used in this
+unorthodox way. (Even in this example, in which the separator has a visual represen-
+tation, it’s pretty hard to see!)
+The MenuElement Interface
+As we saw in the previous examples, one nice feature of Swing menus is that we are
+not constrained to using text for menu items. However, the possibilities don’t have
+to stop with icons, either. In fact, with a little work you can create or extend any Java
+component to serve as a menu item. There is one catch: your new menu item must
+implement the
+MenuElementinterface. Swing declares five methods in theMenuElement
+interface; these methods are called by Swing’s internalMenuSelectionManagerwhen
+various actions take place.
+Whyisthisnecessary?Let’slookatthetraditionalmenuitem,suchasthePasteitemin
+the Edit menu. When the user raises the Edit menu, and the mouse passes over the
+Paste menu item, the menu item typically highlights itself, usually by changing color.
+This tells the user that releasing (or clicking, depending on the L&F) the mouse button
+Figure14-18.A standalone separator between two groups of buttons
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 479
+chooses the Paste option. When the mouse leaves the menu item, it returns to its nor-
+mal color. However, what if we wanted to make the text bold instead of highlighting
+it? What if we wanted to substitute another icon image in the menu item when the
+mouse passed over it? By calling the methods of this interface, menus allow menu
+items to define their own unique behavior.
+Methods
+public void processMouseEvent(MouseEvent event,MenuElementpath[],
+MenuSelectionManagermanager)
+This method handles events triggered by the mouse. In addition to the
+MouseEvent, the current path of selected menu elements is provided, as well as a
+reference to the current menu selection manager. You can take whatever action
+you feel is necessary with this method.
+public void processKeyEvent(KeyEventevent, MenuElementpath[],
+MenuSelectionManagermanager)
+This method handles events triggered by keystrokes. In addition to the
+KeyEvent,
+the current path of selected menu elements is provided as well as a reference to
+the current menu selection manager. You can take whatever action you feel is
+necessary in this method.
+public void menuSelectionChanged(booleanisIncluded)
+Called when the menu element is added or removed from the current target
+menu.
+public MenuElement[] getSubElements()
+Return an array of subelements for the target
+MenuElement. This is needed in the
+event that a particular menu element has a submenu.
+public Component getComponent()
+Return a reference to the component responsible for painting the menu item.
+Making Arbitrary Components into Menu Elements
+It is relatively easy to convert any Swing component into a menu element and drop it
+in a menu. Here is a program that places a
+JSliderinside a pop-up menu and uses it
+as a hidden control for an underlying component.
+//  MenuElementExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+public class MenuElementExample extends JPanel {
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+480 | Chapter 14: Menus and Toolbars
+    public JPopupMenu popup;
+    SliderMenuItem slider;
+    int theValue = 0;
+    public MenuElementExample() {
+        popup = new JPopupMenu();
+        slider = new SliderMenuItem();
+        popup.add(slider);
+        popup.add(new JSeparator());
+        JMenuItem ticks = new JCheckBoxMenuItem("Slider Tick Marks");
+        ticks.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                slider.setPaintTicks(!slider.getPaintTicks());
+            }
+        });
+        JMenuItem labels = new JCheckBoxMenuItem("Slider Labels");
+        labels.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent event) {
+                slider.setPaintLabels(!slider.getPaintLabels());
+            }
+        });
+        popup.add(ticks);
+        popup.add(labels);
+        popup.addPopupMenuListener(new PopupPrintListener());
+        addMouseListener(new MousePopupListener());
+    }
+    // Inner class to check whether mouse events are the pop-up trigger
+    class MousePopupListener extends MouseAdapter {
+        public void mousePressed(MouseEvent e) { checkPopup(e); }
+        public void mouseClicked(MouseEvent e) { checkPopup(e); }
+        public void mouseReleased(MouseEvent e) { checkPopup(e); }
+        private void checkPopup(MouseEvent e) {
+            if (e.isPopupTrigger()) {
+                popup.show(MenuElementExample.this, e.getX(), e.getY());
+            }
+        }
+    }
+    // Inner class to print information in response to pop-up events
+    class PopupPrintListener implements PopupMenuListener {
+        public void popupMenuWillBecomeVisible(PopupMenuEvent e) { }
+        public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+            theValue = slider.getValue();
+            System.out.println("The value is now " + theValue);
+        }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Selectable Menu Items | 481
+        public void popupMenuCanceled(PopupMenuEvent e) {
+            System.out.println("Popup menu is hidden!");
+        }
+    }
+    public static void main(String s[]) {
+        JFrame frame = new JFrame("Menu Element Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setContentPane(new MenuElementExample());
+        frame.setSize(300, 300);
+        frame.setVisible(true);
+    }
+    // Inner class that defines our special slider menu item
+    class SliderMenuItem extends JSlider implements MenuElement {
+        public SliderMenuItem() {
+            setBorder(new CompoundBorder(new TitledBorder("Control"),
+                                  new EmptyBorder(10, 10, 10, 10)));
+            setMajorTickSpacing(20);
+            setMinorTickSpacing(10);
+        }
+        public void processMouseEvent(MouseEvent e, MenuElement path[],
+                                      MenuSelectionManager manager) {}
+        public void processKeyEvent(KeyEvent e, MenuElement path[],
+                                    MenuSelectionManager manager) {}
+        public void menuSelectionChanged(boolean isIncluded) {}
+        public MenuElement[] getSubElements() {return new MenuElement[0];}
+        public Component getComponent() {return this;}
+    }
+}
+Aswithourpreviouspop-upexample,PopupMenuExample,weimplementMouseListener
+and check incoming mouse events to see whether to show the pop up. The inner class
+SliderMenuItemimplements theMenuElementinterface, and is the focus of our example.
+In this case, it’s fairly easy. Our menu slider never has subelements, doesn’t have a
+concept of a selection, and doesn’t need to do anything special with mouse or key
+events.
+The interface resulting from our example is shown in Figure14-19. We provide a
+JSliderobject, a separator, and twoJCheckBoxMenuItemobjects, which control the
+state of the slider. The slider is also surrounded by a titled border. When the user
+adjusts the slider and dismisses the pop up, we print the current value of the slider to
+the standard output. With a little bit of imagination, you can do just about anything
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+482 | Chapter 14: Menus and Toolbars
+with a pop-up menu. Of course, if it’s something unexpected, you should carefully
+consider whether it is likely to confuse or confound your users.
+Toolbars
+Toolbars are another approach to providing access to commonly used application
+features. They are more likely than menus to use graphical representations of com-
+mands. Because they remain on-screen at all times (unlike menus, which drop down
+only when activated) they can provide a useful “dashboard” for indicating the cur-
+rent state of the application. On the other hand, they take up more room than menu
+bars, so it’s good to let the user decide whether they should be visible at all.
+Toolbars have the ability to “tear” themselves from their location within a frame and
+embed their components in a moveable standalone window. This gives the user the
+freedom to drag the toolbar anywhere on the screen. In addition, toolbars can
+“dock” in locations where the layout manager can support them.
+The JToolBar Class
+Like the menu bar, theJToolBarclass is a container for various components. You can
+add any component to the toolbar, including buttons, combo boxes, and even addi-
+tional menus. Like menus, the toolbar is easiest to work with when paired with
+Action objects.
+When a component is added to the toolbar, it is assigned an integer index that deter-
+mines its display order from left to right. While there is no restriction on the type of
+component that can be added, the toolbar generally looks best if it uses components
+that are the same vertical height. Note that toolbars have a default border installed
+by the L&F. If you don’t like the default, you can override the border with one of
+Figure14-19.A JSlider masquerading as a pop-up menu element in two L&Fs
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Toolbars | 483
+your own using thesetBorder()method. Alternatively, you can deactivate the draw-
+ing of the border by setting theborderPainted property tofalse.
+JToolBarhas its own separator that inserts a blank space on the toolbar; you can use
+theaddSeparator()method toaccess this separator.Separators are usefulif you want
+to add space between groups of related toolbar components. The separator for tool-
+bars is actually an inner class. Be sure not to confuse this separator with the
+JSeparator class.
+Figure14-20 shows the class diagram for theJToolBar component.
+Floating toolbars
+Although toolbars can be easily positioned in Swing containers, they do not have to
+stay there. Instead, you can “float” the toolbar by holding the mouse button down
+while the cursor is over an empty section of the toolbar (that is, not over any of its
+components) and dragging. This places the toolbar in a moveable child window; you
+can position it anywhere in the viewing area. Toolbars can then reattach themselves
+to specific locations, orhotspots, within the frame. Letting go of the toolbar while
+dragging it over a hotspot anchors the toolbar back into the container. Figure14-21
+is an example of a floating toolbar.
+Figure14-20.JToolBar class diagram
+Figure14-21.A floating toolbar
+javax.swing
+containsJComponent JToolBar Component0..*
+java.awt
+SwingConstants
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+484 | Chapter 14: Menus and Toolbars
+It is best to place a toolbar in a container that supports theBorderLayout.I fy o u
+intend to make the toolbar floatable, place it along either the north, south, east, or
+west side of the container, and leave the remaining sides open. This allows the tool-
+bar to define anchor spots when it is being dragged and ensures that the resulting
+layout is not ambiguous.
+If you want to disable floating, you can reset the
+floatable property tofalse:
+JToolBar toolBar = new JToolBar();
+toolBar.setFloatable(false);
+Properties
+The properties of theJToolBarclass are shown in Table14-12. TheborderPainted
+property defines whether the toolbar should paint its border. TheJToolBarconstruc-
+tor resets the layout manager of the component to aBoxLayoutalong the x axis (this
+becomes a y-axisBoxLayoutif the orientation isVERTICAL), which it uses to place any
+child components. Themarginproperty defines the insets that appear between the
+toolbar’s edges and its components. Thefloatableproperty defines whether the
+toolbar can be separated from the container and “floated” in a standalone window.
+You can use the indexedcomponentAtIndexproperty to access any of the components
+on the toolbar. Theorientationproperty determines whether the toolbar is horizon-
+tal or vertical. Its value must be eitherHORIZONTAL orVERTICAL (constants defined in
+SwingConstants). Attempting to setorientationto some other value throws an
+IllegalArgumentException. Finally, starting with SDK 1.4,rollovercan be set to
+cause the toolbar’s button borders to be drawn only when the mouse is hovering
+over them, a style of interface popularized by dynamic web sites. Not all L&Fs honor
+a
+true value forrollover.
+Table14-12.JToolBar properties
+Property Data type
+get
+is
+set Default value
+accessibleContext AccessibleContext• JToolBar.AccessibleJToolBar()
+borderPaintedb boolean •• true
+componentAtIndexi Component •
+floatableb boolean •• true
+layouto LayoutManager•• BoxLayout(X_AXIS)
+marginb Insets •• Insets(0,0,0,0)
+orientationb int •• SwingConstants.HORIZONTAL
+rollover1.4, b boolean •• false
+UIb ToolBarUI •• From L&F
+UIClassIDo String • "ToolBarUI"
+1.4since 1.4, bbound, iindexed, ooverridden
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Toolbars | 485
+Event
+JToolbargenerates aPropertyChangeEventwhen any of its bound properties are
+changed.
+Constructor
+public JToolBar()
+public JToolBar(int orientation)
+public JToolBar(String name)
+public JToolBar(String name, int orientation)
+Create a
+JToolBar, optionally supplying a name that appears as a title when the
+toolbar is floating (the ability to assign a name started with SDK 1.3). The orien-
+tation is horizontal by default; if you specify an orientation, it must be
+SwingConstants.HORIZONTAL orSwingConstants.VERTICAL.
+Adding actions
+public JButton add(Action a)
+Add anActionto the toolbar. The method creates a simpleJButtonwith the text
+of the action placed below its image.*It then returns theJButton, allowing you to
+reset any of the button’s attributes. (As you’d expect, the method for adding a
+component to a toolbar is inherited from
+Container.)
+Miscellaneous
+public void updateUI()
+Force the currentUIManagerto repaint the UI delegate for the component, updat-
+ing the component’s L&F.
+public int getComponentIndex(Component c)
+Return the integer index of the componentc,o r-1 if it’s not found. Note that
+any separators in the toolbar take up index positions.
+public void addSeparator()
+public void addSeparator(Dimension size)
+Add a separator to the toolbar. Be sure not to confuse the toolbar separator with
+JSeparator, which is a separate Swing component. The toolbar separator cre-
+ated by this method is simply a blank area of space used to provide spacing
+between groups of toolbar components. The size is normally up to the toolbar,
+though you can specify the separator’s size explicitly if you wish.
+* InSDK1.3,Sundiscouragedtheuseofthismethodwithoutactuallydeprecatingit.Peoplehavepointedout
+thatthereisnoadequatereplacement,andthishasbeenacknowledged.Souseit,butkeepyoureyeoutfor
+news.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+486 | Chapter 14: Menus and Toolbars
+Creating a Toolbar
+The following example adds a toolbar to theJMenuexample and provides a glimpse
+of the true power of usingAction objects for building a user interface.
+To add some interesting complexity, we also allow the user to choose a font from a
+combo box, showing that you can use other kinds of components in a toolbar. Note
+that we add the combo box and a
+JLabelfor it as separate components and that the
+combo box uses its ownactionPerformed() method.
+//  ToolBarExample.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
+import javax.swing.border.*;
+import javax.swing.event.*;
+public class ToolBarExample extends JPanel {
+    public JTextPane pane;
+    public JMenuBar menuBar;
+    public JToolBar toolBar;
+    String fonts[] = {"Serif","SansSerif","Monospaced","Dialog","DialogInput"};
+    public ToolBarExample() {
+        menuBar = new JMenuBar();
+        // Create a set of actions to use in both the menu and toolbar.
+        DemoAction leftJustifyAction = new DemoAction("Left",
+            new ImageIcon("left.gif"), "Left justify text", 'L');
+        DemoAction rightJustifyAction = new DemoAction("Right",
+            new ImageIcon("right.gif"), "Right justify text", 'R');
+        DemoAction centerJustifyAction = new DemoAction("Center",
+            new ImageIcon("center.gif"), "Center justify text", 'M');
+        DemoAction fullJustifyAction = new DemoAction("Full",
+            new ImageIcon("full.gif"), "Full justify text", 'F');
+       JMenu formatMenu = new JMenu("Justify");
+       formatMenu.add(leftJustifyAction);
+       formatMenu.add(rightJustifyAction);
+       formatMenu.add(centerJustifyAction);
+       formatMenu.add(fullJustifyAction);
+       menuBar.add(formatMenu);
+       toolBar = new JToolBar("Formatting");
+       toolBar.add(leftJustifyAction);
+       toolBar.add(rightJustifyAction);
+       toolBar.add(centerJustifyAction);
+       toolBar.add(fullJustifyAction);
+       toolBar.addSeparator();
+       JLabel label = new JLabel("Font");
+       toolBar.add(label);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Toolbars | 487
+       toolBar.addSeparator();
+       JComboBox combo = new JComboBox(fonts);
+       combo.addActionListener(new ActionListener() {
+           public void actionPerformed(ActionEvent e) {
+               try { pane.getStyledDocument().insertString(0,
+                   "Font [" + ((JComboBox)e.getSource()).getSelectedItem() +
+                   "] chosen!\n", null);
+               } catch (Exception ex) { ex.printStackTrace(); }
+           }
+       });
+       toolBar.add(combo);
+       // Disable one of the Actions.
+       fullJustifyAction.setEnabled(false);
+    }
+    public static void main(String s[]) {
+        ToolBarExample example = new ToolBarExample();
+        example.pane = new JTextPane();
+        example.pane.setPreferredSize(new Dimension(250, 250));
+        example.pane.setBorder(new BevelBorder(BevelBorder.LOWERED));
+        example.toolBar.setMaximumSize(example.toolBar.getSize());
+        JFrame frame = new JFrame("Menu Example");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setJMenuBar(example.menuBar);
+        frame.getContentPane().add(example.toolBar, BorderLayout.NORTH);
+        frame.getContentPane().add(example.pane, BorderLayout.CENTER);
+        frame.pack();
+        frame.setVisible(true);
+    }
+    class DemoAction extends AbstractAction {
+        public DemoAction(String text, Icon icon, String description,
+                          char accelerator) {
+            super(text, icon);
+            putValue(ACCELERATOR_KEY, KeyStroke.getKeyStroke(accelerator,
+                     Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+            putValue(SHORT_DESCRIPTION, description);
+        }
+        public void actionPerformed(ActionEvent e) {
+            try { pane.getStyledDocument().insertString(0,
+                  "Action [" + getValue(NAME) + "] performed!\n", null);
+            } catch (Exception ex) { ex.printStackTrace(); }
+        }
+    }
+}
+Note the efficiency we’ve achieved: by creating a single set ofActions to represent
+our justification modes, we can create a corresponding menu entry or toolbar button
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+488 | Chapter 14: Menus and Toolbars
+in a single line of code. Each has the appropriate label and/or icon, accelerator key
+(for menus), and tooltip. Try holding your mouse over the buttons to see the tooltip.
+Also notice that by disabling the Full justify action we automatically disabled both
+the corresponding menu item and toolbar button. When an action is disabled, all the
+associated components are notified of the property change. In our program, both the
+menu item and the toolbar button for full justification are grayed, as shown in
+Figure14-22.
+To see the toolbar float, click on the textured area at the left edge and drag it outside
+the window. You can also drag it to any edge of the frame to anchor it at that position.
+A
+JToolBaris a regular Swing component, so you can use more than one in an appli-
+cation. If you do so, and you wish to make the toolbars floatable, it is best to place
+each toolbar in a concentricBorderLayoutcontainer, leaving the other three sides
+unpopulated. This ensures that the toolbars maintain their respective positions if
+they are both dragged to a new side.
+Figure14-22.Disabling actions automatically grays the toolbar and menu representations
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+489
+Chapter15In this chapter:
+• The JTable Class
+• Implementing a Column Model
+• Table Data
+• Selecting Table Entries
+• Rendering Cells
+• Editing Cells
+CHAPTER 15
+Tables
+Tables represent one of the most common formats for viewing data. Database
+records are easy to sort and choose from a table. Statistics on disk usage can be dis-
+played for several computers or several time periods all at once. Stock market quotes
+can be tracked. And where would sales presentations be without tables? Well, the
+JTableclass in the Swing package now gives you access to a single component that
+can handle all of the preceding examples and more.
+Without getting fancy, you can think of tables as an obvious expression of two-
+dimensional data. In fact, theJTableclass has a constructor that takes anObject[][]
+argument and displays the contents of that two-dimensional array as a table with
+rows and columns. For example, Figure15-1 shows how a table of string objects falls
+out very quickly.
+This program was generated with very little code. All we did was set up a
+JTable
+object with aString[][]argument for the table data and aString[]argument for the
+table’s headers. Rather than adding the table itself directly to our window, we
+enclose it in a scrollpane:
+// SimpleTable.java
+// A test of the JTable class using default table models and a convenience
+// constructor
+//
+Figure15-1.A simple JTable with a two-dimensional array of strings for data
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+490 | Chapter 15: Tables
+import java.awt.*;
+import javax.swing.*;
+public class SimpleTable extends JFrame {
+  public SimpleTable() {
+    super("Simple JTable Test");
+    setSize(300, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    JTable jt = new JTable(new String[][] { {"This", "is"}, {"a", "Test"} },
+                           new String[] {"Column", "Header"});
+    JScrollPane jsp = new JScrollPane(jt);
+    getContentPane().add(jsp, BorderLayout.CENTER);
+  }
+  public static void main(String args[]) {
+    SimpleTable st = new SimpleTable();
+    st.setVisible(true);
+  }
+}
+As you can see, we rely entirely on the data models built for us and simply pass in
+our data (aString[][]object) and our column headers (aString[]object).JTable
+takes care of the rest. With the default models, you can select multiple rows, edit
+individual cells, and listen for selection events. But of course, you are not restricted
+to the default models, and you can produce some pretty interesting effects if you
+decide to roll your own.
+The JTable Class
+Before we get ahead of ourselves, let’s look at theJTableclass and its supporting cast
+members.
+Table Columns
+With Swing tables, the basic unit is not an individual cell but a column. Most col-
+umns in real-world tables represent a certain type of information that is consistent
+for all records. For example, a record containing a person’s name is a
+Stringand
+might be the first column of the table. For every other record (row), the first cell is
+always a
+String. The columns do not need to all have the same data type. The same
+record could hold not only a person’s name, but whether or not they owned a com-
+puter. That column would hold
+Booleanvalues, notStringvalues. The models sup-
+portingJTablereflect this view of the world. There is aTableModelthat handles the
+contents of each cell in the table. You will also find aTableColumnModelthat tracks
+the state of the columns in the table (how many columns, the total width, whether or
+not you can select columns, etc.).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 491
+The ability to store different types of data also affects how the table draws the data.
+The table column that maps to the “owns a computer” field could use aJCheckBox
+object for the cells of this column while using regularJLabelobjects for the cells of
+other columns. But again, each column has one data type and one class responsible
+for drawing it.
+Now, as the
+JTableclass evolves, you may find alternate ways to think about tables
+without relying so heavily on columns. You’ll want to keep an eye on the API in
+future releases of the Swing package. Figure15-2shows how the classes of theJTable
+package fit together.
+Well, we made it this far without officially discussing theJTableclass itself. Dynamic
+data and database queries are handled entirely by the table model underneath the dis-
+play.SowhatcanyoudowithaJTableobject?TheJTableclassgivesyoucontrolover
+the appearance and behavior of the table. You can control the spacing of columns,
+Figure15-2.JTable class diagram
+javax.swing.table
+TableCellRenderer
+TableColumn
+AbstractTableModel
+TableModel
+rendersCellWith
+javax.swing
+*
+*
+TableCellEditor
+TableColumnModel
+organizesWith
+*
+storesColumnWith
+11
+JTableHeader
+storesColumnWith
+DefaultTableColumnModel
+DefaultTableModel
+CellEditor
+JTable
+ListSelectionModel
+JComponent
+managesCellSelectionWith
+2
+storesDataWith
+1
+javax.swing.event
+TableModelListener
+TableColumnModelListener
+TableModelListener
+editsCellsWith
+uses
+1
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
+A
+A
+Scrollable
+javax.swing.DefaultCellEditor
+TableModelListener
+TableColumnModelEvent
+TableModelEvent
+displaysHeaderWith
+fires
+fires
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+492 | Chapter 15: Tables
+their resizability, their colors, and so on. TheJTableobject is the source of row selec-
+tions. Through delegation, you can add and remove rows and columns directly with
+theJTable object.
+Properties
+The appearance of aJTableis manipulated almost entirely through its properties. To
+make things a bit more manageable, we’ll break the properties up into three smaller
+tables:oneforrow,column,andcellproperties;oneforselectionproperties;andone
+for visual properties. Table15-1 covers the row, column, and cell properties.
+The
+autoCreateColumnsFromModelproperty determines whether the column model is
+loaded automatically with data from the table model. This value is set totrueif you
+don’t supply a non-null ColumnModelto the constructor. (You can always replace an
+existing column model with thesetColumnModel()method.) TheautoResizeMode
+property determines how the table reacts to being resized. Using the constants pre-
+sented in Table15-4, you can adjust all of the columns, only the last column, or shut
+resizing off altogether. You must turn off autoresizing if you want to use the horizon-
+talscrollbarinyourscrollpane.The
+columnCountandrowCountpropertiesallowyouto
+asktheJTableobjecthowmanyrowsandcolumnsithas.Thesevaluescomefromthe
+models in place. ThecolumnModelproperty holds the current column model and can
+be replaced at runtime, if necessary. TherowHeightproperty dictates how tall rows
+are,inpixels.Thispropertymustbeanumbergreaterthanorequaltoone.Otherval-
+ues cause the
+setRowHeight()method to throw anIllegalArgumentException. The
+value ofrowHeight includes the vertical intercell spacing.
+Table15-2lists the selection-related properties of theJTableclass. TheselectionModel
+property holds theListSelectionModelobject that handles row selections, and the
+selectionModeproperty applies to that model. (You can control the column selections
+with theselectionModelproperty of theTableColumnModelfor your table.) The
+cellSelectionEnabled, columnSelectionAllowed, androwSelectionAllowedproperties
+determine whether you can select cells, columns, or rows. If cells are selectable, only
+Table15-1.JTable row, column, and cell properties
+Property Data type
+get
+is
+set Default value
+autoCreateColumnsFromModel boolean•• false
+autoResizeMode int •• AUTO_RESIZE_ALL_COLUMNS
+columnCount int • 0
+columnModel TableColumnModel•• DefaultTableColumnModel()
+model TableModel •• DefaultTableModel()
+rowCount int • 0
+rowHeight int •• 16
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 493
+cells can be selected, regardless of the row and column properties. With cell selection
+turned on and row and column selection turned off, you can still select a range of cells.
+With an active selection on your table, the
+selectedColumn, selectedColumnCount,
+selectedColumns, selectedRow, selectedRowCount, andselectedRowsgive you access to
+thevariouspartsofthatselection.TheselectedRowandselectedColumnpropertiesstore
+the anchor selection (i.e., the first selection) from their respective selection models.
+Table 15-3 covers the remaining properties of theJTableclass. ThecellEditor
+property determines the cell editor currently in use. When you start editing, the
+JTableclass looks up your column and asks it for an editor. If the column has
+one, that editor is used; otherwise, a default editor for the column’s class type is
+used. If no cell is currently being edited, this property isnull. If you want your
+table to support automatic drag initiation, set thedragEnabledproperty totrue.
+ThegridColor, selectionBackground, andselectionForegroundproperties deter-
+mine the color used for the grid lines and selection text. TheintercellSpacing
+property determines the horizontal and vertical spacing around each cell in the
+table. The
+preferredScrollableViewportSizeproperty determines the preferred
+size of the scrollpane for the table. ThescrollableTracksViewportHeightand
+scrollableTracksViewportWidthproperties are alwaysfalse, which indicates that
+making the viewport around the table should not resize the table to fit the view-
+port (assuming you have placed the table in a scrollpane). You can control which
+lines show up on the table with
+showGrid, showHorizontalLines, and
+showVerticalLines. UsesetShowGrid()as a convenient way to turn both horizon-
+tal and vertical lines on or off at the same time. ThetableHeaderproperty is used
+to store aJTableHeaderobject for your table. This header can be used in a
+JScrollPaneas the column header for your table. (No row header counterpart is
+provided, but you can see an example of creating one in the next chapter.) The
+Table15-2.JTable selection properties
+Property Data type
+get
+is
+set Default value
+cellSelectionEnabled boolean•• false
+columnSelectionAllowed boolean•• false
+rowSelectionAllowed boolean•• true
+selectedColumnint • -1
+selectedColumnCount int • 0
+selectedColumnsint[] • int[0]
+selectedRow int • -1
+selectedRowCount int • 0
+selectedRows int[] • int[0]
+selectionModeint • MULTIPLE_INTERVAL_SELECTION
+selectionModelListSelectionModel•• DefaultListSelectionModel
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+494 | Chapter 15: Tables
+rowMarginproperty determines the amount of empty space between rows. This is
+really just a more convenient way of getting at the height information in the
+intercellSpacing property.
+Examples
+To see some of the more interesting properties in action, the following example sets
+up a simple (contrived) data set. We shut off autoresizing so that horizontal scroll-
+ing works properly. We also set the selection mode so that any range of cells can be
+selected. (We’ll look at responding to selection events in the next section.)
+Here’s the source code that built the table in Figure15-3:
+// TableFeature.java
+// A test of the JTable class using default table models and a convenience
+// constructor
+//
+import java.awt.*;
+import javax.swing.*;
+Table15-3.JTable visual and editing properties
+Property Data type
+get
+is
+setDefault value
+accessibleContexto AccessibleContext• JTable.
+AccessibleJTable
+cellEditor TableCellEditor•• null
+dragEnabled1.4 boolean •• false
+gridColor Color •• From L&F
+intercellSpacing Dimension •• Dimension(1, 1)
+preferredScrollableViewportSizeo Dimension •• Dimension(450, 400)
+rowMargin int •• 1
+scrollableTracksViewportHeighto boolean • false
+scrollableTracksViewportWidtho boolean • false
+selectionBackgroundb Color •• From L&F
+selectionForegroundb Color •• From L&F
+showGrid boolean • true
+showHorizontalLinesboolean •• true
+showVerticalLines boolean •• true
+tableHeader JTableHeader •• JTableHeader(column-
+Model)
+UI
+b TableUI •• From L&F
+UIClassIDo String • "TableUI"
+bbound, ooverridden, 1.4since 1.4
+See also properties from theJComponent class (Table 3-6).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 495
+import java.util.Date;
+import java.io.File;
+public class TableFeature extends JFrame {
+  String titles[] = new String[] {
+    "Directory?", "File Name", "Read?", "Write?", "Size", "Last Modified"
+  };
+  public TableFeature() {
+    super("Simple JTable Test");
+    setSize(300, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+    File pwd = new File(".");
+    Object[][] stats = getFileStats(pwd);
+    JTable jt = new JTable(stats, titles);
+    jt.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+    jt.setColumnSelectionAllowed(true);
+    JScrollPane jsp = new JScrollPane(jt);
+    getContentPane().add(jsp, BorderLayout.CENTER);
+  }
+  public Object[][] getFileStats(File dir) {
+    String files[] = dir.list();
+    Object[][] results = new Object[files.length][titles.length];
+    for (int i=0; i < files.length; i++) {
+      File tmp = new File(files[i]);
+      results[i][0] = new Boolean(tmp.isDirectory());
+      results[i][1] = tmp.getName();
+      results[i][2] = new Boolean(tmp.canRead());
+      results[i][3] = new Boolean(tmp.canWrite());
+Figure15-3.A simple JTable in a JScrollPane with a range of cells selected
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+496 | Chapter 15: Tables
+      results[i][4] = new Long(tmp.length());
+      results[i][5] = new Date(tmp.lastModified());
+    }
+    return results;
+  }
+  public static void main(String args[]) {
+    TableFeature tf = new TableFeature();
+    tf.setVisible(true);
+  }
+}
+Events
+All table-specific events you would expect to see from theJTableclass are routed
+through its data and column models. You must get a reference to these models and
+attach listeners to the models directly, with code like this example, which uses our
+custom EEL utility discussed in Chapter3:
+TableModel myModel = new MyTableModel();  // Some valid TableModel class
+JTable table = new JTable(myModel);
+EEL eel = EEL.getInstance();
+eel.addGui();
+// Listen for added/removed/updated rows.
+myModel.addTableModelListener(eel);
+TableColumnModel columnModel = table.getColumnModel();
+// Listen for added/removed/moved columns.
+columnModel.addTableColumnModelListener(eel);
+// Listen for row selections.
+myTable.getSelectionModel().addListSelectionListener(eel);
+// Listen for column selections.
+columnModel.getSelectionModel.addListSelectionListener(eel);
+You can see a more detailed example using the selection listeners later in this chap-
+ter. Examples using model listeners appear in Chapter16.
+Constants
+Table15-4 shows the constants defined inJTable. These constants specify how col-
+umns behave when you resize the entire table or adjust a single column; they are
+used for the
+autoResizeMode property.
+Table15-4.JTable constants
+Constant Data type Description
+AUTO_RESIZE_ALL_COLUMNS int When a table is resized, all columns are resized
+proportionately.
+AUTO_RESIZE_LAST_COLUMN int When a table is resized, resize the last column only.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 497
+Constructors
+public JTable()
+CreateanewJTableobjectusingaDefaultTableModel,aDefaultTableColumnModel,
+and aDefaultListSelectionModel for its models.
+public JTable(TableModel dm)
+public JTable(TableModel dm, TableColumnModel cm)
+public JTable(TableModel dm, TableColumnModel cm, ListSelectionModel sm)
+These constructors allow you to specify the exact table model, table column
+model, and (row) list selection model you want to use. If you want to specify
+onlythecolumnorlistselectionmodel,youcanpass
+nullasanargumentforthe
+other models, and the appropriate default model is created and used.
+public JTable(int numRows, int numColumns)
+This constructor builds a default table model with the specified number of rows
+and columns. Default table column and list selection models are also used.
+public JTable(Vector data, Vector columnNames)
+public JTable(Object data[][], Object columnNames[])
+Populate tables by filling the custom table model with
+dataand naming the col-
+umns withcolumnNames. In the case of the first constructor, it is assumed that the
+data vector is a vector containing other vectors, one for each row of data. The
+dataargumentcancontainanytypeofobject.Thetabledoesitsbesttorenderthe
+objects in the array appropriately, using labels generated by calling
+toString()on
+the objects if necessary. While thecolumnNamesargument can also contain an
+array of any type of object, aString[]is the most common. The default table
+header renderer uses column names (or thetoString()result of nonstring
+objects) to label columns.
+The table models used by these constructors are not instances ofDefaultTable-
+Model. If you retrieve the table model, you can interact with it only through the
+TableModel interface.
+AUTO_RESIZE_NEXT_COLUMN int When a column is resized, resize the next column too. For
+example, if you make column N bigger, column N+1
+shrinks.
+AUTO_RESIZE_OFF int When a table is resized, do not resize the columns at all.
+AUTO_RESIZE_SUBSEQUENT_COLUMNS int When a column is resized, resize all subsequent columns
+proportionally to preserve the overall width of the table.
+Table15-4.JTable constants (continued)
+Constant Data type Description
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+498 | Chapter 15: Tables
+Other Interesting Methods
+Here are a few other methods to remember. These methods allow you to control
+tables programmatically. If you have other buttons or keyboard shortcuts for things
+like selecting matching records, these methods come in handy.
+public void addColumnSelectionInterval(int index0, int index1)
+public void addRowSelectionInterval(int index0, int index1)
+Programmatically extend the column and row selections on the table. Discontigu-
+ousselectionsmustbeaddedasseparatecontiguousintervals.Thevalueof
+index0
+does not have to be less than or equal toindex1, but anIllegalArgumentException
+results if either index is outside the range of valid columns.
+public void clearSelection()
+This method removes all selection intervals (both rows and columns) currently
+active in the table.
+public int columnAtPoint(Point p)
+Given an (x,y) coordinate
+prelative to the upper-left corner of thisJTablecom-
+ponent, return the column that contains that point. (This method returns-1 ifp
+is not contained by any of the table’s columns.) Along with therowAtPoint()
+method, you can take advantage of this method to track where the mouse is in
+the table.
+public boolean editCellAt(int row, int col, EventObject event)
+Open the cell at (
+row, col) for editing. Fancy editors can alter their behavior or
+appearance based on the initiating action passed asevent. If you do not require a
+specific event, you can create a simpleMouseEventof typeMOUSE_CLICKED with a
+click count of 2.
+public void moveColumn(int column, int targetColumn)
+This method relocates the column at indexcolumnto become the column at
+indextargetColumn. This comes in handy if you have layout wizards that allow
+users to organize the columns separate from the table itself.
+public void removeColumn(TableColumn column)
+This method allows you to completely delete a column.
+public void removeColumnSelectionInterval(int index0, int index1)
+public void removeRowSelectionInterval(int index0, int index1)
+Subtract a selection interval (columns or rows, respectively) from the active
+selection. This action is not the same as clearing the selection. If the current
+selection has more items than you remove, the remaining items stay selected.
+public int rowAtPoint(Point p)
+Given an (x,y) coordinate
+prelative to the upper-left corner of thisJTablecom-
+ponent, return the row that contains that point. (This method returns-1 ifpis
+not contained by any of the table’s rows.) Along with thecolumnAtPoint()
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 499
+method, you can take advantage of this method to track where the mouse is in
+the table.
+public void selectAll()
+Select all cells (or all rows and all columns, if you prefer) in the table. This
+methodistheoppositeofthe
+clearSelection()method.Whetherthisselectionis
+reported as rows, columns, or cells depends on how thecolumnSelectionAllowed
+androwSelectionAllowed properties are set.
+The TableColumn Class
+TheTableColumnclass is the starting point for building your columns. It supplies
+access to all the basic components of an individual column. This class should not be
+confused with the
+TableColumnModelinterface. That model, discussed in the next sec-
+tion, dictates the form of a collection of table columns, which then makes up a full
+table.
+Properties
+TheTableColumn class has the properties listed in Table15-5.
+ThecellEditor,cellRenderer,a n dheaderRendererproperties determine which compo-
+nentsareusedtodraw(andpossiblyedit)cellvalues.Thedefaultvalueofnullforthese
+properties indicates that a default renderer or editor should be built and used. The
+headerValueproperty is accessible to theheaderRendererfor drawing an appropriate
+Table15-5.TableColumn properties
+Property Data type
+get
+is
+set Default value
+cellEditor TableCellEditor •• null
+cellRendererb TableCellRenderer•• null
+headerRendererb TableCellRenderer•• null
+headerValueb Object •• null
+identifier Object •• null
+maxWidth int •• Integer.MAX_VALUE
+minWidth int •• 15
+modelIndex int •• 0
+propertyChangeListeners1.4 PropertyChangeListener[]• Empty array
+resizable boolean •• true
+widthb int •• 75
+bbound, 1.4since 1.4
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+500 | Chapter 15: Tables
+header.Theidentifierpropertyis used toidentifya columnuniquely.If anidentifier
+is not specified, thegetIdentifier()method returns the currentheaderValue.T h e
+minWidthandmaxWidthproperties determine the minimum and maximum width in pix-
+els for the column. By setting these properties to the same value, you can create a fixed-
+width column. The current width of the column is stored in thewidthproperty. The
+modelIndexdetermines the index value used when rendering or editing the column to
+get the appropriate data values. It is normally set in the constructor and does not need
+to be modified after that. Relocating the column onscreen has no effect on the model
+index. The
+resizableproperty affects only the user’s ability to manually resize col-
+umns—you can programmatically resize a column at any time.
+Constants
+Four of the properties have descriptive constants that are used with property change
+events. These constants are listed in Table15-6.
+Event
+The only event generated by theTableColumnclass is a property change event that is
+generatedwhenanyofthecolumn’sboundproperties(cellRenderer,headerRenderer,
+headerValue, andwidth) are changed.
+public void addPropertyChangeListener(PropertyChangeListener l)
+public void removePropertyChangeListener(PropertyChangeListener l)
+Add or remove a property change listener interested in receiving events from this
+column.
+Constructors
+The following constructors exist for buildingTableColumn objects:
+public TableColumn()
+Create an empty column with the default property values.
+public TableColumn(int modelIndex)
+Create an empty column with the specifiedmodelIndex.
+Table15-6.TableColumn constants
+Constant Type Description
+CELL_RENDERER_PROPERTY String The property name of thecellRenderer property
+COLUMN_WIDTH_PROPERTY String The property name of thecolumnWidth property
+HEADER_RENDERER_PROPERTY String The property name of theheaderRenderer property
+HEADER_VALUE_PROPERTY String The property name of theheaderValue property
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 501
+public TableColumn(int modelIndex, int width)
+Create an empty column with the specifiedmodelIndexandwidthin pixels. The
+minWidth andmaxWidth properties keep their default values.
+public TableColumn(int modelIndex, int width, TableCellRenderer cellRenderer, Table-
+CellEditor cellEditor)
+Create an empty column with the specifiedmodelIndex, widthin pixels,
+cellRenderer, andcellEditor. The renderer or editor arguments can benull,i n
+which case the appropriate default is used.
+Another useful method
+While the get/set methods for the properties constitute a majority of theTableColumn
+class, the following method does provide a bit of functionality:
+public void sizeWidthToFit()
+Force the width of the column to match that of its header, even if it means modi-
+fying theminWidth ormaxWidth properties.
+The TableColumnModel Interface
+A single column is not a very interesting table—an interesting list, maybe, but not a
+table. To handle real tables (even ones with only one column), we need a model for
+storing several columns as a collection. The
+TableColumnModelinterface provides that
+functionality in the Swing package. As you may have noticed from Figure15-2, the
+JTableclass has a column model in addition to a table model. While the table model
+provides the specific values for the cells in a column, the column model provides
+information such as the column margins and whether or not column selections are
+allowed.
+The
+TableColumnModelinterface manages column selections and column spacing. For
+managing selections, you have access to the usual selection properties, such as the
+number of selected columns and the selection model in place. For dealing with col-
+umn spacing, you can control the column margins and view the total column width.
+Properties
+TableColumnModelhas the properties listed in Table15-7. ThecolumnCountproperty
+returns the number of columns supported by this model. While this might seem like
+redundant information, given that the table model (discussed later in this chapter)
+knows how many columns it supports, the next chapter examines some column
+models that do not use all of the columns available in the table model. The
+columnMarginproperty dictates how much space should be left between columns.
+That spacing is included when calculating the value of thetotalColumnWidth. You
+can turn column selection on or off with thecolumnSelectionAllowedproperty. If col-
+umn selections are allowed, you can then use theselectionModel, selectedColumns,
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+502 | Chapter 15: Tables
+andselectedColumnCountproperties to work with the selections. As with other selec-
+tions, you can use theselectionModelto programmatically affect the selected col-
+umns if needed.
+Thecolumnandcolumnspropertiesletyouaccessthetable’scolumnsthemselves.The
+index used as an argument togetColumn()refers to the column’s index in the col-
+umn model, which doesn’t necessarily match the index of the column in the table
+model, or the order in which columns appear on the screen.
+Event
+Any class implementing theTableColumnModelinterface has to support the
+ColumnModelEvent, which is generated when a column’s view size, position, or extent
+size changes. The interface defines the standardaddColumnModelListener()and
+removeColumnModelListener()methods, but the implementing class is responsible for
+the code that fires the events when columns are added, removed, or moved.
+public void addColumnModelListener(TableColumnModelListener l)
+public void removeColumnModelListener(TableColumnModelListener l)
+Add or remove a listener interested in changes to this column model.
+Column methods
+TheTableColumnModelinterface defines several methods for working with the col-
+umns in the model:
+public void addColumn(TableColumn column)
+Appendcolumn to the current column model.
+Table15-7.TableColumnModel properties
+Property Data type
+get
+is
+set Default value
+columni TableColumn •
+columns Enumeration •
+columnCount int •
+columnMargin int ••
+columnSelectionAllowed boolean ••
+selectedColumnCountint •
+selectedColumns int[] •
+selectionModel ListSelectionModel••
+totalColumnWidth int •
+iindexed
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JTable Class | 503
+public int getColumnIndex(Object identifier)
+public int getColumnIndexAtX(int xPixel)
+Return the column model (screen) index of a column, either with a header
+matching
+identifier or at the specifiedxPixel location on the screen.
+public void moveColumn(int index, int newIndex)
+Move the column atindextonewIndex. Other columns should be shifted as
+needed to accommodate the moved column. This visually relocates the column
+on the screen only. The table model does not change.
+public void removeColumn(TableColumn column)
+Delete
+columnfrom the column model. Columns following the removed column
+are shifted one index to fill the gap.
+The DefaultTableColumnModel Class
+TheDefaultTableColumnModelclass implements theTableColumnModelinterface and
+serves as the column model if you do not specify a model in theJTableconstructor.
+It also works as a good starting point for creating your own column models. You
+inherit everything you need; just override the methods you want to change.
+Properties
+TheDefaultTableColumnModelclassinheritsallofitspropertiesfromtheTableColumnModel
+interface and supplies the default values shown in Table15-8.
+Table15-8.DefaultTableColumnModel properties
+Property Data type
+get
+is
+set Default value
+columni, o TableColumn •
+columnso Enumeration •
+columnCounto int • 0
+columnMargino int •• 1
+columnSelectionAllowedo boolean •• false
+selectedColumnCounto int • 0
+selectedColumnso int[] • null
+selectionModelo ListSelectionModel•• DefaultListSelectionModel()
+totalColumnWidtho int • 0
+iindexed, ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+504 | Chapter 15: Tables
+Events
+TheDefaultTableColumnModelsupports theColumnModelEventevents that are dictated
+by theTableColumnModelinterface, but it includes several convenience methods
+beyond simply attaching listeners:
+protected void fireColumnAdded(TableColumnModelEvent e)
+protected void fireColumnMarginChanged()
+protected void fireColumnMoved(TableColumnModelEvent e)
+protected void fireColumnRemoved(TableColumnModelEvent e)
+protected void fireColumnSelectionChanged(ListSelectionEvent e)
+These helper methods are used to fire events when columns are added, resized,
+relocated, removed, or selected. They also allow you to fire column-based events
+to create your own column model by extending this class.
+public void addColumnModelListener(TableColumnModelListener x)
+public void removeColumnModelListener(TableColumnModelListener x)
+Add or remove a listener for
+TableColumnModelEvents fired by this model.
+protected void propertyChange(PropertyChangeEvent e)
+protected void valueChanged(ListSelectionEvent e)
+The
+DefaultTableColumnModellistens to some of these events to keep the visual
+state of the table in sync. TheCOLUMN_WIDTH_PROPERTY change events (from one of
+the addedTableColumnobjects) cause the width cache for the table to be recalcu-
+lated. ThevalueChanged()method listens for new column selections and fires a
+column selection changed event.
+Constructor
+public DefaultTableColumnModel()
+Set up a newDefaultTableColumnModelwith the default values for properties
+listed in Table15-8.
+Other useful methods
+public void addColumn(TableColumnColumn)
+public int getColumnIndex(Object identifier)
+public int getColumnIndexAtX(int xPixel)
+public void moveColumn(int index, int newindex)
+public void removeColumn(TableColumn column)
+These methods provide straightforward implementation of the abstract methods
+required by the
+TableColumnModel interface.
+The TableColumnModelEvent Class
+Many of the events fired by theDefaultTableColumnModelclass use this event class to
+encode the columns that were affected. Notice that these events describe something
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Implementing a Column Model | 505
+happening to a contiguous group of columns, unlike the selection events. There is no
+direct support for things like removing a discontiguous selection of columns. You
+must generate a different event for each contiguous range of columns that needs to
+be removed.
+Event methods
+public int getFromIndex()
+public int getToIndex()
+Use these methods to find the affected columns. If only a single column is
+affected, these methods return the same value.
+The TableColumnModelListener Interface
+If you want to listen to any of the column model events, you must implement the
+TableColumnModelListenerinterface and register as a listener for these events. Not
+surprisingly, the event-firing methods from theDefaultTableColumnModelclass reflect
+the types of events this interface defines:
+public void columnAdded(TableColumnModelEvent e)
+public void columnMarginChanged(ChangeEvent e)
+public void columnMoved(TableColumnModelEvent e)
+public void columnRemoved(TableColumnModelEvent e)
+public void columnSelectionChanged(ListSelectionEvent e)
+Use these methods to react to changes in the column model. While you can-
+not add a
+ListSelectionListenerdirectly to the column model if you care
+only about column selections, you can retrieve the selection model (using
+getSelectionModel()) and attach a listener to that object.
+Implementing a Column Model
+Here’s a custom column model that keeps all of its columns in alphabetical order as
+they are added:
+// SortingColumnModel.java
+// A simple extension of the DefaultTableColumnModel class that sorts
+// incoming columns
+//
+import javax.swing.table.*;
+public class SortingColumnModel extends DefaultTableColumnModel {
+  public void addColumn(TableColumn tc) {
+    super.addColumn(tc);
+    int newIndex = sortedIndexOf(tc);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+506 | Chapter 15: Tables
+    if (newIndex != tc.getModelIndex()) {
+      moveColumn(tc.getModelIndex(), newIndex);
+    }
+  }
+  protected int sortedIndexOf(TableColumn tc) {
+    // Just do a linear search for now.
+    int stop = getColumnCount();
+    String name = tc.getHeaderValue().toString();
+    for (int i = 0; i < stop; i++) {
+      if (name.compareTo(getColumn(i).getHeaderValue().toString()) <= 0) {
+        return i;
+      }
+    }
+    return stop;
+  }
+}
+Implementing the model is simple. We overrideaddColumn()to add the column to
+the superclass and then move it into the appropriate position. You can use this col-
+umn model with any data model. The next section goes into much more detail on
+the table model used to store the real data, so for this simple example, we’ll use the
+DefaultTableModelclass to hold the data. Once we have our table model and our col-
+umn model, we can build aJTablewith them. Then, any columns we add are listed
+in alphabetical order (by the header), regardless of the order in which they were
+added. The result looks like Figure15-4.
+Here’s the code that puts the table and column models together:
+// ColumnExample.java
+// A test of the JTable class using default table models and a convenience
+// constructor
+import java.awt.*;
+import javax.swing.*;
+import javax.swing.table.*;
+public class ColumnExample extends JFrame {
+  public ColumnExample() {
+    super("Abstract Model JTable Test");
+    setSize(300, 200);
+    setDefaultCloseOperation(EXIT_ON_CLOSE);
+Figure15-4.A sorting column model; the columns are sorted by name as they are added
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Table Data | 507
+    DefaultTableModel dtm = new DefaultTableModel(new String[][] {
+                            {"1", "2", "3"}, {"4", "5", "6"} },
+                            new String[] {"Names", "In", "Order"});
+    SortingColumnModel scm = new SortingColumnModel();
+    JTable jt = new JTable(dtm, scm);
+    jt.createDefaultColumnsFromModel();
+    JScrollPane jsp = new JScrollPane(jt);
+    getContentPane().add(jsp, BorderLayout.CENTER);
+  }
+  public static void main(String args[]) {
+    ColumnExample ce = new ColumnExample();
+    ce.setVisible(true);
+  }
+}
+There’s no trick here. All we do is create our sorting column model and use it when
+we create theJTable. You can find other examples of custom column models in the
+next chapter.
+Table Data
+We’ve seen theTableColumnModel, which stores a lot of information about the struc-
+ture of a table but doesn’t contain the actual data. The data that’s displayed in a
+JTableis stored in aTableModel. TheTableModelinterface describes the minimum
+requirements for a model that supplies the information necessary to display and edit
+a table’s cells and to show column headers. The
+AbstractTableModelfills out most of
+theTableModelinterface, but leaves the methods for retrieving the actual data unde-
+fined. TheDefaultTableModelextendsAbstractTableModeland provides an imple-
+mentation for storing data as a vector of vectors. We’ll look at both the abstract and
+default table models in more detail later in this chapter.
+The TableModel Interface
+All of the table models start with this interface. A table model must be able to give
+out information on the number of rows and columns in the table and have access to
+the values of the cells of the table. The
+TableModelinterface also has methods that
+can be used to encode information about the columns of the table (such as a local-
+ized name or class type) separate from the column model.
+Properties
+TheTableModelinterface supports the properties shown in Table15-9. The
+columnCountis the number of columns in the data model. This does not have to
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+508 | Chapter 15: Tables
+match the number of columns reported by the column model. Likewise,rowCountis
+the number of rows in the data model.columnNameandcolumnClassare indexed prop-
+erties that let you retrieve the name of the column and the class of objects in the col-
+umn. The name used in the table model is distinct from anything used in the
+TableColumnclass. For both properties, remember that the index refers to the table
+model, regardless of where the column appears on the screen.
+Events
+As you may have come to expect from other models in the Swing package, the
+TableModelhas its own event type,TableModelEvent, generated whenever the table
+changes. A full discussion of theTableModelEventclass and theTableModelListener
+appears later in this chapter.
+public void addTableModelListener(TableModelListener l)
+public void removeTableModelListener(TableModelListener l)
+Add or remove listeners interested in receiving table model events.
+Cell methods
+These methods let you obtain and change the values of individual cells:
+public Object getValueAt(int rowIndex, int columnIndex)
+Return the value of the cell at (rowIndex, columnIndex). Base types (int, float,
+etc.) are wrapped in an appropriateObject.
+public boolean isCellEditable(int rowIndex, int columnIndex)
+Returntrue if the cell at (rowIndex,columnIndex) can be edited.
+public void setValueAt(Object aValue, int rowIndex, int columnIndex)
+Set the value of the cell at (rowIndex, columnIndex)t oaValue. As with the
+getValueAt()method, you may need to wrap primitive data types in anObject
+(likeInteger) before using them to set the value of a cell.
+The AbstractTableModel Class
+This class implements many of the methods of theTableModelinterface, leaving the
+really important ones to you. If you want to build your own table model, this is the
+place to start. (In fact, the documentation shipped with the Swing package even
+Table15-9.TableModel properties
+Property Data type
+get
+is
+set Default value
+columnCount int •
+rowCount int •
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+Table Data | 509
+recommends starting here, rather than with theDefaultTableModelpresented in the
+next section.) The three unimplemented methods fromTableModel are:
+public abstract int getColumnCount()
+public abstract int getRowCount()
+public abstract Object getValueAt(int row, int col)
+With these methods, you can build your own table model better suited to the kinds
+of data you want to display. You can extend this model to support databases and
+even dynamic data.
+Other properties available through the
+AbstractTableModelare shown in
+Table15-10.
+As a starting point, let’s look at recreating the file list table with our own data model.
+For fun, we’ll throw in support for the column headers and column types as well.
+(This is not one of the requirements of a minimal table model, but it makes the table
+look more professional.) Here’s the source code for the model:
+// FileModel.java
+// A custom table model to display information on a directory of files
+//
+import javax.swing.table.*;
+import java.util.Date;
+import java.io.File;
+public class FileModel extends AbstractTableModel {
+  String titles[] = new String[] {
+    "Directory?", "File Name", "Read?", "Write?", "Size", "Last Modified"
+  };
+  Class types[] = new Class[] {
+    Boolean.class, String.class, Boolean.class, Boolean.class,
+    Number.class, Date.class
+  };
+Table15-10.AbstractTableModel properties
+Property Data type
+get
+is
+set Default value
+cellEditableii, o boolean • false
+columnClassi Class • Object.class
+columnCounto int • Abstract
+columnNamei String• "A" for column 1,"B" for column 2, etc."" for an invalid index.
+rowCounto int • Abstract
+valueAtii, o Object •• Getter is abstract. Setter is empty implementation (creating a read-
+only table by default).
+iindexed, iidouble indexed (by row and column), ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+510 | Chapter 15: Tables
+  Object data[][];
+  public FileModel() { this("."); }
+  public FileModel(String dir) {
+    File pwd = new File(dir);
+    setFileStats(pwd);
+  }
+  // Implement the methods of the TableModel interface we're interested
+  // in. Only getRowCount(), getColumnCount(), and getValueAt() are
+  // required. The other methods tailor the look of the table.
+  public int getRowCount() { return data.length; }
+  public int getColumnCount() { return titles.length; }
+  public String getColumnName(int c) { return titles[c]; }
+  public Class getColumnClass(int c) { return types[c]; }
+  public Object getValueAt(int r, int c) { return data[r][c]; }
+  // Our own method for setting/changing the current directory
+  // being displayed. This method fills the data set with file info
+  // from the given directory. It also fires an update event, so this
+  // method could also be called after the table is on display.
+  public void setFileStats(File dir) {
+    String files[] = dir.list();
+    data = new Object[files.length][titles.length];
+    for (int i=0; i < files.length; i++) {
+      File tmp = new File(files[i]);
+      data[i][0] = new Boolean(tmp.isDirectory());
+      data[i][1] = tmp.getName();
+      data[i][2] = new Boolean(tmp.canRead());
+      data[i][3] = new Boolean(tmp.canWrite());
+      data[i][4] = new Long(tmp.length());
+      data[i][5] = new Date(tmp.lastModified());
+    }
+    // Just in case anyone's listening
+    fireTableDataChanged();
+  }
+}
+And here’s the source for the simple application that creates and displays theJTable.
+Notice how simple it is to make theJTable with a custom model:
+// FileTable.java
+// A test frame for the custom table model
+import java.awt.*;
+import javax.swing.*;
+import java.util.Date;
+import java.io.File;
+public class FileTable extends JFrame {

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 14: Bordas e Estilização</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        
+        <!-- Slide 1: Capa -->
+        <div class="slide active">
+            <h1>Aula 14: Bordas e Estilização</h1>
+            <h2>BorderFactory, CompoundBorder</h2>
+            <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <h1 style="color: white;">Aula 14</h1>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Refinando o Visual da Interface</p>
+            </div>
+        </div>
+
+        <!-- Slide 2: Conceitos Fundamentais -->
+        <div class="slide">
+            <h2>Conceitos Fundamentais (Teoria)</h2>
+            <div class="grid-layout">
+                
+                <div class="grid-item">
+                    <h3>CompoundBorder</h3>
+                    <p>Combina duas bordas (ex: uma Borda Externa decorativa + uma Borda Interna vazia para margem).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>MatteBorder</h3>
+                    <p>Borda sólida ou com ícones repetidos.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>LineBorder</h3>
+                    <p>Borda simples de cor e espessura definidas.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>SoftBevelBorder</h3>
+                    <p>Versão mais suave do BevelBorder (relevo).</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Aprofundamento -->
+        <div class="slide">
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. Margens com Bordas</h3>
+            <p>No Swing, não existe 'margin' como no CSS. Para dar espaço interno, usamos <code>EmptyBorder</code>.</p>
+            
+            <h3>2. Bordas Compostas</h3>
+            <p>Para ter uma borda visual E um espaço, usamos CompoundBorder.</p>
+            <div class="code-block">
+            Border linha = BorderFactory.createLineBorder(Color.BLACK);
+            Border espaco = BorderFactory.createEmptyBorder(10, 10, 10, 10);
+            painel.setBorder(BorderFactory.createCompoundBorder(linha, espaco));
+            </div>
+        
+            </div>
+        </div>
+
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
+            <div class="code-block">
+JPanel p = new JPanel();
+// Borda com Título e alinhamento
+TitledBorder titulo = BorderFactory.createTitledBorder("Dados Pessoais");
+titulo.setTitleJustification(TitledBorder.CENTER);
+p.setBorder(titulo);
+            </div>
+        </div>
+
+        <!-- Slide 5: Atividade Prática -->
+        <div class="slide">
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Crie um painel de 'Login' bonito. Use CompoundBorder para dar margem interna aos campos e uma TitledBorder externa. Use cores nas bordas.
+            </div>
+            
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
+            </div>
+
+            <textarea id="activity-14" class="code-input">
+/*
+ * ATIVIDADE PRÁTICA - AULA 14
+ * Tempo estimado: 60 minutos
+ */
+
+import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
+import java.awt.event.*;
+import java.io.File; 
+
+public class LoginEstiloso extends JFrame {
+    public LoginEstiloso() {
+        super("Login");
+        setSize(300, 250);
+        setLayout(new FlowLayout()); // Ou GridBagLayout
+        
+        JPanel p = new JPanel(new GridLayout(2, 2, 5, 5));
+        // Adicione campos User/Pass
+        
+        // Crie uma borda composta (Linha Azul + Espaço de 20px)
+        // Aplique ao painel
+        
+        add(p);
+    }
+    public static void main(String[] args) { new LoginEstiloso().setVisible(true); }
+}
+            </textarea>
+            <button class="send-btn">Enviar Resposta</button>
+        </div>
+
+        <!-- Slide Final -->
+        <div class="slide">
+            <h2>Aula Concluída!</h2>
+            <div style="margin-top: 50px; text-align: center;">
+                <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" disabled>Anterior</button>
+        <span id="slideNumber">1 / 6</span>
+        <button id="btnNext">Próximo</button>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-14': [
+                { id: 'compound', text: 'Usar Borda Composta', pattern: /CompoundBorder/ },
+{ id: 'empty', text: 'Usar EmptyBorder (Margem)', pattern: /EmptyBorder/ },
+{ id: 'color', text: 'Borda Colorida', pattern: /Color/ }
+            ]
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,1075 @@
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JButton Class | 113
+event that would trigger the button would be an Enter key press, but this is actually
+up to the L&F implementation.
+ThedefaultButtonproperty cannot be set directly. Instead, it is set by telling the
+JRootPanewhich button should be the default. (We’ll coverJRootPanein Chapter8—
+at this point, it’s enough to know that the Swing containersJApplet,JDialog,JFrame,
+andJWindowall use aJRootPaneas their primary content container.) If the button is
+inside one of these Swing containers, this property may betrue.
+The other new property,defaultCapable, indicates whether the button may be set as
+a root pane’s default button. A button may be treated only as the default button if
+this property is set totrue.
+Using the Default Button
+Here’s a quick example showing how the default button property can be used:
+// DefaultButtonExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+// Example using defaultButton and JRootPane.setDefaultButton()
+public class DefaultButtonExample {
+  public static void main(String[] args) {
+    // Create some buttons.
+    JButton ok = new JButton("OK");
+    JButton cancel = new JButton("Cancel");
+    JPanel buttonPanel = new JPanel();
+    buttonPanel.add(ok);
+    buttonPanel.add(cancel);
+    JLabel msg = new JLabel("Is this OK?", JLabel.CENTER);
+    // Create a frame, get its root pane, and set the OK button as the default. This
+    // button is pressed if we press the Enter key while the frame has focus.
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    JRootPane root = f.getRootPane();
+    root.setDefaultButton(ok);
+    // Layout and display
+    Container content = f.getContentPane();
+    content.add(msg, BorderLayout.CENTER);
+    content.add(buttonPanel, BorderLayout.SOUTH);
+    f.setSize(200,100);
+    f.setVisible(true);
+  }
+}
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+114 | Chapter 5: Buttons
+The first thing we do here is create two buttons and a label. We then create aJFrame
+and get its “root pane.” Next, we call this pane’ssetDefaultButton()method, pass-
+ing in a reference to the OK button. When this program runs, the OK button is
+drawn with a different border around it, as shown with the Metal L&F in Figure5-3.
+More importantly, when we press Enter while the frame has focus, the OK button is
+pressed automatically.
+Events
+JButtondoes not define any new events, but it’s important to understand which of
+the events defined by its superclasses are fired when the button is pressed. The most
+important thing to know about
+JButtonevents is thatJButtons fireActionEvents
+when they are clicked. This type of event is sent after the button is released, and only
+if the button is still armed (meaning that the cursor is still over the button). The fol-
+lowing example creates event listeners for action, change, and item events to show
+which events are fired when we press the button:
+// JButtonEvents.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+import java.awt.*;
+import java.awt.event.*;
+public class JButtonEvents {
+  public static void main(String[] args) {
+    JButton jb = new JButton("Press Me");
+    jb.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        System.out.println("ActionEvent!");
+      }
+    });
+    jb.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent ev) {
+        System.out.println("ItemEvent!");
+      }
+    });
+    jb.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent ev) {
+        System.out.println("ChangeEvent!");
+Figure5-3.Default button
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JButton Class | 115
+      }
+    });
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.getContentPane().add(jb);
+    f.pack();
+    f.setVisible(true);
+  }
+}
+Running this program and pressing the button produces the following output:
+ChangeEvent!
+ChangeEvent!
+When the button is released, the following additional output is produced:
+ActionEvent!
+ChangeEvent!
+The initial change events are fired, indicating that the button isarmedandpressed.
+When the button is released, the action event is fired, along with another change
+event to indicate that the button is no longer pressed.
+Pressing the button a second time results in only a single change event, followed by
+the action event and change event when the button is released. This is because the
+button’s
+armedproperty is still set totrueafter the button is clicked. This property is
+set tofalseagain only if you hold the mouse button down and then move the cursor
+away from the button. If the button is released while the pointer is no longer over the
+button, no
+ActionEvent is fired.
+In practice, you are typically interested only in theActionEvents fired by aJButton.
+Constructors
+public JButton()
+Create a button with no image or text.
+public JButton(Action a)
+Create a button with property values taken from the specifiedAction(see
+Table5-8), register theActionto receiveActionEventsfired by the button, and
+register the button as aChangeListenerof theAction. The button adapts to any
+future changes made to theAction. This is equivalent to instantiating aJButton
+with the default constructor and then calling itssetAction()method. (This con-
+structor was introduced with SDK 1.3.)
+public JButton(Icon icon)
+Create a button displaying the specifiedicon.
+public JButton(String text)
+Create a button displaying the specifiedtext.
+public JButton(String text, Icon icon)
+Create a button displaying the specifiedtext andicon.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+116 | Chapter 5: Buttons
+Using Actions
+The following example creates fourActionobjects and uses them to create buttons
+(and to create menu items, just to show how easy it is). Each button (and menu)
+takes itstext, icon, mnemonic, toolTip, andenabledstatus from theAction.I fa n
+Actionchanges one or more of these, the button (and menu) reflects the change
+automatically. Figure5-4 shows an example of this: both the button and the menu
+item change from “Go to channel 9” in their enabled state to “Go to channel 2” in
+theirdisabledstatewhen theuserclickson(orinvokesviathemnemonic withAlt-S)
+*
+the Set ‘Go to’ channel button.
+// ActionExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+public class ActionExample extends JFrame {
+* Aswenotedearlier,theuseoftheAltkeyisactuallyuptotheL&F,butcurrently,theSwingL&Fsthatsup-
+port button mnemonics use Alt. The Mac L&F does not, so if you run this program on a Mac, the buttons
+do not display any underlines, and pressing the key combinations has no effect.
+Figure5-4.ActionExample before and after clicking on the Set ‘Go to’ channel button
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JButton Class | 117
+  public static final int MIN_CHANNEL = 2;
+  public static final int MAX_CHANNEL = 13;
+  private int currentChannel = MIN_CHANNEL;
+  private int favoriteChannel = 9;
+  private JLabel channelLabel = new JLabel();
+  private Action upAction = new UpAction();
+  private Action downAction = new DownAction();
+  private GotoFavoriteAction gotoFavoriteAction = new GotoFavoriteAction();
+  private Action setFavoriteAction = new SetFavoriteAction();
+  public class UpAction extends AbstractAction {
+    public UpAction() {
+      putValue(NAME, "Channel Up");
+      putValue(SMALL_ICON, new ImageIcon("images/up.gif"));
+      putValue(SHORT_DESCRIPTION, "Increment the channel number");
+      putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_U));
+    }
+    public void actionPerformed(ActionEvent ae) {
+      setChannel(currentChannel+1);
+    }
+  }
+  public class DownAction extends AbstractAction {
+    public DownAction() {
+      putValue(NAME, "Channel Down");
+      putValue(SMALL_ICON, new ImageIcon("images/down.gif"));
+      putValue(SHORT_DESCRIPTION, "Decrement the channel number");
+      putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_D));
+    }
+    public void actionPerformed(ActionEvent ae) {
+      setChannel(currentChannel-1);
+    }
+  }
+  public class GotoFavoriteAction extends AbstractAction {
+    public GotoFavoriteAction() {
+      putValue(SMALL_ICON, new ImageIcon("images/fav.gif"));
+      putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_G));
+      updateProperties();
+    }
+    public void updateProperties() {
+      putValue(NAME, "Go to channel "+favoriteChannel);
+      putValue(SHORT_DESCRIPTION, "Change the channel to "+favoriteChannel);
+    }
+    public void actionPerformed(ActionEvent ae) {
+      setChannel(favoriteChannel);
+    }
+  }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+118 | Chapter 5: Buttons
+  public class SetFavoriteAction extends AbstractAction {
+    public SetFavoriteAction() {
+      putValue(NAME, "Set 'Go to' channel");
+      putValue(SMALL_ICON, new ImageIcon("images/set.gif"));
+      putValue(SHORT_DESCRIPTION, "Make current channel the Favorite channel");
+      putValue(MNEMONIC_KEY, new Integer(KeyEvent.VK_S));
+    }
+    public void actionPerformed(ActionEvent ae) {
+      favoriteChannel = currentChannel;
+      gotoFavoriteAction.updateProperties();
+      setEnabled(false);
+      gotoFavoriteAction.setEnabled(false);
+    }
+  }
+  public ActionExample() {
+    super("ActionExample");
+    setChannel(currentChannel); // Enable/disable the Actions as appropriate.
+    channelLabel.setHorizontalAlignment(JLabel.CENTER);
+    channelLabel.setFont(new Font("Serif", Font.PLAIN, 32));
+    getContentPane().add(channelLabel, BorderLayout.NORTH);
+    JPanel buttonPanel = new JPanel(new GridLayout(2, 2, 16, 6));
+    buttonPanel.setBorder(BorderFactory.createEmptyBorder(6, 16, 16, 16));
+    getContentPane().add(buttonPanel, BorderLayout.CENTER);
+    buttonPanel.add(new JButton(upAction));
+    buttonPanel.add(new JButton(gotoFavoriteAction));
+    buttonPanel.add(new JButton(downAction));
+    buttonPanel.add(new JButton(setFavoriteAction));
+    JMenuBar mb = new JMenuBar();
+    JMenu menu = new JMenu("Channel");
+    menu.add(new JMenuItem(upAction));
+    menu.add(new JMenuItem(downAction));
+    menu.addSeparator();
+    menu.add(new JMenuItem(gotoFavoriteAction));
+    menu.add(new JMenuItem(setFavoriteAction));
+    mb.add(menu);
+    setJMenuBar(mb);
+  }
+  public void setChannel(int chan) {
+    currentChannel = chan;
+    channelLabel.setText("Now tuned to channel: "+currentChannel);
+    // Enable/disable the Actions as appropriate.
+    downAction.setEnabled(currentChannel > MIN_CHANNEL);
+    upAction.setEnabled(currentChannel < MAX_CHANNEL);
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JButton Class | 119
+    gotoFavoriteAction.setEnabled(currentChannel != favoriteChannel);
+    setFavoriteAction.setEnabled(currentChannel != favoriteChannel);
+  }
+  public static void main(String argv[]) {
+    JFrame f = new ActionExample();
+    f.setSize(400, 180);
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setVisible(true);
+  }
+}
+Fancy Buttons
+While looking atAbstractButton, we learned that quite a few things can be done
+with Swing buttons to make them more visually interesting. In this example, we’ll
+see how we can spice up a user interface by adding rollover and selected icons to our
+buttons. We’ll also take away the button borders, focus painting, and fill content
+area to give our display a nice clean look.
+// FancyButton.java
+//
+import javax.swing.*;
+import java.awt.*;
+public class FancyButton extends JButton {
+  // Create a JButton that does not show focus, does not paint a border, and displays
+  // different icons when rolled over and pressed.
+  public FancyButton(Icon icon, Icon pressed, Icon rollover) {
+    super(icon);
+    setFocusPainted(false);
+    setRolloverEnabled(true);
+    setRolloverIcon(rollover);
+    setPressedIcon(pressed);
+    setBorderPainted(false);
+    setContentAreaFilled(false);
+  }
+  // A simple test program
+  public static void main(String[] args) {
+    FancyButton b1 = new FancyButton(
+      new ImageIcon("images/redcube.gif"),
+      new ImageIcon("images/redpaw.gif"),
+      new ImageIcon("images/reddiamond.gif"));
+    FancyButton b2 = new FancyButton(
+      new ImageIcon("images/bluecube.gif"),
+      new ImageIcon("images/bluepaw.gif"),
+      new ImageIcon("images/bluediamond.gif"));
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container c = f.getContentPane();
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+120 | Chapter 5: Buttons
+    c.setLayout(new FlowLayout());
+    c.add(b1);
+    c.add(b2);
+    f.pack();
+    f.setVisible(true);
+  }
+}
+Figure5-5 shows our new button class with the different states of the buttons. Of
+course, this is just one fancy button implementation. You can create your own spe-
+cial button classes using some or all of the features shown in
+FancyButton, as well as
+other features, such as adding icons for other buttonstates.
+The JToggleButton Class
+JToggleButtonis an extension ofAbstractButtonand is used to represent buttons that
+can be toggled on and off (as opposed to buttons likeJButtonwhich, when pushed,
+“pop back up”). It should be noted that while the subclasses ofJToggleButton
+(JCheckBoxandJRadioButton) are the kinds ofJToggleButtons most commonly used,
+JToggleButtonis not an abstract class. When used directly, it typically (though this is
+ultimately up to the L&F) has the appearance of aJButtonthat does not pop back up
+when pressed (see Figure5-6).
+Properties
+TheJToggleButtonclass inherits all of its properties and most of its default values
+from its superclass. The exceptions are shown in Table5-10. Themodelproperty is
+set to a new instance ofToggleButtonModelwhen aJToggleButtonis created.
+ToggleButtonModel(described in the next section) is a public inner class that extends
+DefaultButtonModel.
+Figure5-5.Buttons using “rollover” and “pressed” icons
+Default Fancy Buttons Rolled-Over Fancy Buttons
+Pressed Fancy Buttons
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JToggleButton Class | 121
+Events
+LikeJButton, JToggleButtondefines no new events. However, the events fired by
+JToggleButtons are slightly different than those fired byJButton. Let’s look at these
+events by running a simple program like the one used in theJButtonevent section.
+This time, we’ll create aJToggleButton instead of aJButton:
+// JToggleButtonEvents.java
+//
+import javax.swing.*;
+import javax.swing.event.*;
+Figure5-6.JToggleButtons in four L&Fs
+Table5-10.JToggleButton properties
+Property Data type
+get
+is
+setDefault value
+accessibleContexto AccessibleContext• JToggleButton.
+AccessibleJToggleButton()
+modelo ButtonModel•• ToggleButtonModel()
+UIClassIDo String • "ToggleButtonUI"
+ooverridden
+See also properties fromAbstractButton (Table 5-5).
+Metal JToggleButtons
+Motif JToggleButtons
+Windows JToggleButtons
+Mac JToggleButtons
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+122 | Chapter 5: Buttons
+import java.awt.*;
+import java.awt.event.*;
+public class JToggleButtonEvents {
+  public static void main(String[] args) {
+    JToggleButton jtb = new JToggleButton("Press Me");
+    jtb.addActionListener(new ActionListener() {
+      public void actionPerformed(ActionEvent ev) {
+        System.out.println("ActionEvent!");
+      }
+    });
+    jtb.addItemListener(new ItemListener() {
+      public void itemStateChanged(ItemEvent ev) {
+        System.out.println("ItemEvent!");
+      }
+    });
+    jtb.addChangeListener(new ChangeListener() {
+      public void stateChanged(ChangeEvent ev) {
+        System.out.println("ChangeEvent!");
+      }
+    });
+    JFrame f = new JFrame();
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container c = f.getContentPane();
+    c.setLayout(new FlowLayout());
+    c.add(jtb);
+    f.pack();
+    f.setVisible(true);
+  }
+}
+When we run this program and press the button, we get the following output:
+ChangeEvent!
+ChangeEvent!
+After releasing the button, we see:
+ChangeEvent!
+ItemEvent!
+ChangeEvent!
+ActionEvent!
+As in ourJButtonexample, the first two events are fired to indicate that the button is
+armedandpressed. When the button is released, we get another change event indi-
+cating that the button has now beenselected. Additionally, toggle buttons fire an
+ItemEventto indicate button selection. The final two events match those ofJButton,
+indicating that the button is no longer being pressed and that an action (button
+press) has occurred.
+Subsequent button presses result in one lessChangeEvent(just like we saw with
+JButton) because the button remains armed after it is pressed. (Depending on the
+L&F, there may also be additionalChangeEvents.)
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JToggleButton.ToggleButtonModel Class | 123
+Constructors
+public JToggleButton()
+Create a button that has no text or icon and is not selected.
+public JToggleButton(Action a)
+Create a button with property values taken from the specifiedAction(see
+Table5-8), register theActionto receiveActionEventsfired by the button, and
+register the button as aChangeListenerof theAction. The button adapts to any
+future changes made to theAction. This is equivalent to instantiating a
+JToggleButtonwith the default constructor and then calling itssetAction()
+method. (This constructor was introduced with SDK 1.3.)
+public JToggleButton(Icon icon)
+public JToggleButton(Icon icon, boolean selected)
+Create a button that displays the specifiedicon. If included, thebooleanparame-
+ter determines the initial selection state of the button.
+public JToggleButton(String text)
+public JToggleButton(String text, boolean selected)
+Create a button that displays the specified
+text. If included, thebooleanparame-
+ter determines the initial selection state of the button.
+public JToggleButton(String text, Icon icon)
+public JToggleButton(String test, Icon icon, boolean selected)
+Create a button that displaysthe specified
+textandicon. If included,theboolean
+parameter determines the initial selection state of the button.
+The JToggleButton.ToggleButtonModel
+Class
+Aswementionedearlier,JToggleButtondoesnotusetheDefaultButtonModelclassasits
+model.ToggleButtonModel, a public static inner class that extendsDefaultButtonModel,
+is used instead.
+Properties
+ToggleButtonModelmodifies the methods for working with the properties listed in
+Table5-11. New implementations ofisSelected()andsetSelected()use the but-
+ton’sButtonGroup(if defined) to keep track of which button is selected, ensuring that
+even if multiple selected buttons are added to a group, only the first one is considered
+selected (since the group keeps track of the “officially” selected button). In addition,
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+124 | Chapter 5: Buttons
+thesetPressed()method is redefined to callsetSelected()when the button is
+released (if it is armed)
+.
+The JCheckBox Class
+TheJCheckBox*class is shown in various L&Fs in Figure5-7.JCheckBoxis a subclass
+ofJToggleButtonand is typically used to allow the user to turn a given feature on or
+off or to make multiple selections from a set of choices. AJCheckBoxis usually ren-
+dered by showing a small box into which a “check” is placed when selected (as
+shown in Figure5-7). If you specify an icon for the checkbox, this icon replaces the
+default box. Therefore, if you specify an icon, you should always also supply a
+selected icon—otherwise, there is no way to tell if a checkbox is selected.
+Properties
+TheJCheckBoxclass inherits most of its properties from its superclasses. The excep-
+tions are shown in Table5-12. By default, no border is painted onJCheckBoxes, and
+theirhorizontalAlignmentis to the leading edge (which means to the left in the
+default locale, in which text reads left to right).†Setting theborderPaintedFlatprop-
+erty totrueis a hint to the L&F that the checkbox should be drawn more plainly
+than usual. (This is used primarily by cell renderers for tables and trees.)
+Table5-11.JToggleButton.ToggleButtonModel properties
+Property Data type
+get
+is
+set Default value
+pressedo boolean •• false
+selectedo boolean •• false
+ooverridden
+See also properties fromDefaultButtonModel (Table 5-3).
+* Note that thejava.awt.Checkbox class differs in capitalization fromjavax.swing.JCheckBox.
+Figure5-7.JCheckBoxes in four L&Fs
+†This locale sensitivity was introduced in SDK 1.4; previously, checkboxes were always aligned to the left.
+Metal JCheckBoxes Motif JCheckBoxes Windows JCheckBoxesMac JCheckBoxes
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JCheckBox Class | 125
+Events
+See the discussion ofJToggleButton (JCheckBox’s superclass) events.
+Constant
+JToggleButtonadds one constant for use inPropertyChangeEvents to the list defined
+byAbstractButton (see Table5-13).
+Constructors
+public JCheckBox()
+Create a checkbox that has no text or icon and is not selected.
+public JCheckBox(Action a)
+Create a checkbox with property values taken from the specifiedAction, register
+theActionto receiveActionEventsfired by the checkbox, and register the check-
+box as aChangeListenerof theAction. The checkbox adapts to any future
+changes made to theAction. The properties set are the ones listed in Table5-8,
+except that theSMALL_ICON is not honored sinceJCheckBoxuses itsiconproperty
+to show its state. (This constructor was introduced with SDK 1.3.)
+public JCheckBox(Icon icon)
+public JCheckBox(Icon icon, boolean selected)
+Create a checkbox that displays the specifiedicon. If included, theselected
+parameter determines the initial selection state of the button.
+Table5-12.JCheckBox properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• AccessibleJCheckBox
+borderPaintedo boolean •• false
+borderPaintedFlat1.3, b boolean •• false
+horizontalAlignmento int •• LEADING1.4
+UIClassIDo String • "CheckBoxUI"
+1.3since 1.3, 1.4since 1.4, bbound, ooverridden
+See also properties fromJToggleButton (Table 5-10).
+Table5-13.JToggleButton constant
+Constant Type Description
+BORDER_PAINTED_FLAT_CHANGED_PROPERTY String borderPaintedFlat property has changed
+See also the constants defined byAbstractButton in Table 5-7.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+126 | Chapter 5: Buttons
+public JCheckBox(String text)
+public JCheckBox(String text, boolean selected)
+Create a checkbox that displays the specifiedtext. If included, theselected
+parameter determines the initial selection state of the button.
+public JCheckBox(String text, Icon icon)
+public JCheckBox(String text, Icon icon, boolean selected)
+Create a checkbox that displays the specified
+textandicon. If included, the
+selected parameter determines the initial selection state of the button.
+The JRadioButton Class
+JRadioButtonis a subclass ofJToggleButton, typically used with otherJRadioButtons,
+that allows users to make a single selection from a set of options (Figure5-8).
+Because radio buttons form a set of choices,
+JRadioButtons are usually used in
+groups, managed by aButtonGroup(described in the next section). If you specify an
+icon for the radio button, you should also specify a selected icon so it will be visually
+apparent if a button is selected.Properties
+TheJRadioButtonclass inherits all its properties and most of its default values from
+its superclass. The only exceptions are shown in Table5-14. By default, no border is
+painted on
+JRadioButtons, and theirhorizontalAlignmentis set to the leading edge
+(to the left in the default locale, in which text reads left to right).*
+Figure5-8.JRadioButtons in four L&Fs
+* This locale sensitivity was introduced in SDK 1.4; previously, radio buttons were always aligned to the left.
+Table5-14.JRadioButton properties
+Property Data type
+get
+is
+set Default value
+accessibleContexto AccessibleContext• JRadioButton.
+AccessibleJRadioButton()
+borderPaintedo boolean •• false
+1.4since 1.4, ooverridden
+See also properties fromJToggleButton (Table 5-10).
+Metal JRadioButtons Motif JRadioButtons Windows JRadioButtonsMac JRadioButtons
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JRadioButton Class | 127
+Events
+See the discussion ofJToggleButton (JRadioButton’s superclass) events.
+Constructors
+public JRadioButton()
+Create a button that has no text or icon and is not selected.
+public JRadioButton(Action a)
+CreateabuttonwithpropertyvaluestakenfromthespecifiedAction,registerthe
+Actionto receiveActionEventsfired by the button, and register the button as a
+ChangeListenerof theAction. The button adapts to any future changes made to
+theAction. The properties set are the ones listed in Table5-8, except that the
+SMALL_ICON is not honored sinceJRadioButtonuses itsiconproperty to show its
+state. (This constructor was introduced with SDK 1.3.)
+public JRadioButton(Icon icon)
+public JRadioButton(Icon icon, boolean selected)
+Create a button that displays the specifiedicon. If included, thebooleanparame-
+ter determines the initial selection state of the button.
+public JRadioButton(String text)
+public JRadioButton(String text, boolean selected)
+Create a button that displays the specified
+text. If included, thebooleanparame-
+ter determines the initial selection state of the button.
+public JRadioButton(String text, Icon icon)
+public JRadioButton(String text, Icon icon, boolean selected)
+Create a button that displaysthe specified
+textandicon. If included,theboolean
+parameter determines the initial selection state of the button.
+Opaque JRadioButtons and JCheckBoxes
+Typically,JRadioButtons andJCheckBoxes should be left transparent (notopaque)
+with theircontentAreaFilledproperty set tofalse. These components usually fill
+horizontalAlignmento int •• LEADING1.4
+UIClassIDo String • "RadioButtonUI"
+Table5-14.JRadioButton properties (continued)
+Property Data type
+get
+is
+set Default value
+1.4since 1.4, ooverridden
+See also properties fromJToggleButton (Table 5-10).
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+128 | Chapter 5: Buttons
+only some of their allocated space, and making them opaque or filled causes an awk-
+ward-looking rectangle to be painted behind them, as shown in Figure5-9.
+The ButtonGroup Class
+TheButtonGroupclass allows buttons to be logically grouped, guaranteeing that no
+morethanonebuttoninthegroupisselectedatanygiventime.Infact,onceoneofthe
+buttons is selected, the
+ButtonGroupensures that exactly one button remains selected at
+all times. Note that this allows for an initial state (in which no button is selected) that
+can never be reached again once a selection is made, except programmatically.
+Asmentionedearlier,
+ButtonGroupstypicallyholdJRadioButtons(orJRadioButtonMenuItems,
+discussed in Chapter14), but this is purely a convention and is not enforced by
+ButtonGroup.ButtonGroup’sadd()methodtakesobjects oftypeAbstractButton,soanybut-
+tontypemaybeadded—evenamixoftypes.Ofcourse,addingaJButtontoaButtonGroup
+would not be very useful sinceJButtons do not have selected and deselected states. In fact,
+JButtons added toButtonGroups have no effect on the state of the other buttons if they are
+pressed.
+ButtonGroupobjects do not have any visual appearance; they simply provide a logical
+grouping of a set of buttons. You must add buttons in aButtonGroupto aContainer
+and lay them out as though noButtonGroup were being used.
+It’s worth noting that some methods in theButtonGroupclass deal with
+AbstractButtonobjects and some deal withButtonModelobjects. Theadd(),remove(),
+andgetElements()methods all useAbstractButton, while thegetSelection(),
+isSelected(), andsetSelected() methods useButtonModel objects.
+Properties
+ButtonGroupdefines the properties listed in Table5-15. ThebuttonCountproperty is
+the number of buttons in the group. Theelementsproperty is anEnumerationof the
+AbstractButtonobjects contained by the group. Theselectionproperty contains the
+ButtonModel of the currently selected button.
+Figure5-9.Opaque JCheckBox and JRadioButton
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The ButtonGroup Class | 129
+Voting with a Button Group
+The following example demonstrates the use of aButtonGroupto ensure that only a
+single selection is made from a list of choices. Listeners are added to the buttons to
+show which events are fired each time a new button is selected.
+// SimpleButtonGroupExample.java
+//
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+// A ButtonGroup voting booth
+public class SimpleButtonGroupExample {
+  public static void main(String[] args) {
+    // Some choices
+    JRadioButton choice1, choice2, choice3;
+    choice1 = new JRadioButton("Bach: Well Tempered Clavier, Book I");
+    choice1.setActionCommand("bach1");
+    choice2 = new JRadioButton("Bach: Well Tempered Clavier, Book II");
+    choice2.setActionCommand("bach2");
+    choice3 = new JRadioButton("Shostakovich: 24 Preludes and Fugues");
+    choice3.setActionCommand("shostakovich");
+    // A group that ensures we vote for only one
+    final ButtonGroup group = new ButtonGroup();
+    group.add(choice1);
+    group.add(choice2);
+    group.add(choice3);
+    // A simple ActionListener, showing each selection using the ButtonModel
+    class VoteActionListener implements ActionListener {
+      public void actionPerformed(ActionEvent ev) {
+        String choice = group.getSelection().getActionCommand();
+        System.out.println("ACTION Choice Selected: " + choice);
+      }
+    }
+Table5-15.ButtonGroup properties
+Property Data type
+get
+is
+set Default value
+buttonCount int • 0
+elements Enumeration• Empty
+selection ButtonModel• null
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+130 | Chapter 5: Buttons
+    // A simple ItemListener, showing each selection and deselection
+    class VoteItemListener implements ItemListener {
+      public void itemStateChanged(ItemEvent ev) {
+        boolean selected = (ev.getStateChange() == ItemEvent.SELECTED);
+        AbstractButton button = (AbstractButton)ev.getItemSelectable();
+        System.out.println("ITEM Choice Selected: " + selected +
+                           ", Selection: " + button.getActionCommand());
+      }
+    }
+    // Add listeners to each button.
+    ActionListener alisten = new VoteActionListener();
+    choice1.addActionListener(alisten);
+    choice2.addActionListener(alisten);
+    choice3.addActionListener(alisten);
+    ItemListener ilisten = new VoteItemListener();
+    choice1.addItemListener(ilisten);
+    choice2.addItemListener(ilisten);
+    choice3.addItemListener(ilisten);
+    // Throw everything together.
+    JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    Container c = frame.getContentPane();
+    c.setLayout(new GridLayout(0, 1));
+    c.add(new JLabel("Vote for your favorite prelude & fugue cycle"));
+    c.add(choice1);
+    c.add(choice2);
+    c.add(choice3);
+    frame.pack();
+    frame.setVisible(true);
+  }
+}
+We first create three radio buttons and add them to a button group. Then, we define
+anActionListenerand anItemListenerto print out some information each time a
+selection is made. We add both listeners to each button. The rest of the code is just
+layout.
+When executed, the initial selection of a radio button produces the following output:
+ITEM Choice Selected: true, Selection: shostakovich
+ACTION Choice Selected: shostakovich
+Changing the selection causes two item events to be fired, showing which button
+was toggled off and which was toggled on:
+ITEM Choice Selected: false, Selection: shostakovich
+ITEM Choice Selected: true, Selection: bach1
+ACTION Choice Selected: bach1
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The ButtonGroup Class | 131
+Constructor
+public ButtonGroup()
+Create an empty group.
+Methods
+public void add(AbstractButton b)
+Add a button to the group. If there is no selected button in the group, and the
+supplied button is selected, it becomes the group’s selection. (Conversely, if
+there is already a selected button, adding a selected button does not change the
+selection; Swing adds the button to the group but if necessary deselects it first.)
+public void remove(AbstractButton b)
+Remove a button from the group. If the removed button was the currently
+selected button, the group’s selection is set to
+null.
+public void setSelected(ButtonModel m, boolean b)
+Select the given button if the boolean parameter istrue. If there was a previ-
+ously selected button in the group, it is deselected. Calling this method with a
+false argument has no effect.
+public boolean isSelected(ButtonModel m)
+This method indicates whether the given button is the group’s currently selected
+button.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+132
+Chapter6In this chapter:
+• The Bounded-Range Model
+• The JScrollBar Class
+• The JSlider Class
+• The JProgressBar Class
+• Monitoring Progress
+CHAPTER 6
+Bounded-Range
+Components
+This chapter groups several Swing components together by the model that drives
+them: thebounded-range model. Bounded-range components in Swing include
+JSlider, JProgressBar, andJScrollBar. In addition, we discuss two classes that use
+progress bars:ProgressMonitorandProgressMonitorInputStream. These classes dis-
+play status dialogs using aJOptionPane that you can assign to a variety of tasks.
+The Bounded-Range Model
+Components that use the bounded-range model typically consist of an integer value
+that is constrained within two integer boundaries. The lower boundary, themini-
+mum, should always be less than or equal to the model’s currentvalue. In addition,
+themodel’svalueshouldalwaysbelessthantheupperboundary,themaximum.The
+model’s value can cover more than one unit; this size is referred to as itsextent. With
+bounded range, the user is allowed to adjust the value of the model according to the
+rules of the component. If the value violates any of the rules, the model can adjust
+the values accordingly.
+The
+javax.swing.BoundedRangeModelinterface outlines the data model for such an
+object. Objects implementing theBoundedRangeModelinterface must contain an
+adjustable integer value, an extent, a minimum, and a maximum. Swing contains
+three bounded-range components:JScrollBar, JSlider, andJProgressBar. These
+components are shown in Figure6-1.
+Properties
+Table6-1 shows the properties of theBoundedRangeModel interface.
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Bounded-Range Model | 133
+Theminimum, maximum, andvalueproperties form the actual bounded range. The
+extentproperty can give the value its own subrange. Extents can be used in situa-
+tionswherethemodel’svalueexceedsasingleunit;theycanalsobechangeddynam-
+ically. For example, the sliding “thumbs” of many scrollbars resize themselves based
+on the percentage of total information displayed in the window. If you wish to emu-
+late this behavior with Swing, you could declare a bounded-range scrollbar and set
+the
+extent property to grow or shrink as necessary.
+Figure6-2 illustrates a bounded range with the following properties:
+minimum = 1; maximum = 24; value = 9; extent = 3
+Extentsalwaysdefinearangegreaterthanthemodel’svalue,neverless.Ifyoudonot
+want the value to have a subrange, you can set the extent to
+0.
+Here are some rules to remember when working with bounded ranges:
+• If the user sets a newvaluethat is outside the bounded range, thevalueis set to
+the closest boundary (minimum ormaximum).
+Figure6-1.Bounded-range components in Swing
+Table6-1.BoundedRangeModel properties
+Property Data type
+get
+is
+setDefault value
+extent int ••
+maximum int ••
+minimum int ••
+value int ••
+valueIsAdjusting boolean ••
+Figure6-2.Properties of the BoundedRangeModel interface
+Scrollbar
+Progress Bar
+Slider
+Minimum
+1 2 3 4 5 6 7 8 9 1 01 11 21 3 1 41 5 1 61 71 8 1 92 0 2 12 22 3 2 4
+Value
+Extent Maximum
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+134 | Chapter 6: Bounded-Range Components
+• If the user sets a newvalueso thatextentexceeds themaximum, the model resets
+thevalueto the amount of themaximumminus theextent—thus preserving the
+width of theextent.
+• If the user setsextent to a negative number, it is reset to0.
+• If the user setsextentlarge enough to exceed themaximum, the model resets
+extentto be the remaining width, if any, between the model’s currentvalueand
+itsmaximum.
+• If the user resets theminimumormaximumso that the model’s value now falls out-
+side the bounded range, thevalueis adjusted to become the boundary closest to
+its originalvalue.
+• If a user resets aminimumso that it exceeds themaximum, themaximumand thevalue
+are reset to the newminimum. Conversely, if a newmaximumis less than the cur-
+rentminimum, theminimumandvalueare adjusted to be the newmaximum. In both
+cases,extent is reset to0.
+• If the user resets aminimumormaximumso thatextentgoes beyond themaximum,
+extent is decreased so it does not exceed themaximum.
+Finally, thevalueIsAdjustingproperty is abooleanthat indicates that the model is
+undergoingchanges.JSlider,forexample,togglesthispropertytotruewhiletheuser
+is dragging the thumb. This alerts anyChangeEventlisteners on the component that
+this event is probably one in a series, and they may choose not to react immediately.
+Events
+Objects implementing theBoundedRangeModelinterface must fire aChangeEventwhen the
+model modifies itsminimum,maximum,value,o rextentproperties. TheBoundedRangeModel
+interface contains the standard methods for maintaining a list ofChangeEvent subscribers.
+public abstract void addChangeListener(ChangeListener 1)
+public abstract void removeChangeListener(ChangeListener 1)
+Add or remove aChangeListener for receiving events when a property changes.
+Method
+public abstract void setRangeProperties(int value, int extent, int min, int max,
+boolean adjusting)
+Typically,oneeventisgeneratedperpropertychange.However,ifyouwishtomake
+multiple changes without triggering events, you can call the
+setRangeProperties()
+method to change all five properties at once. This method generates a single
+ChangeEvent per call. For example:
+setRangeProperties(40, 4, 32, 212, false); // Generates a single change event
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Bounded-Range Model | 135
+The DefaultBoundedRangeModel Class
+Swing provides a standard implementation of theBoundedRangeModelinterface with
+theDefaultBoundedRangeModelclass. This class provides the minimum functionality
+necessary to correctly implement the bounded-range model. Programmers are free to
+use and extend this class as they see fit.
+Properties
+The properties of theDefaultBoundedRangeModelclass are identical to the properties
+of the interface it implements; it provides default values but doesn’t otherwise add or
+change properties, as shown in Table6-2. See the
+BoundedRangeModelinterface earlier
+in this chapter for a description of the rules this component follows when the values
+of its properties are changed.
+Events
+As specified by the bounded-range interface, theDefaultBoundedRangeModelfires a
+ChangeEvent when the model modifies itsminimum,maximum,value, orextent properties.
+public void addChangeListener(ChangeListener l)
+public void removeChangeListener(ChangeListener l)
+Add or remove a change listener from the list of objects that receive a
+ChangeEvent when a property changes.
+public EventListener[] getListeners(Class listenerType)
+This method was introduced in SDK 1.3 as a way of learning about the regis-
+tered listeners. The
+changeListenersproperty added in 1.4 is a more convenient
+way to get the same information.
+Table6-2.DefaultBoundedRangeModel properties
+Property Data type
+get
+is
+setDefault value
+changeListeners1.4 ChangeListener[]• Empty array
+extento int •• 0
+maximumo int •• 100
+minimumo int •• 0
+valueo int •• 0
+valueIsAdjustingo boolean •• false
+1.4since 1.4, ooverridden
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+136 | Chapter 6: Bounded-Range Components
+Constructors
+public DefaultBoundedRangeModel()
+The default constructor for this class. It initializes a bounded-range model with a
+minimum of0, amaximum of100, and avalue andextent of0.
+public DefaultBoundedRangeModel(int value, int extent, int minimum, int maximum)
+Initialize the bounded-range model with the specified values.
+Working with the bounded-range model
+Here is a program that helps to demonstrate some of the features of the
+DefaultBoundedRangeModelclass and the bounded-range interface. We intentionally
+try to confuse the model to show how it reacts to inappropriate property values.
+//  Bounded.java
+//
+import java.awt.*;
+import java.awt.event.*;
+import java.util.*;
+import javax.swing.*;
+import javax.swing.event.*;
+public class Bounded {
+    public Bounded() {
+      try {
+          DefaultBoundedRangeModel model = new DefaultBoundedRangeModel();
+          ChangeListener myListener = new MyChangeListener();
+          model.addChangeListener(myListener);
+          System.out.println(model.toString());
+          System.out.println("Now setting minimum to 50 ...");
+          model.setMinimum(50);
+          System.out.println(model.toString());
+          System.out.println("Now setting maximum to 40 ...");
+          model.setMaximum(40);
+          System.out.println(model.toString());
+          System.out.println("Now setting maximum to 50 ...");
+          model.setMaximum(50);
+          System.out.println(model.toString());
+          System.out.println("Now setting extent to 30 ...");
+          model.setExtent(30);
+          System.out.println(model.toString());
+          System.out.println("Now setting several properties ...");
+          if (!model.getValueIsAdjusting()) {
+              model.setValueIsAdjusting(true);
+              System.out.println(model.toString());
+              model.setMinimum(0);
+              model.setMaximum(100);
+              model.setExtent(20);
+              model.setValueIsAdjusting(false);
+          }
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The Bounded-Range Model | 137
+          System.out.println(model.toString());
+      } catch (Exception e) { e.printStackTrace(); }
+    }
+    class MyChangeListener implements ChangeListener {
+        public void stateChanged(ChangeEvent e) {
+            System.out.println("A ChangeEvent has been fired!");
+        }
+    }
+    public static void main(String args[]) { new Bounded(); }
+}
+Let’s go through the output step by step. The first step is to define a
+DefaultBoundedRangeModeland attach aChangeListenerto it. After doing so, we print
+the default values of the model:
+DefaultBoundedRangeModel[value=0, extent=0, min=0, max=100, adj=false]
+Here, we set the minimum to50 and the maximum to a value smaller than the mini-
+mum,40. Looks like trouble ahead…
+Now setting minimum to 50...
+A ChangeEvent has been fired!
+DefaultBoundedRangeModel[value=50, extent=0, min=50, max=100, adj=false]
+Now setting maximum to 40 (smaller than min)...
+A ChangeEvent has been fired!
+DefaultBoundedRangeModel[value=40, extent=0, min=40, max=40, adj=false]
+There are two things to note here. First, by resetting the minimum to50, we let the
+value property fall outside the bounded range. The model compensated by raising
+the value to match the new minimum. Second, we threw a monkey wrench into the
+model by setting the maximum less than the minimum. However, the bounded-
+range model adjusted the minimum and the value accordingly to match the newly
+specified maximum.
+Now let’s try a different tactic:
+Now setting maximum to 50...
+A ChangeEvent has been fired!
+DefaultBoundedRangeModel[value=40, extent=0, min=40, max=50, adj=false]
+Now setting extent to 30 (greater than max)...
+A ChangeEvent has been fired!
+DefaultBoundedRangeModel[value=40, extent=10, min=40, max=50, adj=false]
+Here, we see what happens when we try to set an extent with a subrange greater than
+the current maximum—the model shortens the extent so that it falls within the
+bounded range. The same thing occurs if we reset the value of the extent’s subrange
+so that it violates the maximum.
+Finally, we activate the
+valueIsAdjustingproperty to notify any listeners that this is
+one in a series of changes, and the listener does not need to react immediately:
+Now setting several properties...
+A ChangeEvent has been fired!
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+138 | Chapter 6: Bounded-Range Components
+DefaultBoundedRangeModel[value=40, extent=10, min=40, max=50, adj=true]
+A ChangeEvent has been fired!
+A ChangeEvent has been fired!
+A ChangeEvent has been fired!
+A ChangeEvent has been fired!
+DefaultBoundedRangeModel[value=40, extent=20, min=0, max=100, adj=false]
+The JScrollBar Class
+JScrollBaris the Swing implementation of a scrollbar. TheJScrollBarclass is shown
+in various L&Fs in Figure6-3.
+To program with a scrollbar, it is important to understand its anatomy. Scrollbars
+are composed of a rectangular tab, called asliderorthumb, located between two
+arrow buttons. The arrow buttons on either end increment or decrement the slider’s
+position by an adjustable number of units, generally one. In addition, clicking in the
+areabetweenthethumbandtheendbuttons(oftencalledthepagingarea)movesthe
+slider oneblock, or 10 units by default. The user can modify the value of the scroll-
+bar in one of three ways: by dragging the thumb in either direction, by pushing on
+either of the arrow buttons, or by clicking in the paging area.
+Scrollbars can have one of two orientations: horizontal or vertical. Figure6-4 pro-
+vides an illustration of a horizontal scrollbar.
+JScrollBaruses the bounded-range
+model to represent the scrollbar’s data. The assignment of each bounded-range prop-
+erty is also shown in Figure6-5. The minimum and maximum of the scrollbar fall on
+the interior edges of the arrow buttons. The scrollbar’s value is defined as the left (or
+top) edge of the slider. Finally, the extent of the scrollbar defines the width of the
+thumbinrelationtothetotalrange.(Theolder
+Adjustableinterfacefromthejava.awt
+package referred to the extent as the “visible amount.”) Note that horizontal scroll-
+bars increment to the right and vertical scrollbars increment downward.
+Properties
+Table6-3 shows the properties of theJScrollBarcomponent. Most of these proper-
+ties come from thejava.awt.Adjustableinterface. Theorientationproperty gives the
+direction of the scrollbar, eitherJScrollBar.HORIZONTALorJScrollBar.VERTICAL. The
+unitIncrementproperty represents the integer amount by which the bounded-range
+Figure6-3.Scrollbars in several L&Fs
+Motif Look-and-Feel Windows Look-and-Feel
+Metal Look-and-Feel Mac Look-and-Feel
+
+This is the Title of the Book, eMatter Edition
+Copyright © 2008 O’Reilly & Associates, Inc. All rights reserved.
+The JScrollBar Class | 139
+value changes when the user clicks on either of the arrow buttons. The
+blockIncrementproperty represents the integer amount by which the scrollbar value
+changes when the user clicks in either of the paging areas. Theenabledproperty indi-
+cates whether the scrollbar can generate or respond to events. Theminimum, maximum,
+value, andvalueIsAdjustingproperties match the equivalent properties in the
+BoundedRangeModelof the scrollbar. ThevisibleAmountproperty matches theextent
+property in the model; it indicates the thickness of the thumb. TheminimumSizeand
+maximumSize properties allow the scrollbar to behave appropriately when it is resized.
+Figure6-4.Anatomy of a horizontal scrollbar
+Figure6-5.JScrollBar class diagram
+Table6-3.JScrollBar properties
+Property Data type
+get
+is
+setDefault value
+accessibleContexto AccessibleContext• JScrollBarAccessibleJ-
+ScrollBar()
+adjustment-Listeners1.4 Adjustment-Listener[]• Empty array
+blockIncrementb, o, * int •• 10
+enabledo boolean • true
+maximumo int •• 100
+maximumSizeo Dimension •
+minimumo int •• 0
+minimumSizeo Dimension •
+modelb BoundedRangeModel•• DefaultBoundedRangeModel()
+1.4since 1.4, bbound, ooverridden, *indexed version (on direction) also available
+See also the properties of theJComponent class (Table 3-6).
+Unit Decrement Slider (Thumb) Paging Area Unit Increment
+Minimum Value MaximumExtent
+1
+javax.swing
+uses
+Adjustable
+JScrollBarJComponent BoundedRangeModel
+java.awt
+A
+Key: Interface Class Abstract Class
+extends
+implements
+other relation
+A
+accessible
