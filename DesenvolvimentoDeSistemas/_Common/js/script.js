@@ -47,7 +47,26 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Load rules from window (defined in HTML) or empty default
-const activityRules = window.activityRules || {};
+const activityRules = window.activityRules || {
+    'activity-01': [
+        { id: 'q1', text: 'Responder sobre Peso-Leve/Pesado', pattern: /(peso-leve|lightweight)/i },
+        { id: 'q2', text: 'Mencionar javax.swing', pattern: /javax\.swing/i },
+        { id: 'q3', text: 'Explicar MVC (Model, View, Controller)', pattern: /(model|view|controller|mvc)/i }
+    ],
+    'activity-02': [
+        { id: 'frame', text: 'Criar JFrame ("Sistema SENAI")', pattern: /new\s+JFrame\s*\(\s*".*Sistema SENAI.*"\s*\)|setTitle\s*\(\s*".*Sistema SENAI.*"\s*\)/i },
+        { id: 'size', text: 'Definir tamanho 400x300', pattern: /setSize\s*\(\s*400\s*,\s*300\s*\)/ },
+        { id: 'button', text: 'Criar JButton "Entrar"', pattern: /new\s+JButton\s*\(\s*".*Entrar.*"\s*\)/i },
+        { id: 'close', text: 'Configurar EXIT_ON_CLOSE', pattern: /setDefaultCloseOperation\s*\(\s*JFrame\.EXIT_ON_CLOSE\s*\)/ },
+        { id: 'visible', text: 'Tornar janela visível', pattern: /setVisible\s*\(\s*true\s*\)/ }
+    ],
+    'activity-03': [
+        { id: 'btn', text: 'Criar JButton "Ação"', pattern: /new\s+JButton\s*\(\s*".*Ação.*"\s*\)/i },
+        { id: 'listener', text: 'Adicionar ActionListener', pattern: /\.addActionListener/ },
+        { id: 'tooltip', text: 'Configurar ToolTip', pattern: /\.setToolTipText/ },
+        { id: 'change', text: 'Mudar texto com setText', pattern: /\.setText/ }
+    ]
+};
 
 function initCodeValidation() {
     const textareas = document.querySelectorAll('textarea[id^="activity-"]');

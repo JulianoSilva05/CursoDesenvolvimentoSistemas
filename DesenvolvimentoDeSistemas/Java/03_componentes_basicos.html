@@ -1,161 +1,137 @@
-
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Componentes Básicos</title>
+    <title>Aula 03: Componentes Básicos</title>
     <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .code-block {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 0.9rem;
+            white-space: pre-wrap;
+            margin: 10px 0;
+        }
+    </style>
 </head>
 <body>
-    <!-- Logo SENAI -->
     <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
-
     <div class="progress-bar" id="progressBar"></div>
 
     <div class="slide-container">
         
         <!-- Slide 1: Capa -->
         <div class="slide active">
-            <h1>Componentes Básicos</h1>
-            <h2>Eventos, Ações e JComponent</h2>
+            <h1>Aula 03: Componentes Básicos</h1>
+            <h2>Botões, Textos e Eventos Simples</h2>
             <div style="width: 100%; height: 300px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
                 <h1 style="color: white;">Aula 03</h1>
             </div>
             <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; text-align: center;">
-                <p><strong>Duração Estimada:</strong> 3 Horas</p>
-                <p>Entendendo como o Swing funciona por dentro</p>
+                <p><strong>Duração: 3 Horas (2h Teoria + 1h Prática)</strong></p>
+                <p>Interagindo com o Usuário</p>
             </div>
         </div>
 
-        <!-- Slide 2: O Poder do JComponent -->
+        <!-- Slide 2: Conceitos Fundamentais -->
         <div class="slide">
-            <h2>JComponent: O Pai de Todos</h2>
-            <p>Quase todos os componentes visuais do Swing (botões, listas, tabelas) herdam de <code>JComponent</code>.</p>
-            <p>Isso significa que TODOS eles ganham superpoderes de graça:</p>
-            
+            <h2>Conceitos Fundamentais (Teoria)</h2>
             <div class="grid-layout">
+                
                 <div class="grid-item">
-                    <h3>Tooltips (Dicas de Tela)</h3>
-                    <p>Basta uma linha para adicionar uma explicação ao passar o mouse.</p>
-                    <pre><code>botao.setToolTipText("Clique para Salvar");</code></pre>
+                    <h3>JButton</h3>
+                    <p>Botão de clique padrão.</p>
                 </div>
                 <div class="grid-item">
-                    <h3>Bordas (Borders)</h3>
-                    <p>Todo JComponent pode ter uma borda personalizada.</p>
-                    <pre><code>botao.setBorder(BorderFactory.createLineBorder(Color.RED));</code></pre>
+                    <h3>JTextField</h3>
+                    <p>Campo de entrada de texto de uma linha.</p>
                 </div>
                 <div class="grid-item">
-                    <h3>Atalhos de Teclado (Key Bindings)</h3>
-                    <p>Você pode associar teclas (ex: F1, Ctrl+S) a ações do componente.</p>
+                    <h3>Eventos</h3>
+                    <p>Ações do usuário (clique, digitação) geram Eventos.</p>
                 </div>
                 <div class="grid-item">
-                    <h3>Pluggable Look & Feel</h3>
-                    <p>Eles sabem se desenhar conforme o tema do sistema.</p>
+                    <h3>Listeners</h3>
+                    <p>Interfaces que 'ouvem' e reagem aos eventos.</p>
                 </div>
             </div>
         </div>
 
-        <!-- Slide 3: Lidando com Eventos -->
+        <!-- Slide 3: Aprofundamento -->
         <div class="slide">
-            <h2>Eventos: O Coração da Interatividade</h2>
-            <p>No Swing, quando o usuário faz algo (clica, digita), o componente dispara um <strong>Evento</strong>.</p>
-            <p>Para reagir a esse evento, você precisa de um <strong>Listener</strong> (Ouvinte).</p>
-
-            <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
-                <h3>A Receita do Bolo:</h3>
-                <ol>
-                    <li>Crie o componente (ex: botão).</li>
-                    <li>Crie um Listener (uma classe que implementa <code>ActionListener</code>).</li>
-                    <li>Registre o Listener no componente (<code>botao.addActionListener(...)</code>).</li>
-                </ol>
+            <h2>Aprofundamento Técnico</h2>
+            <div style="max-height: 400px; overflow-y: auto; padding-right: 10px;">
+                
+            <h3>1. ActionListener (Lambda)</h3>
+            <p>Desde o Java 8, usamos expressões Lambda para eventos, deixando o código muito mais limpo.</p>
+            <div class="code-block">btn.addActionListener(e -> System.out.println("Clicou!"));</div>
+            
+            <h3>2. Hierarquia JComponent</h3>
+            <p>Quase todos os componentes herdam de JComponent, ganhando métodos como <code>setBorder</code>, <code>setToolTipText</code> e <code>setBackground</code>.</p>
+        
             </div>
+        </div>
 
+        <!-- Slide 4: Exemplos Práticos -->
+        <div class="slide">
+            <h2>Exemplos de Implementação</h2>
+            <p>Analise o código abaixo para entender a aplicação:</p>
+            
             <div class="code-block">
-JButton botao = new JButton("Clique-me");
+JPanel painel = new JPanel();
+JTextField campo = new JTextField(20);
+JButton btn = new JButton("Copiar");
 
-// Usando Lambda (Java 8+) - Jeito Moderno
-botao.addActionListener(e -> {
-    System.out.println("Botão clicado!");
-    JOptionPane.showMessageDialog(null, "Olá Mundo!");
+// Ao clicar, pega o texto do campo
+btn.addActionListener(e -> {
+    String texto = campo.getText();
+    JOptionPane.showMessageDialog(null, "Você digitou: " + texto);
 });
+
+painel.add(campo);
+painel.add(btn);
             </div>
         </div>
 
-        <!-- Slide 4: Action (Ações Reutilizáveis) -->
+        <!-- Slide 5: Atividade Prática -->
         <div class="slide">
-            <h2>Action: Indo além do Listener</h2>
-            <p>Imagine que você tem um comando "Salvar".</p>
-            <p>O usuário pode salvar clicando no <strong>Botão da Toolbar</strong>, no <strong>Menu Arquivo > Salvar</strong> ou apertando <strong>Ctrl+S</strong>.</p>
-            <p>Em vez de escrever o código 3 vezes, você cria uma <code>Action</code>.</p>
-
-            <div class="code-block">
-Action salvarAction = new AbstractAction("Salvar", iconeDiskette) {
-    public void actionPerformed(ActionEvent e) {
-        salvarArquivo(); // Lógica centralizada
-    }
-};
-
-// Agora conectamos a MESMA ação em lugares diferentes
-JButton btnToolbar = new JButton(salvarAction);
-JMenuItem itemMenu = new JMenuItem(salvarAction);
+            <h2>Atividade Prática (1 Hora)</h2>
+            <div style="background: #e3f2fd; padding: 15px; border-left: 5px solid #2196f3; margin-bottom: 15px;">
+                <strong>Desafio:</strong> Crie um 'Mini Chat'. Uma janela com um JTextField e um JButton 'Enviar'. Ao clicar, mostre o texto digitado em um System.out.println.
             </div>
-            <p><em>Vantagem:</em> Se você desativar a ação (<code>salvarAction.setEnabled(false)</code>), o botão e o menu ficam cinzas automaticamente!</p>
-        </div>
-
-        <!-- Slide 5: Teclado e Foco -->
-        <div class="slide">
-            <h2>Teclado e Foco</h2>
-            <p>Para interagir com o teclado, um componente precisa ter o <strong>Foco</strong> (estar selecionado).</p>
             
-            <div class="grid-layout">
-                <div class="grid-item">
-                    <h3>KeyListener (O jeito antigo/básico)</h3>
-                    <p>Ouve cada tecla pressionada. Bom para jogos ou controle fino.</p>
-                    <pre><code>campo.addKeyListener(...)</code></pre>
-                </div>
-                <div class="grid-item">
-                    <h3>Key Bindings (O jeito Swing)</h3>
-                    <p>Associa uma tecla a uma <code>Action</code>. É melhor porque funciona mesmo se o foco estiver em outro lugar da janela (dependendo da configuração).</p>
-                </div>
+            <!-- Feedback Visual (Termômetro) -->
+            <div id="validation-feedback" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-bottom: 10px; font-size: 0.9rem; color: #555;">
+                🌡️ <strong>Termômetro de Código:</strong> As marcas abaixo (✅) indicam o uso correto dos componentes exigidos.
             </div>
-        </div>
 
-        <!-- Slide 6: Atividade Prática -->
-        <div class="slide">
-            <h2>Atividade Prática 03</h2>
-            <p>Crie uma janela com:</p>
-            <ol>
-                <li>Um botão escrito "Ação".</li>
-                <li>Quando clicar no botão, mude o texto dele para "Clicado!".</li>
-                <li>Adicione uma Tooltip no botão dizendo "Clique aqui para mudar o texto".</li>
-                <li>(Desafio) Faça o botão voltar ao texto original se clicar de novo.</li>
-            </ol>
-            
             <textarea id="activity-03" class="code-input">
 /*
- * Atividade Prática 03
- * Crie uma janela com:
- * 1. Um botão escrito "Ação".
- * 2. Quando clicar no botão, mude o texto dele para "Clicado!".
- * 3. Adicione uma Tooltip no botão dizendo "Clique aqui para mudar o texto".
- * 4. (Desafio) Faça o botão voltar ao texto original se clicar de novo.
+ * ATIVIDADE PRÁTICA - AULA 03
+ * Tempo estimado: 60 minutos
  */
 
 import javax.swing.*;
+import javax.swing.border.*; // Para bordas
+import javax.swing.filechooser.*; // Para filtros
+import java.awt.*;
 import java.awt.event.*;
+import java.io.File; 
 
-public class Atividade03 {
+public class MiniChat {
     public static void main(String[] args) {
-        JFrame f = new JFrame("Eventos");
-        f.setSize(300, 200);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        JFrame f = new JFrame("Chat");
+        f.setSize(300, 100);
+        f.setLayout(new FlowLayout());
         
-        JButton b = new JButton("Ação");
+        // Crie Campo e Botão
+        // Adicione ActionListener
+        // Adicione ao frame
         
-        // Seu código aqui...
-        
-        f.add(b);
         f.setVisible(true);
     }
 }
@@ -163,10 +139,9 @@ public class Atividade03 {
             <button class="send-btn">Enviar Resposta</button>
         </div>
 
-        <!-- Slide Final: Conclusão -->
+        <!-- Slide Final -->
         <div class="slide">
-            <h2>Parabéns! Você concluiu esta aula.</h2>
-            <p>Você aprendeu sobre eventos, ações e a hierarquia do JComponent.</p>
+            <h2>Aula Concluída!</h2>
             <div style="margin-top: 50px; text-align: center;">
                 <button id="finishLessonBtn" class="btn-start" style="font-size: 1.5rem; padding: 15px 30px; background-color: #28a745;">✅ Finalizar Aula</button>
             </div>
@@ -174,14 +149,21 @@ public class Atividade03 {
 
     </div>
 
-    <!-- Controles de Navegação -->
     <div class="controls">
         <button id="btnPrev" disabled>Anterior</button>
         <span id="slideNumber">1 / 6</span>
         <button id="btnNext">Próximo</button>
     </div>
 
-    <!-- Scripts -->
     <script src="assets/js/script.js"></script>
+    <script>
+        window.activityRules = {
+            'activity-03': [
+                { id: 'field', text: 'Usar JTextField', pattern: /JTextField/ },
+{ id: 'btn', text: 'Usar JButton', pattern: /JButton/ },
+{ id: 'event', text: 'Adicionar Listener', pattern: /addActionListener/ }
+            ]
+        };
+    </script>
 </body>
 </html>

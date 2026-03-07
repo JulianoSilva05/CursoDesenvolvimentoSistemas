@@ -286,18 +286,52 @@ body.split-screen-mode .close-fullscreen-btn {
 }
 
 
-.nav-btn {
-    background: var(--senai-blue);
-    color: white;
-    padding: 8px 15px; /* Menor padding */
-    border: none;
-    border-radius: 5px;
-    font-size: 1rem; /* Fonte menor */
-    cursor: pointer;
-    margin: 0 5px;
+/* Navigation Controls */
+.controls {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.9);
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    z-index: 100;
 }
 
-.nav-btn:disabled {
+#btnPrev, #btnNext {
+    background: var(--senai-blue);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold;
+}
+
+#btnPrev:hover, #btnNext:hover {
+    background: #003366;
+    transform: translateY(-2px);
+}
+
+#btnPrev:disabled, #btnNext:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+#slideNumber {
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: var(--text-color);
+    min-width: 60px;
+    text-align: center;
+}
     background: #ccc;
     cursor: not-allowed;
 }
