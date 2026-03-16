@@ -37,21 +37,250 @@
         </div>
 
         <div class="slide">
-            <h2>Exemplo Prático: Decisão</h2>
-            <pre><code>
-&lt;?php
-  $idade = 17;
-  $temHabilitacao = false;
+            <h2>Variáveis (bem simples)</h2>
+            <p>Variável é uma “caixinha” que guarda um valor. Em PHP, sempre começa com <code>$</code>.</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (variaveis.html)</div>
+                    <pre><code>
+&lt;form action="variaveis.php" method="post"&gt;
+  &lt;label&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" name="nome"&gt;
 
-  if ($idade >= 18 && $temHabilitacao) {
-      echo "Pode dirigir!";
-  } elseif ($idade >= 18 && !$temHabilitacao) {
-      echo "Maior de idade, mas sem CNH.";
-  } else {
-      echo "Menor de idade.";
-  }
+  &lt;label&gt;Idade:&lt;/label&gt;
+  &lt;input type="number" name="idade"&gt;
+
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (variaveis.php)</div>
+                    <pre><code>
+&lt;?php
+$nome = $_POST["nome"] ?? "";
+$idade = (int)($_POST["idade"] ?? 0);
+$mensagem = "Olá, " . $nome;
+
+echo $mensagem . "&lt;br&gt;";
+echo "Idade: " . $idade;
 ?&gt;
-            </code></pre>
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>HTML enviando para o PHP (POST)</h2>
+            <p>O formulário envia os dados. O PHP recebe e mostra.</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (form.html)</div>
+                    <pre><code>
+&lt;form action="recebe.php" method="post"&gt;
+  &lt;label&gt;Nome:&lt;/label&gt;
+  &lt;input type="text" name="nome"&gt;
+
+  &lt;label&gt;Idade:&lt;/label&gt;
+  &lt;input type="number" name="idade"&gt;
+
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (recebe.php)</div>
+                    <pre><code>
+&lt;?php
+$nome = $_POST["nome"] ?? "";
+$idade = $_POST["idade"] ?? "";
+
+echo "Nome: " . $nome . "&lt;br&gt;";
+echo "Idade: " . $idade;
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>GET (bem direto)</h2>
+            <p>GET manda os dados pela URL (barra do navegador).</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (produto.html)</div>
+                    <pre><code>
+&lt;form action="produto.php" method="get"&gt;
+  &lt;label&gt;ID do produto:&lt;/label&gt;
+  &lt;input type="number" name="id"&gt;
+  &lt;button type="submit"&gt;Enviar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (produto.php)</div>
+                    <pre><code>
+&lt;?php
+$id = $_GET["id"] ?? "";
+echo "ID do produto: " . $id;
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>POST (bem direto)</h2>
+            <p>POST é mais usado para enviar formulário (login, cadastro, atividade).</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (login.html)</div>
+                    <pre><code>
+&lt;form action="login.php" method="post"&gt;
+  &lt;input type="text" name="usuario" placeholder="Usuário"&gt;
+  &lt;input type="password" name="senha" placeholder="Senha"&gt;
+  &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (login.php)</div>
+                    <pre><code>
+&lt;?php
+$usuario = $_POST["usuario"] ?? "";
+$senha = $_POST["senha"] ?? "";
+
+echo "Usuário: " . $usuario;
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo (GET): Busca</h2>
+            <p>Quando você pesquisa algo, o GET é bem comum.</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (busca.html)</div>
+                    <pre><code>
+&lt;form action="busca.php" method="get"&gt;
+  &lt;input name="q" placeholder="Digite algo"&gt;
+  &lt;button type="submit"&gt;Buscar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (busca.php)</div>
+                    <pre><code>
+&lt;?php
+$q = $_GET["q"] ?? "";
+echo "Você buscou: " . $q;
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo (POST): Média</h2>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (media.html)</div>
+                    <pre><code>
+&lt;form action="media.php" method="post"&gt;
+  &lt;input type="number" name="nota1" step="0.01" placeholder="Nota 1"&gt;
+  &lt;input type="number" name="nota2" step="0.01" placeholder="Nota 2"&gt;
+  &lt;button type="submit"&gt;Calcular&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (media.php)</div>
+                    <pre><code>
+&lt;?php
+$nota1 = (float)($_POST["nota1"] ?? 0);
+$nota2 = (float)($_POST["nota2"] ?? 0);
+
+$media = ($nota1 + $nota2) / 2;
+
+echo "Média: " . $media . "&lt;br&gt;";
+echo ($media &gt;= 7) ? "Aprovado" : "Reprovado";
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo (POST): Ano Bissexto</h2>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (bissexto.html)</div>
+                    <pre><code>
+&lt;form action="bissexto.php" method="post"&gt;
+  &lt;input type="number" name="ano" placeholder="Ano"&gt;
+  &lt;button type="submit"&gt;Verificar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (bissexto.php)</div>
+                    <pre><code>
+&lt;?php
+$ano = (int)($_POST["ano"] ?? 0);
+
+$div4 = ($ano % 4 === 0);
+$div100 = ($ano % 100 === 0);
+$div400 = ($ano % 400 === 0);
+
+$ehBissexto = ($div4 && !$div100) || $div400;
+
+echo $ehBissexto ? "É bissexto" : "Não é bissexto";
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Prático: Decisão</h2>
+            <p>O aluno preenche no HTML. O PHP mostra a mensagem.</p>
+            <div class="code-compare">
+                <div>
+                    <div class="code-title">HTML (decisao.html)</div>
+                    <pre><code>
+&lt;form action="decisao.php" method="post"&gt;
+  &lt;label&gt;Idade:&lt;/label&gt;
+  &lt;input type="number" name="idade"&gt;
+
+  &lt;label&gt;
+    &lt;input type="checkbox" name="cnh" value="1"&gt;
+    Tem CNH
+  &lt;/label&gt;
+
+  &lt;button type="submit"&gt;Verificar&lt;/button&gt;
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div>
+                    <div class="code-title">PHP (decisao.php)</div>
+                    <pre><code>
+&lt;?php
+$idade = (int)($_POST["idade"] ?? 0);
+$temHabilitacao = isset($_POST["cnh"]);
+
+if ($idade >= 18 && $temHabilitacao) {
+    echo "Pode dirigir!";
+} elseif ($idade >= 18 && !$temHabilitacao) {
+    echo "Maior de idade, mas sem CNH.";
+} else {
+    echo "Menor de idade.";
+}
+?&gt;
+                    </code></pre>
+                </div>
+            </div>
         </div>
 
         <div class="slide">
@@ -68,6 +297,9 @@
                     <h3>Desafio (Avançado)</h3>
                     <p>Crie um "Verificador de Ano Bissexto". Regra: É bissexto se for divisível por 4. Exceto se for divisível por 100, a menos que seja divisível por 400. Exiba a mensagem correta para o ano definido na variável.</p>
                 </div>
+            </div>
+            <div style="background: #eef6ff; padding: 12px; border-radius: 8px; margin-top: 15px;">
+                <p><strong>Dica:</strong> Use os exemplos dos slides “Média” e “Ano Bissexto” e adapte os valores.</p>
             </div>
             <div style="margin-top: 20px;">
                 <textarea id="resp-aula5" class="code-input" placeholder="Digite seu código PHP aqui..."></textarea>

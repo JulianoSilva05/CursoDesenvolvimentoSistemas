@@ -95,8 +95,16 @@
             <p>Semântica é usar a tag certa para o conteúdo certo. Melhora o SEO (Google) e Acessibilidade.</p>
             <div class="grid-layout">
                 <div class="grid-item">
-                    <pre style="font-size: 0.8rem; margin: 0;"><code>
+                    <pre style="font-size: 0.8rem; margin: 0; max-height: 400px; overflow-y: auto;"><code>
+&lt;!DOCTYPE html&gt;
+&lt;html lang="pt-br"&gt;
+&lt;head&gt;
+    &lt;meta charset="UTF-8"&gt;
+    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
+    &lt;title&gt;Meu Blog de Receitas&lt;/title&gt;
+&lt;/head&gt;
 &lt;body&gt;
+
   &lt;header&gt; &lt;!-- Cabeçalho do Site --&gt;
     &lt;h1&gt;Meu Blog de Receitas&lt;/h1&gt;
     &lt;nav&gt; &lt;!-- Navegação/Menu --&gt;
@@ -125,20 +133,136 @@
   &lt;footer&gt; &lt;!-- Rodapé --&gt;
     &lt;p&gt;&copy; 2026 - Todos os direitos reservados&lt;/p&gt;
   &lt;/footer&gt;
+
 &lt;/body&gt;
+&lt;/html&gt;
                     </code></pre>
                 </div>
                 <div class="grid-item">
-                    <h3>Tags Explicadas</h3>
-                    <ul>
-                        <li><span class="tag-explain">&lt;header&gt;</span>: Topo do site ou de uma seção.</li>
-                        <li><span class="tag-explain">&lt;nav&gt;</span>: Área de links de navegação.</li>
-                        <li><span class="tag-explain">&lt;main&gt;</span>: O "recheio" principal da página. Só deve ter um por página.</li>
-                        <li><span class="tag-explain">&lt;section&gt;</span>: Agrupa conteúdos relacionados.</li>
-                        <li><span class="tag-explain">&lt;article&gt;</span>: Conteúdo independente (Notícia, Post, Produto).</li>
-                        <li><span class="tag-explain">&lt;aside&gt;</span>: Conteúdo lateral (Relacionado, mas não essencial).</li>
-                        <li><span class="tag-explain">&lt;footer&gt;</span>: Rodapé (Copyright, Contato).</li>
+                    <h3>Tags Principais Detalhadas</h3>
+                    
+                    <h4 style="color: #004587; margin-bottom: 5px; margin-top: 0;">🏗️ Estrutura (Semântica)</h4>
+                    <ul style="margin-bottom: 10px; font-size: 0.9rem; padding-left: 20px;">
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;header&gt;</span>: Topo do site. <br><code style="color:#555; background:#eee; padding:2px;">&lt;header&gt;&lt;h1&gt;Logo&lt;/h1&gt;&lt;/header&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;nav&gt;</span>: Menu de links. <br><code style="color:#555; background:#eee; padding:2px;">&lt;nav&gt;&lt;a href="#"&gt;Home&lt;/a&gt;&lt;/nav&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;main&gt;</span>: Conteúdo principal. <br><code style="color:#555; background:#eee; padding:2px;">&lt;main&gt;&lt;p&gt;Texto...&lt;/p&gt;&lt;/main&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;section&gt;</span>: Seção temática. <br><code style="color:#555; background:#eee; padding:2px;">&lt;section&gt;&lt;h2&gt;Sobre&lt;/h2&gt;...&lt;/section&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;article&gt;</span>: Conteúdo autônomo. <br><code style="color:#555; background:#eee; padding:2px;">&lt;article&gt;&lt;h3&gt;Post&lt;/h3&gt;...&lt;/article&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;aside&gt;</span>: Barra lateral. <br><code style="color:#555; background:#eee; padding:2px;">&lt;aside&gt;Publicidade&lt;/aside&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;footer&gt;</span>: Rodapé. <br><code style="color:#555; background:#eee; padding:2px;">&lt;footer&gt;&copy; 2024&lt;/footer&gt;</code></li>
                     </ul>
+
+                    <h4 style="color: #004587; margin-bottom: 5px; margin-top: 15px;">📝 Texto e Mídia (Conteúdo)</h4>
+                    <ul style="margin-bottom: 10px; font-size: 0.9rem; padding-left: 20px;">
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;h1&gt;</span>: Título Principal. <br><code style="color:#555; background:#eee; padding:2px;">&lt;h1&gt;Olá Mundo&lt;/h1&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;p&gt;</span>: Parágrafo. <br><code style="color:#555; background:#eee; padding:2px;">&lt;p&gt;Texto corrido...&lt;/p&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;a&gt;</span>: Link (Ancora). <br><code style="color:#555; background:#eee; padding:2px;">&lt;a href="google.com"&gt;Ir&lt;/a&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;img&gt;</span>: Imagem. <br><code style="color:#555; background:#eee; padding:2px;">&lt;img src="foto.jpg" alt="Foto"&gt;</code></li>
+                        <li style="margin-bottom: 5px;"><span class="tag-explain">&lt;ul&gt;</span>: Lista. <br><code style="color:#555; background:#eee; padding:2px;">&lt;ul&gt;&lt;li&gt;Item 1&lt;/li&gt;&lt;/ul&gt;</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Formulários (Forms) -->
+        <div class="slide">
+            <h2>Tags de Formulário (Interação)</h2>
+            <p>Usadas para coletar dados do usuário (Login, Cadastro, Contato).</p>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <pre style="font-size: 0.9rem;"><code>
+&lt;form action="login.php" method="POST"&gt;
+    
+  &lt;label for="email"&gt;E-mail:&lt;/label&gt;
+  &lt;input type="email" id="email" placeholder="seu@email.com"&gt;
+  
+  &lt;label for="senha"&gt;Senha:&lt;/label&gt;
+  &lt;input type="password" id="senha"&gt;
+
+  &lt;label for="pais"&gt;País:&lt;/label&gt;
+  &lt;select id="pais"&gt;
+     &lt;option value="br"&gt;Brasil&lt;/option&gt;
+     &lt;option value="us"&gt;EUA&lt;/option&gt;
+  &lt;/select&gt;
+
+  &lt;label for="msg"&gt;Mensagem:&lt;/label&gt;
+  &lt;textarea id="msg"&gt;&lt;/textarea&gt;
+
+  &lt;button type="submit"&gt;Entrar&lt;/button&gt;
+
+&lt;/form&gt;
+                    </code></pre>
+                </div>
+                <div class="grid-item">
+                    <h3>Explicação</h3>
+                    <ul style="padding-left: 20px;">
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;form&gt;</span>: A caixa que embrulha o formulário. O atributo <code>action</code> diz para onde enviar os dados.
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;input&gt;</span>: Campo de entrada. O <code>type</code> define o formato (texto, senha, email, data, cor).
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;label&gt;</span>: Etiqueta do campo. Melhora a acessibilidade (clicar no texto foca no input).
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;select&gt;</span> e <span class="tag-explain">&lt;option&gt;</span>: Cria um menu suspenso (dropdown) de opções.
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;textarea&gt;</span>: Caixa de texto grande para mensagens longas (com várias linhas).
+                        </li>
+                        <li style="margin-bottom: 10px;">
+                            <span class="tag-explain">&lt;button&gt;</span>: Botão clicável para enviar ou resetar o formulário.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 6: Tabelas e Listas -->
+        <div class="slide">
+            <h2>Organizando Dados: Tabelas e Listas</h2>
+            <div class="grid-layout">
+                <div class="grid-item">
+                    <h3 style="color: #004587;">📊 Tabelas (&lt;table&gt;)</h3>
+                    <p>Usadas para dados tabulares (planilhas, horários, relatórios).</p>
+                    <pre style="font-size: 0.8rem;"><code>
+&lt;table border="1"&gt;
+  &lt;tr&gt; &lt;!-- Linha (Table Row) --&gt;
+    &lt;th&gt;Nome&lt;/th&gt; &lt;!-- Cabeçalho (Header) --&gt;
+    &lt;th&gt;Idade&lt;/th&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+    &lt;td&gt;Ana&lt;/td&gt; &lt;!-- Célula (Data) --&gt;
+    &lt;td&gt;25&lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/table&gt;
+                    </code></pre>
+                    <p style="font-size: 0.9rem; margin-top: 10px;">
+                        <strong>tr:</strong> Cria uma linha.<br>
+                        <strong>th:</strong> Célula de título (negrito/centralizado).<br>
+                        <strong>td:</strong> Célula de dado comum.
+                    </p>
+                </div>
+                <div class="grid-item">
+                    <h3 style="color: #28a745;">📝 Listas (&lt;ul&gt; / &lt;ol&gt;)</h3>
+                    <p>Para itens soltos ou sequenciais.</p>
+                    
+                    <strong>Não Ordenada (&lt;ul&gt;)</strong> - Bolinhas
+                    <pre style="font-size: 0.8rem; margin: 5px 0;"><code>
+&lt;ul&gt;
+  &lt;li&gt;Leite&lt;/li&gt;
+  &lt;li&gt;Pão&lt;/li&gt;
+&lt;/ul&gt;
+                    </code></pre>
+
+                    <strong>Ordenada (&lt;ol&gt;)</strong> - Números (1, 2, 3...)
+                    <pre style="font-size: 0.8rem; margin: 5px 0;"><code>
+&lt;ol&gt;
+  &lt;li&gt;Acordar&lt;/li&gt;
+  &lt;li&gt;Escovar dentes&lt;/li&gt;
+&lt;/ol&gt;
+                    </code></pre>
                 </div>
             </div>
         </div>
@@ -331,6 +455,7 @@ CSS:  #topo-site { height: 100px; }
 
     <div class="controls">
         <button id="btnPrev" class="nav-btn">Anterior</button>
+        <span id="slideNumber" style="margin: 0 15px; font-weight: bold; color: #555;">1 / 10</span>
         <button id="btnNext" class="nav-btn">Próximo</button>
     </div>
 

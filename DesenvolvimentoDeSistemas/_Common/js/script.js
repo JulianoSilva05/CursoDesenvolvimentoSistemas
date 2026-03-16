@@ -322,15 +322,29 @@ function initEmailSender() {
             const container = btn.parentElement; // Usually inside a div
             // Try to find input in parent or siblings (robustness)
             let codeInput = container.querySelector('.code-input');
+            
+            // If not found in direct container (sibling logic)
             if (!codeInput) {
-                 // Try finding it in the previous sibling element (slide structure variation)
+                 // 1. Try finding it in the previous sibling element (slide structure variation)
                  const prev = btn.previousElementSibling;
                  if (prev && prev.classList.contains('code-input')) {
                      codeInput = prev;
                  } else {
-                     // Try searching in the whole slide
+                     // 2. Try searching in the whole slide
                      const slide = btn.closest('.slide');
-                     if (slide) codeInput = slide.querySelector('.code-input');
+                     if (slide) {
+                         // Try standard query inside slide
+                         codeInput = slide.querySelector('.code-input');
+                     }
+                     
+                     // 3. Fallback for Split Screen Mode
+                     // If still not found, and we are in split screen mode, the textarea is in the body
+                     if (!codeInput && document.body.classList.contains('split-screen-mode')) {
+                         const sideViewInput = document.querySelector('.code-input.side-view');
+                         if (sideViewInput) {
+                             codeInput = sideViewInput;
+                         }
+                     }
                  }
             }
             
@@ -743,10 +757,19 @@ function initFinishButton() {
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
             if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e reiniciará.')) {
+                // Clear ALL storage types
                 localStorage.clear(); 
-                sessionStorage.removeItem('masterMode'); // Revoke Master Mode
-                alert('Aula finalizada com sucesso!');
-                location.reload(); 
+                sessionStorage.clear(); // This is crucial for masterMode removal
+                
+                // Explicitly remove known keys just in case
+                sessionStorage.removeItem('masterMode'); 
+                localStorage.removeItem('infractionCount');
+                localStorage.removeItem('studentName');
+                
+                alert('Aula finalizada com sucesso! Reiniciando sistema...');
+                
+                // Force reload bypassing cache
+                location.reload(true); 
             }
         });
     }

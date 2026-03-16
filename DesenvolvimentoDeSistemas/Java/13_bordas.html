@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aula 13: Bordas e Estilo Visual</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+    <img src="logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="slide-container">
+        
+        <div class="slide active">
+            <h1>Aula 13: Bordas e Estilo Visual</h1>
+            <h2>Border, BevelBorder, LineBorder - Decoração de componentes</h2>
+            <p><strong>Duração:</strong> 3 horas</p>
+            <p><strong>Tema:</strong> Bordas 2D, estilos, composição</p>
+            <p><strong>Objetivos:</strong></p>
+            <ul>
+                <li>Compreender arquitetura e design patterns</li>
+                <li>Implementar soluções práticas</li>
+                <li>Criar interfaces profissionais</li>
+                <li>Dominar eventos e listeners relacionados</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Conceitos Fundamentais</h2>
+            <p><strong>Introdução aos Componentes Principais:</strong></p>
+            <pre><code>// Border, BevelBorder, LineBorder - fundamentals
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+// Será explorado ao longo da aula</code></pre>
+            <h3>Características:</h3>
+            <ul>
+                <li>Padrões de design e uso</li>
+                <li>Propriedades e configurações</li>
+                <li>Listeners e eventos</li>
+                <li>Boas práticas de implementação</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplos Prática - Parte 1</h2>
+            <pre><code>// Exemplo demonstrativo
+public class Exemplo extends JFrame {
+    public Exemplo() {
+        setTitle("Aula 13: Bordas e Estilo Visual");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(600, 400);
+        
+        // Implementação específica da aula
+        
+        setVisible(true);
+    }
+    
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Exemplo());
+    }
+}</code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Propriedades e Configurações</h2>
+            <pre><code>// Propriedades comuns de Border, BevelBorder, LineBorder
+// Serão detalhadas durante a aula
+
+// Exemplo de modificações:
+// - setEnabled()
+// - setVisible()
+// - setBackground() / setForeground()
+// - setFont()
+// - setBounds() / setPreferredSize()
+// - addListener() para eventos</code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Listeners e Eventos</h2>
+            <pre><code>// Padrão de listener para Border, BevelBorder, LineBorder
+component.addActionListener(e -> {
+    // Resposta ao evento
+    System.out.println("Evento disparado");
+});
+
+// Outros listeners podem estar disponíveis
+// Serão explorados conforme necessário</code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo Completo</h2>
+            <pre><code>// Exemplo integrado
+public class ExemploCompleto extends JFrame {
+    
+    public ExemploCompleto() {
+        // Configuração
+        setTitle("Aula 13: Exemplo Completo");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLayout(new BorderLayout());
+        setSize(700, 500);
+        
+        // Adição de componentes
+        JPanel panel = new JPanel();
+        // ... adicionar componentes ...
+        
+        add(panel, BorderLayout.CENTER);
+        setVisible(true);
+    }
+}</code></pre>
+        </div>
+
+        <div class="slide">
+            <h2>Boas Práticas e Padrões</h2>
+            <ul>
+                <li>✓ Sempre usar setDefaultCloseOperation</li>
+                <li>✓ Configurar layout adequado</li>
+                <li>✓ Adicionar listeners para interatividade</li>
+                <li>✓ Validar dados de entrada</li>
+                <li>✓ Tratar exceções apropriadamente</li>
+                <li>✓ Usar SwingUtilities.invokeLater() no main</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade Prática: Aplicação Integradora</h2>
+            <p><strong>Desafio:</strong> Criar uma aplicação que integre os conceitos dessa aula</p>
+            <h3>Requisitos:</h3>
+            <ul>
+                <li>✓ Usar componentes apresentados</li>
+                <li>✓ Implementar listeners necessários</li>
+                <li>✓ Aplicar boas práticas vistas</li>
+                <li>✓ Testar funcionalidade completa</li>
+            </ul>
+            <textarea id="activity-13" rows="10" placeholder="// Seu código Java aqui
+// Use os componentes desta aula">import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class Aplicacao extends JFrame {
+    // Seu código aqui
+}</textarea>
+            
+            <button class="send-btn" onclick="validarAtividade13()">Verificar Código</button>
+            
+            <div id="validation-feedback-13" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-top: 10px; font-size: 0.9rem; color: #555; display: none;">
+                🌡️ <strong>Validação em Tempo Real:</strong> Verificando seu código...
+            </div>
+            
+            <div id="validation-result-13" class="validation-result"></div>
+        </div>
+
+        <div class="slide">
+            <h2>Resumo e Próximos Passos</h2>
+            <h3>Pontos-Chave:</h3>
+            <ul>
+                <li>✓ Aprendemos sobre Border, BevelBorder, LineBorder</li>
+                <li>✓ Explorámos propriedades e configurações</li>
+                <li>✓ Implementámos listeners e eventos</li>
+                <li>✓ Criámos exemplos práticos</li>
+            </ul>
+            <p><strong>Próxima Aula:</strong> Aula 14 - Continuando a explorar Swing</p>
+        </div>
+
+        <div class="slide">
+            <h1>Conclusão</h1>
+            <p>Dominar estes componentes é essencial para criar interfaces Swing profissionais e responsivas.</p>
+            <p><strong>Conceitos abordados:</strong> Border, BevelBorder, LineBorder, listeners, eventos, padrões de design</p>
+            <button class="complete-btn" onclick="completarAula()">Marcar como Concluída</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button onclick="previousSlide()" class="nav-btn">← Anterior</button>
+        <span id="slideCounter">1 de 11</span>
+        <button onclick="nextSlide()" class="nav-btn">Próximo →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const totalSlides = slides.length;
+        
+        function showSlide(n) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            if (n >= totalSlides) currentSlide = 0;
+            if (n < 0) currentSlide = totalSlides - 1;
+            slides[currentSlide].classList.add('active');
+            updateProgress();
+            document.getElementById('slideCounter').textContent = `${currentSlide + 1} de ${totalSlides}`;
+        }
+        
+        function nextSlide() { currentSlide++; showSlide(currentSlide); }
+        function previousSlide() { currentSlide--; showSlide(currentSlide); }
+        
+        function updateProgress() {
+            const progress = ((currentSlide + 1) / totalSlides) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        }
+        
+        function validarAtividade13() {
+            const code = document.getElementById('activity-13').value.toUpperCase();
+            const resultDiv = document.getElementById('validation-result-13');
+            const feedbackDiv = document.getElementById('validation-feedback-13');
+            
+            feedbackDiv.style.display = 'block';
+            
+            // Critérios de validação com pesos
+            const required = [
+                { term: 'BORDER', name: 'Border', weight: 15, desc: 'Interface de borda' },
+                { term: 'BEVELBORDER', name: 'BevelBorder', weight: 15, desc: 'Borda biselada' },
+                { term: 'ETCHEDBORDER', name: 'EtchedBorder', weight: 15, desc: 'Borda gravada' },
+                { term: 'LINEBORDER', name: 'LineBorder', weight: 15, desc: 'Borda linear' },
+                { term: 'MATTEBORDER', name: 'MatteBorder', weight: 15, desc: 'Borda mate' },
+                { term: 'COMPOUNDBORDER', name: 'CompoundBorder', weight: 10, desc: 'Borda composta' },
+                { term: 'SETBORDER', name: 'setBorder', weight: 15, desc: 'Definir borda' }
+            ];
+            
+            let found = 0;
+            let totalWeight = 0;
+            let feedback = '<h4 style="color: #1976d2;">📋 Verificação de Código</h4>';
+            feedback += '<table style="width: 100%; font-size: 0.9rem; border-collapse: collapse;">';
+            feedback += '<tr style="background: #e3f2fd; border-bottom: 1px solid #90caf9;"><th style="padding: 8px; text-align: left;">Componente</th><th style="padding: 8px; text-align: center;">Peso</th><th style="padding: 8px; text-align: left;">Status</th></tr>';
+            
+            required.forEach(req => {
+                const isFound = code.includes(req.term);
+                const icon = isFound ? '✓' : '✗';
+                const color = isFound ? '#4caf50' : '#f44336';
+                const bgColor = isFound ? '#f1f8e9' : '#ffebee';
+                
+                feedback += `<tr style="background: ${bgColor}; border-bottom: 1px solid #e0e0e0;">`;
+                feedback += `<td style="padding: 8px; color: ${color};"><strong>${icon} ${req.name}</strong><br><small style="color: #666;">${req.desc}</small></td>`;
+                feedback += `<td style="padding: 8px; text-align: center; font-weight: bold; color: #1976d2;">${req.weight}%</td>`;
+                feedback += `<td style="padding: 8px; color: ${color}; font-weight: bold;">${isFound ? 'Encontrado' : 'Não encontrado'}</td>`;
+                feedback += '</tr>';
+                
+                if (isFound) {
+                    found += req.weight;
+                }
+                totalWeight += req.weight;
+            });
+            
+            feedback += '</table>';
+            
+            const percentage = found;
+            feedback += `<div style="margin-top: 15px; padding: 15px; background: #f5f5f5; border-radius: 5px;">`;
+            feedback += `<p style="margin: 0; font-size: 1.2rem;"><strong>Pontuação Final: ${percentage}%</strong></p>`;
+            
+            // Barra de progresso visual
+            const barColor = percentage === 100 ? '#4caf50' : (percentage >= 80 ? '#ff9800' : (percentage >= 60 ? '#2196f3' : '#f44336'));
+            feedback += `<div style="background: #e0e0e0; height: 8px; border-radius: 4px; margin-top: 8px; overflow: hidden;">`;
+            feedback += `<div style="background: ${barColor}; height: 100%; width: ${percentage}%; transition: width 0.3s ease;"></div>`;
+            feedback += '</div></div>';
+            
+            // Feedback contextual com sugestões
+            if (percentage === 100) {
+                feedback += '<div style="color: #2e7d32; background: #e8f5e9; padding: 12px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #4caf50;">';
+                feedback += '✓ <strong>Excelente!</strong> Seu código contém todos os componentes necessários. Está pronto para testar!';
+                feedback += '</div>';
+            } else if (percentage >= 80) {
+                feedback += '<div style="color: #f57c00; background: #fff3e0; padding: 12px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #ff9800;">';
+                feedback += '⚠ <strong>Bom!</strong> Mas ainda faltam alguns componentes importantes. Revise e tente novamente.';
+                feedback += '</div>';
+            } else if (percentage >= 60) {
+                feedback += '<div style="color: #1565c0; background: #e3f2fd; padding: 12px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #2196f3;">';
+                feedback += '📝 <strong>Precisa de Ajustes:</strong> Faltam alguns componentes essenciais. Dicas:<br>';
+                required.forEach(req => {
+                    if (!code.includes(req.term)) {
+                        feedback += `• Adicione <code>${req.name}</code> - ${req.desc}<br>`;
+                    }
+                });
+                feedback += '</div>';
+            } else {
+                feedback += '<div style="color: #c62828; background: #ffebee; padding: 12px; border-radius: 5px; margin-top: 10px; border-left: 4px solid #f44336;">';
+                feedback += '✗ <strong>Revise Completamente:</strong> Faltam muitos componentes. Complete o código com:<br>';
+                required.forEach(req => {
+                    if (!code.includes(req.term)) {
+                        feedback += `• <strong>${req.name}</strong> - ${req.desc}<br>`;
+                    }
+                });
+                feedback += '</div>';
+            }
+            
+            feedbackDiv.style.display = 'none';
+            resultDiv.innerHTML = feedback;
+        }
+        
+        // Habilitar validação com Ctrl+Enter na textarea
+        document.getElementById('activity-13').addEventListener('keydown', function(e) {
+            if(e.key === 'Enter' && e.ctrlKey) {
+                validarAtividade13();
+            }
+        });
+        
+        function completarAula() { alert('Aula 13 concluída!'); }
+        showSlide(currentSlide);
+    </script>
+</body>
+</html>

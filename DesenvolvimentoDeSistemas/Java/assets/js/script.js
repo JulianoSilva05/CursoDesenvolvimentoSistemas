@@ -47,26 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Load rules from window (defined in HTML) or empty default
-const activityRules = window.activityRules || {
-    'activity-01': [
-        { id: 'q1', text: 'Responder sobre Peso-Leve/Pesado', pattern: /(peso-leve|lightweight)/i },
-        { id: 'q2', text: 'Mencionar javax.swing', pattern: /javax\.swing/i },
-        { id: 'q3', text: 'Explicar MVC (Model, View, Controller)', pattern: /(model|view|controller|mvc)/i }
-    ],
-    'activity-02': [
-        { id: 'frame', text: 'Criar JFrame ("Sistema SENAI")', pattern: /new\s+JFrame\s*\(\s*".*Sistema SENAI.*"\s*\)|setTitle\s*\(\s*".*Sistema SENAI.*"\s*\)/i },
-        { id: 'size', text: 'Definir tamanho 400x300', pattern: /setSize\s*\(\s*400\s*,\s*300\s*\)/ },
-        { id: 'button', text: 'Criar JButton "Entrar"', pattern: /new\s+JButton\s*\(\s*".*Entrar.*"\s*\)/i },
-        { id: 'close', text: 'Configurar EXIT_ON_CLOSE', pattern: /setDefaultCloseOperation\s*\(\s*JFrame\.EXIT_ON_CLOSE\s*\)/ },
-        { id: 'visible', text: 'Tornar janela visível', pattern: /setVisible\s*\(\s*true\s*\)/ }
-    ],
-    'activity-03': [
-        { id: 'btn', text: 'Criar JButton "Ação"', pattern: /new\s+JButton\s*\(\s*".*Ação.*"\s*\)/i },
-        { id: 'listener', text: 'Adicionar ActionListener', pattern: /\.addActionListener/ },
-        { id: 'tooltip', text: 'Configurar ToolTip', pattern: /\.setToolTipText/ },
-        { id: 'change', text: 'Mudar texto com setText', pattern: /\.setText/ }
-    ]
-};
+const activityRules = window.activityRules || {};
 
 function initCodeValidation() {
     const textareas = document.querySelectorAll('textarea[id^="activity-"]');
@@ -341,15 +322,29 @@ function initEmailSender() {
             const container = btn.parentElement; // Usually inside a div
             // Try to find input in parent or siblings (robustness)
             let codeInput = container.querySelector('.code-input');
+            
+            // If not found in direct container (sibling logic)
             if (!codeInput) {
-                 // Try finding it in the previous sibling element (slide structure variation)
+                 // 1. Try finding it in the previous sibling element (slide structure variation)
                  const prev = btn.previousElementSibling;
                  if (prev && prev.classList.contains('code-input')) {
                      codeInput = prev;
                  } else {
-                     // Try searching in the whole slide
+                     // 2. Try searching in the whole slide
                      const slide = btn.closest('.slide');
-                     if (slide) codeInput = slide.querySelector('.code-input');
+                     if (slide) {
+                         // Try standard query inside slide
+                         codeInput = slide.querySelector('.code-input');
+                     }
+                     
+                     // 3. Fallback for Split Screen Mode
+                     // If still not found, and we are in split screen mode, the textarea is in the body
+                     if (!codeInput && document.body.classList.contains('split-screen-mode')) {
+                         const sideViewInput = document.querySelector('.code-input.side-view');
+                         if (sideViewInput) {
+                             codeInput = sideViewInput;
+                         }
+                     }
                  }
             }
             
@@ -762,10 +757,19 @@ function initFinishButton() {
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
             if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e reiniciará.')) {
+                // Clear ALL storage types
                 localStorage.clear(); 
-                sessionStorage.removeItem('masterMode'); // Revoke Master Mode
-                alert('Aula finalizada com sucesso!');
-                location.reload(); 
+                sessionStorage.clear(); // This is crucial for masterMode removal
+                
+                // Explicitly remove known keys just in case
+                sessionStorage.removeItem('masterMode'); 
+                localStorage.removeItem('infractionCount');
+                localStorage.removeItem('studentName');
+                
+                alert('Aula finalizada com sucesso! Reiniciando sistema...');
+                
+                // Force reload bypassing cache
+                location.reload(true); 
             }
         });
     }
