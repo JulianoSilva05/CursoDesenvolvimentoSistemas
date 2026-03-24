@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 03 - Sensores e Atuadores: Leitura, Calibração e Qualidade (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #f4fff7;
+            border-left: 6px solid #22c55e;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>Sensores e Atuadores: Qualidade de Dados</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 03</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • sensores • calibração • filtragem</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Ideia central:</strong> IoT não é “ler um número”. É <strong>medir bem</strong>, <strong>validar</strong>, <strong>filtrar</strong> e <strong>interpretar</strong> para tomar decisão.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Taxonomia (Bloom) aplicada ao módulo</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entender</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Diferença entre sensor analógico e digital</li>
+                        <li>Conceitos: resolução, faixa, precisão, ruído</li>
+                        <li>O que é calibração e por que é necessária</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Aplicar / Analisar</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Converter leitura para unidade (ex: °C)</li>
+                        <li>Detectar valores impossíveis (outliers)</li>
+                        <li>Aplicar média móvel e histerese</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <h3>Avaliar / Criar</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Escolher sensor adequado para o cenário</li>
+                        <li>Definir frequência de amostragem e formato de telemetria</li>
+                        <li>Projetar regra de atuação segura (sem “piscar”)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregáveis</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Plano de medição e validação</li>
+                        <li>App/rotina com filtragem e alerta</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tipos de sensores (com exemplos)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Analógicos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>LDR (luz)</li>
+                        <li>Potenciômetro (posição)</li>
+                        <li>Sensor de umidade do solo (varia resistência/capacitância)</li>
+                    </ul>
+                    <p style="margin-top: 10px;">Você lê um valor (ex: 0–1023) e converte para uma unidade.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Digitais</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Botão (0/1)</li>
+                        <li>Sensor de presença (PIR)</li>
+                        <li>Sensores com protocolo (ex: I2C/1‑Wire)</li>
+                    </ul>
+                    <p style="margin-top: 10px;">Você lê estados ou pacotes de dados com maior estabilidade.</p>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Armadilha comum:</strong> achar que “0–1023” é linear e equivalente em qualquer placa. Considere tensão de referência, divisor resistivo e ruído.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Características técnicas que importam</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Conceitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Faixa:</strong> min–máx que o sensor mede</li>
+                        <li><strong>Resolução:</strong> “granularidade” do valor</li>
+                        <li><strong>Precisão:</strong> quão perto do valor real</li>
+                        <li><strong>Tempo de resposta:</strong> velocidade da leitura</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo prático</h3>
+                    <p>Sensor de temperatura pode oscilar 0.2–0.5°C por ruído. Se você aciona um relé quando <code>TEMP &gt; 25</code>, ele pode ficar ligando/desligando rápido.</p>
+                    <p style="margin-top: 10px;"><strong>Solução:</strong> aplicar média móvel e histerese (ex: liga em 25.5, desliga em 24.5).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Calibração e validação (exemplos práticos)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Calibração (dois pontos)</h3>
+                    <p>Para um sensor analógico, você pode calibrar com dois pontos e ajustar uma reta:</p>
+                    <div class="mini-code" style="margin-top: 10px;">
+valorCalibrado = a * leitura + b
+
+Exemplo:
+em 0°C a leitura média foi 120
+em 50°C a leitura média foi 820
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Validação (regras simples)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Faixa válida (ex: 0–60°C)</li>
+                        <li>Variação máxima por segundo (ex: não “pula” 20°C de uma vez)</li>
+                        <li>Condição de erro (ex: leitura nula repetida)</li>
+                    </ul>
+                    <div class="mini-code" style="margin-top: 10px;">
+if temp &lt; 0 or temp &gt; 60 then marcar ERRO
+if abs(temp - tempAnterior) &gt; 5 then suspeita (outlier)
+                    </div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Regra de segurança:</strong> em caso de erro, o sistema deve entrar em modo seguro (ex: desligar atuador) e alertar.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Filtragem: média móvel e histerese</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Média móvel (reduz ruído)</h3>
+                    <p>Guarde os últimos N valores e faça a média. Isso estabiliza a leitura.</p>
+                    <div class="mini-code" style="margin-top: 10px;">
+add leitura na lista historico
+se lista &gt; 10, remove o mais antigo
+media = soma(historico) / tamanho(historico)
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Histerese (evita “piscar”)</h3>
+                    <p>Defina dois limiares: ligar e desligar.</p>
+                    <div class="mini-code" style="margin-top: 10px;">
+if (estado = DESLIGADO) and (media &gt;= 25.5) then LIGAR
+if (estado = LIGADO) and (media &lt;= 24.5) then DESLIGAR
+                    </div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Projetar com intenção:</strong> escolher N grande demais deixa o sistema lento; N pequeno não filtra. Teste e registre.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Formato de telemetria (padrão recomendado)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Texto simples (depuração rápida)</h3>
+                    <div class="mini-code">
+TS:1712345678;TEMP:26.3;HUM:62;LDR:812;ERR:0\n
+                    </div>
+                    <p style="margin-top: 10px;">Inclua <strong>timestamp</strong> e um <strong>flag de erro</strong>.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>JSON (quando for para nuvem)</h3>
+                    <div class="mini-code">
+{"ts":1712345678,"temp":26.3,"hum":62,"ldr":812,"err":0}
+                    </div>
+                    <p style="margin-top: 10px;">JSON é ótimo para APIs, mas exige mais parsing. Use quando fizer sentido.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Plano de medição e validação</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Você vai monitorar a <strong>temperatura</strong> de uma sala e acionar um <strong>ventilador</strong> (atuador).</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Faixa esperada: 15–40°C</li>
+                        <li>Leitura a cada 2s</li>
+                        <li>Ventilador liga acima de um limite</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Produza</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Regras de validação (faixa, variação, erro)</li>
+                        <li>Estratégia de filtragem (N e justificativa)</li>
+                        <li>Histerese (limiar de liga/desliga)</li>
+                        <li>Formato de telemetria (texto ou JSON)</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot3-a1" class="code-input" placeholder="Escreva seu plano (regras + filtragem + histerese + formato de telemetria)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Implementar regra de alerta no app</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entrada simulada</h3>
+                    <p>Use um botão “Nova Leitura” que gera valores aleatórios para simular o sensor, ou use dados recebidos por Bluetooth.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Guardar histórico</li>
+                        <li>Calcular média</li>
+                        <li>Aplicar histerese</li>
+                        <li>Registrar log</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Checklist</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Mostra “OK”/“ALERTA” e muda cor</li>
+                        <li>Não fica alternando sem parar (histerese)</li>
+                        <li>Se valor inválido, registra e ignora</li>
+                        <li>Persistência do limite no TinyDB</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot3-a2" class="code-input" placeholder="Explique sua implementação (variáveis, lista, média móvel, histerese e validação)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 03</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Ponto de virada:</strong> você aprendeu a tratar dado de sensor como dado “sério”. Sem validação e filtragem, IoT vira ruído e decisões erradas.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> protocolos IoT (HTTP e MQTT) para conectar com a internet e integrar com serviços.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

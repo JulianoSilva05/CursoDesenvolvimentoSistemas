@@ -1,0 +1,108 @@
+%PDF-1.4
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>
+endobj
+5 0 obj
+<< /Length 1281 >>
+stream
+BT
+/F1 12 Tf
+50 800 Td
+14 TL
+(INSTRUCOES - MySQL/MariaDB \(Servidor\)) Tj
+T*
+() Tj
+T*
+(Objetivo:) Tj
+T*
+(- Criar o banco contatos2026) Tj
+T*
+(- Criar a tabela contatos) Tj
+T*
+(- Criar o usuario aluno com senha aluno) Tj
+T*
+(- Dar todos os privilegios no banco contatos2026) Tj
+T*
+() Tj
+T*
+(1\) Acesse o MySQL como administrador \(root\):) Tj
+T*
+(   mysql -u root -p) Tj
+T*
+() Tj
+T*
+(2\) Execute os comandos SQL abaixo:) Tj
+T*
+() Tj
+T*
+(CREATE DATABASE IF NOT EXISTS contatos2026) Tj
+T*
+(  DEFAULT CHARACTER SET utf8mb4) Tj
+T*
+(  DEFAULT COLLATE utf8mb4_general_ci;) Tj
+T*
+() Tj
+T*
+(USE contatos2026;) Tj
+T*
+() Tj
+T*
+(CREATE TABLE IF NOT EXISTS contatos \() Tj
+T*
+(  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,) Tj
+T*
+(  nome VARCHAR\(100\) NOT NULL,) Tj
+T*
+(  telefone VARCHAR\(20\) NOT NULL) Tj
+T*
+(\);) Tj
+T*
+() Tj
+T*
+(CREATE USER IF NOT EXISTS 'aluno'@'%' IDENTIFIED BY 'aluno';) Tj
+T*
+(GRANT ALL PRIVILEGES ON contatos2026.* TO 'aluno'@'%';) Tj
+T*
+(FLUSH PRIVILEGES;) Tj
+T*
+() Tj
+T*
+(3\) \(Opcional\) Conferir privilegios:) Tj
+T*
+(SHOW GRANTS FOR 'aluno'@'%';) Tj
+T*
+() Tj
+T*
+(Observacao:) Tj
+T*
+(- 'aluno'@'%' permite acesso remoto de qualquer IP.) Tj
+T*
+(- Em ambientes reais, prefira restringir o host \(ex.: 'aluno'@'localhost'\)) Tj
+T*
+(  e use uma senha forte.) Tj
+T*
+ET
+endstream
+endobj
+xref
+0 6
+0000000000 65535 f 
+0000000009 00000 n 
+0000000058 00000 n 
+0000000115 00000 n 
+0000000241 00000 n 
+0000000311 00000 n 
+trailer
+<< /Size 6 /Root 1 0 R >>
+startxref
+1643
+%%EOF

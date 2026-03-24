@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 04 - Protocolos IoT: HTTP e MQTT (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #eef3ff;
+            border-left: 6px solid #004587;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>Protocolos IoT: HTTP e MQTT</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 04</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • HTTP • MQTT • integração com serviços</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> escolher o protocolo certo para cada cenário e integrar apps/dispositivos com serviços de internet.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Cliente/Servidor vs Publish/Subscribe</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>HTTP (cliente/servidor)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>O cliente faz uma requisição (GET/POST)</li>
+                        <li>O servidor responde (200, 404, 500...)</li>
+                        <li>Bom para APIs, webhooks e dashboards</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>MQTT (publish/subscribe)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Dispositivos publicam em tópicos</li>
+                        <li>Outros dispositivos/serviços assinam tópicos</li>
+                        <li>Broker central (ex: Mosquitto) roteia mensagens</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Erro comum:</strong> usar HTTP para telemetria em alta frequência e depois reclamar de lentidão. Telemetria contínua combina melhor com MQTT.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>HTTP na prática: rotas e payload</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Padrões úteis</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>GET</strong> para consultar estado</li>
+                        <li><strong>POST</strong> para enviar telemetria ou comando</li>
+                        <li><strong>JSON</strong> como padrão de dados</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo de payload</h3>
+                    <div class="mini-code">
+POST /api/telemetria
+Content-Type: application/json
+
+{"deviceId":"esp32-01","ts":1712345678,"temp":26.3,"hum":62,"err":0}
+                    </div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>App Inventor:</strong> o componente <strong>Web</strong> resolve o lado HTTP para você. O desafio é projetar o dado e tratar erros (timeout, sem internet, 500).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>MQTT na prática: tópicos e boas práticas</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Estrutura de tópicos</h3>
+                    <p>Use uma hierarquia que faça sentido:</p>
+                    <div class="mini-code" style="margin-top: 10px;">
+iot/senai/lab1/esp32-01/telemetry
+iot/senai/lab1/esp32-01/cmd
+iot/senai/lab1/esp32-01/status
+                    </div>
+                    <p style="margin-top: 10px;">Evite tópicos genéricos demais (ex: <code>dados</code>).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>QoS e retenção</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>QoS 0:</strong> mais rápido, pode perder mensagens</li>
+                        <li><strong>QoS 1:</strong> entrega pelo menos uma vez (pode duplicar)</li>
+                        <li><strong>Retain:</strong> broker guarda último valor (bom para status)</li>
+                    </ul>
+                    <p style="margin-top: 10px;">Projetar também é tratar duplicidade (id/ts).</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Escolha do protocolo (tabela rápida)</h2>
+            <div style="max-width: 980px; width: 100%; background: white; border-radius: 12px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-weight: 800; color: #004587;">
+                    <div>Cenário</div>
+                    <div>Melhor escolha</div>
+                    <div>Por quê</div>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 10px; line-height: 1.5;">
+                    <div>Enviar evento (alarme)</div>
+                    <div>HTTP (POST) ou MQTT</div>
+                    <div>Evento pontual</div>
+
+                    <div>Telemetria contínua</div>
+                    <div>MQTT</div>
+                    <div>Leve, publish/subscribe</div>
+
+                    <div>Dashboard web</div>
+                    <div>HTTP</div>
+                    <div>Integração direta com APIs</div>
+
+                    <div>Controle remoto</div>
+                    <div>MQTT (cmd) ou HTTP</div>
+                    <div>Depende do ecossistema</div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>O que decide:</strong> frequência, confiabilidade, latência, custo e facilidade de integração.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo guiado: App envia HTTP para um webhook</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Objetivo</h3>
+                    <p>Enviar uma leitura para um endpoint (pode ser um serviço de teste ou um servidor do professor).</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Montar JSON</li>
+                        <li>Enviar via POST</li>
+                        <li>Tratar sucesso/erro</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Pseudobloco</h3>
+                    <div class="mini-code">
+set Web1.Url to "https://SEU_ENDPOINT/api/telemetria"
+set Web1.RequestHeaders to make a list ("Content-Type: application/json")
+call Web1.PostText(text = json)
+
+when Web1.GotText do
+  set LabelStatus.Text to join "OK: " responseCode
+
+when Web1.TimedOut do
+  set LabelStatus.Text to "TIMEOUT"
+                    </div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Boa prática:</strong> se estiver offline, guardar em uma fila (TinyDB) e reenviar depois.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Definir arquitetura e protocolo do seu projeto</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Você precisa monitorar temperatura e acionar um atuador (ventilador). A telemetria vai para um dashboard e você quer receber alertas.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Escolha entre HTTP, MQTT ou híbrido</li>
+                        <li>Desenho do fluxo (quem fala com quem)</li>
+                        <li>Formato de payload e exemplo</li>
+                        <li>Regras de erro (offline, timeout, duplicidade)</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot4-a1" class="code-input" placeholder="Escreva sua arquitetura e justificativa (protocolo + payload + regras de erro)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Simular envio de telemetria via HTTP</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Gerar telemetria simulada (temp/hum) no app</li>
+                        <li>Montar JSON com deviceId e timestamp</li>
+                        <li>Enviar por POST com o componente Web</li>
+                        <li>Tratar: OK, erro, timeout (sem alert do navegador)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (extra)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Fila offline com TinyDB (guardar até enviar)</li>
+                        <li>Botão “Reenviar pendências”</li>
+                        <li>Log com últimos 20 envios</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot4-a2" class="code-input" placeholder="Descreva como você montou o JSON e tratou respostas e erros."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 04</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Agora você sabe escolher e aplicar protocolos.</strong> Esse é um diferencial em IoT: arquitetura e integração.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> nuvem e dashboards — coleta, armazenamento e visualização de séries temporais.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

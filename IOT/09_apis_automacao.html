@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 09 - APIs, Bibliotecas e Automação: Rotinas de Software (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #eef3ff;
+            border-left: 6px solid #004587;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>APIs, Bibliotecas e Automação</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 09</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • rotinas • integração • testes</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> criar rotinas de software usando APIs/bibliotecas para integrar dispositivos, serviços e dados (sem depender só do app).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Quando o app não é suficiente</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Limites do app</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Precisa rodar 24/7 (monitoramento)</li>
+                        <li>Precisa armazenar muito dado</li>
+                        <li>Precisa integrar com vários sistemas</li>
+                        <li>Precisa de regras complexas e logs</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entra o “backend”</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Serviço de ingestão (HTTP/MQTT)</li>
+                        <li>Banco de dados (séries temporais ou relacional)</li>
+                        <li>Processamento (alertas, agregações)</li>
+                        <li>API para apps e dashboards</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Criar):</strong> o objetivo agora é construir “cola” entre sistemas com qualidade e testabilidade.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Integração por MQTT (conceito de consumidor)</h2>
+            <div class="mini-code" style="max-width: 980px;">
+Ideia (independente de linguagem):
+  - conectar ao broker
+  - assinar tópicos de telemetria
+  - validar payload
+  - armazenar e/ou disparar alerta
+
+Exemplo de tópico:
+  iot/senai/lab1/esp32-01/telemetry
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Prática:</strong> mesmo sem rodar código aqui, você deve saber desenhar as funções, entradas, saídas e testes.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>API HTTP para telemetria (design simples)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Rotas mínimas</h3>
+                    <div class="mini-code">
+POST /api/telemetria
+GET  /api/dispositivos/{id}/ultimo
+GET  /api/dispositivos/{id}/historico?from=&to=
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Validações</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>deviceId obrigatório</li>
+                        <li>ts obrigatório e plausível</li>
+                        <li>métricas em faixas válidas</li>
+                        <li>limitar tamanho do payload</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Consistência:</strong> padronize nomes e unidades. Trocar <code>temp</code> por <code>temperature</code> no meio quebra tudo.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Testes: o que deve ser provado</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Casos mínimos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Payload válido → 200 OK</li>
+                        <li>Falta deviceId → 400</li>
+                        <li>ts inválido → 400</li>
+                        <li>valor fora de faixa → 422</li>
+                        <li>duplicidade (mesmo id/ts) → idempotência</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Qualidade (não funcional)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Logs úteis (sem vazar segredo)</li>
+                        <li>Rate limit (não travar)</li>
+                        <li>Resposta rápida (timeouts controlados)</li>
+                        <li>Monitoramento (status, métricas)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Especificação de API (contrato)</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Definir payload do POST /api/telemetria</li>
+                        <li>Definir respostas (200/400/422/500)</li>
+                        <li>Definir autenticação (token)</li>
+                        <li>Definir idempotência (evitar duplicidade)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <p>Escreva o “contrato” com exemplo de request/response e regras de validação.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot9-a1" class="code-input" placeholder="Contrato de API (payload + validações + respostas + autenticação)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Plano de automação e testes</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Você recebe telemetria e precisa:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Armazenar</li>
+                        <li>Gerar alerta se temp &gt; limite por 5 min</li>
+                        <li>Marcar dispositivo offline se sem dados por 10 min</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Quais funções/rotinas existem</li>
+                        <li>Quais entradas/saídas</li>
+                        <li>5 casos de teste (com dados)</li>
+                        <li>Como logar sem vazar segredo</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot9-a2" class="code-input" placeholder="Plano de automação e testes (funções, regras, casos)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 09</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Você conectou sistemas por software:</strong> APIs, validação e testes. Isso completa a habilidade de “integrar” IoT.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> projeto final — construir uma solução ponta a ponta e apresentar.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

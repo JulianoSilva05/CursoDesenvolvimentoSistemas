@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 02 - App Inventor + Bluetooth: Integração Local (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #eef3ff;
+            border-left: 6px solid #004587;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>App Inventor + Bluetooth (Integração Local)</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 02</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • Bluetooth clássico • controle e telemetria</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> construir um app que <strong>conecta</strong> via Bluetooth, <strong>envia comandos</strong> e <strong>recebe telemetria</strong> com um protocolo de mensagens simples e confiável.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Bluetooth no mundo IoT</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Quando usar Bluetooth</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Controle local (curta distância)</li>
+                        <li>Configuração inicial do dispositivo (Wi‑Fi, nome, chave)</li>
+                        <li>Economia de energia em projetos simples</li>
+                    </ul>
+                    <p style="margin-top: 10px;"><strong>Exemplo:</strong> app controla LED, motor, relé e recebe temperatura.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Limitações (para projetar certo)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Alcance e interferência</li>
+                        <li>Conexão pode cair: precisa <strong>reconectar</strong></li>
+                        <li>Mensagens chegam em “pedaços”: precisa <strong>delimitar</strong></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Erro clássico:</strong> esperar que o Bluetooth entregue “uma mensagem completa por vez”. Em geral, você recebe um fluxo de bytes. Use <strong>delimitador</strong> (ex: <code>\n</code>) e faça parsing.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Arquitetura do módulo</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <div class="mini-code">
+Celular (App Inventor)
+  UI (botões e status)
+  BluetoothClient (conecta e envia/recebe)
+  Parser (transforma texto em dados)
+  Estado (variáveis + log)
+
+Dispositivo (Arduino/ESP32 + módulo BT)
+  Loop lê sensores
+  Recebe comando (LED:1)
+  Executa ação (liga/desliga)
+  Envia telemetria (TEMP:26.3;LDR:812)
+                </div>
+            </div>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <h3>Objetivos (Bloom)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Entender o fluxo de conexão e troca de mensagens</li>
+                        <li>Aplicar um protocolo com delimitador</li>
+                        <li>Analisar falhas (conexão, mensagem quebrada, parse inválido)</li>
+                        <li>Criar um painel com comandos e telemetria</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregáveis</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>App “Controle + Telemetria”</li>
+                        <li>Documento curto: protocolo de mensagens</li>
+                        <li>Registro de testes (casos de erro)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Protocolo de mensagens (simples e confiável)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Regras recomendadas</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Mensagens em texto (ASCII) para depurar rápido.</li>
+                        <li>Um comando por linha, terminando com <code>\n</code>.</li>
+                        <li>Chave:Valor (fácil de ler e parsear).</li>
+                        <li>Confirmação opcional: dispositivo responde <code>OK</code> ou <code>ERR</code>.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplos</h3>
+                    <div class="mini-code">
+Comandos (celular → dispositivo)
+LED:1\n
+LED:0\n
+FAN:80\n
+PING\n
+
+Respostas (dispositivo → celular)
+OK\n
+ERR:CMD\n
+TEMP:26.3;HUM:62;LDR:812\n
+PONG\n
+                    </div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Regra de robustez:</strong> qualquer mensagem inválida deve virar <code>ERR</code> e nunca travar o dispositivo.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>App Inventor: componentes e blocos essenciais</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Designer (componentes)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>ListPicker</strong> (listar dispositivos pareados)</li>
+                        <li><strong>BluetoothClient</strong> (conectar e trocar dados)</li>
+                        <li><strong>Clock</strong> (polling/tempo de leitura)</li>
+                        <li><strong>Buttons</strong> (comandos)</li>
+                        <li><strong>Labels/ListView</strong> (telemetria e log)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Blocks (padrões)</h3>
+                    <div class="mini-code">
+when ListPickerBT.BeforePicking
+  set ListPickerBT.Elements to BluetoothClient1.AddressesAndNames
+
+when ListPickerBT.AfterPicking
+  call BluetoothClient1.Connect(address = ListPickerBT.Selection)
+  set LabelStatus.Text to if BluetoothClient1.IsConnected then "Conectado" else "Falha"
+
+when ButtonLEDOn.Click
+  call BluetoothClient1.SendText("LED:1\n")
+                    </div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Leitura de dados:</strong> use o Clock para checar se há bytes disponíveis e montar linhas até o <code>\n</code>.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Leitura de telemetria: parsing sem dor</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Estratégia</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Ter uma variável <strong>buffer</strong> (texto acumulado).</li>
+                        <li>Em cada tick do Clock, ler texto disponível e concatenar no buffer.</li>
+                        <li>Enquanto existir <code>\n</code> no buffer, separar uma linha completa.</li>
+                        <li>Para telemetria, separar por <code>;</code> e depois por <code>:</code>.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Pseudobloco (modelo)</h3>
+                    <div class="mini-code">
+global buffer = ""
+
+when Clock1.Timer
+  if BluetoothClient1.IsConnected and BluetoothClient1.BytesAvailableToReceive &gt; 0
+    set buffer to join buffer (call BluetoothClient1.ReceiveText(-1))
+    while buffer contains "\n"
+      set line to text before first "\n"
+      set buffer to text after first "\n"
+      call ProcessarLinha(line)
+
+to ProcessarLinha(line)
+  if line starts with "TEMP:"
+    // parse e atualiza UI
+                    </div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Não confie no dado:</strong> se um valor vier vazio ou não numérico, registre no log e ignore a linha.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Depuração (o que testar primeiro)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Checklist rápido</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Dispositivo está pareado no celular?</li>
+                        <li>Endereço selecionado é o correto?</li>
+                        <li>Conectou? (IsConnected true)</li>
+                        <li>Você está enviando <code>\n</code> no final?</li>
+                        <li>O dispositivo está respondendo <code>OK</code>?</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Testes de robustez</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Desconectar e reconectar sem travar o app</li>
+                        <li>Receber mensagem quebrada e reconstruir pelo buffer</li>
+                        <li>Enviar comando inválido e tratar <code>ERR</code></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): App “Controle Remoto” (com protocolo)</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos (mínimo)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>ListPicker para escolher o dispositivo Bluetooth.</li>
+                        <li>Botões: LED ON, LED OFF, PING.</li>
+                        <li>Enviar comandos terminando com <code>\n</code>.</li>
+                        <li>Mostrar status de conexão e um log de ações.</li>
+                        <li>Se não estiver conectado, bloquear envio e avisar na tela.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (extra)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Implementar botão “Reconectar”.</li>
+                        <li>Guardar o último endereço no TinyDB.</li>
+                        <li>Confirmar resposta <code>OK</code> / <code>ERR</code>.</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot2-a1" class="code-input" placeholder="Descreva seu protocolo e os blocos principais (conexão, envio, validação)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Painel de telemetria (parsing)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entrada esperada</h3>
+                    <p>O dispositivo envia linhas como:</p>
+                    <div class="mini-code" style="margin-top: 10px;">TEMP:26.3;HUM:62;LDR:812\n</div>
+                    <p style="margin-top: 10px;">Seu app deve mostrar: temperatura, umidade e luminosidade, além de registrar as linhas recebidas.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Regras</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Usar buffer e delimitar por <code>\n</code>.</li>
+                        <li>Se faltar algum campo, registrar “linha incompleta”.</li>
+                        <li>Se valor não for numérico, ignorar e registrar no log.</li>
+                        <li>Exibir alerta se TEMP &gt; limite (definido pelo usuário).</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot2-a2" class="code-input" placeholder="Explique como você faz o parsing e como trata erros e alertas."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 02</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Você evoluiu para integração real:</strong> conexão, protocolo, envio e parsing.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> sensores e atuadores — como escolher, ler, calibrar e validar dados com qualidade.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

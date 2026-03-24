@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 05 - Nuvem e Dashboards: Coleta, Alertas e Relatórios (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #f4fff7;
+            border-left: 6px solid #22c55e;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>Nuvem e Dashboards (Séries Temporais)</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 05</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • nuvem • dashboards • alertas</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> coletar telemetria na nuvem, visualizar em dashboards e disparar alertas com base em regras.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que muda quando você vai para a nuvem</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Você ganha</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Acesso remoto (de qualquer lugar)</li>
+                        <li>Histórico confiável (dias/semanas)</li>
+                        <li>Dashboards e relatórios</li>
+                        <li>Integração com outros sistemas</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Você precisa cuidar</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Segurança (chaves, tokens, permissões)</li>
+                        <li>Custos e limites (rate limit)</li>
+                        <li>Falhas de rede (fila e reenvio)</li>
+                        <li>Qualidade de dados (duplicidade, ordem, faltas)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Regra de ouro:</strong> a nuvem não conserta dado ruim. Se você envia lixo, você terá gráficos de lixo.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Séries temporais: o modelo de dados ideal</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Campos mínimos recomendados</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>deviceId</strong> (identidade do dispositivo)</li>
+                        <li><strong>ts</strong> (timestamp)</li>
+                        <li><strong>métricas</strong> (temp, hum, luz...)</li>
+                        <li><strong>qualidade</strong> (err, bateria, rssi)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo JSON</h3>
+                    <div class="mini-code">
+{"deviceId":"lab1-esp32-01","ts":1712345678,"temp":26.3,"hum":62,"ldr":812,"rssi":-61,"err":0}
+                    </div>
+                    <p style="margin-top: 10px;">Isso permite filtrar por dispositivo, detectar falhas e analisar tendências.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Dashboards: o que realmente importa</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Painel mínimo (MVP)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Valor atual (última leitura)</li>
+                        <li>Gráfico (últimas 2–24h)</li>
+                        <li>Status do dispositivo (online/offline)</li>
+                        <li>Eventos (alertas, erros)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Perguntas que o dashboard deve responder</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Está dentro do limite?</li>
+                        <li>O valor está subindo ou caindo?</li>
+                        <li>Quando começou a anomalia?</li>
+                        <li>O dispositivo parou de enviar?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Analisar/Avaliar):</strong> seu dashboard é uma ferramenta de decisão. Ele precisa ser útil, não apenas “bonito”.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Alertas: regras simples que funcionam</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Tipos de regra</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Threshold:</strong> temp &gt; 30</li>
+                        <li><strong>Persistência:</strong> temp &gt; 30 por 5 min</li>
+                        <li><strong>Ausência:</strong> sem dados por 10 min</li>
+                        <li><strong>Qualidade:</strong> err = 1 ou bateria baixa</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Mensagem de alerta (boa)</h3>
+                    <div class="mini-code">
+[ALERTA] lab1-esp32-01
+Temp 31.2°C acima do limite (30°C)
+Início: 10:42
+Última leitura: 10:47
+Ação sugerida: ligar ventilação
+                    </div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Evite spam:</strong> use cooldown (ex: não repetir alerta por 10 minutos) e persistência (evita falso positivo).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Integração com App Inventor (padrão prático)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Fluxo recomendado</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Gerar telemetria (real ou simulada)</li>
+                        <li>Montar JSON com ts e deviceId</li>
+                        <li>Enviar por HTTP (Web.PostText)</li>
+                        <li>Se falhar, guardar em fila (TinyDB)</li>
+                        <li>Reenviar quando voltar a internet</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Modelo de fila</h3>
+                    <div class="mini-code">
+fila = TinyDB.GetValue("fila", [])
+
+quando enviar:
+  se ok: remove do início da fila
+  se erro: mantém e tenta depois
+
+regra:
+  nunca perca dado importante
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Desenhar um dashboard útil</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Monitorar uma planta de sala/laboratório com sensores de temperatura e umidade.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Usuário precisa saber “agora”, “hoje” e “na semana”</li>
+                        <li>Precisa de alertas e histórico</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Quais cards/valores aparecem no topo</li>
+                        <li>Qual gráfico (período e escala)</li>
+                        <li>Como detectar dispositivo offline</li>
+                        <li>Dois alertas com mensagem completa</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot5-a1" class="code-input" placeholder="Desenhe/descrição do dashboard (cards, gráficos, status, alertas)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Implementar fila offline no app</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Gerar telemetria (simulada ou real)</li>
+                        <li>Se envio falhar, guardar em fila no TinyDB</li>
+                        <li>Botão “Reenviar pendências”</li>
+                        <li>Mostrar contador: pendências</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Teste obrigatório</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Simular falha (URL inválida) e acumular 5 itens</li>
+                        <li>Corrigir URL e reenviar com sucesso</li>
+                        <li>Verificar fila zerando</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot5-a2" class="code-input" placeholder="Explique sua estrutura de fila e como você testa e garante que não perde dados."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 05</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Você fechou o ciclo de observabilidade:</strong> coleta → histórico → visualização → alerta.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> segurança e robustez — como evitar que seu IoT vire um problema.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Módulo de IoT (Internet das Coisas)</title>
+    <style>
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #E32119;
+            --bg-color: #f4f4f4;
+            --text-color: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            opacity: 0.95;
+        }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .intro {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--senai-red);
+        }
+
+        .intro h2 {
+            color: var(--senai-blue);
+            margin-bottom: 10px;
+        }
+
+        .intro ul {
+            margin-left: 18px;
+            line-height: 1.6;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .lesson-item {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s, border-left 0.2s;
+            border-left: 5px solid transparent;
+            gap: 16px;
+        }
+
+        .lesson-item:hover {
+            transform: translateX(5px);
+            border-left: 5px solid var(--senai-red);
+        }
+
+        .lesson-info h3 {
+            margin-bottom: 6px;
+            color: var(--senai-blue);
+        }
+
+        .lesson-info p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .btn-start {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h1>Internet das Coisas (IoT)</h1>
+        <p>Curso com 120h, com prática intensa e projeto final</p>
+    </header>
+
+    <main>
+        <div class="intro">
+            <h2>Objetivo Geral</h2>
+            <p>Desenvolver capacidades técnicas e socioemocionais do Técnico em Desenvolvimento de Sistemas aplicadas à Internet das Coisas, integrando aplicativos, sensores, protocolos de comunicação e plataformas em nuvem para construir soluções completas.</p>
+            <h2 style="margin-top: 14px;">Taxonomia de Bloom (como o curso é organizado)</h2>
+            <ul>
+                <li><strong>Lembrar / Entender:</strong> conceitos de IoT, sensores, redes e protocolos.</li>
+                <li><strong>Aplicar:</strong> construir apps no App Inventor e integrar com dispositivos e APIs.</li>
+                <li><strong>Analisar:</strong> validar dados de sensores, investigar falhas de comunicação e desempenho.</li>
+                <li><strong>Avaliar:</strong> comparar arquiteturas (local, nuvem, híbrida) e escolher soluções seguras.</li>
+                <li><strong>Criar:</strong> desenvolver um sistema IoT ponta a ponta com documentação e testes.</li>
+            </ul>
+        </div>
+
+        <div class="lesson-list">
+            <a href="01_app_inventor_fundamentos.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 01 (12h): App Inventor para IoT — Fundamentos</h3>
+                    <p>Designer/Blocks, eventos, variáveis, listas, procedimentos, persistência (TinyDB) e primeiros protótipos de controle/monitoramento.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="02_app_inventor_bluetooth.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 02 (12h): App Inventor + Bluetooth — Integração Local</h3>
+                    <p>Bluetooth clássico, padrões de mensagem, comandos e telemetria. App como controle remoto e painel.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="03_sensores_atuadores.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 03 (12h): Sensores e Atuadores</h3>
+                    <p>Tipos e características de sensores, calibração, ruído, leitura e validação de dados, atuação e segurança elétrica básica.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="04_protocolos_iot_http_mqtt.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 04 (12h): Protocolos IoT — HTTP e MQTT</h3>
+                    <p>Arquiteturas cliente/servidor e publish/subscribe, tópicos MQTT, payload, QoS e integração com apps.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="05_nuvem_dashboards.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 05 (12h): Nuvem e Dashboards</h3>
+                    <p>Coleta em nuvem, dashboards, alertas e relatórios. Integração com serviços e armazenamento de séries temporais.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="06_seguranca_robustez.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 06 (12h): Segurança, Robustez e Integridade</h3>
+                    <p>Ameaças comuns, chaves/tokens, boas práticas, validação de dados, resiliência, logs e monitoramento.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="07_iot_robotica.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 07 (12h): IoT para Robótica</h3>
+                    <p>Sensoriamento e parametrização de robôs, telemetria, modos de operação e controle remoto com segurança.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="08_iot_industrial.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 08 (12h): IoT Industrial</h3>
+                    <p>Coleta de dados em plantas industriais, arquitetura em camadas, qualidade de dados e integração com sistemas.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="09_apis_automacao.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 09 (12h): APIs, Bibliotecas e Automação</h3>
+                    <p>Rotinas de software para integrar dispositivos e serviços, testes, documentação e automação de fluxos.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="10_projeto_final_iot.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Módulo 10 (12h): Projeto Final (Ponta a Ponta)</h3>
+                    <p>Definição do problema, arquitetura, implementação, validação, segurança, demonstração e entrega final.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Serviço Nacional de Aprendizagem Industrial</p>
+    </footer>
+</body>
+</html>

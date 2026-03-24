@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 07 - IoT para Robótica: Telemetria e Parametrização (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #f4fff7;
+            border-left: 6px solid #22c55e;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>IoT para Robótica: Telemetria e Parametrização</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 07</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • robôs • telemetria • controle seguro</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> criar uma interface de controle e monitoramento para um robô, com parâmetros configuráveis e telemetria confiável.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Por que IoT em robótica</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Telemetria</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Velocidade, distância, bateria, temperatura</li>
+                        <li>Eventos (obstáculo detectado, travamento)</li>
+                        <li>Saúde do sistema (RSSI, perdas, erro)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Parametrização</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Limites de velocidade e aceleração</li>
+                        <li>PID/ganhos (quando aplicável)</li>
+                        <li>Zonas de segurança e stop</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Regra de segurança:</strong> controle remoto precisa de <strong>fail‑safe</strong>. Se perder comunicação, o robô deve parar/entrar em modo seguro.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Arquitetura recomendada (controle seguro)</h2>
+            <div class="mini-code" style="max-width: 980px;">
+App (controle)
+  - envia comando com sequência e timestamp
+  - limita frequência (ex: 10 Hz)
+  - mostra estado e telemetria
+
+Robô (execução)
+  - valida comando (faixa e formato)
+  - aplica limite interno (nunca confia no app)
+  - watchdog: se não receber comando em X ms → STOP
+  - telemetria: envia estado e sensores
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Criar):</strong> construir controle seguro é projetar protocolo + validação + estados.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Protocolo sugerido para robô</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Comandos</h3>
+                    <div class="mini-code">
+CMD:MOVE;L:80;R:80;SEQ:102;TS:1712345678\n
+CMD:STOP;SEQ:103;TS:1712345679\n
+CMD:PARAM;MAXSPD:90;SEQ:104;TS:1712345680\n
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Telemetria</h3>
+                    <div class="mini-code">
+TEL:OK;BAT:87;DIST:1.23;OBS:0;RSSI:-62;SEQ:204\n
+TEL:WARN;BAT:15;OBS:1;SEQ:205\n
+ERR:CMD;SEQ:206\n
+                    </div>
+                    <p style="margin-top: 10px;">Inclua <strong>SEQ</strong> para detectar perdas e atrasos.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>UI do App Inventor (controle + painel)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Controles</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Botões: frente, trás, esquerda, direita, stop</li>
+                        <li>Slider: velocidade (0–100)</li>
+                        <li>Botão: “Aplicar parâmetros”</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Painel</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Battery %</li>
+                        <li>Distância/obstáculo</li>
+                        <li>Status (OK/WARN/ERR)</li>
+                        <li>Log de eventos</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Higiene de UX:</strong> sempre tenha um botão STOP grande e visível. E o robô deve parar mesmo se o app travar.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Fail-safe: watchdog e perda de comunicação</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Conceito</h3>
+                    <p>O robô deve parar automaticamente se:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Não receber comando por X ms (ex: 500ms)</li>
+                        <li>Receber comando inválido</li>
+                        <li>Detectar bateria crítica</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Mensagem de estado</h3>
+                    <div class="mini-code">
+TEL:WARN;REASON:TIMEOUT;SEQ:210\n
+TEL:WARN;REASON:LOWBAT;SEQ:211\n
+                    </div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Avaliar):</strong> defina X com base no risco. Quanto mais perigoso o robô, menor o tempo de tolerância.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Desenhar controle seguro + protocolo</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>UI com stop e velocidade</li>
+                        <li>Protocolo com SEQ e TS</li>
+                        <li>Fail-safe (watchdog)</li>
+                        <li>Telemetria com status e motivo</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <p>Descreva sua arquitetura e escreva exemplos de 3 comandos e 3 mensagens de telemetria.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot7-a1" class="code-input" placeholder="Arquitetura + protocolo + fail-safe (exemplos de mensagens)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Parsing e painel de telemetria</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entrada</h3>
+                    <p>Considere telemetria em texto com campos separados por <code>;</code>:</p>
+                    <div class="mini-code" style="margin-top: 10px;">TEL:OK;BAT:87;DIST:1.23;OBS:0;SEQ:204\n</div>
+                </div>
+                <div class="grid-item">
+                    <h3>Regras</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Atualizar bateria, distância e status na UI</li>
+                        <li>Se status WARN, destacar em amarelo</li>
+                        <li>Se status ERR, destacar em vermelho e registrar</li>
+                        <li>Registrar SEQ e detectar perda (salto grande)</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot7-a2" class="code-input" placeholder="Explique como você faz parsing, atualiza UI e detecta perda por SEQ."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 07</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Você projetou controle seguro</strong> com telemetria e parametrização. Isso é base para aplicações industriais e sistemas críticos.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> IoT industrial — coleta em plantas, arquitetura e integração.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 08 - IoT Industrial: Coleta em Plantas e Arquiteturas (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #eef3ff;
+            border-left: 6px solid #004587;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .warn {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>IoT Industrial (IIoT): Coleta e Integração</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 08</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • plantas industriais • qualidade • integração</div>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>Meta:</strong> compreender como coletar dados em ambientes industriais e como integrar de forma confiável com sistemas e dashboards.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que muda em ambiente industrial</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos mais rígidos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Disponibilidade (não pode parar)</li>
+                        <li>Confiabilidade (dados corretos)</li>
+                        <li>Segurança (pessoas e equipamentos)</li>
+                        <li>Rastreabilidade (logs/auditoria)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafios típicos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Interferência elétrica/ruído</li>
+                        <li>Redes segmentadas</li>
+                        <li>Sistemas legados</li>
+                        <li>Manutenção e calibração</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Princípio:</strong> em IIoT, você não “controla pela internet” sem camadas de segurança e validação. O controle crítico fica no chão de fábrica (edge/controlador).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Arquitetura em camadas (modelo didático)</h2>
+            <div class="mini-code" style="max-width: 980px;">
+Camada 0: Campo
+  - sensores e atuadores (sinais)
+
+Camada 1: Controle/Edge
+  - controlador, gateway, validação
+  - agrega e filtra dados
+
+Camada 2: Integração
+  - APIs / broker / filas
+  - normaliza e roteia
+
+Camada 3: Aplicação
+  - dashboards, alertas, relatórios
+  - integração com ERP/MES (quando existir)
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Analisar):</strong> localizar onde cada decisão deve acontecer (edge vs nuvem) é um ponto central de arquitetura.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Qualidade de dados em planta</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Principais problemas</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Leitura “travada” (sensor preso em um valor)</li>
+                        <li>Deriva (calibração sai com o tempo)</li>
+                        <li>Perdas de amostras</li>
+                        <li>Erros de unidade e escala</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Controles simples</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Faixa e consistência temporal (outliers)</li>
+                        <li>Heartbeats (status “estou vivo”)</li>
+                        <li>Versão de firmware e configuração</li>
+                        <li>Logs com motivo do erro</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Integração: “normalizar” antes de armazenar</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Por que normalizar</h3>
+                    <p>Se cada dispositivo envia um formato diferente, o dashboard vira um pesadelo. Padronize:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Campos</li>
+                        <li>Unidades</li>
+                        <li>Timestamp</li>
+                        <li>Qualidade</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo de “evento normalizado”</h3>
+                    <div class="mini-code">
+{"deviceId":"linhaA-maq2","ts":1712345678,"metric":"vibracao","value":0.12,"unit":"g","err":0}
+{"deviceId":"linhaA-maq2","ts":1712345678,"metric":"temp_motor","value":62.1,"unit":"c","err":0}
+                    </div>
+                </div>
+            </div>
+            <div class="warn" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Evite:</strong> misturar “texto humano” no dado (ex: “62°C”). Guarde valor numérico e unidade separada.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Arquitetura IIoT para uma planta simples</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Uma linha de produção tem 3 máquinas. Você quer monitorar:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Temperatura do motor</li>
+                        <li>Vibração</li>
+                        <li>Paradas/estado (ON/OFF/FALHA)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Camadas (campo, edge, integração, aplicação)</li>
+                        <li>Formato de dados normalizado</li>
+                        <li>Regras de qualidade e offline</li>
+                        <li>Um alerta de segurança (quando agir)</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot8-a1" class="code-input" placeholder="Descreva sua arquitetura IIoT (camadas, dados, regras e alertas)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Modelo de dados e dashboard industrial</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Definir 6 métricas (3 máquinas × 2 métricas)</li>
+                        <li>Definir deviceId e tags (linha, máquina)</li>
+                        <li>Definir cards e gráficos por máquina</li>
+                        <li>Definir critério de “máquina offline”</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Extra (avaliar)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Qual métrica indica manutenção preditiva?</li>
+                        <li>Qual regra evita falso positivo?</li>
+                        <li>O que precisa de auditoria?</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot8-a2" class="code-input" placeholder="Escreva seu modelo de dados e como seria o dashboard."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 08</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>Você entendeu o “jeito industrial”</strong> de pensar: camadas, qualidade, rastreabilidade e integração.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> APIs, bibliotecas e automação — construir rotinas de software para integrar tudo.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

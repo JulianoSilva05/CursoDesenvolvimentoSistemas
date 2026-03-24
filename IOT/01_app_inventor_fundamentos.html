@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 01 - App Inventor para IoT: Fundamentos (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .pill {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 999px;
+            background: #eef3ff;
+            color: #003a73;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .callout {
+            background: #fff3cd;
+            border-left: 6px solid #ffc107;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .diagram {
+            width: 100%;
+            max-width: 980px;
+            margin-top: 14px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+            border: 1px solid #e8e8e8;
+            background: white;
+        }
+
+        .steps ol {
+            margin-left: 18px;
+            line-height: 1.6;
+        }
+
+        .steps li {
+            margin-bottom: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Internet das Coisas (IoT)</h1>
+            <h2>App Inventor para IoT: Fundamentos</h2>
+            <div style="width: 100%; max-width: 980px; height: 280px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 01</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • Teoria guiada + prática com protótipos</div>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background:#fff; border-radius:10px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border-left:6px solid #E32119;">
+                    <div class="pill">Resultado do módulo</div>
+                    <p style="margin-top:10px;">Você vai construir <strong>apps no App Inventor</strong> para <strong>controlar</strong> e <strong>monitorar</strong> soluções IoT (primeiro local e, depois, conectadas).</p>
+                </div>
+                <div style="background:#fff; border-radius:10px; padding:14px; box-shadow:0 2px 8px rgba(0,0,0,0.06); border-left:6px solid #004587;">
+                    <div class="pill">Pré-requisitos</div>
+                    <p style="margin-top:10px;">Navegador atualizado, celular Android/iOS com o <strong>MIT AI2 Companion</strong> (ou emulador) e conta no App Inventor.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Contrato de Aula (Importante)</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p style="font-weight: 800;">Esta aula usa modo foco:</p>
+                <ul style="margin-left: 18px; margin-top: 8px; line-height: 1.6;">
+                    <li>Trocar de aba, minimizar, sair da tela cheia ou perder o foco registra <strong>infração</strong>.</li>
+                    <li>Após várias infrações, a tela pode ser <strong>bloqueada</strong> e só o professor desbloqueia.</li>
+                    <li>Atividades são <strong>individuais</strong>, com consulta apenas a materiais autorizados.</li>
+                </ul>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background: white; border-radius: 10px; padding: 14px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <h3>Como evitar infrações</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Deixe o celular por perto e faça testes sem trocar de aba.</li>
+                        <li>Antes de começar: organize arquivos e links autorizados.</li>
+                        <li>Escreva sua resposta no quadro e envie pelo botão.</li>
+                    </ul>
+                </div>
+                <div style="background: white; border-radius: 10px; padding: 14px; box-shadow:0 2px 8px rgba(0,0,0,0.06);">
+                    <h3>Como serão avaliadas as atividades</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Funcionalidade (faz o que foi pedido)</li>
+                        <li>Organização (nomes, telas, fluxo)</li>
+                        <li>Qualidade (tratamento de erro e validação)</li>
+                        <li>Entrega (registro e envio no tempo)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que é IoT (na prática)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Definição prática</h3>
+                    <p>IoT é quando um <strong>dispositivo</strong> (sensor/atuador) coleta dados ou executa ações e se integra com um <strong>software</strong> (app/servidor/nuvem) por meio de uma <strong>rede</strong>.</p>
+                    <p style="margin-top: 10px;"><strong>Exemplos reais:</strong> monitorar temperatura, acionar uma lâmpada, rastrear consumo, enviar alertas.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Componentes de um sistema IoT</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Coleta:</strong> sensores (temperatura, luz, presença, aceleração).</li>
+                        <li><strong>Processamento:</strong> microcontrolador (Arduino/ESP32) ou o próprio celular.</li>
+                        <li><strong>Comunicação:</strong> Bluetooth / Wi‑Fi / Internet.</li>
+                        <li><strong>Aplicação:</strong> app, dashboard, automação e alertas.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="diagram">
+                <svg viewBox="0 0 980 280" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama simples de IoT">
+                    <defs>
+                        <linearGradient id="g1" x1="0" x2="1">
+                            <stop offset="0" stop-color="#004587"/>
+                            <stop offset="1" stop-color="#003366"/>
+                        </linearGradient>
+                    </defs>
+                    <rect x="0" y="0" width="980" height="280" fill="#ffffff"/>
+                    <rect x="28" y="60" width="220" height="160" rx="14" fill="#f4f7ff" stroke="#c9d6ff"/>
+                    <text x="138" y="95" font-size="22" text-anchor="middle" fill="#003a73" font-family="Segoe UI" font-weight="700">Sensor</text>
+                    <text x="138" y="125" font-size="15" text-anchor="middle" fill="#003a73" font-family="Segoe UI">Temperatura • Luz • Movimento</text>
+                    <rect x="280" y="60" width="220" height="160" rx="14" fill="#fff7f6" stroke="#ffd1cf"/>
+                    <text x="390" y="95" font-size="22" text-anchor="middle" fill="#7a120e" font-family="Segoe UI" font-weight="700">Dispositivo</text>
+                    <text x="390" y="125" font-size="15" text-anchor="middle" fill="#7a120e" font-family="Segoe UI">Arduino • ESP32 • Celular</text>
+                    <rect x="532" y="60" width="200" height="160" rx="14" fill="#f4fff7" stroke="#c9f0d6"/>
+                    <text x="632" y="95" font-size="22" text-anchor="middle" fill="#14532d" font-family="Segoe UI" font-weight="700">Rede</text>
+                    <text x="632" y="125" font-size="15" text-anchor="middle" fill="#14532d" font-family="Segoe UI">Bluetooth • Wi‑Fi • Internet</text>
+                    <rect x="764" y="60" width="188" height="160" rx="14" fill="url(#g1)"/>
+                    <text x="858" y="95" font-size="22" text-anchor="middle" fill="#ffffff" font-family="Segoe UI" font-weight="700">Aplicação</text>
+                    <text x="858" y="125" font-size="15" text-anchor="middle" fill="#dbeafe" font-family="Segoe UI">App • Dashboard • Alertas</text>
+
+                    <path d="M248 140 L280 140" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="280,140 270,134 270,146" fill="#555"/>
+                    <path d="M500 140 L532 140" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="532,140 522,134 522,146" fill="#555"/>
+                    <path d="M732 140 L764 140" stroke="#555" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="764,140 754,134 754,146" fill="#555"/>
+
+                    <text x="390" y="215" font-size="13" text-anchor="middle" fill="#555" font-family="Segoe UI">processa • filtra • envia</text>
+                    <text x="632" y="215" font-size="13" text-anchor="middle" fill="#555" font-family="Segoe UI">transporta dados</text>
+                    <text x="858" y="215" font-size="13" text-anchor="middle" fill="#dbeafe" font-family="Segoe UI">decide • exibe • automatiza</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Objetivos (Bloom) deste módulo</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <div class="grid-layout">
+                    <div class="grid-item">
+                        <h3>Lembrar / Entender</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Identificar componentes do App Inventor (Designer e Blocks).</li>
+                            <li>Explicar o que é evento, propriedade e método.</li>
+                            <li>Reconhecer fluxo de dados em um app (entrada → processamento → saída).</li>
+                        </ul>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Aplicar / Analisar</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Criar telas com layout, botões, rótulos e listas.</li>
+                            <li>Programar com variáveis, procedimentos e listas.</li>
+                            <li>Validar entradas e registrar logs de execução.</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="grid-layout" style="margin-top: 12px;">
+                    <div class="grid-item">
+                        <h3>Avaliar / Criar</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Comparar 2 abordagens de persistência (TinyDB vs planilha/nuvem).</li>
+                            <li>Projetar um mini‑painel IoT (UI + dados + persistência) com critérios de qualidade.</li>
+                        </ul>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Entregáveis</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>App “Hello IoT” funcionando no Companion.</li>
+                            <li>Mini‑projeto de dashboard local com TinyDB.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>App Inventor: visão geral (Designer x Blocks)</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <p>O App Inventor tem duas áreas principais:</p>
+                <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                    <li><strong>Designer:</strong> monta a interface (telas, botões, imagens, listas).</li>
+                    <li><strong>Blocks Editor:</strong> programa o comportamento (eventos, lógica, dados, sensores).</li>
+                </ul>
+            </div>
+            <div class="diagram">
+                <svg viewBox="0 0 980 360" width="100%" height="auto" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Diagrama do Designer e Blocks do App Inventor">
+                    <rect x="0" y="0" width="980" height="360" fill="#ffffff"/>
+                    <text x="30" y="38" font-size="22" fill="#004587" font-family="Segoe UI" font-weight="800">Designer</text>
+                    <text x="520" y="38" font-size="22" fill="#004587" font-family="Segoe UI" font-weight="800">Blocks</text>
+
+                    <rect x="24" y="60" width="430" height="270" rx="14" fill="#f8fafc" stroke="#e2e8f0"/>
+                    <rect x="40" y="88" width="110" height="226" rx="10" fill="#fff" stroke="#e2e8f0"/>
+                    <text x="95" y="114" font-size="14" text-anchor="middle" fill="#334155" font-family="Segoe UI" font-weight="700">Palette</text>
+                    <rect x="164" y="88" width="170" height="226" rx="10" fill="#fff" stroke="#e2e8f0"/>
+                    <text x="249" y="114" font-size="14" text-anchor="middle" fill="#334155" font-family="Segoe UI" font-weight="700">Viewer</text>
+                    <rect x="348" y="88" width="90" height="226" rx="10" fill="#fff" stroke="#e2e8f0"/>
+                    <text x="393" y="114" font-size="14" text-anchor="middle" fill="#334155" font-family="Segoe UI" font-weight="700">Props</text>
+                    <rect x="190" y="140" width="118" height="34" rx="8" fill="#004587"/>
+                    <text x="249" y="162" font-size="14" text-anchor="middle" fill="#fff" font-family="Segoe UI" font-weight="700">Button1</text>
+                    <rect x="190" y="190" width="118" height="20" rx="8" fill="#e2e8f0"/>
+                    <text x="249" y="205" font-size="12" text-anchor="middle" fill="#334155" font-family="Segoe UI">Label1</text>
+                    <rect x="190" y="224" width="118" height="68" rx="10" fill="#f1f5f9"/>
+                    <text x="249" y="260" font-size="12" text-anchor="middle" fill="#334155" font-family="Segoe UI">ListView</text>
+
+                    <rect x="520" y="60" width="436" height="270" rx="14" fill="#f8fafc" stroke="#e2e8f0"/>
+                    <rect x="536" y="88" width="150" height="226" rx="10" fill="#fff" stroke="#e2e8f0"/>
+                    <text x="611" y="114" font-size="14" text-anchor="middle" fill="#334155" font-family="Segoe UI" font-weight="700">Blocks Palette</text>
+                    <rect x="702" y="88" width="238" height="226" rx="10" fill="#fff" stroke="#e2e8f0"/>
+                    <text x="821" y="114" font-size="14" text-anchor="middle" fill="#334155" font-family="Segoe UI" font-weight="700">Workspace</text>
+
+                    <rect x="726" y="145" width="190" height="38" rx="10" fill="#facc15"/>
+                    <text x="821" y="169" font-size="13" text-anchor="middle" fill="#3f2d00" font-family="Segoe UI" font-weight="800">when Button1.Click do</text>
+                    <rect x="746" y="196" width="150" height="34" rx="10" fill="#a78bfa"/>
+                    <text x="821" y="218" font-size="13" text-anchor="middle" fill="#1f1147" font-family="Segoe UI" font-weight="800">call Sound1.Play</text>
+
+                    <path d="M454 195 L520 195" stroke="#64748b" stroke-width="4" stroke-linecap="round"/>
+                    <polygon points="520,195 508,187 508,203" fill="#64748b"/>
+                    <text x="488" y="180" font-size="12" text-anchor="middle" fill="#64748b" font-family="Segoe UI">comportamento</text>
+                </svg>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <div class="grid-layout">
+                    <div class="grid-item">
+                        <h3>Dica prática</h3>
+                        <p>Comece sempre pelo Designer com uma UI simples, depois programe apenas um evento por vez (clicar, mudar texto, registrar valor).</p>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Regra de ouro</h3>
+                        <p>Se algo não funciona, confirme na ordem: <strong>componente certo</strong> → <strong>evento certo</strong> → <strong>dados certos</strong> → <strong>resultado visível</strong>.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Primeiro acesso e ambiente de trabalho</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <div class="grid-layout">
+                    <div class="grid-item">
+                        <h3>Acessar o App Inventor</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Abra <strong>ai2.appinventor.mit.edu</strong> no navegador.</li>
+                            <li>Faça login com conta Google (pessoal ou institucional).</li>
+                            <li>Menu Projects → <strong>Start a New Project</strong>.</li>
+                            <li>Escolha um nome curto (ex.: <strong>HelloIoT</strong>).</li>
+                        </ul>
+                        <div class="callout" style="margin-top: 10px;">
+                            <p>Se o site pedir permissões, aceite. Mantenha o navegador atualizado.</p>
+                        </div>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Organização do ambiente</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li><strong>Designer:</strong> constrói a interface (telas e componentes).</li>
+                            <li><strong>Blocks:</strong> implementa a lógica (eventos e ações).</li>
+                            <li><strong>Palette:</strong> lista de componentes; <strong>Viewer:</strong> área de montagem; <strong>Properties:</strong> configurações.</li>
+                            <li><strong>Non-visible:</strong> componentes que não aparecem (Web, TinyDB, BluetoothClient).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Testes no celular (MIT AI2 Companion) e emulador</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Companion (Android/iOS)</h3>
+                    <ol class="steps">
+                        <li>No celular, instale <strong>MIT AI2 Companion</strong> (loja oficial).</li>
+                        <li>No App Inventor (navegador), clique <strong>Connect → AI Companion</strong>.</li>
+                        <li>Abra o Companion no celular e escaneie o <strong>QR Code</strong> exibido.</li>
+                        <li>O app do celular carregará seu projeto automaticamente em tempo real.</li>
+                    </ol>
+                    <div class="callout" style="margin-top: 8px;">
+                        <p>Celular e PC devem estar na <strong>mesma rede</strong> (Wi‑Fi). Se sua escola bloquear, use cabo ou o emulador.</p>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Emulador (PC)</h3>
+                    <ol class="steps">
+                        <li>Baixe e instale o <strong>App Inventor Setup</strong> (em “Setup Instructions”).</li>
+                        <li>No App Inventor, clique <strong>Connect → Emulator</strong>.</li>
+                        <li>Aguarde a inicialização; o projeto abre em uma janela de Android.</li>
+                        <li>Use o emulador quando não há celular disponível ou rede restrita.</li>
+                    </ol>
+                    <div class="callout" style="margin-top: 8px;">
+                        <p>O emulador é mais lento que o celular. Para sensores, prefira testar no dispositivo real.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tutorial guiado: Hello Codi (seu primeiro app)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Designer</h3>
+                    <ol class="steps">
+                        <li>Adicione um <strong>Button</strong> (Button1).</li>
+                        <li>Na propriedade <strong>Text</strong>, deixe vazio (sem texto sobre a imagem).</li>
+                        <li>Adicione um <strong>Label</strong> (Label1) com texto “Toque na abelha”.</li>
+                        <li>Adicione um <strong>Sound</strong> (não visível) e carregue um som curto.</li>
+                    </ol>
+                </div>
+                <div class="grid-item">
+                    <h3>Blocks</h3>
+                    <div class="mini-code">
+when Button1.Click do
+  call Sound1.Play
+                    </div>
+                    <p style="margin-top: 8px;">Execute com o Companion: ao tocar no botão, o som é reproduzido.</p>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 10px;">
+                <p>Esse exemplo ensina o padrão “<strong>evento → ação</strong>”. Em IoT, trocaremos o som por leitura de sensor ou envio de comando.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Como salvar, compartilhar e empacotar (APK/QR)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Salvar e exportar o projeto</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Projects → <strong>Save project</strong> (automático acontece frequentemente).</li>
+                        <li>Projects → <strong>Export selected project (.aia)</strong> para compartilhar.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Gerar app (Android)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Build → <strong>App (provide QR code)</strong> para instalar no celular (válido por 2h).</li>
+                        <li>Build → <strong>App (save to my computer)</strong> para baixar o <strong>.apk</strong>.</li>
+                    </ul>
+                    <div class="callout" style="margin-top: 8px;">
+                        <p>Para iOS, utilize o Companion. Empacotamento iOS nativo ainda é limitado.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Componentes, eventos, métodos e propriedades</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>O que é o quê</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Componente:</strong> “peça” do app (Button, Label, ListView, Web, BluetoothClient).</li>
+                        <li><strong>Evento:</strong> algo acontece (Button.Click, Clock.Timer, Web.GotText).</li>
+                        <li><strong>Método:</strong> ação (call Web.Get, call TinyDB.StoreValue).</li>
+                        <li><strong>Propriedade:</strong> configuração (Button.Text, Label.Visible, Clock.TimerInterval).</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo rápido</h3>
+                    <div class="mini-code">
+when ButtonEnviar.Click do
+  set LabelStatus.Text to "Enviando..."
+  call Web1.Get
+
+when Web1.GotText do
+  set LabelStatus.Text to "OK!"
+                    </div>
+                    <p style="margin-top: 10px;">Isso já é um “mini IoT”: o app <strong>dispara</strong> uma requisição e <strong>reage</strong> ao retorno.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Variáveis, procedimentos e listas (padrões úteis)</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <div class="grid-layout">
+                    <div class="grid-item">
+                        <h3>Variáveis (estado do app)</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li><strong>estadoConexao</strong> (conectado/desconectado)</li>
+                            <li><strong>ultimoValor</strong> (telemetria mais recente)</li>
+                            <li><strong>limiteAlerta</strong> (configuração do usuário)</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Em IoT, variáveis viram o seu “painel”: elas mostram o que está acontecendo agora.</p>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Procedimentos (reuso)</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li><strong>AtualizarUI()</strong> para trocar textos e cores.</li>
+                            <li><strong>ValidarNumero(texto)</strong> para evitar erro.</li>
+                            <li><strong>RegistrarLog(msg)</strong> para depuração.</li>
+                        </ul>
+                        <p style="margin-top: 10px;">Procedimentos deixam seu app <strong>robusto</strong> e fácil de manter.</p>
+                    </div>
+                </div>
+                <div class="grid-layout" style="margin-top: 12px;">
+                    <div class="grid-item">
+                        <h3>Listas (telemetria e histórico)</h3>
+                        <p>Uma lista pode guardar os <strong>últimos N valores</strong> do sensor para fazer gráfico, média ou detectar picos.</p>
+                        <div class="mini-code" style="margin-top: 10px;">
+append to list historicoValores item ultimoValor
+if length of list historicoValores &gt; 20
+  remove list item list historicoValores index 1
+                        </div>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Checklist de qualidade</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Nomeie variáveis com intenção (sem “x”, “temp”).</li>
+                            <li>Valide entradas do usuário (vazio, não numérico).</li>
+                            <li>Mostre feedback na tela (status, cor, ícone).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Persistência com TinyDB (salvar configurações)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Quando usar</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Salvar <strong>limite de alerta</strong> (temperatura máxima).</li>
+                        <li>Salvar <strong>nome do dispositivo</strong> ou endereço Bluetooth.</li>
+                        <li>Guardar <strong>preferências de tela</strong> do usuário.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Padrão recomendado</h3>
+                    <div class="mini-code">
+when Screen1.Initialize do
+  set limiteAlerta to call TinyDB1.GetValue(tag="limite", valueIfTagNotThere=30)
+  set TextBoxLimite.Text to limiteAlerta
+
+when ButtonSalvar.Click do
+  call TinyDB1.StoreValue(tag="limite", value=TextBoxLimite.Text)
+                    </div>
+                    <p style="margin-top: 10px;">Resultado: o app “lembra” do limite mesmo após fechar.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Exemplo guiado: Painel “Smart Home” (UI + estado)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item steps">
+                    <h3>Designer (passo a passo)</h3>
+                    <ol>
+                        <li>Crie um projeto: <strong>SmartHomePainel</strong>.</li>
+                        <li>Adicione um <strong>VerticalArrangement</strong> (Width: Fill Parent).</li>
+                        <li>Coloque um <strong>Label</strong> para o título e um <strong>Label</strong> para status.</li>
+                        <li>Adicione 3 botões: <strong>LED</strong>, <strong>Ventilador</strong>, <strong>Portão</strong>.</li>
+                        <li>Adicione um <strong>ListView</strong> para “Logs” (ou um Label grande).</li>
+                        <li>Adicione um <strong>TinyDB</strong> (não visível).</li>
+                    </ol>
+                </div>
+                <div class="grid-item steps">
+                    <h3>Blocks (lógica mínima)</h3>
+                    <ol>
+                        <li>Crie variável <strong>log</strong> como lista vazia.</li>
+                        <li>Crie procedimento <strong>Registrar(msg)</strong> que adiciona no log e atualiza o ListView.</li>
+                        <li>No click de cada botão, altere o texto do status e registre no log.</li>
+                        <li>Salve no TinyDB o último estado dos botões.</li>
+                    </ol>
+                    <div class="mini-code" style="margin-top: 10px;">
+to Registrar(msg)
+  add items to list log item (join Clock1.Now " - " msg)
+  set ListViewLogs.Elements to log
+                    </div>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;" class="callout">
+                <p><strong>Por que isso é IoT?</strong> Antes de falar com sensores reais, você precisa dominar: interface, estado, validação e registro. IoT é integração, e integração começa pela <strong>qualidade do app</strong>.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): “Hello IoT” com validação e log</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos (mínimo)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Uma tela com <strong>TextBox</strong> para o nome do dispositivo.</li>
+                        <li>Um botão <strong>Conectar</strong> e um label de <strong>Status</strong>.</li>
+                        <li>Uma lista/área de <strong>Log</strong> com as ações.</li>
+                        <li>Validação: não permitir nome vazio.</li>
+                        <li>Persistência: salvar e restaurar nome com <strong>TinyDB</strong>.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Desafio (extra)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Alterar cor do Status (verde conectado, vermelho desconectado).</li>
+                        <li>Guardar histórico com no máximo 20 eventos.</li>
+                        <li>Botão “Limpar Log”.</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot1-a1" class="code-input" placeholder="Descreva aqui as telas/componentes e os blocos principais (pode escrever em tópicos)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Mini-dashboard local com TinyDB</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Você está criando um painel para monitorar um sensor (a leitura será simulada por enquanto). O usuário define um <strong>limite</strong> e o app registra leituras.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>TextBox: limite</li>
+                        <li>Botão: “Salvar limite”</li>
+                        <li>Botão: “Nova leitura” (gera número aleatório)</li>
+                        <li>Label: leitura atual</li>
+                        <li>Lista: histórico</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Regras</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Se leitura &gt; limite, mostrar alerta visual (cor/ícone) e registrar no log.</li>
+                        <li>Salvar limite e histórico no TinyDB.</li>
+                        <li>Ao abrir o app, restaurar os dados e atualizar a tela.</li>
+                    </ul>
+                    <div class="mini-code" style="margin-top: 10px;">
+set leitura to random integer from 0 to 60
+if leitura &gt; limiteAlerta
+  set LabelStatus.Text to "ALERTA"
+else
+  set LabelStatus.Text to "OK"
+                    </div>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot1-a2" class="code-input" placeholder="Cole aqui o raciocínio do seu fluxo (Initialize, salvar, gerar leitura, regras, persistência)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 01</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <h3>Checklist do que você domina agora</h3>
+                <ul style="margin-left: 18px; line-height: 1.8;">
+                    <li>Montar telas e componentes no Designer</li>
+                    <li>Programar eventos e atualizar a interface</li>
+                    <li>Usar variáveis, procedimentos e listas</li>
+                    <li>Persistir configurações e histórico com TinyDB</li>
+                    <li>Registrar logs para depurar e evidenciar ações</li>
+                </ul>
+                <div class="callout" style="margin-top: 14px;">
+                    <p><strong>Próximo módulo:</strong> você vai integrar o app com um dispositivo via <strong>Bluetooth</strong>, estabelecendo um padrão de mensagens de controle e telemetria.</p>
+                </div>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

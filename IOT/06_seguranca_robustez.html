@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IoT 06 - Segurança e Robustez: Integridade e Resiliência (12h)</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout {
+            background: #eef3ff;
+            border-left: 6px solid #004587;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .danger {
+            background: #fff1f2;
+            border-left: 6px solid #e11d48;
+            padding: 14px;
+            border-radius: 8px;
+        }
+
+        .mini-code {
+            width: 100%;
+            max-width: 980px;
+            background: var(--code-bg);
+            color: #fff;
+            border-radius: 10px;
+            padding: 14px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-size: 0.95rem;
+            line-height: 1.4;
+            overflow: auto;
+        }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>IoT</h1>
+            <h2>Segurança e Robustez</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Módulo 06</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">12 horas • segurança • integridade • resiliência</div>
+                </div>
+            </div>
+            <div class="danger" style="max-width: 980px; width: 100%; margin-top: 14px;">
+                <p><strong>IoT inseguro vira risco real:</strong> não é só “hackear um app”. É causar dano, expor dados e interromper operação.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Ameaças mais comuns em IoT</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Confidencialidade</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Exposição de chaves e tokens</li>
+                        <li>Wi‑Fi aberto ou senha fraca</li>
+                        <li>Tráfego sem criptografia</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Integridade e disponibilidade</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Comando malicioso (atuador)</li>
+                        <li>Dados falsos (sensor spoofing)</li>
+                        <li>Queda de rede e perda de telemetria</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Bloom (Analisar/Avaliar):</strong> você precisa identificar onde pode falhar e escolher medidas proporcionais ao risco.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Segurança por camadas (modelo prático)</h2>
+            <div class="mini-code" style="max-width: 980px;">
+Camada 1: Dispositivo
+  - credenciais protegidas
+  - validação de comandos
+  - modo seguro em erro
+
+Camada 2: Comunicação
+  - TLS/HTTPS quando possível
+  - autenticação (token)
+  - replay protection (timestamp/nonce)
+
+Camada 3: Aplicação/Nuvem
+  - permissões por deviceId
+  - logs e auditoria
+  - rate limit
+            </div>
+            <div class="danger" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Regra de engenharia:</strong> nunca confie no cliente (app). O dispositivo/servidor deve validar tudo.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Autenticação: token e identidade do dispositivo</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Identidade</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>deviceId</strong> fixo e único</li>
+                        <li>Associação com o “dono”/turma/lab</li>
+                        <li>Rotação de credenciais quando necessário</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Token</h3>
+                    <p>Em HTTP, o app envia um token no header. Exemplo:</p>
+                    <div class="mini-code" style="margin-top: 10px;">
+Authorization: Bearer SEU_TOKEN
+Content-Type: application/json
+                    </div>
+                    <p style="margin-top: 10px;">Em MQTT, você pode usar usuário/senha e ACL por tópico.</p>
+                </div>
+            </div>
+            <div class="danger" style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <p><strong>Nunca</strong> coloque chaves/tokens em um lugar público (repositório, print, slide). Use variáveis e rotacione quando vazar.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Resiliência: o sistema não pode “morrer” com falha</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Falhas esperadas</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Sem internet</li>
+                        <li>Timeout</li>
+                        <li>Broker indisponível</li>
+                        <li>Mensagem corrompida</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Padrões de solução</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Fila offline e reenvio</li>
+                        <li>Retentativa com backoff (espera crescente)</li>
+                        <li>Watchdog no dispositivo</li>
+                        <li>Modo seguro (desligar atuador)</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mini-code" style="max-width: 980px; margin-top: 12px;">
+Backoff (ideia):
+  tentativa 1: espera 1s
+  tentativa 2: espera 2s
+  tentativa 3: espera 4s
+  limite: 30s
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Integridade: duplicidade, ordem e consistência</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Problemas reais</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Mensagem duplicada (QoS 1, retentativa HTTP)</li>
+                        <li>Mensagem fora de ordem (atraso)</li>
+                        <li>Leitura inválida (sensor com falha)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Soluções comuns</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Usar <strong>ts</strong> e <strong>id</strong> para deduplicar</li>
+                        <li>Ignorar ts antigo (janela)</li>
+                        <li>Validar faixa e “saltos”</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mini-code" style="max-width: 980px; margin-top: 12px;">
+Regra simples:
+  se ts_novo &lt;= ts_ultimo_salvo → descartar (duplicado/atrasado)
+  se err = 1 → modo seguro e alerta
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1 (4h): Threat model (modelo de ameaças)</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Importante: Atividade INDIVIDUAL. Não saia desta tela. Entregue pelo botão de envio.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Um sistema IoT controla um relé (liga/desliga) e envia telemetria para nuvem.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>3 ameaças (confidencialidade/integridade/disponibilidade)</li>
+                        <li>Impacto de cada ameaça (o que pode acontecer)</li>
+                        <li>2 medidas por ameaça (mitigação)</li>
+                        <li>O que é “modo seguro” nesse sistema</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot6-a1" class="code-input" placeholder="Liste ameaças, impactos e mitigação."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2 (4h): Plano de robustez e testes</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Requisitos</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Fila offline (o que entra, como sai)</li>
+                        <li>Backoff de retentativa</li>
+                        <li>Deduplicação por ts/id</li>
+                        <li>Tratamento de dados inválidos</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Teste obrigatório</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Simular queda de rede</li>
+                        <li>Simular duplicidade (reenvio)</li>
+                        <li>Simular leitura impossível (outlier)</li>
+                        <li>Confirmar “modo seguro”</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-iot6-a2" class="code-input" placeholder="Escreva seu plano de robustez e como você testaria cada caso."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento do Módulo 06</h2>
+            <div class="callout" style="max-width: 980px; width: 100%;">
+                <p><strong>IoT profissional é confiável e seguro.</strong> A partir daqui, você aplica o que aprendeu em cenários de robótica e indústria.</p>
+                <p style="margin-top: 8px;"><strong>Próximo módulo:</strong> IoT para robótica — sensoriamento, telemetria e parametrização.</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>
