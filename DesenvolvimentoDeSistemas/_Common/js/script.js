@@ -410,6 +410,8 @@ function initFocusMode() {
     const maxInfractions = 5; 
     const studentName = localStorage.getItem('studentName') || 'Aluno';
     let isBlocked = false;
+    const blockDurationMs = 30 * 60 * 1000;
+    let lockInterval = null;
 
     // Create blocking overlay (hidden by default)
     const overlay = document.createElement('div');
@@ -424,6 +426,7 @@ function initFocusMode() {
         <h1 style="font-size: 3rem; margin-bottom: 20px;">⚠️ BLOQUEADO ⚠️</h1>
         <h2 style="font-size: 2rem;">Você saiu da aula muitas vezes!</h2>
         <p style="font-size: 1.5rem;">Chame o professor para desbloquear.</p>
+        <p id="lockCountdown" style="font-size: 1.2rem; margin-top: 10px;">Desbloqueio automático em 30:00</p>
         <div style="margin-top: 30px;">
             <input type="password" id="unlockPass" placeholder="Senha do Professor" style="padding: 15px; font-size: 1.2rem; border-radius: 5px; border: none;">
             <button id="unlockBtn" style="padding: 15px 30px; font-size: 1.2rem; cursor: pointer; background: white; color: red; border: none; font-weight: bold; border-radius: 5px;">Desbloquear</button>
@@ -431,21 +434,73 @@ function initFocusMode() {
     `;
     document.body.appendChild(overlay);
 
+    const unlockBtn = document.getElementById('unlockBtn');
+    const unlockPass = document.getElementById('unlockPass');
+    if (unlockPass && unlockBtn) {
+        unlockPass.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                unlockBtn.click();
+            }
+        });
+    }
+
+    function fmtTime(ms) {
+        let s = Math.max(0, Math.floor(ms / 1000));
+        const m = Math.floor(s / 60);
+        const ss = s % 60;
+        return `${String(m).padStart(2, '0')}:${String(ss).padStart(2, '0')}`;
+    }
+
+    function autoResetBlock() {
+        isBlocked = false;
+        infractionCount = 0;
+        localStorage.setItem('infractionCount', '0');
+        localStorage.removeItem('infractionLastAt');
+        localStorage.removeItem('blockStartAt');
+        overlay.style.display = 'none';
+        if (lockInterval) {
+            clearInterval(lockInterval);
+            lockInterval = null;
+        }
+        localStorage.removeItem('studentName');
+        showIdentificationModal();
+    }
+
+    function startLockCountdown(existingStart) {
+        const startAt = existingStart && existingStart > 0 ? existingStart : Date.now();
+        localStorage.setItem('blockStartAt', String(startAt));
+        const countdownEl = document.getElementById('lockCountdown');
+        if (lockInterval) clearInterval(lockInterval);
+        lockInterval = setInterval(() => {
+            const elapsed = Date.now() - startAt;
+            const remaining = blockDurationMs - elapsed;
+            if (countdownEl) countdownEl.textContent = `Desbloqueio automático em ${fmtTime(remaining)}`;
+            if (remaining <= 0) {
+                autoResetBlock();
+            }
+        }, 1000);
+    }
+
     // Check if already blocked from previous session
     if (infractionCount >= maxInfractions) {
         isBlocked = true;
         overlay.style.display = 'flex';
+        const storedBlockStart = parseInt(localStorage.getItem('blockStartAt') || '0');
+        startLockCountdown(storedBlockStart);
     }
 
     // Unlock logic (Password: 05061989 or Juli@no)
-    document.getElementById('unlockBtn').addEventListener('click', () => {
-        const passInput = document.getElementById('unlockPass');
+    unlockBtn.addEventListener('click', () => {
+        const passInput = unlockPass;
         const pass = passInput.value;
         if (pass === '05061989') {
             // Unblock Standard
             isBlocked = false;
             infractionCount = 0;
             localStorage.setItem('infractionCount', '0');
+            localStorage.removeItem('infractionLastAt');
+            localStorage.removeItem('blockStartAt');
             overlay.style.display = 'none';
             passInput.value = ''; // Clear password field
             
@@ -455,6 +510,10 @@ function initFocusMode() {
                     console.log("Fullscreen denied:", err);
                 });
             }
+            if (lockInterval) {
+                clearInterval(lockInterval);
+                lockInterval = null;
+            }
         } else if (pass === 'Juli@no') {
             // Unblock Master (No fullscreen, no tracking)
             isBlocked = false;
@@ -463,10 +522,16 @@ function initFocusMode() {
             
             infractionCount = 0;
             localStorage.setItem('infractionCount', '0');
+            localStorage.removeItem('infractionLastAt');
+            localStorage.removeItem('blockStartAt');
             overlay.style.display = 'none';
             passInput.value = '';
             
             showToast("🔓 Modo Master Ativado: Sem restrições.");
+            if (lockInterval) {
+                clearInterval(lockInterval);
+                lockInterval = null;
+            }
         } else {
             alert('Senha incorreta!');
             passInput.value = '';
@@ -497,11 +562,13 @@ function initFocusMode() {
         
         infractionCount++;
         localStorage.setItem('infractionCount', infractionCount);
+        localStorage.setItem('infractionLastAt', String(Date.now()));
         const remaining = maxInfractions - infractionCount;
 
         if (infractionCount >= maxInfractions) {
             isBlocked = true;
             overlay.style.display = 'flex';
+            startLockCountdown(Date.now());
             // Play alarm sound (beep)
             const audio = new AudioContext();
             const osc = audio.createOscillator();
