@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 08: Defeitos e Relatório</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 08: Gestão de Defeitos e Relatório de Testes</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 08</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Bug report • Severidade • Evidência • Comunicação</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Bug report: como escrever para ser resolvido</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Campos essenciais</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Título claro (o que quebra)</li>
+                        <li>Ambiente (navegador, versão, URL)</li>
+                        <li>Passos para reproduzir</li>
+                        <li>Resultado atual vs esperado</li>
+                        <li>Evidência (print/log)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Princípio</h3>
+                    <p>Um bom bug report permite que outra pessoa reproduza em menos de 2 minutos.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Severidade x Prioridade</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Severidade (impacto)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Crítico: impede uso / perde dados</li>
+                        <li>Alto: quebra fluxo principal</li>
+                        <li>Médio: problema com workaround</li>
+                        <li>Baixo: detalhe / cosmético</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Prioridade (ordem de correção)</h3>
+                    <p>Nem todo bug crítico é prioridade alta se não afeta o release atual, mas em geral bugs críticos sobem rápido.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Relatório de testes (o que um gestor precisa saber)</h2>
+            <div style="max-width: 980px; width: 100%;" class="grid-layout">
+                <div class="grid-item">
+                    <h3>Resumo</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>O que foi testado</li>
+                        <li>O que não foi testado</li>
+                        <li>Quantidade de casos: pass/fail/block</li>
+                        <li>Principais riscos</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Decisão</h3>
+                    <p>O relatório deve ajudar a responder: “podemos publicar?” e “qual risco aceitamos?”.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Criar um bug report completo</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Ao cadastrar produto sem preço, o sistema salva mesmo assim e quebra a listagem depois.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <p>Escreva um bug report completo (título, ambiente, passos, atual, esperado, severidade, prioridade, evidência).</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes8-a1" class="code-input" placeholder="Escreva o bug report completo."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2: Relatório final da disciplina</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Enunciado</h3>
+                    <p>Monte um relatório curto (1 página) como se você fosse o responsável pelos testes de um sistema de cadastro.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Obrigatório</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Escopo testado e não testado</li>
+                        <li>Métricas: pass/fail/block</li>
+                        <li>Top 3 riscos</li>
+                        <li>Recomendação (go/no-go) e por quê</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes8-a2" class="code-input" placeholder="Escreva o relatório (escopo, métricas, riscos e recomendação)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento da Disciplina</h2>
+            <p style="max-width: 980px; width: 100%;">Você agora tem base para testar com intenção: requisitos, usabilidade, casos, evidência e comunicação profissional.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

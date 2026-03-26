@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 02: Requisitos e Casos de Teste</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 02: Requisitos e Casos de Teste</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 02</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">RF • Critérios de Aceitação • Cenários</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Objetivo</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <p>Aprender a transformar requisitos (RF) em casos de teste completos, com:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>pré-condições</li>
+                        <li>dados de teste</li>
+                        <li>passos</li>
+                        <li>resultado esperado</li>
+                        <li>evidência</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <p><strong>Regra de ouro:</strong> se o caso de teste não pode ser repetido por outra pessoa, ele está incompleto.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Estrutura de um Caso de Teste (modelo)</h2>
+            <div style="max-width: 980px; width: 100%;" class="code-block">
+                <pre><code>CTxx - Título
+Requisito(s): RFxx
+Prioridade: Alta/Média/Baixa
+Pré-condições: ...
+Dados: ...
+Passos:
+  1) ...
+  2) ...
+Resultado esperado: ...
+Evidência: print / log / vídeo / registro</code></pre>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Critérios de Aceitação: o que define “passou”</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Boas práticas</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Seja mensurável (“mensagem X aparece”).</li>
+                        <li>Evite subjetivo (“ficou bom”).</li>
+                        <li>Inclua sucesso e erro.</li>
+                        <li>Inclua validações.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplo</h3>
+                    <p><strong>RF:</strong> cadastrar produto</p>
+                    <p><strong>Aceitação:</strong> ao enviar com campos válidos, sistema salva e mostra confirmação com o nome do produto.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: RF → Casos de Teste completos</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL. Use “Dividir Tela” para consultar o material.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Enunciado</h3>
+                    <p>Crie 4 requisitos funcionais para um sistema de “Cadastro de Produtos” e escreva 1 caso de teste completo para cada RF.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Obrigatório</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>2 casos de sucesso</li>
+                        <li>2 casos de erro/validação</li>
+                        <li>Dados de teste explícitos</li>
+                        <li>Resultado esperado verificável</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes2-a1" class="code-input" placeholder="Escreva RFs e Casos de Teste."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 2: Priorização (risco x impacto)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Enunciado</h3>
+                    <p>Escolha 6 casos de teste (pode usar os seus) e classifique prioridade (Alta/Média/Baixa) justificando com risco/impacto.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Dica</h3>
+                    <p>Alta prioridade normalmente é: dinheiro, segurança, dados, login, persistência, regras críticas.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes2-a2" class="code-input" placeholder="Liste os 6 CTs, prioridade e justificativa."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: técnicas de teste (particionamento, valor-limite) para criar dados e coberturas mais inteligentes.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

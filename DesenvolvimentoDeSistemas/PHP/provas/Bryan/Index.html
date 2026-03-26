@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ABYSSAL ARCHIVE | Protocolo Leviatã</title>
+    <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Staatliches&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --deep-blue: #000b18;
+            --biolume: #00ffcc;
+            --warning-orange: #ff6600;
+            --water-distort: rgba(0, 255, 204, 0.1);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--deep-blue);
+            overflow: hidden;
+            color: var(--biolume);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        /* O Abismo */
+        .ocean-floor {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 50% 50%, #001a33 0%, #00050a 100%);
+            z-index: -2;
+        }
+
+        /* Efeito de Partículas (Neve Marinha) */
+        #marineSnow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* O LEVIATÃ (Monstro no Fundo) */
+        .leviathan {
+            position: absolute;
+            bottom: -100px;
+            right: -100px;
+            width: 800px;
+            opacity: 0.15;
+            filter: blur(8px) brightness(0.5);
+            animation: swim 20s infinite ease-in-out;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes swim {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            50% { transform: translate(-50px, -30px) rotate(-2deg); }
+        }
+
+        /* Olhos que te observam na escuridão */
+        .monster-eye {
+            position: absolute;
+            width: 15px;
+            height: 8px;
+            background: #ff0000;
+            border-radius: 50%;
+            box-shadow: 0 0 20px #ff0000;
+            opacity: 0;
+            animation: blink-eye 8s infinite;
+        }
+
+        @keyframes blink-eye {
+            0%, 45%, 55%, 100% { opacity: 0; }
+            50% { opacity: 0.6; }
+        }
+
+        /* Container do Submersível */
+        .sub-interface {
+            position: relative;
+            z-index: 10;
+            width: 500px;
+            padding: 40px;
+            background: rgba(0, 15, 30, 0.85);
+            border: 2px solid rgba(0, 255, 204, 0.3);
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.9), inset 0 0 30px rgba(0, 255, 204, 0.1);
+            backdrop-filter: blur(8px);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; /* Formato orgânico/bolha */
+            animation: float 4s infinite ease-in-out;
+            text-align: center;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(1deg); }
+            50% { transform: translateY(-15px) rotate(-1deg); }
+        }
+
+        h1 {
+            font-family: 'Staatliches', cursive;
+            letter-spacing: 5px;
+            font-size: 2.5rem;
+            margin-bottom: 5px;
+            color: var(--biolume);
+            text-shadow: 0 0 15px var(--biolume);
+        }
+
+        .status-bar {
+            font-size: 10px;
+            margin-bottom: 20px;
+            color: var(--warning-orange);
+            text-transform: uppercase;
+        }
+
+        .form-grid {
+            text-align: left;
+            padding: 0 20px;
+        }
+
+        label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: block;
+            margin-top: 15px;
+            color: rgba(0, 255, 204, 0.6);
+        }
+
+        input {
+            width: 100%;
+            background: rgba(0, 255, 204, 0.05);
+            border: none;
+            border-bottom: 1px solid var(--biolume);
+            padding: 10px;
+            color: #fff;
+            font-family: 'Special+Elite', cursive;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            background: rgba(0, 255, 204, 0.15);
+            box-shadow: 0 0 15px var(--biolume);
+        }
+
+        /* Botão de Emergência */
+        .btn-launch {
+            margin-top: 30px;
+            width: 100%;
+            padding: 15px;
+            background: transparent;
+            border: 2px solid var(--biolume);
+            color: var(--biolume);
+            font-family: 'Staatliches', cursive;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: 0.4s;
+        }
+
+        .btn-launch:hover {
+            background: var(--biolume);
+            color: var(--deep-blue);
+            box-shadow: 0 0 40px var(--biolume);
+        }
+
+        /* Bolhas */
+        .bubble {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            pointer-events: none;
+            animation: rise 10s infinite ease-in;
+        }
+
+        @keyframes rise {
+            0% { transform: translateY(100vh) scale(0); opacity: 0; }
+            50% { opacity: 0.5; }
+            100% { transform: translateY(-100px) scale(1.2); opacity: 0; }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="ocean-floor"></div>
+    <canvas id="marineSnow"></canvas>
+
+    <div class="monster-eye" style="top: 20%; left: 15%;"></div>
+    <div class="monster-eye" style="top: 70%; left: 80%; animation-delay: 2s;"></div>
+    <div class="monster-eye" style="top: 40%; left: 85%; animation-delay: 4.5s;"></div>
+
+    <img src="https://cdn-icons-png.flaticon.com/512/3063/3063822.png" class="leviathan" alt="Leviathan">
+
+    <div class="sub-interface">
+        <div class="status-bar">⚠️ PRESSÃO EXTERNA: 11,000 PSI // OXIGÊNIO 14%</div>
+        <h1>ABYSSAL ARCHIVE</h1>
+        <p style="font-size: 10px; margin-top: -10px;">REGISTRO DE ESPÉCIMES DA ZONA HADAL</p>
+
+        <form action="salvar.php" method="post" class="form-grid">
+            <label>🧬 Identificação do Espécime</label>
+            <input type="text" name="nome" placeholder="Ex: Kraken Gigante" required>
+
+            <label>💎 Valor de Extração (Biolume)</label>
+            <input type="number" step="0.01" name="preco" placeholder="999.99" required>
+
+            <label>📡 Sonar ID Code</label>
+            <input type="text" name="codigo_barras" placeholder="--- DEPTH-SCAN ---" required>
+
+            <div style="display: flex; gap: 20px;">
+                <div style="flex: 1;">
+                    <label>🚢 Expedição</label>
+                    <input type="text" name="marca" required>
+                </div>
+                <div style="flex: 1;">
+                    <label>📂 Classe</label>
+                    <input type="text" name="categoria" required>
+                </div>
+            </div>
+
+            <label>🩸 Biometria do Mergulhador (ID)</label>
+            <input type="text" name="matricula" placeholder="AUTH-BIO-ID" required>
+
+            <button type="submit" class="btn-launch">TRANSMITIR PARA A SUPERFÍCIE</button>
+        </form>
+    </div>
+
+    <script>
+        // Sistema de Neve Marinha (Partículas)
+        const canvas = document.getElementById('marineSnow');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class SnowParticle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2;
+                this.speedY = Math.random() * 0.5 + 0.2;
+                this.speedX = (Math.random() - 0.5) * 0.3;
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.y += this.speedY;
+                this.x += this.speedX;
+                if (this.y > canvas.height) this.y = -10;
+            }
+            draw() {
+                ctx.globalAlpha = this.opacity;
+                ctx.fillStyle = '#ffffff';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        for(let i=0; i<150; i++) particles.push(new SnowParticle());
+
+        function createBubbles() {
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            const size = Math.random() * 20 + 5 + 'px';
+            bubble.style.width = size;
+            bubble.style.height = size;
+            bubble.style.left = Math.random() * 100 + 'vw';
+            bubble.style.animationDuration = Math.random() * 5 + 5 + 's';
+            document.body.appendChild(bubble);
+            setTimeout(() => bubble.remove(), 10000);
+        }
+        setInterval(createBubbles, 1000);
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animate);
+        }
+        animate();
+    </script>
+</body>
+</html>

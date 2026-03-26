@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 04: Teste Funcional e Regressão</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 04: Teste Funcional e Regressão</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 04</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Suíte mínima • Regressão • Evidências</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Teste funcional: o que o usuário consegue fazer</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Foco</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Fluxos principais (happy path)</li>
+                        <li>Validações e erros</li>
+                        <li>Persistência (salva mesmo?)</li>
+                        <li>Mensagens (feedback claro)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Evidência</h3>
+                    <p>Para cada teste, defina o que prova o resultado:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>print de mensagem</li>
+                        <li>registro em tabela</li>
+                        <li>log do servidor</li>
+                        <li>vídeo curto do fluxo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Regressão: o que quebra quando você muda</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <p>Regressão é o conjunto de testes que você roda depois de uma alteração para garantir que o que funcionava continua funcionando.</p>
+                <div class="grid-layout" style="margin-top: 12px;">
+                    <div class="grid-item">
+                        <h3>Suíte mínima (exemplo)</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Cadastro com dados válidos</li>
+                            <li>Validação: campo obrigatório</li>
+                            <li>Validação: preço inválido</li>
+                            <li>Consulta do item cadastrado</li>
+                            <li>Voltar e navegar sem perder contexto</li>
+                        </ul>
+                    </div>
+                    <div class="grid-item">
+                        <h3>Como escolher</h3>
+                        <ul style="margin-left: 18px; line-height: 1.6;">
+                            <li>Escolha o que tem mais impacto (dados, dinheiro, segurança).</li>
+                            <li>Inclua 1 caso de erro por fluxo principal.</li>
+                            <li>Inclua o que já quebrou antes (histórico).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Montar uma suíte de regressão</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Um sistema de cadastro de produtos recebeu uma atualização para “validar preço com duas casas decimais” e “exibir mensagem de sucesso”.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Defina 8 testes de regressão (título + objetivo)</li>
+                        <li>Escolha 3 e escreva caso completo</li>
+                        <li>Defina evidência para cada um</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes4-a1" class="code-input" placeholder="Liste testes e escreva 3 casos completos com evidência."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: testes de integração e API, validando contrato, status codes e erros.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

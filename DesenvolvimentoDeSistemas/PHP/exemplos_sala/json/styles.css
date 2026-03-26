@@ -1,0 +1,141 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f6f8;
+    color: #222;
+    padding: 20px;
+}
+
+.cabecalho,
+.rodape {
+    background-color: #005BAC;
+    color: white;
+    text-align: center;
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 20px;
+}
+
+.container-principal {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.formulario-box,
+.listagem-box {
+    background-color: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+fieldset {
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    padding: 15px;
+}
+
+legend {
+    font-weight: bold;
+    color: #005BAC;
+}
+
+label {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+input,
+button {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 8px;
+}
+
+input {
+    border: 1px solid #ccc;
+}
+
+button {
+    border: none;
+    background-color: #198754;
+    color: white;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+button:hover {
+    opacity: 0.9;
+}
+
+.cards {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.card {
+    border: 1px solid #d9d9d9;
+    border-radius: 12px;
+    padding: 16px;
+    background-color: #fafafa;
+}
+
+.card h3 {
+    color: #005BAC;
+    margin-bottom: 10px;
+}
+
+.card dl {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 8px;
+}
+
+.card dt {
+    font-weight: bold;
+}
+
+.acao {
+    margin-top: 20px;
+}
+
+.botao-voltar {
+    display: inline-block;
+    text-decoration: none;
+    background-color: #005BAC;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+}
+
+.total {
+    margin-top: 15px;
+    font-weight: bold;
+    color: #003E7E;
+}
+
+@media (min-width: 768px) {
+    .cards {
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .card {
+        width: calc(50% - 10px);
+    }
+}

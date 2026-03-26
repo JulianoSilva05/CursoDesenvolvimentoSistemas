@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 03: Técnicas de Teste</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 03: Técnicas de Teste (Caixa Preta e Caixa Branca)</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 03</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Equivalência • Valor-limite • Cobertura</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Caixa Preta vs Caixa Branca</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Caixa Preta</h3>
+                    <p>Você testa o sistema pelo comportamento: entradas e saídas.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Particionamento de equivalência</li>
+                        <li>Valores-limite</li>
+                        <li>Tabela de decisão</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Caixa Branca</h3>
+                    <p>Você considera a lógica interna (fluxos, condições, caminhos).</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Cobertura de linhas/condições</li>
+                        <li>Caminhos básicos</li>
+                        <li>Testes por branches</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Particionamento de Equivalência (exemplo)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Regra</h3>
+                    <p>Se o campo “Preço” aceita valores entre 0.01 e 9999.99, as classes podem ser:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Válidos: 0.01 a 9999.99</li>
+                        <li>Inválidos: &lt;= 0</li>
+                        <li>Inválidos: muito alto</li>
+                        <li>Inválidos: não numérico</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Como virar caso de teste</h3>
+                    <p>Em vez de testar mil valores, você testa 1 de cada classe:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>0.01 (válido)</li>
+                        <li>-1 (inválido)</li>
+                        <li>100000 (inválido)</li>
+                        <li>“abc” (inválido)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Valor-limite (onde os bugs gostam de morar)</h2>
+            <div style="max-width: 980px; width: 100%;">
+                <p>Se uma regra diz “mínimo 3 caracteres”, você testa:</p>
+                <div class="code-block" style="max-width: 980px;">
+                    <pre><code>2 (inválido)
+3 (válido)
+4 (válido)</code></pre>
+                </div>
+                <p style="margin-top: 10px;">O valor-limite é ótimo para campos e validações (tamanho, faixa numérica, datas).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Dados de teste por equivalência e limite</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Enunciado</h3>
+                    <p>Defina classes de equivalência e valores-limite para os campos abaixo:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 8px;">
+                        <li>Preço (0.01 a 9999.99)</li>
+                        <li>Nome do produto (3 a 100 caracteres)</li>
+                        <li>Código de barras (8 a 14 caracteres numéricos)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <p>Para cada campo, liste:</p>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>classes válidas e inválidas</li>
+                        <li>3 valores-limite</li>
+                        <li>e 1 caso de teste completo</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes3-a1" class="code-input" placeholder="Escreva classes, limites e pelo menos 1 CT completo."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: teste funcional e regressão, como organizar suíte mínima e evidência.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

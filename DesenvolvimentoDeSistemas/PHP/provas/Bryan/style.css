@@ -1,0 +1,116 @@
+/* --- FUNDAÇÕES DO ABISMO --- */
+:root {
+    --deep-void: #00050a;      /* O preto absoluto do fundo */
+    --water-tint: #001a33;     /* Azul marinho profundo */
+    --sonar-green: #00ffcc;    /* Verde bioluminescente */
+    --alarm-red: #ff3333;      /* Cor de emergência */
+    --glass-shimmer: rgba(0, 255, 204, 0.1);
+}
+
+* {
+    box-sizing: border-box;
+    cursor: crosshair; /* Mira de sonar no lugar do mouse */
+}
+
+body {
+    margin: 0;
+    background-color: var(--deep-void);
+    color: var(--sonar-green);
+    font-family: 'Courier New', Courier, monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden; /* Ninguém escapa do abismo */
+}
+
+/* --- O PAINEL DO SUBMERSÍVEL --- */
+.container-abissal {
+    width: 450px;
+    padding: 30px;
+    background: rgba(0, 10, 20, 0.9);
+    border: 1px solid var(--sonar-green);
+    border-radius: 15px;
+    box-shadow: 0 0 40px rgba(0, 255, 204, 0.2);
+    position: relative;
+    backdrop-filter: blur(5px);
+}
+
+/* Efeito de scanline (linhas de monitor antigo) */
+.container-abissal::after {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: linear-gradient(rgba(0, 255, 204, 0.05) 50%, transparent 50%);
+    background-size: 100% 4px;
+    pointer-events: none;
+}
+
+/* --- TIPOGRAFIA E INPUTS --- */
+h2 {
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 4px;
+    border-bottom: 2px solid var(--sonar-green);
+    padding-bottom: 10px;
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+    color: rgba(0, 255, 204, 0.7);
+}
+
+input {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(0, 255, 204, 0.3);
+    padding: 10px;
+    color: #fff;
+    margin-bottom: 20px;
+    outline: none;
+    transition: all 0.3s;
+}
+
+input:focus {
+    border-color: var(--sonar-green);
+    box-shadow: 0 0 15px var(--sonar-green);
+    background: rgba(0, 255, 204, 0.05);
+}
+
+/* --- BOTÃO DE PRESSURIZAÇÃO --- */
+.btn-enviar {
+    width: 100%;
+    padding: 15px;
+    background: var(--sonar-green);
+    color: var(--deep-void);
+    border: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: 0.3s;
+    letter-spacing: 2px;
+}
+
+.btn-enviar:hover {
+    background: white;
+    box-shadow: 0 0 30px white;
+    transform: scale(1.02);
+}
+
+/* --- DECORAÇÃO DE AVISO --- */
+.warning-text {
+    color: var(--alarm-red);
+    font-size: 10px;
+    text-align: center;
+    margin-top: 15px;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.3; }
+    100% { opacity: 1; }
+}

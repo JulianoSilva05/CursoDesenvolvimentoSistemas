@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 07: Desempenho e Carga</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 07: Teste de Desempenho e Carga</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 07</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Tempo de resposta • Throughput • Gargalos</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Por que desempenho é requisito</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <p>Um sistema pode estar funcional, mas se demora demais, ele falha na prática.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 10px;">
+                        <li>Usuário abandona</li>
+                        <li>Fila aumenta</li>
+                        <li>Erro vira cascata</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <p><strong>Desempenho</strong> é medida. Não é “parece lento”. É tempo, taxa e estabilidade.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Métricas principais</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Tempo</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Tempo de resposta (p50/p95/p99)</li>
+                        <li>Tempo de renderização</li>
+                        <li>Tempo até primeira interação</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Taxa e erro</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Throughput (req/s)</li>
+                        <li>Taxa de erro</li>
+                        <li>Timeouts</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Tipos de teste</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Carga</h3>
+                    <p>Simula o uso esperado (ex: 50 usuários).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Stress</h3>
+                    <p>Empurra até quebrar (ex: 500 usuários) para entender limite.</p>
+                </div>
+            </div>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <h3>Spike</h3>
+                    <p>Aumento súbito (ex: de 10 para 200 em 1 minuto).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Soak</h3>
+                    <p>Longa duração (ex: 2 horas) para encontrar vazamentos e degradação.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Cenário de carga e critérios</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Sistema de cadastro de produtos usado por 40 alunos ao mesmo tempo no laboratório.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Defina o fluxo (login/cadastro/listagem)</li>
+                        <li>Defina métricas e meta (p95 &lt; 2s, erro &lt; 1%)</li>
+                        <li>Defina 2 hipóteses de gargalo</li>
+                        <li>Defina o que seria “reprovado”</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes7-a1" class="code-input" placeholder="Descreva o cenário de carga, métricas e critérios."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: gestão de defeitos, relatório de testes e comunicação profissional.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

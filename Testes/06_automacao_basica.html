@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 06: Automação Básica</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 06: Automação Básica de Testes</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 06</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">O que automatizar • Pirâmide • Estabilidade</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que automatizar (e o que NÃO automatizar)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Automatize</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Regressão repetitiva (sempre roda)</li>
+                        <li>Casos críticos (pagamento, cadastro, login)</li>
+                        <li>Validações de dados e regras</li>
+                        <li>APIs e contratos (rápido e estável)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Evite automatizar (no começo)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Fluxos muito instáveis/mudando toda hora</li>
+                        <li>UI com elementos sem identificadores</li>
+                        <li>Testes que dependem de tempo aleatório</li>
+                        <li>“Bonito” e subjetivo (layout sem critério)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Pirâmide de testes (visão prática)</h2>
+            <div style="max-width: 980px; width: 100%;" class="grid-layout">
+                <div class="grid-item">
+                    <h3>Base (muitos, rápidos)</h3>
+                    <p>Unitários e API/contrato. Encontram bugs cedo e custam pouco para manter.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Topo (poucos, lentos)</h3>
+                    <p>UI ponta a ponta. Use para validar o fluxo principal e não para testar tudo.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Teste automatizado “bom” precisa ser estável</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Princípios</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Dados previsíveis (criar/limpar)</li>
+                        <li>Ambiente controlado</li>
+                        <li>Sem dependência de horário</li>
+                        <li>Assert claro (o que prova?)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Erro clássico</h3>
+                    <p>Teste passa às vezes e falha às vezes (“flaky”). Isso destrói confiança e vira manutenção infinita.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Selecionar o que automatizar</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Cenário</h3>
+                    <p>Seu sistema tem: cadastro, login, busca de produtos, relatório, área administrativa e integração com API.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Liste 10 testes candidatos</li>
+                        <li>Classifique: automatizar agora / automatizar depois / manual</li>
+                        <li>Justifique (risco, repetição, estabilidade)</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes6-a1" class="code-input" placeholder="Liste seus testes e justifique sua decisão."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: desempenho e carga, como projetar cenários e interpretar métricas.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+body {
+    background-color: rgb(117, 117, 112);
+}
+
+header {
+    background-color: rgb(185, 155, 117);
+    border: 1px solid black;
+    text-align: center;
+    border-radius: 1em 1em 0em 0em;
+
+}
+
+main {
+    background-color: blanchedalmond;
+    padding: 2em;
+    border: 1px solid black;
+    border-radius: 0em 0em 1em 1em;
+}
+
+input{
+    border-radius: 1em;
+    padding: auto;
+    text-align: right ;
+    margin: 10px;
+    
+}

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 05: Integração e API</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 05: Testes de Integração e API</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 05</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Contrato • Status Code • Erros • Dados</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que é teste de integração</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <p>Integração testa a conversa entre partes: front ↔ back, back ↔ banco, serviço ↔ API externa.</p>
+                    <ul style="margin-left: 18px; line-height: 1.6; margin-top: 10px;">
+                        <li>Dados corretos chegando no destino</li>
+                        <li>Tratamento de falhas (timeout, 500)</li>
+                        <li>Validação de contrato (campos)</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <p><strong>Um bug clássico:</strong> front manda “codigo_de_barras” e API espera “codigo_barras”. Funciona em um lugar e quebra no outro.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Checklist de API (mínimo)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Resposta</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Status code correto (200/201/400/401/404/500)</li>
+                        <li>JSON válido</li>
+                        <li>Campos esperados</li>
+                        <li>Mensagens de erro úteis</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Contrato</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Campos obrigatórios</li>
+                        <li>Tipos corretos (string/number)</li>
+                        <li>Validação (faixas, formatos)</li>
+                        <li>Idempotência quando aplicável</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade 1: Criar casos de teste para uma API</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Endpoint</h3>
+                    <div class="code-block">
+                        <pre><code>POST /api/produtos
+Body:
+{
+  "nome": "Teclado USB",
+  "preco": 89.90,
+  "codigo_barras": "7891234567890",
+  "marca": "Logitech",
+  "categoria": "Informática"
+}</code></pre>
+                    </div>
+                </div>
+                <div class="grid-item">
+                    <h3>Entrega</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>8 casos de teste (título + objetivo)</li>
+                        <li>3 casos completos com request e resultado esperado</li>
+                        <li>Inclua: 2 erros de validação e 1 erro de servidor</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes5-a1" class="code-input" placeholder="Escreva seus casos de teste (incluindo requests e resultados esperados)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <p style="max-width: 980px; width: 100%;">Na próxima aula: automação básica, o que automatizar e como evitar testes frágeis.</p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

@@ -413,6 +413,12 @@ function initFocusMode() {
     const blockDurationMs = 30 * 60 * 1000;
     let lockInterval = null;
 
+    function isExitAllowed() {
+        const activeSlide = document.querySelector('.slide.active');
+        if (!activeSlide) return false;
+        return activeSlide.dataset.allowExit === 'true' || activeSlide.classList.contains('allow-exit');
+    }
+
     // Create blocking overlay (hidden by default)
     const overlay = document.createElement('div');
     overlay.id = 'focus-overlay';
@@ -543,11 +549,13 @@ function initFocusMode() {
         if (sessionStorage.getItem('masterMode') === 'true') return;
 
         if (document.hidden && !isBlocked) {
+            if (isExitAllowed()) return;
             handleInfraction("Troca de aba ou minimização");
         } else if (!document.hidden && !isBlocked) {
             // User came back. Check fullscreen.
             // Wait a bit to check if reload is pending or just normal switching
             setTimeout(() => {
+                if (isExitAllowed()) return;
                 if (!document.fullscreenElement) {
                     forceFullscreenReentry();
                 }
@@ -559,6 +567,7 @@ function initFocusMode() {
 
     function handleInfraction(reason) {
         if (sessionStorage.getItem('masterMode') === 'true') return;
+        if (isExitAllowed()) return;
         
         infractionCount++;
         localStorage.setItem('infractionCount', infractionCount);
@@ -592,6 +601,7 @@ function initFocusMode() {
         if (sessionStorage.getItem('masterMode') === 'true') return;
 
         if (!isBlocked && !isSystemAlert) {
+            if (isExitAllowed()) return;
             // Check if document is hidden (to avoid double counting with visibilitychange)
             if (!document.hidden) {
                 handleInfraction("Perda de foco da janela");
@@ -603,6 +613,7 @@ function initFocusMode() {
     document.addEventListener('fullscreenchange', () => {
         if (sessionStorage.getItem('masterMode') === 'true') return;
 
+        if (isExitAllowed()) return;
         if (!document.fullscreenElement && !isBlocked && !isSystemAlert) {
              handleInfraction("Saiu da Tela Cheia");
              // Force resume overlay immediately

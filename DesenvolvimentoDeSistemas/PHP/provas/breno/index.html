@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>cadastro de produtos</title>
+</head>
+<body>
+<nav>
+    <h1>Sistema de Cadastro de Produtos</h1>
+    <hr>
+</nav>
+
+<main>
+
+<section>
+    <h2>Cadastro</h2>
+
+    <form action="salvar.php" method="POST">
+
+        <label>Nome:</label><br>
+        <input type="text" name="nome" required><br><br>
+
+        <label>Preço:</label><br>
+        <input type="number" step="0.01" name="preco" required>
+
+        <label>Código de Barras:</label><br>
+        <input type="text" name="codigo_barras" required>
+
+        <label>Marca:</label>
+        <input type="text" name="marca" required>
+
+        <label>Categoria:</label>
+        <input type="text" name="categoria" required>
+
+        <label>Matrícula:</label>
+        <input type="text" name="matricula">
+
+        <input type="submit" value="Cadastrar">
+    </form>
+</section>
+</main>
+</body>
+</html>

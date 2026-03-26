@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prova HTML PHP</title>
+</head>
+<body>
+    <h1>Inserção de dados</h1>
+    <h2>Insira os dados para serem salvos em um banco de dados:</h2>
+
+    <form action="salvar.php" method="post">
+        <label for="nome">Nome:</label>
+        <input type="text" name="nome" id="nome">
+        
+        <label for="preco">Preço:</label>
+        <input type="number" name="preco" id="preco">
+        <label for="codigo_barras">Codigo de barras:</label>
+        <input type="number" name="codigo_barras" id="codigo_barras">
+        <label for="marca">Marca:</label>
+        <input type="text" name="marca" id="marca">
+        <label for="categoria">Categoria:</label>
+        <input type="text" name="categoria" id="categoria">
+        
+        <label for="matricula">Matrícula:</label>
+        <input type="text" name="matricula" id="matricula">
+        
+
+        <input type="submit" value="Salvar" >
+    </form>
+</html>
