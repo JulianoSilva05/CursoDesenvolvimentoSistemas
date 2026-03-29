@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 10: Testes de Segurança</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout { background: #fff3cd; border-left: 6px solid #ffc107; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .success { background: #f4fff7; border-left: 6px solid #22c55e; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 10: Testes de Segurança (introdução prática)</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 10</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">OWASP • SQLi • XSS • Sessão • Bloom: Analisar / Aplicar</div>
+                </div>
+            </div>
+            <div class="success" style="margin-top: 14px; max-width: 980px;">
+                <p><strong>Objetivo:</strong> executar testes de segurança <em>éticos</em> apenas em sistemas autorizados (seu projeto, ambiente de laboratório ou app de prática). Identificar vulnerabilidades comuns e registrá-las como defeitos.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>OWASP Top 10 (visão de testador)</h2>
+            <p style="max-width: 980px;">A OWASP lista riscos frequentes em aplicações web. Você não precisa ser hacker: precisa <strong>reproduzir cenários conhecidos</strong> com dados controlados.</p>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <ul style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>A01 Broken Access Control:</strong> usuário comum acessa rota/admin?</li>
+                        <li><strong>A03 Injection (SQL/LDAP/OS):</strong> entrada vira comando?</li>
+                        <li><strong>A07 Auth failures:</strong> senha fraca aceita? bloqueio após tentativas?</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <ul style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>XSS:</strong> script injetado refletido ou armazenado?</li>
+                        <li><strong>Crypto failures:</strong> senha em texto puro? HTTP sem TLS em produção?</li>
+                        <li><strong>Security logging:</strong> ataque deixa rastro?</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout" style="margin-top: 12px; max-width: 980px;">
+                <p>Referência oficial: <a href="https://owasp.org/www-project-top-ten/" style="color:#004587; font-weight:700;">OWASP Top 10</a> (consulte a versão atual).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>SQL Injection (teste conceitual)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>O que procurar</h3>
+                    <p>Campos que montam SQL por concatenação. Entradas de teste (em ambiente controlado):</p>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><code>' OR '1'='1</code></li>
+                        <li><code>; DROP TABLE</code> (nunca em produção real de terceiros)</li>
+                        <li>Caracteres de escape: <code>'</code> <code>"</code> <code>--</code></li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Esperado seguro</h3>
+                    <p>Prepared statements / parametrização: entrada tratada como dado, não como comando. Erro genérico ao usuário, detalhe só em log.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>XSS e sessão</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>XSS (Cross-Site Scripting)</h3>
+                    <p>Teste (laboratório): envie <code>&lt;script&gt;alert(1)&lt;/script&gt;</code> em campo que é exibido depois. Se o script executar, há XSS (armazenado ou refletido).</p>
+                    <p><strong>Mitigação:</strong> sanitizar saída, CSP, encoding correto.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Sessão</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Cookie com flags <code>HttpOnly</code> e <code>Secure</code>?</li>
+                        <li>Logout invalida sessão no servidor?</li>
+                        <li>URL com session id fixo (session fixation)?</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Imagem: ciclo de segurança (referência)</h2>
+            <div style="max-width: 980px; background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/65/OAuth2.png/640px-OAuth2.png" alt="Fluxo OAuth2 (autenticação)" style="width: 100%; max-height: 280px; object-fit: contain;">
+                <p style="margin-top: 8px; color: #555;">Fluxo simplificado OAuth2 (autorização em APIs). Útil para planejar testes de token e escopos. <a href="https://commons.wikimedia.org/wiki/File:OAuth2.png" style="color:#004587; font-weight:700;">Wikimedia</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade: roteiro de testes de segurança</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ INDIVIDUAL. Use apenas sistema <strong>seu</strong> ou <strong>autorizado pelo professor</strong>.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entregue</h3>
+                    <ol style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>8 casos de teste</strong> de segurança (título, pré-condição, passos, dado malicioso, resultado esperado seguro).</li>
+                        <li>Cobrir: <strong>SQLi</strong> (2), <strong>XSS</strong> (2), <strong>controle de acesso</strong> (2), <strong>sessão/logout</strong> (2).</li>
+                        <li>Para <strong>1 falha hipotética</strong>, escreva um mini bug report (sem explorar sistema real alheio).</li>
+                    </ol>
+                </div>
+                <div class="grid-item">
+                    <h3>Bloom</h3>
+                    <p>Você <strong>aplica</strong> técnicas conhecidas e <strong>analisa</strong> se o comportamento é aceitável.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes10-atividade" class="code-input" placeholder="8 casos de segurança + 1 bug report hipotético."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <div class="success" style="max-width: 980px;">
+                <p>Segurança é requisito não funcional testável. Próximo passo: <strong>UAT e aceitação</strong> (Aula 11).</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

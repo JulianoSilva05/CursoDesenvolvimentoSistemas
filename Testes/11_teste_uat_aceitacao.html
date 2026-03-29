@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 11: UAT e Aceitação</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout { background: #fff3cd; border-left: 6px solid #ffc107; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .success { background: #f4fff7; border-left: 6px solid #22c55e; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 11: Teste de Aceitação do Usuário (UAT)</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 11</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Homologação • Bloom: Avaliar / Criar</div>
+                </div>
+            </div>
+            <div class="success" style="margin-top: 14px; max-width: 980px;">
+                <p><strong>Objetivo:</strong> planejar e documentar o UAT: quem aceita, em qual ambiente, com quais critérios objetivos. Diferenciar UAT de teste alfa/beta e de teste funcional interno.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>O que é UAT</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Definição prática</h3>
+                    <p>Conjunto de testes executados pelo <strong>usuário de negócio</strong> (ou representante) para confirmar que o sistema atende aos <strong>critérios de aceitação</strong> acordados antes do “go live”.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Não é</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Exploração livre sem critério (isso pode ser <em>beta</em> ou teste exploratório).</li>
+                        <li>Substituto de testes técnicos (carga, segurança, regressão).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Entradas do UAT</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <ul style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>User stories</strong> ou RFs com critérios de aceite mensuráveis.</li>
+                        <li><strong>Dados representativos</strong> (anonimizados se necessário).</li>
+                        <li><strong>Ambiente</strong> espelhando produção (versão, integrações, permissões).</li>
+                        <li><strong>Matriz de papéis:</strong> quem testa o quê (perfil operador, gestor, aluno…).</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Resultado</h3>
+                    <p>Ata ou formulário com: cenário, passos, resultado (OK/FAIL), assinatura ou registro de quem aceitou, data, versão do sistema.</p>
+                </div>
+            </div>
+            <div class="callout" style="margin-top: 12px; max-width: 980px;">
+                <p><strong>Go / No-Go:</strong> decisão explícita. “No-Go” lista bloqueadores (severidade crítica) que impedem entrada em produção.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Alfa, Beta e UAT</h2>
+            <div style="max-width: 980px;" class="code-block">
+                <pre><code>Alfa  → geralmente interno (time/empresa), ambiente controlado
+Beta  → usuários externos limitados, feedback amplo
+UAT   → validação formal contra critérios de aceite (contrato/processo)</code></pre>
+            </div>
+            <div class="success" style="margin-top: 12px; max-width: 980px;">
+                <p>No seu TCC ou projeto integrador, o “usuário aceitante” pode ser o próprio professor ou um cliente fictício com persona definida — o importante é o <strong>processo documentado</strong>.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Imagem: validação no modelo V</h2>
+            <div style="max-width: 980px; background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/Systems_Development_Life_Cycle.jpg/640px-Systems_Development_Life_Cycle.jpg" alt="Ciclo de vida e testes" style="width: 100%; max-height: 300px; object-fit: contain;">
+                <p style="margin-top: 8px; color: #555;">Ciclo de vida de sistemas (referência visual). UAT aparece no lado de <strong>validação</strong> com o usuário. <a href="https://commons.wikimedia.org/wiki/File:Systems_Development_Life_Cycle.jpg" style="color:#004587; font-weight:700;">Fonte</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade: plano de UAT completo</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ INDIVIDUAL. Escolha um sistema fictício ou seu projeto: <strong>“Agenda de estágio escolar”</strong>.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Documento a escrever no campo abaixo</h3>
+                    <ol style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>Escopo do UAT</strong> (o que entra / o que fica fora).</li>
+                        <li><strong>Papéis:</strong> aluno, professor coordenador, empresa — o que cada um valida.</li>
+                        <li><strong>10 cenários de UAT</strong> com critério de aceite objetivo (Given/When/Then ou tabela).</li>
+                        <li><strong>Dados de teste</strong> (3 conjuntos).</li>
+                        <li><strong>Matriz de rastreabilidade</strong> RF → cenário UAT (pelo menos 5 linhas).</li>
+                        <li><strong>Critérios de Go/No-Go</strong> (3 regras duras).</li>
+                    </ol>
+                </div>
+                <div class="grid-item">
+                    <h3>Bloom</h3>
+                    <p>Você <strong>cria</strong> o plano e <strong>avalia</strong> se os critérios são auditáveis.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes11-atividade" class="code-input" placeholder="Plano de UAT: escopo, papéis, 10 cenários, dados, rastreabilidade, go/no-go."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <div class="success" style="max-width: 980px;">
+                <p>UAT fecha o ciclo de <strong>validação</strong> com quem paga ou usa o sistema. Próxima aula: <strong>defeitos, relatório final e projeto integrador</strong> (Aula 12).</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

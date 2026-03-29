@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testes de Sistemas - SENAI</title>
+    <title>Testes de Software - SENAI</title>
     <style>
         :root {
             --senai-blue: #004587;
@@ -139,27 +139,44 @@
 <body>
     <header>
         <a href="../index.html" class="back-link">← Voltar</a>
-        <h1>Testes de Sistemas</h1>
-        <p>Usabilidade, requisitos, casos de teste e qualidade de software</p>
+        <h1>Testes de Software</h1>
+        <p>12 aulas • Taxonomia de Bloom • Prática por tipo de teste</p>
     </header>
 
     <main>
         <div class="intro">
-            <h2>Objetivo</h2>
-            <p>Desenvolver a capacidade de planejar, executar e registrar testes de software com foco em usabilidade, navegação, requisitos funcionais e qualidade do produto.</p>
-            <h2 style="margin-top: 14px;">Estrutura (8 aulas)</h2>
+            <h2>Público e objetivo</h2>
+            <p>Disciplina para alunos do técnico em Desenvolvimento de Sistemas que já programam em Python, SQL, Java, HTML/CSS, prototipam interfaces e usam UML. O foco é <strong>planejar, executar e documentar</strong> testes com método.</p>
+            <h2 style="margin-top: 14px;">Taxonomia de Bloom (como usamos no curso)</h2>
             <ul>
-                <li>Teoria orientada a prática (checklists, casos e evidências)</li>
-                <li>Atividades com envio direto pelo slide</li>
-                <li>Modo foco com infrações, bloqueio e divisão de tela</li>
+                <li><strong>Lembrar / Entender:</strong> conceitos, pirâmide, fumaça, papéis (Aulas 01, 04).</li>
+                <li><strong>Aplicar:</strong> casos de teste, particionamento, APIs, automação (Aulas 02, 03, 05, 06, 07).</li>
+                <li><strong>Analisar / Avaliar:</strong> desempenho, usabilidade, segurança, riscos, go/no-go (Aulas 08, 09, 10, 11).</li>
+                <li><strong>Criar:</strong> planos integrados, relatórios, suítes novas (Aulas 11 e 12).</li>
+            </ul>
+            <h2 style="margin-top: 14px;">Tipos de teste em destaque</h2>
+            <ul>
+                <li><strong>Funcional, fumaça, regressão</strong> (Aulas 04 e 05)</li>
+                <li><strong>Integração / API</strong> (Aula 06)</li>
+                <li><strong>Automação e pirâmide</strong> (Aula 07)</li>
+                <li><strong>Desempenho / carga</strong> (Aula 08)</li>
+                <li><strong>Usabilidade e navegação</strong> (Aula 09)</li>
+                <li><strong>Segurança</strong> (Aula 10)</li>
+                <li><strong>UAT — aceitação do usuário</strong> (Aula 11)</li>
+            </ul>
+            <h2 style="margin-top: 14px;">Slides e modo foco</h2>
+            <ul>
+                <li>Mesmo padrão visual e scripts de <code>DesenvolvimentoDeSistemas/_Common</code> (identificação, envio de atividade, tela dividida).</li>
+                <li>Infrações ao sair da tela; bloqueio após 5 ocorrências; desbloqueio com senha do professor ou espera de 30 minutos (reset automático).</li>
+                <li>Cada aula possui <strong>atividade individual</strong> na área de texto do slide, alinhada ao conteúdo ensinado.</li>
             </ul>
         </div>
 
         <div class="lesson-list">
-            <a href="01_usabilidade_navegacao.html" class="lesson-item">
+            <a href="01_fundamentos_qualidade_bloom.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 01: Teste de Usabilidade e Teste de Navegação</h3>
-                    <p>Como validar a experiência do usuário, mapear tarefas e verificar requisitos a partir do diagrama de caso de uso.</p>
+                    <h3>Aula 01: Qualidade, QA e Taxonomia de Bloom</h3>
+                    <p>Conceitos de qualidade, erro/defeito/falha, pirâmide de testes e relação dos níveis de Bloom com atividades de teste.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
@@ -167,55 +184,87 @@
             <a href="02_requisitos_casos_teste.html" class="lesson-item">
                 <div class="lesson-info">
                     <h3>Aula 02: Requisitos e Casos de Teste</h3>
-                    <p>Do requisito para o cenário, pré-condições, passos, dados e critérios de aceitação.</p>
+                    <p>Do RF ao caso de teste: pré-condições, dados, passos, resultado esperado e evidência (Bloom: Entender / Aplicar).</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
             <a href="03_tecnicas_teste.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 03: Técnicas de Teste (caixa preta e caixa branca)</h3>
-                    <p>Particionamento de equivalência, valor-limite e cobertura básica de lógica.</p>
+                    <h3>Aula 03: Técnicas (caixa preta e caixa branca)</h3>
+                    <p>Particionamento de equivalência, valor-limite e leitura básica de cobertura.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
-            <a href="04_teste_funcional_regressao.html" class="lesson-item">
+            <a href="04_teste_fumaca_sanidade.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 04: Teste Funcional e Regressão</h3>
-                    <p>Estratégias para garantir que novas mudanças não quebrem o que já funcionava.</p>
+                    <h3>Aula 04: Teste de Fumaça e Teste de Sanidade</h3>
+                    <p>Filtrar build quebrado cedo; suíte mínima; sanidade após correção pontual.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
-            <a href="05_teste_integracao_api.html" class="lesson-item">
+            <a href="05_teste_funcional_regressao.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 05: Testes de Integração e API</h3>
-                    <p>Validação de endpoints, contratos, erros e dados em integração entre sistemas.</p>
+                    <h3>Aula 05: Testes Funcionais e Regressão</h3>
+                    <p>Fluxos principais, validações, evidências e suíte de regressão após mudanças.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
-            <a href="06_automacao_basica.html" class="lesson-item">
+            <a href="06_teste_integracao_api.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 06: Automação Básica de Testes</h3>
-                    <p>O que automatizar, pirâmide de testes, estabilidade e manutenção de scripts.</p>
+                    <h3>Aula 06: Integração e API</h3>
+                    <p>Contratos, status HTTP, corpos JSON e erros em integrações.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
-            <a href="07_teste_performance.html" class="lesson-item">
+            <a href="07_automacao_basica.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 07: Teste de Desempenho e Carga</h3>
-                    <p>Métricas (tempo de resposta, throughput), cenários e análise de gargalos.</p>
+                    <h3>Aula 07: Automação Básica</h3>
+                    <p>Pirâmide de testes, o que automatizar, estabilidade e manutenção de scripts.</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>
 
-            <a href="08_gestao_defeitos_relatorio.html" class="lesson-item">
+            <a href="08_teste_desempenho.html" class="lesson-item">
                 <div class="lesson-info">
-                    <h3>Aula 08: Gestão de Defeitos e Relatório de Testes</h3>
-                    <p>Como registrar bugs com evidência, severidade, prioridade e relatório final.</p>
+                    <h3>Aula 08: Testes de Desempenho e Carga</h3>
+                    <p>Métricas (tempo de resposta, throughput), cenários e gargalos.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="09_teste_usabilidade_ux.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 09: Testes de Usabilidade e Navegação</h3>
+                    <p>Tarefas, eficiência, fluxo de telas, casos de uso como roteiro de teste.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="10_teste_seguranca.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 10: Testes de Segurança</h3>
+                    <p>OWASP (introdução), SQL injection, XSS, sessão e controle de acesso — sempre em ambiente autorizado.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="11_teste_uat_aceitacao.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 11: Teste de Aceitação do Usuário (UAT)</h3>
+                    <p>Critérios de aceite, papéis, homologação e decisão go/no-go.</p>
+                </div>
+                <span class="btn-start">Iniciar</span>
+            </a>
+
+            <a href="12_gestao_defeitos_projeto_integrado.html" class="lesson-item">
+                <div class="lesson-info">
+                    <h3>Aula 12: Defeitos, Relatório e Projeto Integrador</h3>
+                    <p>Bug report, relatório final, guia BD + interface + testes e plano integrado (Bloom: Criar).</p>
                 </div>
                 <span class="btn-start">Iniciar</span>
             </a>

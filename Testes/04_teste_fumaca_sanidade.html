@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 04: Fumaça e Sanidade</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout { background: #fff3cd; border-left: 6px solid #ffc107; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .success { background: #f4fff7; border-left: 6px solid #22c55e; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 04: Teste de Fumaça e Teste de Sanidade</h2>
+            <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 04</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Build quebrado? Pare cedo • Bloom: Lembrar / Aplicar</div>
+                </div>
+            </div>
+            <div class="success" style="margin-top: 14px; max-width: 980px;">
+                <p><strong>Objetivo:</strong> saber quando usar teste de fumaça (smoke) versus sanidade (sanity); montar uma suíte mínima que valida se o sistema “liga” e se o módulo alterado ainda faz o básico.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Teste de fumaça (smoke testing)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Ideia</h3>
+                    <p>Checagem <strong>superficial e rápida</strong> após um novo build ou deploy. Se “sair fumaça”, o sistema não está estável o suficiente para testes mais profundos — <strong>pare e corrija</strong>.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Exemplos típicos (web)</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>Servidor responde (HTTP 200 na home).</li>
+                        <li>Login carrega e autentica usuário válido.</li>
+                        <li>Menu principal abre e links críticos não retornam 404.</li>
+                        <li>Um fluxo CRUD mínimo salva e lista registro.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout" style="margin-top: 12px; max-width: 980px;">
+                <p>Fumaça responde: <strong>“O build está testável?”</strong> — não substitui teste funcional completo.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Teste de sanidade (sanity testing)</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Ideia</h3>
+                    <p>Após uma <strong>correção pontual</strong> ou mudança em um módulo, executa-se um subconjunto <strong>estreito</strong> de casos para confirmar que a área afetada ainda funciona e que o bug aparentemente sumiu.</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Fumaça x Sanidade</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Fumaça:</strong> amplo, rápido, todo o sistema “de pé”.</li>
+                        <li><strong>Sanidade:</strong> focado no que mudou (região do defeito / feature).</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Onde isso entra no dia a dia</h2>
+            <div style="max-width: 980px;" class="code-block">
+                <pre><code>CI/CD (exemplo conceitual)
+1) Build gera artefato
+2) Deploy em ambiente de teste
+3) Smoke automático ou manual (5–15 min)
+4) Se PASS → testes funcionais / regressão
+5) Se FAIL → dev recebe “build quebrado”, sem perder horas em teste profundo</code></pre>
+            </div>
+            <div class="success" style="margin-top: 12px; max-width: 980px;">
+                <p>Em equipes pequenas (como em projetos de curso), um <strong>checklist de fumaça</strong> no quadro ou no README já evita entregar trabalho que “não abre no navegador”.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Imagem: fluxo de decisão (conceito)</h2>
+            <div style="max-width: 980px; background: white; border-radius: 12px; padding: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Testing_Pyramid.svg" alt="Pirâmide — smoke na base do pipeline" style="width: 100%; max-height: 300px; object-fit: contain;">
+                <p style="margin-top: 8px; color: #555;">A pirâmide lembra: muitos testes baratos na base (incluindo smoke automatizável). <a href="https://commons.wikimedia.org/wiki/File:Testing_Pyramid.svg" style="color:#004587; font-weight:700;">Fonte Wikimedia</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade: suíte de fumaça + plano de sanidade</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ INDIVIDUAL. Imagine um sistema web de <strong>empréstimo de livros</strong> (login, catálogo, emprestar, devolver, multa).</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Parte A — Fumaça</h3>
+                    <p>Escreva <strong>10 casos de teste de fumaça</strong> no formato: <em>ID | Passo principal | Resultado esperado</em> (uma linha por caso).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Parte B — Sanidade</h3>
+                    <p>Suponha que o dev corrigiu o cálculo de multa. Escreva <strong>5 casos de sanidade</strong> só para a área de multa/devolução (inclua 1 negativo).</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes04-atividade" class="code-input" placeholder="10 smoke + 5 sanity (multa/devolução)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <div class="success" style="max-width: 980px;">
+                <p>Você aprendeu a <strong>filtrar builds ruins cedo</strong> com fumaça e a <strong>validar correções</strong> com sanidade.</p>
+                <p style="margin-top: 10px;"><strong>Próxima aula:</strong> testes funcionais completos e regressão (Aula 05).</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

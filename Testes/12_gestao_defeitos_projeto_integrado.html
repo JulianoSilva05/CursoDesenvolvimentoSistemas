@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testes de Sistemas - Aula 08: Defeitos e Relatório</title>
+    <title>Testes de Sistemas - Aula 12: Defeitos, Relatório e Projeto Integrador</title>
     <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
 </head>
 <body>
@@ -13,11 +13,11 @@
     <div class="slide-container">
         <div class="slide active">
             <h1>Testes de Sistemas</h1>
-            <h2>Aula 08: Gestão de Defeitos e Relatório de Testes</h2>
+            <h2>Aula 12: Defeitos, Relatório e Projeto Integrador (BD + Interface + Testes)</h2>
             <div style="width: 100%; max-width: 980px; height: 260px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
                 <div style="text-align:center;">
-                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 08</div>
-                    <div style="opacity: 0.9; margin-top: 6px;">Bug report • Severidade • Evidência • Comunicação</div>
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 12</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Bug report • Relatório • Encerramento do curso</div>
                 </div>
             </div>
         </div>
@@ -81,6 +81,54 @@
         </div>
 
         <div class="slide">
+            <h2>Guia: do sistema ao banco, interface e bateria de testes</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>1) Modelar e persistir</h3>
+                    <ol style="margin-left: 18px; line-height: 1.65;">
+                        <li>Liste requisitos (UML: casos de uso + classes ou DER).</li>
+                        <li>Crie o banco (MySQL): tabelas, chaves, índices básicos.</li>
+                        <li>Conecte a aplicação (PHP PDO / Java JDBC / Python + driver) com prepared statements.</li>
+                    </ol>
+                </div>
+                <div class="grid-item">
+                    <h3>2) Interface e fluxo</h3>
+                    <ol style="margin-left: 18px; line-height: 1.65;">
+                        <li>Prototipe telas (HTML/CSS ou Swing/JavaFX).</li>
+                        <li>Implemente CRUD mínimo e mensagens de erro claras.</li>
+                        <li>Registre fluxo principal e alternativas (para virar casos de teste).</li>
+                    </ol>
+                </div>
+            </div>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <h3>3) Testar em camadas</h3>
+                    <ul style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>Fumaça:</strong> build sobe, login abre, CRUD básico responde.</li>
+                        <li><strong>Funcional:</strong> regras de negócio e validações.</li>
+                        <li><strong>Integração/API:</strong> persistência e endpoints.</li>
+                        <li><strong>Desempenho:</strong> consultas com volume (N registros).</li>
+                        <li><strong>Segurança:</strong> SQLi, XSS, sessão.</li>
+                        <li><strong>Usabilidade/UAT:</strong> tarefas com usuário real ou roteiro.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>4) Evidências e encerramento</h3>
+                    <p>Guarde prints, logs ou vídeos curtos. Feche com relatório (pass/fail, riscos, go/no-go) e bugs linkados aos casos de teste.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Taxonomia de Bloom neste projeto (nível Criar)</h2>
+            <p style="max-width: 980px;">Na Aula 12 você consolida o topo da taxonomia: <strong>avaliar</strong> riscos e <strong>criar</strong> um plano de testes completo para um sistema real (mesmo que pequeno) que você já sabe construir.</p>
+            <div style="max-width: 980px; margin-top: 12px; background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Bloom%27s_Taxonomy_with_verbs.svg/960px-Bloom%27s_Taxonomy_with_verbs.svg.png" alt="Taxonomia de Bloom com verbos" style="width: 100%; max-height: 360px; object-fit: contain;">
+                <p style="margin-top: 8px; color: #555; font-size: 0.95rem;">Taxonomia de Bloom (verbos). <a href="https://commons.wikimedia.org/wiki/File:Bloom%27s_Taxonomy_with_verbs.svg" style="color:#004587; font-weight:700;">Wikimedia Commons</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
             <h2>Atividade 1: Criar um bug report completo</h2>
             <div class="activity-box" style="max-width: 980px; width: 100%;">
                 <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL.</p>
@@ -125,8 +173,37 @@
         </div>
 
         <div class="slide">
+            <h2>Atividade 3: Plano de testes do seu mini-sistema (Criar)</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ INDIVIDUAL. Descreva um sistema que você <em>poderia</em> implementar (PHP+MySQL ou Java+MySQL ou Python+SQLite). Não precisa rodar agora; o foco é o plano de testes.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Entregue no texto</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li>5 casos de <strong>teste de fumaça</strong> (bullet com passo + esperado).</li>
+                        <li>8 casos de <strong>teste funcional</strong> (2 negativos).</li>
+                        <li>3 casos de <strong>integração</strong> (BD ou API).</li>
+                        <li>2 cenários de <strong>desempenho</strong> (o que medir: tempo, N usuários).</li>
+                        <li>3 vetores de <strong>segurança</strong> (ex.: SQLi em campo X).</li>
+                        <li>Roteiro de <strong>usabilidade</strong> (3 tarefas + critério de sucesso).</li>
+                        <li>Checklist de <strong>UAT</strong> (quem homologa, ambiente, critério go/no-go).</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <h3>Dica</h3>
+                    <p>Use os modelos das aulas 02 e 05. Numere CT01, CT02… e cite qual RF cada um cobre.</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes12-a3" class="code-input" placeholder="Plano de testes completo (fumaça, funcional, integração, desempenho, segurança, usabilidade, UAT)."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
             <h2>Encerramento da Disciplina</h2>
-            <p style="max-width: 980px; width: 100%;">Você agora tem base para testar com intenção: requisitos, usabilidade, casos, evidência e comunicação profissional.</p>
+            <p style="max-width: 980px; width: 100%;">Você percorreu a taxonomia de Bloom aplicada a QA: desde lembrar conceitos até criar planos e relatórios. Requisitos, fumaça, funcional, integração, automação, desempenho, usabilidade, segurança, UAT, defeitos e projeto integrado passam a fazer parte do seu repertório técnico.</p>
             <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
         </div>
     </div>

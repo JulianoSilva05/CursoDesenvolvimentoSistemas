@@ -367,8 +367,17 @@ function initEmailSender() {
             btn.disabled = true;
             btn.innerHTML = '⏳ Enviando...';
 
+            let disciplineTag = 'Curso';
+            try {
+                const p = (window.location.pathname || '').replace(/\\/g, '/');
+                if (p.includes('/Testes/')) disciplineTag = 'Testes';
+                else if (p.includes('/PHP/')) disciplineTag = 'PHP';
+                else if (p.includes('/Java/')) disciplineTag = 'Java';
+                else if (p.includes('/Python/')) disciplineTag = 'Python';
+            } catch (e) { /* ignore */ }
+
             const formData = {
-                _subject: `PHP - ${lessonTitle} - ${studentName}`,
+                _subject: `${disciplineTag} - ${lessonTitle} - ${studentName}`,
                 _template: "table",
                 _captcha: "false",
                 Nome_Aluno: studentName,

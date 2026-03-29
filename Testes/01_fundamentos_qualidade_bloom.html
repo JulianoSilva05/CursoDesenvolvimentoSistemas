@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Testes de Sistemas - Aula 01: Qualidade, QA e Taxonomia de Bloom</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
+    <style>
+        .callout { background: #fff3cd; border-left: 6px solid #ffc107; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .success { background: #f4fff7; border-left: 6px solid #22c55e; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/_Common/img/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Testes de Sistemas</h1>
+            <h2>Aula 01: Qualidade de Software, QA e Taxonomia de Bloom</h2>
+            <div style="width: 100%; max-width: 980px; height: 280px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 01</div>
+                    <div style="opacity: 0.9; margin-top: 6px;">Lembrar • Entender • Base para todo o curso</div>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 14px;" class="success">
+                <p><strong>Objetivo (Bloom — Lembrar / Entender):</strong> definir qualidade, erro, defeito e falha; entender o papel do teste no ciclo de vida; relacionar cada nível da taxonomia de Bloom a atividades de garantia da qualidade.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Contrato de Aula (Modo Foco)</h2>
+            <div class="callout">
+                <p style="font-weight: 800;">Regras desta disciplina:</p>
+                <ul style="margin-left: 18px; margin-top: 8px; line-height: 1.6;">
+                    <li>Trocar de aba, minimizar, sair da tela cheia ou perder o foco registra <strong>infração</strong>.</li>
+                    <li>Ao completar <strong>5 infrações</strong>, a tela é <strong>bloqueada</strong>.</li>
+                    <li>Desbloqueio: <strong>senha do professor</strong> ou <strong>30 minutos</strong> (reset automático; identifique-se de novo).</li>
+                    <li>Use <strong>Dividir Tela</strong> para ler o slide enquanto escreve na atividade.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Conceitos essenciais</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Qualidade de software</h3>
+                    <p>Grau em que o produto satisfaz <strong>necessidades explícitas e implícitas</strong> (ISO/IEC 25010 resume em características como adequação funcional, confiabilidade, usabilidade, segurança, manutenibilidade).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Erro → Defeito → Falha</h3>
+                    <ul style="margin-left: 18px; line-height: 1.6;">
+                        <li><strong>Erro:</strong> ação humana que produz resultado incorreto.</li>
+                        <li><strong>Defeito (bug):</strong> anomalia no código ou artefato.</li>
+                        <li><strong>Falha:</strong> comportamento incorreto observado em execução (o usuário vê a falha).</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="callout" style="margin-top: 12px; max-width: 980px;">
+                <p><strong>Teste:</strong> processo que avalia o software para encontrar informação sobre qualidade; <strong>não</strong> “prova que não há bugs”, mas reduz risco.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Taxonomia de Bloom e testes de software</h2>
+            <p style="max-width: 980px;">A taxonomia ordena objetivos cognitivos do mais básico ao mais complexo. No curso, cada tipo de teste será praticado subindo essa escada.</p>
+            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
+                <div class="grid-item">
+                    <ul style="margin-left: 18px; line-height: 1.65;">
+                        <li><strong>Lembrar:</strong> nomear tipos de teste, ferramentas, status de caso.</li>
+                        <li><strong>Entender:</strong> explicar diferença entre fumaça, sanidade, regressão, UAT.</li>
+                        <li><strong>Aplicar:</strong> executar casos de teste com dados e passos definidos.</li>
+                        <li><strong>Analisar:</strong> comparar resultados, achar causa raiz, priorizar riscos.</li>
+                        <li><strong>Avaliar:</strong> julgar se critérios de aceite foram atendidos (go/no-go).</li>
+                        <li><strong>Criar:</strong> elaborar plano de testes, roteiros de usabilidade, suítes novas.</li>
+                    </ul>
+                </div>
+                <div class="grid-item">
+                    <p>Vocês já programam em Python, Java, SQL, HTML/CSS e modelam com UML: teste é a ponte entre <em>o que foi especificado</em> e <em>o que foi entregue</em>.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Referências visuais (internet)</h2>
+            <div style="max-width: 980px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+                <div style="background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Bloom%27s_Taxonomy_with_verbs.svg/640px-Bloom%27s_Taxonomy_with_verbs.svg.png" alt="Taxonomia de Bloom" style="width: 100%; height: 320px; object-fit: contain;">
+                    <p style="margin-top: 8px; color: #555; font-size: 0.9rem;">Bloom com verbos. <a href="https://commons.wikimedia.org/wiki/File:Bloom%27s_Taxonomy_with_verbs.svg" style="color:#004587; font-weight:700;">Fonte</a></p>
+                </div>
+                <div style="background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
+                    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Testing_Pyramid.svg" alt="Pirâmide de testes" style="width: 100%; height: 320px; object-fit: contain;">
+                    <p style="margin-top: 8px; color: #555; font-size: 0.9rem;">Pirâmide de testes. <a href="https://commons.wikimedia.org/wiki/File:Testing_Pyramid.svg" style="color:#004587; font-weight:700;">Fonte</a></p>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Verificação, validação e “testar cedo”</h2>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Verificação</h3>
+                    <p>“Estamos construindo o produto <strong>certo</strong>?” — conformidade com especificação (revisão de requisitos, inspeções, testes unitários alinhados ao design).</p>
+                </div>
+                <div class="grid-item">
+                    <h3>Validação</h3>
+                    <p>“Construímos o <strong>produto certo</strong>?” — atende necessidade do usuário (UAT, testes de usabilidade, aceite).</p>
+                </div>
+            </div>
+            <div class="success" style="margin-top: 12px; max-width: 980px;">
+                <p>Quanto mais cedo um defeito é encontrado, mais barato corrigir. Por isso teste de requisitos (revisão) e teste de fumaça após cada build fazem parte da cultura de qualidade.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade: Bloom na prática do QA</h2>
+            <div class="activity-box" style="max-width: 980px; width: 100%;">
+                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL. Escreva no campo abaixo em texto corrido ou tópicos.</p>
+            </div>
+            <div class="grid-layout" style="max-width: 980px;">
+                <div class="grid-item">
+                    <h3>Enunciado</h3>
+                    <ol style="margin-left: 18px; line-height: 1.65;">
+                        <li>Defina com suas palavras: <strong>qualidade</strong>, <strong>teste</strong>, <strong>defeito</strong> e <strong>falha</strong>.</li>
+                        <li>Para cada nível de Bloom (6 níveis), dê <strong>um exemplo</strong> de atividade de um testador em um sistema web de “reserva de laboratório”.</li>
+                        <li>Explique por que a pirâmide de testes sugere <strong>muitos testes na base</strong> e poucos no topo.</li>
+                    </ol>
+                </div>
+                <div class="grid-item">
+                    <h3>Critério de avaliação</h3>
+                    <p>Clareza, uso correto dos termos e exemplos que não se repitam (cada nível Bloom com ação diferente).</p>
+                </div>
+            </div>
+            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
+                <textarea id="resp-testes01-atividade" class="code-input" placeholder="Suas definições, 6 exemplos Bloom e comentário sobre a pirâmide."></textarea>
+                <button class="send-btn">📧 Enviar Atividade</button>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Encerramento</h2>
+            <div class="success" style="max-width: 980px;">
+                <p><strong>Hoje:</strong> alinhamos linguagem de QA à taxonomia de Bloom e à pirâmide de testes.</p>
+                <p style="margin-top: 10px;"><strong>Próxima aula:</strong> transformar requisitos em casos de teste mensuráveis (Bloom: <strong>Aplicar</strong>).</p>
+            </div>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="btnPrev" class="nav-btn">Anterior</button>
+        <button id="btnNext" class="nav-btn">Próximo</button>
+    </div>
+
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>
