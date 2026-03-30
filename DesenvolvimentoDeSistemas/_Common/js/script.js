@@ -338,6 +338,48 @@ function getStudentSessionId() {
 
 let senaiHeartbeatTimer = null;
 
+/** Chaves locais da sessão do aluno (não limpa o restante do localStorage). */
+const SENAI_STUDENT_STORAGE_KEYS = [
+    'studentName',
+    'studentMatricula',
+    'studentSessionId',
+    'senaiPointsCache',
+    'infractionCount',
+    'senaiDisciplineGradesJson',
+    'blockStartAt',
+    'infractionLastAt'
+];
+
+function senaiClearStudentLocalSession() {
+    if (senaiHeartbeatTimer) {
+        clearInterval(senaiHeartbeatTimer);
+        senaiHeartbeatTimer = null;
+    }
+    SENAI_STUDENT_STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
+    try {
+        sessionStorage.removeItem('masterMode');
+    } catch {
+        /* ignore */
+    }
+    const bar = document.getElementById('senai-points-bar');
+    if (bar) bar.remove();
+    if (document.body.style.paddingTop === '48px') {
+        document.body.style.paddingTop = '';
+    }
+}
+
+function senaiStudentLogout() {
+    if (
+        !confirm(
+            'Encerrar a sessão deste aluno neste navegador?\n\nVocê poderá identificar-se de novo na próxima página.'
+        )
+    ) {
+        return;
+    }
+    senaiClearStudentLocalSession();
+    location.reload();
+}
+
 function ensureSenaiPointsBar() {
     let bar = document.getElementById('senai-points-bar');
     if (bar) return bar;
@@ -365,7 +407,10 @@ function renderSenaiPointsBar(points, infLocal, disciplineGrades) {
         <span>Pontos totais: <strong>${esc(String(points))}</strong></span>
         <span>Infrações: <strong>${esc(String(infLocal))}</strong>/5</span>
         <span title="${esc(bySubject)}">Por matéria: ${esc(bySubject)}</span>
-        <span style="opacity:.92;">Até ${SENAI_DISCIPLINE_CAP} pts/matéria (30÷N por aula, após avaliação) · Infração: −${SENAI_INFRINGEMENT_POINTS} pts</span>`;
+        <span style="opacity:.92;">Até ${SENAI_DISCIPLINE_CAP} pts/matéria (30÷N por aula, após avaliação) · Infração: −${SENAI_INFRINGEMENT_POINTS} pts</span>
+        <button type="button" id="senaiLogoutBtn" title="Encerrar sessão do aluno neste navegador" style="margin-left:4px;padding:5px 14px;font-size:0.82rem;cursor:pointer;background:rgba(227,33,25,0.95);color:#fff;border:1px solid rgba(255,255,255,0.35);border-radius:6px;font-weight:700;font-family:inherit;white-space:nowrap;">Sair</button>`;
+    const lo = bar.querySelector('#senaiLogoutBtn');
+    if (lo) lo.addEventListener('click', () => senaiStudentLogout());
 }
 
 async function senaiHeartbeatTick() {
@@ -522,6 +567,65 @@ function showSenaiNotices(notices) {
     });
 }
 
+/** Modo professor (sessionStorage masterMode) pode usar área de transferência. */
+function senaiClipboardAllowedForMaster() {
+    try {
+        return sessionStorage.getItem('masterMode') === 'true';
+    } catch {
+        return false;
+    }
+}
+
+/**
+ * Bloqueia copiar, colar e recortar nas aulas (atalhos e menu contextual de colagem).
+ * Não impede fraude avançada; reduz uso casual da área de transferência.
+ */
+function initClipboardRestrictions() {
+    ['copy', 'cut', 'paste'].forEach((type) => {
+        document.addEventListener(
+            type,
+            (e) => {
+                if (senaiClipboardAllowedForMaster()) return;
+                e.preventDefault();
+                e.stopPropagation();
+            },
+            true
+        );
+    });
+
+    document.addEventListener(
+        'beforeinput',
+        (e) => {
+            if (senaiClipboardAllowedForMaster()) return;
+            const t = e.inputType || '';
+            if (t === 'insertFromPaste' || t === 'insertFromDrop') {
+                e.preventDefault();
+            }
+        },
+        true
+    );
+
+    document.addEventListener(
+        'keydown',
+        (e) => {
+            if (senaiClipboardAllowedForMaster()) return;
+            const mod = e.ctrlKey || e.metaKey;
+            if (mod) {
+                const k = e.key && e.key.toLowerCase();
+                if (k === 'c' || k === 'v' || k === 'x') {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+            }
+            if (e.shiftKey && e.key === 'Insert') {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+        },
+        true
+    );
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
     const studentName = localStorage.getItem('studentName');
     const matricula = getStudentMatricula();
@@ -543,6 +647,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // 2. Slideshow Logic
     initSlideshow();
+
+    // 2b. Bloqueio de copiar/colar/recortar (exceto modo professor)
+    initClipboardRestrictions();
 
     // 3. Email Sending Logic
     initEmailSender();
@@ -656,48 +763,66 @@ function initCodeValidation() {
     });
 }
 
+const SENAI_ENUNCIADO_MAX_CHARS = 12000;
+
+/**
+ * Texto do slide até o textarea (títulos, listas, caixas de atividade, tabelas),
+ * sem exemplos de código — para o aluno ver o que a atividade pede ao dividir a tela.
+ */
+function senaiBuildEnunciadoCommentForTextarea(textarea) {
+    const slide = textarea.closest('.slide');
+    if (!slide || !slide.contains(textarea)) return '';
+
+    let text = '';
+    try {
+        const range = document.createRange();
+        const startNode = slide.firstChild;
+        if (!startNode) return '';
+        range.setStart(startNode, 0);
+        range.setEndBefore(textarea);
+        const frag = range.cloneContents();
+        frag.querySelectorAll(
+            '.code-block, pre, script, style, button, .maximize-btn, .send-btn, .finish-btn, .controls, .nav-btn, textarea'
+        ).forEach((n) => n.remove());
+        text = (frag.textContent || '')
+            .replace(/\u00a0/g, ' ')
+            .replace(/[ \t]+\n/g, '\n')
+            .replace(/\n{3,}/g, '\n\n')
+            .trim();
+    } catch {
+        return '';
+    }
+
+    if (text.length > SENAI_ENUNCIADO_MAX_CHARS) {
+        text =
+            text.slice(0, SENAI_ENUNCIADO_MAX_CHARS) +
+            '\n… [texto do slide truncado — veja o slide ao lado]';
+    }
+
+    if (!text) return '';
+
+    const header =
+        ' * === ENUNCIADO / O QUE ENTREGAR (leia antes de responder) ===\n * \n * ';
+    const body = text.replace(/\n/g, '\n * ');
+    return `/*${header}${body}\n * \n * === Escreva sua resposta abaixo deste bloco ===\n */\n\n`;
+}
+
+function senaiEnsureEnunciadoInTextarea(textarea) {
+    if (!textarea || textarea.dataset.enunciadoAdded) return;
+    if (!textarea.closest('.slide')) return;
+
+    const commentBlock = senaiBuildEnunciadoCommentForTextarea(textarea);
+    if (!commentBlock.trim()) return;
+
+    const sig = commentBlock.slice(0, 48);
+    if (!textarea.value.includes(sig)) {
+        textarea.value = commentBlock + textarea.value;
+        textarea.dataset.enunciadoAdded = 'true';
+    }
+}
+
 function initAutoCommentActivity() {
-    const textareas = document.querySelectorAll('.code-input');
-    textareas.forEach(textarea => {
-        // Prevent duplication
-        if (textarea.dataset.enunciadoAdded) return;
-
-        // Find the slide container
-        const slide = textarea.closest('.slide');
-        if (!slide) return;
-
-        // Try to find description elements before the textarea
-        // Strategy: Look for p, ul, ol, h2 within the slide that are NOT the textarea itself
-        // We will construct the comment from all text content of the slide EXCEPT code blocks and the textarea
-        
-        let enunciadoText = "";
-        
-        // Better strategy: iterate over slide children
-        const children = Array.from(slide.children);
-        
-        children.forEach(child => {
-            // Skip the textarea itself, the send button, and previous code blocks (examples)
-            if (child === textarea || child.classList.contains('send-btn') || child.classList.contains('code-block') || child.classList.contains('controls') || child.classList.contains('code-input')) {
-                return;
-            }
-            
-            // Also skip large code blocks used for teaching (usually have class code-block)
-            // But we want to include H2, P, OL, UL
-            if (['H2', 'P', 'UL', 'OL', 'DIV'].includes(child.tagName)) {
-                 enunciadoText += child.innerText + "\n";
-            }
-        });
-
-        if (enunciadoText.trim()) {
-            const commentBlock = "/*\n * " + enunciadoText.trim().replace(/\n/g, "\n * ") + "\n */\n\n";
-            
-            // Prepend to existing value
-            if (!textarea.value.includes(commentBlock.substring(0, 20))) {
-                textarea.value = commentBlock + textarea.value;
-                textarea.dataset.enunciadoAdded = "true";
-            }
-        }
-    });
+    document.querySelectorAll('.code-input').forEach((textarea) => senaiEnsureEnunciadoInTextarea(textarea));
 }
 
 let startTime; 
@@ -1517,6 +1642,9 @@ function initSplitScreenTextarea() {
                 textarea.dataset.markerId = marker.id;
             }
 
+            // Enunciado precisa ser gerado enquanto o textarea ainda está no slide
+            senaiEnsureEnunciadoInTextarea(textarea);
+
             // Move to body to persist across slide changes
             document.body.appendChild(textarea);
             
@@ -1524,15 +1652,6 @@ function initSplitScreenTextarea() {
             document.body.classList.add('split-screen-mode');
             closeBtn.style.display = 'block';
             textarea.focus();
-
-            // Auto-copy question logic...
-            // Logic to find activity content in the slide
-            // We need to find the slide that *contained* the button
-            const slide = splitBtn.closest('.slide'); 
-            if (slide && !textarea.dataset.enunciadoAdded) {
-                // If initAutoCommentActivity didn't run or didn't find it yet, run it now for this specific one
-                initAutoCommentActivity();
-            }
         });
     });
 

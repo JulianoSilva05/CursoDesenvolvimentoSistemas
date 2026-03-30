@@ -320,11 +320,11 @@ body.split-screen-mode .senai-logo {
 }
 .maximize-btn:hover { background: #444; }
 
-/* Close Button for Split View */
+/* Close Button for Split View — abaixo dos modais (10050), acima da barra de pontos (10003) */
 .close-fullscreen-btn {
     position: fixed;
-    top: 10px;
-    right: 20px;
+    top: 52px;
+    right: 16px;
     background: var(--senai-red);
     color: white;
     border: none;
@@ -332,7 +332,7 @@ body.split-screen-mode .senai-logo {
     font-size: 0.9rem;
     font-weight: bold;
     cursor: pointer;
-    z-index: 10000;
+    z-index: 10040;
     border-radius: 5px;
     display: none;
     box-shadow: 0 4px 6px rgba(0,0,0,0.2);

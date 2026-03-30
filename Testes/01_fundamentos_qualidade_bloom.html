@@ -3,11 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Testes de Sistemas - Aula 01: Qualidade, QA e Taxonomia de Bloom</title>
+    <title>Testes de Sistemas - Aula 01: Qualidade, QA, Bugs e Python na prática</title>
     <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/_Common/css/style.css">
     <style>
         .callout { background: #fff3cd; border-left: 6px solid #ffc107; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
         .success { background: #f4fff7; border-left: 6px solid #22c55e; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .danger { background: #fef2f2; border-left: 6px solid #ef4444; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .okbox { background: #ecfdf5; border-left: 6px solid #10b981; padding: 14px; border-radius: 8px; max-width: 980px; width: 100%; }
+        .lesson-body { max-width: 980px; width: 100%; text-align: left; }
+        .lesson-body h3 { font-size: 1.35rem; color: var(--senai-blue); margin: 18px 0 8px; }
+        .lesson-body h4 { font-size: 1.15rem; margin: 14px 0 6px; color: #334155; }
+        .lesson-body p, .lesson-body li { font-size: 1.05rem; line-height: 1.55; max-width: none; }
+        .lesson-body ul { margin-left: 22px; }
+        table.lesson-table { width: 100%; max-width: 980px; border-collapse: collapse; font-size: 0.95rem; margin: 12px 0; }
+        table.lesson-table th, table.lesson-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+        table.lesson-table th { background: #e2e8f0; }
+        .senai-py-playground {
+            max-width: 980px; width: 100%; background: #f8fafc; border: 2px solid #004587; border-radius: 12px;
+            padding: 16px; margin-top: 14px; text-align: left;
+        }
+        .senai-py-playground label { display: block; font-weight: 700; color: #004587; margin-top: 10px; font-size: 0.95rem; }
+        .senai-py-playground .py-stdin { min-height: 72px; height: 100px; font-family: Consolas, monospace; font-size: 0.95rem; }
+        .senai-py-playground .py-editor { min-height: 200px; height: 28vh; }
+        .senai-py-playground .py-output {
+            min-height: 120px; max-height: 240px; overflow: auto; background: #1e293b; color: #e2e8f0;
+            padding: 12px; border-radius: 8px; font-family: Consolas, monospace; font-size: 0.9rem; white-space: pre-wrap;
+            margin-top: 10px;
+        }
+        .senai-py-playground .py-toolbar { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: center; }
+        .senai-py-playground .py-run-btn, .senai-py-playground .py-verify-btn {
+            background: var(--senai-blue); color: #fff; border: none; padding: 10px 18px; border-radius: 8px;
+            font-weight: 700; cursor: pointer; font-size: 1rem;
+        }
+        .senai-py-playground .py-verify-btn { background: #059669; }
+        .senai-py-playground .py-status { font-size: 0.9rem; color: #64748b; margin-top: 6px; }
+        .api-note { font-size: 0.95rem; color: #475569; margin-top: 8px; line-height: 1.5; }
+        .code-block.small { font-size: 0.95rem; }
     </style>
 </head>
 <body>
@@ -17,20 +48,31 @@
     <div class="slide-container">
         <div class="slide active">
             <h1>Testes de Sistemas</h1>
-            <h2>Aula 01: Qualidade de Software, QA e Taxonomia de Bloom</h2>
-            <div style="width: 100%; max-width: 980px; height: 280px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
-                <div style="text-align:center;">
-                    <div style="font-size: 2.4rem; font-weight: 900;">Aula 01</div>
-                    <div style="opacity: 0.9; margin-top: 6px;">Lembrar • Entender • Base para todo o curso</div>
+            <h2>Aula 01: Qualidade, QA, bugs e Python na prática</h2>
+            <div style="width: 100%; max-width: 980px; min-height: 200px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 12px; margin-top: 12px;">
+                <div style="text-align:center; padding: 20px;">
+                    <div style="font-size: 2rem; font-weight: 900;">Material completo nesta aula</div>
+                    <div style="opacity: 0.95; margin-top: 8px;">Leitura + exemplos + laboratório Python no navegador</div>
                 </div>
             </div>
-            <div style="max-width: 980px; width: 100%; margin-top: 14px;" class="success">
-                <p><strong>Objetivo (Bloom — Lembrar / Entender):</strong> definir qualidade, erro, defeito e falha; entender o papel do teste no ciclo de vida; relacionar cada nível da taxonomia de Bloom a atividades de garantia da qualidade.</p>
+            <div class="success" style="margin-top: 14px;">
+                <p><strong>Objetivo da aula</strong> — Fazer o aluno compreender, na prática:</p>
+                <ul style="margin-left: 20px; margin-top: 8px;">
+                    <li>o que é <strong>Qualidade de Software</strong>;</li>
+                    <li>o que é <strong>QA (Quality Assurance)</strong>;</li>
+                    <li>como <strong>identificar bugs</strong>;</li>
+                    <li>como <strong>comparar código errado × código correto</strong>;</li>
+                    <li>como <strong>aplicar testes</strong>;</li>
+                    <li>como <strong>validar se a correção realmente resolveu o problema</strong>.</li>
+                </ul>
+            </div>
+            <div class="callout" style="margin-top: 12px;">
+                <p><strong>Importante</strong> — A atividade foi pensada para que os alunos consigam realizar tudo olhando apenas este material, sem depender de outros textos, apostilas ou pesquisas externas.</p>
             </div>
         </div>
 
         <div class="slide">
-            <h2>Contrato de Aula (Modo Foco)</h2>
+            <h2>Contrato de aula (modo foco)</h2>
             <div class="callout">
                 <p style="font-weight: 800;">Regras desta disciplina:</p>
                 <ul style="margin-left: 18px; margin-top: 8px; line-height: 1.6;">
@@ -42,118 +84,579 @@
             </div>
         </div>
 
+        <!-- PARTE 1 -->
         <div class="slide">
-            <h2>Conceitos essenciais</h2>
-            <div class="grid-layout" style="max-width: 980px;">
-                <div class="grid-item">
-                    <h3>Qualidade de software</h3>
-                    <p>Grau em que o produto satisfaz <strong>necessidades explícitas e implícitas</strong> (ISO/IEC 25010 resume em características como adequação funcional, confiabilidade, usabilidade, segurança, manutenibilidade).</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Erro → Defeito → Falha</h3>
-                    <ul style="margin-left: 18px; line-height: 1.6;">
-                        <li><strong>Erro:</strong> ação humana que produz resultado incorreto.</li>
-                        <li><strong>Defeito (bug):</strong> anomalia no código ou artefato.</li>
-                        <li><strong>Falha:</strong> comportamento incorreto observado em execução (o usuário vê a falha).</li>
-                    </ul>
-                </div>
+            <h2>PARTE 1 — Explicação (1 hora)</h2>
+            <div class="lesson-body">
+                <h3>1. O que é Qualidade de Software?</h3>
+                <p><strong>Explique assim:</strong> Qualidade de software é garantir que um sistema funcione corretamente, tenha poucos erros, seja fácil de usar, seguro e atenda ao que o usuário precisa.</p>
+                <h4>Ideia central</h4>
+                <p>Um software de qualidade não é apenas “um programa que abre”. Ele precisa:</p>
+                <ul>
+                    <li>funcionar corretamente;</li>
+                    <li>entregar o resultado esperado;</li>
+                    <li>evitar falhas;</li>
+                    <li>ser confiável;</li>
+                    <li>ser fácil de usar;</li>
+                    <li>proteger dados;</li>
+                    <li>ter boa organização.</li>
+                </ul>
+                <h4>Exemplos práticos</h4>
+                <ul>
+                    <li>sistema trava ao clicar em salvar → sem qualidade;</li>
+                    <li>login não funciona → sem qualidade;</li>
+                    <li>cálculo de preço sai errado → sem qualidade;</li>
+                    <li>sistema lento demais → sem qualidade;</li>
+                    <li>usuário não entende os botões → sem qualidade;</li>
+                    <li>sistema funciona corretamente, com clareza e segurança → qualidade.</li>
+                </ul>
+
+                <h3>2. O que é QA?</h3>
+                <p><strong>QA</strong> significa <em>Quality Assurance</em>, ou Garantia da Qualidade.</p>
+                <p>QA não é apenas testar no final. QA é o processo de garantir qualidade <strong>desde o início</strong> do desenvolvimento.</p>
+                <h4>Diferença importante</h4>
+                <ul>
+                    <li><strong>Testador/Tester:</strong> executa testes e encontra erros.</li>
+                    <li><strong>QA:</strong> pensa no processo inteiro para evitar erros, melhorar a qualidade e validar o sistema.</li>
+                </ul>
+                <p><strong>Frase forte para usar em aula:</strong> QA não existe só para achar erro. QA existe para <strong>evitar que o erro chegue ao usuário</strong>.</p>
+
+                <h3>3. Os 4 pilares da qualidade</h3>
+                <p><strong>1. Funcionalidade</strong> — O sistema faz o que deveria fazer? <em>Ex.:</em> ao cadastrar produto, ele salva corretamente?</p>
+                <p><strong>2. Performance</strong> — O sistema é rápido e responde bem? <em>Ex.:</em> a tela demora 20 segundos para carregar.</p>
+                <p><strong>3. Segurança</strong> — Os dados estão protegidos? <em>Ex.:</em> o sistema aceita código malicioso digitado pelo usuário.</p>
+                <p><strong>4. Usabilidade</strong> — É fácil de usar? <em>Ex.:</em> botões mal posicionados, mensagens confusas, usuário não entende o que aconteceu.</p>
+
+                <h3>4. O que é bug?</h3>
+                <p>Bug é qualquer comportamento incorreto, inesperado ou inadequado no sistema.</p>
+                <h4>Exemplos</h4>
+                <ul>
+                    <li>botão não funciona;</li>
+                    <li>cálculo errado;</li>
+                    <li>sistema fecha sozinho;</li>
+                    <li>permite cadastrar dados inválidos;</li>
+                    <li>mostra sucesso mesmo com erro;</li>
+                    <li>aceita entrada indevida.</li>
+                </ul>
+
+                <h3>5. Mentalidade QA</h3>
+                <p>Um bom QA pensa assim:</p>
+                <ul>
+                    <li>e se o usuário deixar vazio?</li>
+                    <li>e se ele digitar texto no lugar de número?</li>
+                    <li>e se ele digitar valor negativo?</li>
+                    <li>e se clicar várias vezes?</li>
+                    <li>e se tentar quebrar o sistema?</li>
+                    <li>e se os dados vierem errados?</li>
+                </ul>
+                <p><strong>Frase para reforço:</strong> Um bom QA não testa apenas o caminho bonito. Ele testa principalmente <strong>o caminho do erro</strong>.</p>
+
+                <h3>6. Ciclo de teste</h3>
+                <p>Fluxo simples:</p>
+                <ol style="margin-left: 22px; line-height: 1.6;">
+                    <li>o desenvolvedor cria o sistema;</li>
+                    <li>o QA testa;</li>
+                    <li>se encontrar erro, registra o bug;</li>
+                    <li>o desenvolvedor corrige;</li>
+                    <li>o QA testa novamente;</li>
+                    <li>se estiver correto, valida a correção.</li>
+                </ol>
             </div>
-            <div class="callout" style="margin-top: 12px; max-width: 980px;">
-                <p><strong>Teste:</strong> processo que avalia o software para encontrar informação sobre qualidade; <strong>não</strong> “prova que não há bugs”, mas reduz risco.</p>
+        </div>
+
+        <!-- PARTE 2 — exemplos 1-4 -->
+        <div class="slide">
+            <h2>PARTE 2 — Bugs na prática (Python) 1/2</h2>
+            <div class="lesson-body">
+                <p>Agora comparativos entre código errado e correto, com explicação e teste.</p>
+
+                <h3>Exemplo 1 — Erro clássico de validação</h3>
+                <p><strong>Situação:</strong> verificar se o nome está vazio.</p>
+                <p class="danger" style="padding:8px;"><strong>Código errado</strong></p>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+
+if nome == " ":
+    print("Nome obrigatório")</pre>
+                <p><strong>Problema:</strong> compara com um espaço, não com vazio real. Se o usuário apertar Enter, a string será <code>""</code> e a validação falha.</p>
+                <p class="okbox" style="padding:8px;"><strong>Código correto</strong></p>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+
+if nome == "":
+    print("Nome obrigatório")</pre>
+                <p class="okbox" style="padding:8px;"><strong>Melhor ainda</strong></p>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+
+if nome.strip() == "":
+    print("Nome obrigatório")</pre>
+                <p><strong>Por que .strip()?</strong> Remove espaços do começo e do fim: <code>""</code> e <code>" "</code> viram vazio tratado.</p>
+                <p><strong>Como testar:</strong> (1) Enter sem nada → “Nome obrigatório”; (2) só espaços → “Nome obrigatório”; (3) “Bicicleta” → aceita. <strong>Tipo de bug:</strong> Funcional.</p>
+
+                <h3>Exemplo 2 — Validação incompleta de número</h3>
+                <pre class="code-block small">preco = input("Digite o preço: ")
+
+if float(preco) &lt; 0:
+    print("Preço inválido")</pre>
+                <p><strong>Problemas:</strong> quebra com vazio, letras, símbolos (<code>""</code>, <code>"abc"</code>, <code>"dez"</code>).</p>
+                <pre class="code-block small">preco = input("Digite o preço: ")
+
+if preco.strip() == "":
+    print("Preço inválido")
+else:
+    try:
+        valor_preco = float(preco)
+        if valor_preco &lt; 0:
+            print("Preço inválido")
+    except ValueError:
+        print("Preço inválido")</pre>
+                <table class="lesson-table">
+                    <tr><th>Entrada</th><th>Resultado esperado</th></tr>
+                    <tr><td>""</td><td>erro</td></tr>
+                    <tr><td>"abc"</td><td>erro</td></tr>
+                    <tr><td>-10</td><td>erro</td></tr>
+                    <tr><td>100</td><td>válido</td></tr>
+                </table>
+                <p><strong>Tipo de bug:</strong> Validação / regra de negócio.</p>
+
+                <h3>Exemplo 3 — Mensagem de sucesso mesmo com erro</h3>
+                <pre class="code-block small">nome = input("Digite o nome: ")
+
+if nome.strip() == "":
+    print("Nome obrigatório")
+
+print("Produto cadastrado com sucesso")</pre>
+                <p><strong>Problema:</strong> mesmo com nome vazio, mostra sucesso depois do erro — confunde o usuário.</p>
+                <pre class="code-block small">nome = input("Digite o nome: ")
+
+if nome.strip() == "":
+    print("Nome obrigatório")
+else:
+    print("Produto cadastrado com sucesso")</pre>
+                <p><strong>Tipo de bug:</strong> Usabilidade e lógica.</p>
+
+                <h3>Exemplo 4 — Falta de segurança (conceito)</h3>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+print("Produto:", nome)</pre>
+                <p>Em contexto web, entrada como <code>&lt;script&gt;alert('hack')&lt;/script&gt;</code> seria perigosa. No terminal só aparece texto, mas o conceito importa.</p>
+                <pre class="code-block small">import html
+
+nome = input("Digite o nome do produto: ")
+nome_seguro = html.escape(nome)
+
+print("Produto:", nome_seguro)</pre>
+                <p><strong>Tipo de bug:</strong> Segurança.</p>
+            </div>
+        </div>
+
+        <!-- PARTE 2 — exemplos 5-7 -->
+        <div class="slide">
+            <h2>PARTE 2 — Bugs na prática (Python) 2/2</h2>
+            <div class="lesson-body">
+                <h3>Exemplo 5 — Erro de lógica (maioridade)</h3>
+                <pre class="code-block small">idade = int(input("Digite a idade: "))
+
+if idade &gt; 18:
+    print("Menor de idade")
+else:
+    print("Maior de idade")</pre>
+                <p><strong>Problema:</strong> condição invertida.</p>
+                <pre class="code-block small">idade = int(input("Digite a idade: "))
+
+if idade &lt; 18:
+    print("Menor de idade")
+else:
+    print("Maior de idade")</pre>
+                <table class="lesson-table">
+                    <tr><th>Entrada</th><th>Esperado</th></tr>
+                    <tr><td>15</td><td>Menor de idade</td></tr>
+                    <tr><td>18</td><td>Maior de idade</td></tr>
+                    <tr><td>25</td><td>Maior de idade</td></tr>
+                </table>
+                <p><strong>Tipo de bug:</strong> Lógica.</p>
+
+                <h3>Exemplo 6 — Cálculo errado</h3>
+                <pre class="code-block small">preco = 100
+quantidade = 3
+
+total = preco + quantidade
+print(total)</pre>
+                <p><strong>Correto:</strong> <code>total = preco * quantidade</code> → 300. <strong>Tipo:</strong> Funcional / regra de negócio.</p>
+
+                <h3>Exemplo 7 — Falta de tratamento de exceção</h3>
+                <pre class="code-block small">numero = int(input("Digite um número: "))
+print(numero)</pre>
+                <pre class="code-block small">entrada = input("Digite um número: ")
+
+try:
+    numero = int(entrada)
+    print(numero)
+except ValueError:
+    print("Valor inválido")</pre>
+                <p><strong>Tipo de bug:</strong> Robustez / validação.</p>
+            </div>
+        </div>
+
+        <!-- PARTE 3 e 4 -->
+        <div class="slide">
+            <h2>PARTE 3 e 4 — Testes e Python</h2>
+            <div class="lesson-body">
+                <h3>PARTE 3 — Como ensinar testes na prática</h3>
+                <p>Testar é comparar: <strong>entrada</strong> → <strong>resultado esperado</strong> → <strong>resultado real</strong> → <strong>conclusão</strong>.</p>
+                <table class="lesson-table">
+                    <tr><th>Teste</th><th>Entrada</th><th>Esperado</th><th>Real</th><th>Status</th></tr>
+                    <tr><td>Nome vazio</td><td>""</td><td>erro</td><td>…</td><td>…</td></tr>
+                    <tr><td>Preço texto</td><td>"abc"</td><td>erro</td><td>…</td><td>…</td></tr>
+                    <tr><td>Preço negativo</td><td>-5</td><td>erro</td><td>…</td><td>…</td></tr>
+                    <tr><td>Cadastro válido</td><td>"Bike", 1000</td><td>sucesso</td><td>…</td><td>…</td></tr>
+                </table>
+                <p><strong>Estrutura:</strong> o que foi digitado? O que o sistema deveria fazer? O que fez? Houve bug?</p>
+
+                <h3>PARTE 4 — Aplicar testes no código</h3>
+                <pre class="code-block small">def validar_nome(nome):
+    if nome.strip() == "":
+        return "Nome obrigatório"
+    return "Nome válido"</pre>
+                <pre class="code-block small">print(validar_nome(""))
+print(validar_nome("   "))
+print(validar_nome("Bicicleta"))</pre>
+
+                <pre class="code-block small">def validar_preco(preco):
+    if str(preco).strip() == "":
+        return "Preço inválido"
+    try:
+        valor = float(preco)
+        if valor &lt; 0:
+            return "Preço inválido"
+        return "Preço válido"
+    except ValueError:
+        return "Preço inválido"</pre>
+
+                <pre class="code-block small">def validar_idade(idade):
+    if idade &lt; 18:
+        return "Menor de idade"
+    return "Maior de idade"
+
+assert validar_idade(15) == "Menor de idade"
+assert validar_idade(18) == "Maior de idade"
+assert validar_idade(25) == "Maior de idade"
+
+print("Todos os testes passaram com sucesso.")</pre>
+                <p><strong>assert</strong> verifica se o resultado está correto; se não estiver, o Python acusa falha.</p>
+            </div>
+        </div>
+
+        <!-- LABORATÓRIO -->
+        <div class="slide">
+            <h2>Laboratório Python no navegador</h2>
+            <div class="lesson-body">
+                <p>O código roda <strong>no seu computador</strong>, dentro do navegador, usando <strong>Pyodide</strong> (Python compilado para WebAssembly). <strong>Não é necessário instalar Python.</strong></p>
+                <p class="api-note"><strong>Sobre “API”:</strong> serviços como Judge0 ou Replit exigem chave ou servidor. Aqui usamos Pyodide via CDN (jsDelivr): é gratuito e não envia seu código a um servidor de execução — tudo ocorre localmente. É preciso <strong>internet na primeira carga</strong> para baixar o interpretador (~20 MB, uma vez).</p>
+            </div>
+            <div class="senai-py-playground" id="labPython01">
+                <label for="pyStdin01">Entrada simulada (stdin) — <strong>uma linha</strong> por <code>input()</code>, na ordem. <strong>Sem</strong> linha em branco no início (senão o 1º <code>input()</code> recebe vazio).</label>
+                <textarea id="pyStdin01" class="py-stdin" rows="4" style="width:100%;padding:10px;border:1px solid #ccc;border-radius:8px;font-family:Consolas,monospace;">Bike
+100
+2</textarea>
+                <label for="pyCode01">Seu código Python</label>
+                <textarea id="pyCode01" class="code-input py-editor" spellcheck="false">nome = input("Digite o nome do produto: ")
+preco = input("Digite o preço do produto: ")
+quantidade = input("Digite a quantidade: ")
+
+erro = False
+
+if nome.strip() == "":
+    print("Nome obrigatório")
+    erro = True
+
+try:
+    valor_preco = float(preco)
+    if valor_preco &lt; 0:
+        print("Preço inválido")
+        erro = True
+except ValueError:
+    print("Preço inválido")
+    erro = True
+
+try:
+    valor_quantidade = int(quantidade)
+    if valor_quantidade &lt;= 0:
+        print("Quantidade inválida")
+        erro = True
+except ValueError:
+    print("Quantidade inválida")
+    erro = True
+
+if not erro:
+    total = valor_preco * valor_quantidade
+    print("Total:", total)
+    print("Produto cadastrado com sucesso")
+</textarea>
+                <div class="py-toolbar">
+                    <button type="button" class="py-run-btn">▶ Executar</button>
+                    <button type="button" class="py-verify-btn" data-stdin="Bike&#10;100&#10;2" data-expect="Total: 200||Produto cadastrado com sucesso">Verificar cenário “cadastro OK”</button>
+                </div>
+                <p class="py-status" aria-live="polite"></p>
+                <label>Saída (console)</label>
+                <pre class="py-output" id="pyOut01"></pre>
+                <p class="api-note">O botão verde compara a saída com trechos esperados para o fluxo <em>Bike / 100 / 2</em> após sua correção da PARTE 5. Use também o laboratório para testar os exemplos das partes 2–4.</p>
+            </div>
+        </div>
+
+        <!-- PARTE 5 -->
+        <div class="slide">
+            <h2>PARTE 5 — Atividade prática (3 h)</h2>
+            <div class="lesson-body">
+                <p><strong>Missão:</strong> ser QA, testador e desenvolvedor — encontrar bugs, criar testes, corrigir, validar e propor melhorias.</p>
+                <h3>Código base com erros</h3>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+preco = input("Digite o preço do produto: ")
+quantidade = input("Digite a quantidade: ")
+
+if nome == " ":
+    print("Nome obrigatório")
+
+if float(preco) &lt; 0:
+    print("Preço inválido")
+
+if int(quantidade) &lt;= 0:
+    print("Quantidade inválida")
+
+total = preco * quantidade
+print("Total:", total)
+
+print("Produto cadastrado com sucesso")</pre>
+                <h3>ETAPA 1 — Identificar bugs</h3>
+                <p>Bugs esperados: validação de nome incorreta; não trata nome só com espaços; <code>float(preco)</code> e <code>int(quantidade)</code> podem quebrar; vazio em preço/quantidade; <code>preco * quantidade</code> com strings; sucesso mesmo com erro; falta controle geral de falhas; mensagens misturadas; conceito de sanitização; não diferencia válido/inválido.</p>
+                <h3>ETAPA 2 — Casos de teste (escreva na caixa)</h3>
+                <textarea id="aula01-casos-teste" class="code-input" style="min-height:180px;" placeholder="Tabela: Teste | Nome | Preço | Quantidade | Resultado esperado&#10;(use as linhas sugeridas na aula: vazio, abc, -10, 0, sucesso Bike/100/2, etc.)"></textarea>
+                <h3>ETAPA 3 — Sua versão corrigida (cole no laboratório ou aqui)</h3>
+                <textarea id="aula01-codigo-corrigido" class="code-input" style="min-height:220px;" placeholder="Cole aqui o código corrigido (ou mantenha só no laboratório e descreva o que mudou)."></textarea>
+                <h3>ETAPA 4 — Validação</h3>
+                <textarea id="aula01-validacao" class="code-input" style="min-height:140px;" placeholder="Responda: vazio tratado? texto no número? quantidade zero? sucesso só quando tudo certo?"></textarea>
+                <h3>ETAPA 5 — Melhorar o sistema</h3>
+                <ul>
+                    <li>mensagens mais amigáveis;</li>
+                    <li>arredondar o valor total;</li>
+                    <li>permitir repetir o cadastro;</li>
+                    <li>separar em funções;</li>
+                    <li>registrar erros;</li>
+                    <li>validar tamanho mínimo do nome;</li>
+                    <li>padronizar saída.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PARTE 5 código corrigido + 6 -->
+        <div class="slide">
+            <h2>PARTE 5 (correção) e PARTE 6</h2>
+            <div class="lesson-body">
+                <h3>Código corrigido (referência)</h3>
+                <pre class="code-block small">nome = input("Digite o nome do produto: ")
+preco = input("Digite o preço do produto: ")
+quantidade = input("Digite a quantidade: ")
+
+erro = False
+
+if nome.strip() == "":
+    print("Nome obrigatório")
+    erro = True
+
+try:
+    valor_preco = float(preco)
+    if valor_preco &lt; 0:
+        print("Preço inválido")
+        erro = True
+except ValueError:
+    print("Preço inválido")
+    erro = True
+
+try:
+    valor_quantidade = int(quantidade)
+    if valor_quantidade &lt;= 0:
+        print("Quantidade inválida")
+        erro = True
+except ValueError:
+    print("Quantidade inválida")
+    erro = True
+
+if not erro:
+    total = valor_preco * valor_quantidade
+    print("Total:", total)
+    print("Produto cadastrado com sucesso")</pre>
+
+                <h3>PARTE 6 — Versão melhor organizada em funções</h3>
+                <pre class="code-block small">def validar_nome(nome):
+    if nome.strip() == "":
+        return False, "Nome obrigatório"
+    return True, ""
+
+
+def validar_preco(preco):
+    try:
+        valor = float(preco)
+        if valor &lt; 0:
+            return False, "Preço inválido"
+        return True, valor
+    except ValueError:
+        return False, "Preço inválido"
+
+
+def validar_quantidade(quantidade):
+    try:
+        valor = int(quantidade)
+        if valor &lt;= 0:
+            return False, "Quantidade inválida"
+        return True, valor
+    except ValueError:
+        return False, "Quantidade inválida"
+
+
+nome = input("Digite o nome do produto: ")
+preco = input("Digite o preço do produto: ")
+quantidade = input("Digite a quantidade: ")
+
+erro = False
+
+nome_ok, msg_nome = validar_nome(nome)
+if not nome_ok:
+    print(msg_nome)
+    erro = True
+
+preco_ok, resultado_preco = validar_preco(preco)
+if not preco_ok:
+    print(resultado_preco)
+    erro = True
+else:
+    valor_preco = resultado_preco
+
+quantidade_ok, resultado_quantidade = validar_quantidade(quantidade)
+if not quantidade_ok:
+    print(resultado_quantidade)
+    erro = True
+else:
+    valor_quantidade = resultado_quantidade
+
+if not erro:
+    total = valor_preco * valor_quantidade
+    print("Total:", total)
+    print("Produto cadastrado com sucesso")</pre>
+            </div>
+        </div>
+
+        <!-- PARTE 7-10 -->
+        <div class="slide">
+            <h2>PARTE 7 a 10 — Testes, gamificação, rubrica e fechamento</h2>
+            <div class="lesson-body">
+                <h3>PARTE 7 — Como explicar o teste dessa versão</h3>
+                <p>Teste da função de nome:</p>
+                <pre class="code-block small">print(validar_nome(""))
+print(validar_nome("   "))
+print(validar_nome("Capacete"))</pre>
+                <p>Teste da função de preço:</p>
+                <pre class="code-block small">print(validar_preco(""))
+print(validar_preco("abc"))
+print(validar_preco("-5"))
+print(validar_preco("99.90"))</pre>
+                <p>Teste da função de quantidade:</p>
+                <pre class="code-block small">print(validar_quantidade(""))
+print(validar_quantidade("0"))
+print(validar_quantidade("-1"))
+print(validar_quantidade("3"))</pre>
+                <p>Cole as funções no laboratório e execute esses <code>print</code> depois das definições.</p>
+                <h3>PARTE 8 — Gamificação</h3>
+                <p>Grupos: caça-bugs; analista QA (casos de teste); desenvolvedor corretor; validador final; upgrade de qualidade.</p>
+                <table class="lesson-table">
+                    <tr><th>Critério</th><th>Pontos</th></tr>
+                    <tr><td>Identificação de bugs</td><td>5</td></tr>
+                    <tr><td>Casos de teste</td><td>5</td></tr>
+                    <tr><td>Correção</td><td>5</td></tr>
+                    <tr><td>Validação final</td><td>3</td></tr>
+                    <tr><td>Melhorias extras</td><td>2</td></tr>
+                </table>
+                <h3>PARTE 9 — Rubrica</h3>
+                <table class="lesson-table">
+                    <tr><th>Critério</th><th>Pontos</th></tr>
+                    <tr><td>Compreensão do problema</td><td>2</td></tr>
+                    <tr><td>Identificação de bugs</td><td>3</td></tr>
+                    <tr><td>Casos de teste</td><td>2</td></tr>
+                    <tr><td>Correção</td><td>3</td></tr>
+                    <tr><td>Validação</td><td>2</td></tr>
+                    <tr><td>Organização</td><td>2</td></tr>
+                </table>
+                <h3>PARTE 10 — Frases de fechamento</h3>
+                <ul>
+                    <li>Software com qualidade não é o que parece bonito. É o que funciona corretamente para o usuário.</li>
+                    <li>Testar não é “procurar defeito por maldade”. É proteger o usuário de falhas.</li>
+                    <li>Um erro que chega no usuário mostra que a qualidade falhou em algum ponto do processo.</li>
+                    <li>QA não é só achar erro. É pensar antes, testar durante e validar depois.</li>
+                    <li>O bom profissional não apenas escreve código. Ele garante que o código funcione bem.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- PARTE 11-12 + Bloom -->
+        <div class="slide">
+            <h2>PARTE 11, 12 e Bloom</h2>
+            <div class="lesson-body">
+                <h3>PARTE 11 — Resumo para o aluno</h3>
+                <ul>
+                    <li>conceito de qualidade de software;</li>
+                    <li>conceito de QA;</li>
+                    <li>o que é bug;</li>
+                    <li>tipos de falhas;</li>
+                    <li>comparar código errado e correto;</li>
+                    <li>testar entradas válidas e inválidas;</li>
+                    <li>corrigir erros em Python;</li>
+                    <li>validar se a correção resolveu o problema.</li>
+                </ul>
+                <h3>PARTE 12 — Desafio extra</h3>
+                <p>Cadastro com nome, preço, quantidade, categoria, total, erros por campo e testes com <code>assert</code>.</p>
+                <pre class="code-block small">def calcular_total(preco, quantidade):
+    return preco * quantidade
+
+assert calcular_total(100, 2) == 200
+assert calcular_total(50, 3) == 150
+
+print("Testes do cálculo executados com sucesso.")</pre>
+                <textarea id="aula01-desafio-extra" class="code-input" style="min-height:160px;" placeholder="Seu código ou plano do desafio extra (categoria + asserts + validações)."></textarea>
+
+                <h3>Taxonomia de Bloom e testes (referência curricular)</h3>
+                <p><strong>Lembrar / Entender:</strong> nomear tipos de teste; explicar fumaça, regressão, UAT. <strong>Aplicar:</strong> executar casos. <strong>Analisar / Avaliar / Criar:</strong> causas raiz, aceite, planos de teste.</p>
             </div>
         </div>
 
         <div class="slide">
-            <h2>Taxonomia de Bloom e testes de software</h2>
-            <p style="max-width: 980px;">A taxonomia ordena objetivos cognitivos do mais básico ao mais complexo. No curso, cada tipo de teste será praticado subindo essa escada.</p>
-            <div class="grid-layout" style="max-width: 980px; margin-top: 12px;">
-                <div class="grid-item">
-                    <ul style="margin-left: 18px; line-height: 1.65;">
-                        <li><strong>Lembrar:</strong> nomear tipos de teste, ferramentas, status de caso.</li>
-                        <li><strong>Entender:</strong> explicar diferença entre fumaça, sanidade, regressão, UAT.</li>
-                        <li><strong>Aplicar:</strong> executar casos de teste com dados e passos definidos.</li>
-                        <li><strong>Analisar:</strong> comparar resultados, achar causa raiz, priorizar riscos.</li>
-                        <li><strong>Avaliar:</strong> julgar se critérios de aceite foram atendidos (go/no-go).</li>
-                        <li><strong>Criar:</strong> elaborar plano de testes, roteiros de usabilidade, suítes novas.</li>
-                    </ul>
-                </div>
-                <div class="grid-item">
-                    <p>Vocês já programam em Python, Java, SQL, HTML/CSS e modelam com UML: teste é a ponte entre <em>o que foi especificado</em> e <em>o que foi entregue</em>.</p>
-                </div>
-            </div>
-        </div>
-
-        <div class="slide">
-            <h2>Referências visuais (internet)</h2>
+            <h2>Referências visuais (Bloom e pirâmide)</h2>
             <div style="max-width: 980px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
                 <div style="background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
-                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Bloom%27s_Taxonomy_with_verbs.svg/640px-Bloom%27s_Taxonomy_with_verbs.svg.png" alt="Taxonomia de Bloom" style="width: 100%; height: 320px; object-fit: contain;">
-                    <p style="margin-top: 8px; color: #555; font-size: 0.9rem;">Bloom com verbos. <a href="https://commons.wikimedia.org/wiki/File:Bloom%27s_Taxonomy_with_verbs.svg" style="color:#004587; font-weight:700;">Fonte</a></p>
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c4/Bloom%27s_Taxonomy_with_verbs.svg/640px-Bloom%27s_Taxonomy_with_verbs.svg.png" alt="Taxonomia de Bloom" style="width: 100%; height: 280px; object-fit: contain;">
+                    <p style="margin-top: 8px; color: #555; font-size: 0.85rem;">Bloom com verbos. <a href="https://commons.wikimedia.org/wiki/File:Bloom%27s_Taxonomy_with_verbs.svg" style="color:#004587;">Fonte</a></p>
                 </div>
                 <div style="background: white; border-radius: 12px; padding: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.06);">
-                    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Testing_Pyramid.svg" alt="Pirâmide de testes" style="width: 100%; height: 320px; object-fit: contain;">
-                    <p style="margin-top: 8px; color: #555; font-size: 0.9rem;">Pirâmide de testes. <a href="https://commons.wikimedia.org/wiki/File:Testing_Pyramid.svg" style="color:#004587; font-weight:700;">Fonte</a></p>
+                    <img src="https://commons.wikimedia.org/wiki/Special:FilePath/Testing_Pyramid.svg" alt="Pirâmide de testes" style="width: 100%; height: 280px; object-fit: contain;">
+                    <p style="margin-top: 8px; color: #555; font-size: 0.85rem;">Pirâmide de testes. <a href="https://commons.wikimedia.org/wiki/File:Testing_Pyramid.svg" style="color:#004587;">Fonte</a></p>
                 </div>
             </div>
         </div>
 
+        <!-- Entrega -->
         <div class="slide">
-            <h2>Verificação, validação e “testar cedo”</h2>
-            <div class="grid-layout" style="max-width: 980px;">
-                <div class="grid-item">
-                    <h3>Verificação</h3>
-                    <p>“Estamos construindo o produto <strong>certo</strong>?” — conformidade com especificação (revisão de requisitos, inspeções, testes unitários alinhados ao design).</p>
-                </div>
-                <div class="grid-item">
-                    <h3>Validação</h3>
-                    <p>“Construímos o <strong>produto certo</strong>?” — atende necessidade do usuário (UAT, testes de usabilidade, aceite).</p>
-                </div>
-            </div>
-            <div class="success" style="margin-top: 12px; max-width: 980px;">
-                <p>Quanto mais cedo um defeito é encontrado, mais barato corrigir. Por isso teste de requisitos (revisão) e teste de fumaça após cada build fazem parte da cultura de qualidade.</p>
-            </div>
-        </div>
-
-        <div class="slide">
-            <h2>Atividade: Bloom na prática do QA</h2>
+            <h2>Entrega da aula</h2>
             <div class="activity-box" style="max-width: 980px; width: 100%;">
-                <p style="color: #d97706; font-weight: bold; background: #fff3cd; padding: 10px; border-left: 5px solid #ffc107;">⚠️ Atividade INDIVIDUAL. Escreva no campo abaixo em texto corrido ou tópicos.</p>
+                <p style="color: #d97706; font-weight: bold;">⚠️ Revise os campos desta aula e envie um resumo final (casos de teste + reflexão + código corrigido ou link ao que está no laboratório).</p>
             </div>
-            <div class="grid-layout" style="max-width: 980px;">
-                <div class="grid-item">
-                    <h3>Enunciado</h3>
-                    <ol style="margin-left: 18px; line-height: 1.65;">
-                        <li>Defina com suas palavras: <strong>qualidade</strong>, <strong>teste</strong>, <strong>defeito</strong> e <strong>falha</strong>.</li>
-                        <li>Para cada nível de Bloom (6 níveis), dê <strong>um exemplo</strong> de atividade de um testador em um sistema web de “reserva de laboratório”.</li>
-                        <li>Explique por que a pirâmide de testes sugere <strong>muitos testes na base</strong> e poucos no topo.</li>
-                    </ol>
-                </div>
-                <div class="grid-item">
-                    <h3>Critério de avaliação</h3>
-                    <p>Clareza, uso correto dos termos e exemplos que não se repitam (cada nível Bloom com ação diferente).</p>
-                </div>
-            </div>
-            <div style="max-width: 980px; width: 100%; margin-top: 12px;">
-                <textarea id="resp-testes01-atividade" class="code-input" placeholder="Suas definições, 6 exemplos Bloom e comentário sobre a pirâmide."></textarea>
-                <button class="send-btn">📧 Enviar Atividade</button>
-            </div>
-        </div>
-
-        <div class="slide">
-            <h2>Encerramento</h2>
-            <div class="success" style="max-width: 980px;">
-                <p><strong>Hoje:</strong> alinhamos linguagem de QA à taxonomia de Bloom e à pirâmide de testes.</p>
-                <p style="margin-top: 10px;"><strong>Próxima aula:</strong> transformar requisitos em casos de teste mensuráveis (Bloom: <strong>Aplicar</strong>).</p>
-            </div>
-            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar Aula</button>
+            <textarea id="aula01-entrega-final" class="code-input" placeholder="Resumo da entrega: bugs encontrados, tabela de testes, o que validou no laboratório, melhorias."></textarea>
+            <button type="button" class="send-btn" data-input-id="aula01-entrega-final">📧 Enviar atividade</button>
+            <button type="button" id="finishLessonBtn" class="finish-btn" style="margin-top: 16px;">🏁 Finalizar aula</button>
         </div>
     </div>
 
     <div class="controls">
-        <button id="btnPrev" class="nav-btn">Anterior</button>
-        <button id="btnNext" class="nav-btn">Próximo</button>
+        <button type="button" id="btnPrev" class="nav-btn">Anterior</button>
+        <button type="button" id="btnNext" class="nav-btn">Próximo</button>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/pyodide-playground.js"></script>
     <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
 </body>
 </html>
