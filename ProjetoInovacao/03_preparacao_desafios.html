@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula 3: áreas temáticas do GP SENAI, publicação dos desafios e preparação.">
+    <meta name="keywords" content="desafios Grand Prix, mentorias, webinars SENAI">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Projeto de Inovação — Aula 03: Áreas temáticas e preparação</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .slide a { color: #004587; font-weight: 600; }
+        .ref-box { background: #e8f4fc; border-left: 4px solid #004587; padding: 14px 16px; margin: 16px 0; max-width: 900px; text-align: left; font-size: 1.1rem; align-self: center; }
+        .step-ol { margin-left: 1.5em; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol li { margin-bottom: 12px; font-size: 1.15rem; line-height: 1.55; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Aula 03</h1>
+            <h2>Áreas temáticas e preparação</h2>
+            <div style="width: 100%; max-width: 900px; min-height: 240px; background: #004587; color: white; border-radius: 10px; margin-top: 20px; display: flex; align-items: center; justify-content: center;">
+                <span style="font-size: 1.6rem; font-weight: 800;">Desafios • Webinars • Mentorias</span>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; max-width: 900px; text-align: center;">
+                <p><a href="index.html">← Índice do módulo</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco e atividades</h2>
+            <div class="activity-box">
+                <p>Infrações por troca de aba ou saída de tela cheia. Use <strong>Dividir Tela</strong> ao responder.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Referência</h2>
+            <div class="ref-box">Itens <strong>3</strong>, <strong>2.4</strong>, <strong>6.2.3</strong>, <strong>6.3</strong>. <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">PDF</a></div>
+        </div>
+
+        <div class="slide">
+            <h2>Passo a passo</h2>
+            <ol class="step-ol">
+                <li>Confirmem a <strong>área temática</strong> escolhida na inscrição (uma das cinco letras a–e).</li>
+                <li>Os <strong>desafios detalhados</strong> são publicados na <strong>abertura — 13/04/2026</strong>.</li>
+                <li><strong>Empresas parceiras</strong> propõem desafios, podem dar materiais de apoio e orientar equipes.</li>
+                <li><strong>Preparação:</strong> webinars, palestras, mentorias por temática, vídeos e material de pesquisa (programação oficial).</li>
+                <li><strong>Mentorias</strong> durante a competição com horários definidos pela Coordenação (6.3).</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>Checklist da equipe</h2>
+            <ul style="max-width: 900px; text-align: left; font-size: 1.15rem;">
+                <li>Site oficial salvo: senai.br/gpdeinovacao</li>
+                <li>Porta-voz com e-mail válido</li>
+                <li>Papéis internos (pesquisa, vídeo, roteiro)</li>
+                <li>Leitura do regulamento e aceites (imagem/dados)</li>
+            </ul>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade prática</h2>
+            <div class="activity-box">
+                <p style="color: #d97706; font-weight: bold;">⚠️ Individual.</p>
+                <p>Qual <strong>área temática</strong> (a–e) seu grupo escolheria hoje e por quê? (mínimo 8 linhas)</p>
+            </div>
+            <textarea id="resp-proj03" class="code-input" placeholder="Justifique com problema e possível público..."></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 03</h1>
+            <p><a href="04_dia1_lean_canvas.html">Aula 04 →</a> • <a href="02_inscricoes_equipe.html">← Aula 02</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 8</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,27 @@
+/**
+ * Identidade visual — alinhamento ao Manual de marcas SENAI 2024 (v1)
+ * - Cores institucionais: azul e vermelho; laranja como cor de energia / destaque (manual 2024).
+ * - Tipografia oficial no manual: Neo Sans Pro. Para uso em páginas web sem arquivos .woff2
+ *   licenciados no projeto, aplica-se família equivalente (Plus Jakarta Sans) via Google Fonts.
+ * - Para uso 100% fiel: incluir Neo Sans Pro licenciada em assets/fonts e @font-face aqui.
+ */
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap');
+
+:root {
+    --senai-blue: #004587;
+    --senai-red: #e32119;
+    --senai-orange: #ff6b00;
+    --senai-blue-dark: #003366;
+    --senai-red-dark: #c01c15;
+    --senai-orange-dark: #cc5500;
+    --bg-color: #f4f4f4;
+    --bg-elevated: #ffffff;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --code-bg: #2d2d2d;
+    --font-family-senai: "Plus Jakarta Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+    --font-mono: "Consolas", "Courier New", monospace;
+    --radius-brand: 10px;
+    --shadow-card: 0 4px 14px rgba(0, 69, 135, 0.08);
+}

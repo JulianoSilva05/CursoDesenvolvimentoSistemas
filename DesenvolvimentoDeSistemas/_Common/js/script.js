@@ -4,9 +4,67 @@ const SENAI_DISCIPLINE_CAP = 30;
 const SENAI_ACTIVITY_POINTS = 30;
 const SENAI_INFRINGEMENT_POINTS = 5;
 
+/**
+ * URL absoluta da pasta da API (onde está json.php), sem barra no fim.
+ * Ex.: https://turmagestao.com.br/sis/api (deploy: public_html/sis/api)
+ * O nome da pasta no servidor (public_html/…) deve ser o mesmo do último segmento da URL.
+ * Em localhost não é usada (fica /api local). Opcional: meta senai-api-base sobrescreve.
+ * Deixe '' para usar só meta ou caminho relativo ao script.
+ */
+const SENAI_REMOTE_API_BASE = 'https://turmagestao.com.br/sis/api';
+
+function senaiNormalizeHost(hostname) {
+    return String(hostname || '')
+        .replace(/^www\./i, '')
+        .toLowerCase();
+}
+
+/**
+ * Se a página e a API são o mesmo domínio (ex.: tudo no Hostgator), usa o origin da página
+ * (www ou não) + caminho da API — evita 404 por misturar https://dominio.com com https://www.dominio.com.
+ * Se for outro host (ex.: Vercel → Hostgator), mantém a URL configurada inteira.
+ */
+function senaiResolveConfiguredApiBase(configuredUrl) {
+    const raw = String(configuredUrl || '').trim().replace(/\/$/, '');
+    if (!raw) return '';
+    try {
+        const u = new URL(raw);
+        const pageH = senaiNormalizeHost(window.location.hostname);
+        const apiH = senaiNormalizeHost(u.hostname);
+        if (pageH && apiH && pageH === apiH) {
+            let path = (u.pathname || '').replace(/\/+$/, '');
+            if (!path) path = '/sis/api';
+            return (window.location.origin + path).replace(/\/$/, '');
+        }
+        return raw;
+    } catch {
+        return raw;
+    }
+}
+
+(function initSenaiRemoteApiDefault() {
+    try {
+        if (typeof window === 'undefined') return;
+        if (window.__SENAI_API_BASE__) return;
+        const meta = document.querySelector('meta[name="senai-api-base"]');
+        if (meta && meta.content && meta.content.trim()) return;
+        if (!SENAI_REMOTE_API_BASE || !String(SENAI_REMOTE_API_BASE).trim()) return;
+        const h = (window.location && window.location.hostname) || '';
+        if (h === 'localhost' || h === '127.0.0.1' || h === '') return;
+        window.__SENAI_API_BASE__ = senaiResolveConfiguredApiBase(SENAI_REMOTE_API_BASE);
+    } catch {
+        /* ignore */
+    }
+})();
+
+/** Dados do aluno ficam em sessionStorage: ao fechar a aba a sessão some (novo login na próxima visita). */
+function senaiStudentStore() {
+    return sessionStorage;
+}
+
 function readCachedDisciplineGrades() {
     try {
-        const t = localStorage.getItem('senaiDisciplineGradesJson');
+        const t = senaiStudentStore().getItem('senaiDisciplineGradesJson');
         if (!t) return [];
         const j = JSON.parse(t);
         return Array.isArray(j) ? j : [];
@@ -17,7 +75,7 @@ function readCachedDisciplineGrades() {
 
 function writeCachedDisciplineGrades(grades) {
     if (grades && Array.isArray(grades)) {
-        localStorage.setItem('senaiDisciplineGradesJson', JSON.stringify(grades));
+        senaiStudentStore().setItem('senaiDisciplineGradesJson', JSON.stringify(grades));
     }
 }
 
@@ -82,6 +140,8 @@ function getActivityDisciplineTag() {
         if (p.includes('/Python/')) return 'Python';
         if (p.includes('/BancoDeDados/')) return 'BancoDeDados';
         if (p.includes('/IOT/')) return 'IoT';
+        if (p.includes('/ProjetoInovacao/')) return 'ProjetoInovacao';
+        if (p.includes('/IntroducaoIndustria40/')) return 'IntroducaoIndustria40';
     } catch (e) {
         /* ignore */
     }
@@ -139,12 +199,14 @@ const senaiWorkspaceSaveTimers = new WeakMap();
 async function saveActivityWorkspaceServer(textarea, code) {
     const mat = getStudentMatricula();
     const sid = getStudentSessionId();
-    if (!mat || !sid) return;
+    const tid = getStudentTurmaId();
+    if (!mat || !sid || !tid) return;
     const d = getWorkspaceDescriptor(textarea);
     const k = await senaiWorkspaceStorageKey(d.path, d.pageTitle, d.inputId);
     if (!k) return;
     try {
         await senaiApiPost('student_workspace_save', {
+            turmaId: tid,
             matricula: mat,
             sessionId: sid,
             path: d.path,
@@ -174,7 +236,8 @@ function scheduleActivityWorkspaceSave(textarea) {
 async function senaiLoadAllActivityWorkspaces(applyCode) {
     const mat = getStudentMatricula();
     const sid = getStudentSessionId();
-    if (!mat || !sid) return;
+    const tid = getStudentTurmaId();
+    if (!mat || !sid || !tid) return;
     const textareas = document.querySelectorAll('textarea.code-input');
     if (!textareas.length) return;
     const items = [];
@@ -184,6 +247,7 @@ async function senaiLoadAllActivityWorkspaces(applyCode) {
     });
     try {
         const j = await senaiApiPost('student_workspace_load_many', {
+            turmaId: tid,
             matricula: mat,
             sessionId: sid,
             items
@@ -244,7 +308,7 @@ function initActivityWorkspacePersistence() {
     });
     setInterval(() => {
         if (document.hidden) return;
-        if (!getStudentMatricula() || !getStudentSessionId()) return;
+        if (!getStudentMatricula() || !getStudentSessionId() || !getStudentTurmaId()) return;
         senaiLoadAllActivityWorkspaces(false);
     }, 50000);
 }
@@ -285,8 +349,14 @@ function buildLoginGradesPanel(grades) {
 function getSenaiApiBase() {
     try {
         const meta = document.querySelector('meta[name="senai-api-base"]');
-        if (meta && meta.content && meta.content.trim()) {
-            return meta.content.trim().replace(/\/$/, '');
+        if (meta && meta.content) {
+            const raw = meta.content.trim();
+            if (
+                raw &&
+                !/seudominio|SEU-DOMINIO|caminho\/ate|example\.com/i.test(raw)
+            ) {
+                return raw.replace(/\/$/, '');
+            }
         }
         if (window.__SENAI_API_BASE__) {
             return String(window.__SENAI_API_BASE__).replace(/\/$/, '');
@@ -304,45 +374,94 @@ function getSenaiApiBase() {
     }
 }
 
+/** Dica exibida quando a resposta não parece ser a API PHP (comum em Vercel/GitHub Pages). */
+const SENAI_API_STATIC_HOST_HINT =
+    ' O front-end em Vercel (ou GitHub Pages) é só estático: o PHP da pasta api/ não roda lá. ' +
+    'Suba a pasta api/ em um servidor com PHP (hosting, escola, VPS, etc.) e, no <head> de cada aula ou no portal, inclua: ' +
+    '<meta name="senai-api-base" content="https://SEU-DOMINIO/api"> (URL absoluta até /api, sem barra no fim). ' +
+    'A API já envia CORS Access-Control-Allow-Origin: * para permitir outro domínio.';
+
 /**
  * Uma única entrada PHP (json.php). action = nome da operação; demais campos no corpo.
  */
 async function senaiApiPost(action, body) {
     const url = `${getSenaiApiBase()}/json.php`;
     const payload = { action, ...(body && typeof body === 'object' ? body : {}) };
-    const r = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify(payload)
-    });
-    const t = await r.text();
-    let j;
+    let r;
+    let t = '';
     try {
-        j = JSON.parse(t);
-    } catch {
-        j = null;
+        r = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        t = await r.text();
+    } catch (netErr) {
+        throw new Error(
+            'Não foi possível acessar ' +
+                url +
+                '. Verifique a internet, o firewall ou o endereço da API (meta senai-api-base). ' +
+                String((netErr && netErr.message) || netErr)
+        );
     }
+    let j = null;
+    if (t) {
+        try {
+            j = JSON.parse(t);
+        } catch {
+            j = null;
+        }
+    }
+    const looksHtml = t && /^\s*</.test(t);
+    const snippet = t && t.length > 220 ? t.slice(0, 220) + '…' : t || '';
+
     if (!r.ok) {
-        throw new Error((j && j.error) || t || r.statusText);
+        const apiErr = j && j.error ? String(j.error) : '';
+        const appendStaticHint =
+            (r.status === 404 || looksHtml) && !apiErr ? SENAI_API_STATIC_HOST_HINT : '';
+        if (r.status === 404 || looksHtml || (!apiErr && snippet)) {
+            throw new Error(
+                (apiErr ||
+                    r.status +
+                        ' ' +
+                        r.statusText +
+                        (snippet && !looksHtml ? ' — ' + snippet : looksHtml ? ' — resposta parece HTML (página de erro), não a API.' : '')) +
+                    appendStaticHint
+            );
+        }
+        throw new Error(apiErr || r.statusText || String(r.status));
+    }
+    if (j === null && t) {
+        throw new Error(
+            'A URL respondeu 200 mas o corpo não é JSON.' + SENAI_API_STATIC_HOST_HINT + ' Trecho: ' + snippet
+        );
     }
     return j;
 }
 
 function getStudentMatricula() {
-    return (localStorage.getItem('studentMatricula') || '').trim();
+    return (senaiStudentStore().getItem('studentMatricula') || '').trim();
 }
 
 function getStudentSessionId() {
-    return localStorage.getItem('studentSessionId') || '';
+    return senaiStudentStore().getItem('studentSessionId') || '';
+}
+
+function getStudentTurmaId() {
+    const t = senaiStudentStore().getItem('studentTurmaId');
+    const n = parseInt(t, 10);
+    return Number.isFinite(n) && n > 0 ? n : 0;
 }
 
 let senaiHeartbeatTimer = null;
 
-/** Chaves locais da sessão do aluno (não limpa o restante do localStorage). */
+/** Chaves da sessão do aluno (sessionStorage — limpas ao fechar a aba). */
 const SENAI_STUDENT_STORAGE_KEYS = [
     'studentName',
     'studentMatricula',
     'studentSessionId',
+    'studentTurmaId',
+    'studentTurmaNome',
     'senaiPointsCache',
     'infractionCount',
     'senaiDisciplineGradesJson',
@@ -355,7 +474,8 @@ function senaiClearStudentLocalSession() {
         clearInterval(senaiHeartbeatTimer);
         senaiHeartbeatTimer = null;
     }
-    SENAI_STUDENT_STORAGE_KEYS.forEach((k) => localStorage.removeItem(k));
+    const st = senaiStudentStore();
+    SENAI_STUDENT_STORAGE_KEYS.forEach((k) => st.removeItem(k));
     try {
         sessionStorage.removeItem('masterMode');
     } catch {
@@ -394,8 +514,9 @@ function ensureSenaiPointsBar() {
 
 function renderSenaiPointsBar(points, infLocal, disciplineGrades) {
     const bar = ensureSenaiPointsBar();
-    const name = localStorage.getItem('studentName') || '';
+    const name = senaiStudentStore().getItem('studentName') || '';
     const mat = getStudentMatricula();
+    const turmaNome = senaiStudentStore().getItem('studentTurmaNome') || '';
     const grades = disciplineGrades != null ? disciplineGrades : readCachedDisciplineGrades();
     const bySubject = formatDisciplineGradesLine(grades);
     const esc = (s) =>
@@ -403,7 +524,8 @@ function renderSenaiPointsBar(points, infLocal, disciplineGrades) {
             .replace(/&/g, '&amp;')
             .replace(/</g, '&lt;')
             .replace(/"/g, '&quot;');
-    bar.innerHTML = `<span><strong>${esc(name)}</strong> · Mat. ${esc(mat)}</span>
+    const turmaBit = turmaNome ? ` · <span title="Turma">${esc(turmaNome)}</span>` : '';
+    bar.innerHTML = `<span><strong>${esc(name)}</strong> · Mat. ${esc(mat)}${turmaBit}</span>
         <span>Pontos totais: <strong>${esc(String(points))}</strong></span>
         <span>Infrações: <strong>${esc(String(infLocal))}</strong>/5</span>
         <span title="${esc(bySubject)}">Por matéria: ${esc(bySubject)}</span>
@@ -418,18 +540,21 @@ async function senaiHeartbeatTick() {
     const sid = getStudentSessionId();
     if (!mat || !sid) return;
     try {
+        const tid = getStudentTurmaId();
+        if (!tid) return;
         const j = await senaiApiPost('student_heartbeat', {
+            turmaId: tid,
             matricula: mat,
             sessionId: sid,
             path: window.location.pathname,
             title: document.title
         });
         const pts = j.points ?? 0;
-        localStorage.setItem('senaiPointsCache', String(pts));
+        senaiStudentStore().setItem('senaiPointsCache', String(pts));
         if (typeof j.infractionCount === 'number') {
-            localStorage.setItem('infractionCount', String(j.infractionCount));
+            senaiStudentStore().setItem('infractionCount', String(j.infractionCount));
         }
-        const infLocal = parseInt(localStorage.getItem('infractionCount') || '0', 10);
+        const infLocal = parseInt(senaiStudentStore().getItem('infractionCount') || '0', 10);
         if (Array.isArray(j.disciplineGrades)) {
             writeCachedDisciplineGrades(j.disciplineGrades);
         }
@@ -447,10 +572,10 @@ async function senaiHeartbeatTick() {
         }
     } catch (e) {
         console.warn('SENAI heartbeat:', e.message);
-        const cached = parseInt(localStorage.getItem('senaiPointsCache') || '0', 10);
+        const cached = parseInt(senaiStudentStore().getItem('senaiPointsCache') || '0', 10);
             renderSenaiPointsBar(
                 cached,
-                parseInt(localStorage.getItem('infractionCount') || '0', 10),
+                parseInt(senaiStudentStore().getItem('infractionCount') || '0', 10),
                 readCachedDisciplineGrades()
             );
     }
@@ -554,6 +679,7 @@ function showSenaiModal(opts) {
 
 function showSenaiNotices(notices) {
     const mat = getStudentMatricula();
+    const tid = getStudentTurmaId();
     const ids = notices.map((n) => n.id);
     const text = notices.map((n) => n.text).join('\n---\n');
     showSenaiModal({
@@ -562,7 +688,9 @@ function showSenaiNotices(notices) {
         variant: 'info',
         okLabel: 'Entendi',
         onClose: () => {
-            senaiApiPost('student_notices_read', { matricula: mat, ids }).catch(() => {});
+            if (tid && mat) {
+                senaiApiPost('student_notices_read', { turmaId: tid, matricula: mat, ids }).catch(() => {});
+            }
         }
     });
 }
@@ -627,17 +755,19 @@ function initClipboardRestrictions() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const studentName = localStorage.getItem('studentName');
+    const st = senaiStudentStore();
+    const studentName = st.getItem('studentName');
     const matricula = getStudentMatricula();
+    const turmaOk = getStudentTurmaId() > 0;
 
-    if (!studentName || !matricula) {
+    if (!studentName || !matricula || !turmaOk) {
         showIdentificationModal();
     } else {
         console.log(`Aluno identificado: ${studentName} (${matricula})`);
         ensureSenaiPointsBar();
         renderSenaiPointsBar(
-            parseInt(localStorage.getItem('senaiPointsCache') || '0', 10),
-            parseInt(localStorage.getItem('infractionCount') || '0', 10),
+            parseInt(st.getItem('senaiPointsCache') || '0', 10),
+            parseInt(st.getItem('infractionCount') || '0', 10),
             readCachedDisciplineGrades()
         );
         await senaiHeartbeatTick();
@@ -844,7 +974,7 @@ function showIdentificationModal() {
     modal.innerHTML = `
         <div class="modal-content" style="max-width: 520px;">
             <h2>Identificação do Aluno</h2>
-            <p><strong>Nome completo</strong> e <strong>matrícula</strong> são obrigatórios para iniciar.</p>
+            <p><strong>Turma</strong>, <strong>nome completo</strong> e <strong>matrícula</strong> são obrigatórios para iniciar.</p>
             <div style="background: #e0f2fe; color: #0369a1; padding: 12px; margin: 10px 0; border-left: 5px solid #0284c7; font-size: 0.9rem; text-align: left;">
                 <strong>📊 Pontuação:</strong> em cada matéria você pode somar até <strong>${SENAI_DISCIPLINE_CAP} pontos</strong>.
                 Cada <strong>atividade enviada</strong> pode render até <strong>30 ÷ N</strong> pontos (N = total de atividades da matéria), após o <strong>professor avaliar</strong> no painel.
@@ -858,7 +988,11 @@ function showIdentificationModal() {
                     <li>Use <strong>Dividir Tela</strong> para ler o slide enquanto digita a atividade.</li>
                 </ul>
             </div>
-            <label style="display:block;margin-top:10px;font-weight:600;">Nome completo</label>
+            <label style="display:block;margin-top:10px;font-weight:600;">Turma</label>
+            <select id="studentTurmaSelect" style="width:100%;padding:10px;margin-bottom:10px;box-sizing:border-box;" disabled>
+                <option value="">Carregando turmas…</option>
+            </select>
+            <label style="display:block;font-weight:600;">Nome completo</label>
             <input type="text" id="studentNameInput" placeholder="Seu nome completo" style="width:100%;padding:10px;margin-bottom:10px;box-sizing:border-box;">
             <label style="display:block;font-weight:600;">Matrícula</label>
             <input type="text" id="studentMatriculaInput" placeholder="Sua matrícula" style="width:100%;padding:10px;margin-bottom:10px;box-sizing:border-box;">
@@ -868,14 +1002,51 @@ function showIdentificationModal() {
     `;
     document.body.appendChild(modal);
 
+    const selTurma = document.getElementById('studentTurmaSelect');
     const inputName = document.getElementById('studentNameInput');
     const inputMat = document.getElementById('studentMatriculaInput');
     const btn = document.getElementById('saveNameBtn');
     const errEl = document.getElementById('identificacaoErro');
 
+    (async () => {
+        try {
+            const pub = await senaiApiPost('public_turmas', {});
+            const list = pub.turmas || [];
+            selTurma.innerHTML = '';
+            if (list.length === 0) {
+                selTurma.innerHTML = '<option value="">Nenhuma turma cadastrada</option>';
+                errEl.textContent =
+                    'O professor ainda não cadastrou turmas no painel administrativo.';
+            } else {
+                const ph = document.createElement('option');
+                ph.value = '';
+                ph.textContent = 'Selecione sua turma…';
+                selTurma.appendChild(ph);
+                list.forEach((t) => {
+                    const o = document.createElement('option');
+                    o.value = String(t.id);
+                    o.textContent = t.nome || `Turma ${t.id}`;
+                    selTurma.appendChild(o);
+                });
+            }
+        } catch (e) {
+            selTurma.innerHTML = '<option value="">Erro ao carregar</option>';
+            errEl.textContent = e.message || 'Não foi possível carregar as turmas.';
+        } finally {
+            selTurma.disabled = false;
+            validateForm();
+        }
+    })();
+
     function validateForm() {
-        btn.disabled = inputName.value.trim().length < 3 || inputMat.value.trim().length < 2;
+        const tid = parseInt(selTurma.value, 10);
+        btn.disabled =
+            !Number.isFinite(tid) ||
+            tid < 1 ||
+            inputName.value.trim().length < 3 ||
+            inputMat.value.trim().length < 2;
     }
+    selTurma.addEventListener('change', validateForm);
     inputName.addEventListener('input', validateForm);
     inputMat.addEventListener('input', validateForm);
 
@@ -883,9 +1054,10 @@ function showIdentificationModal() {
         if (btn.dataset.phase === '2') {
             modal.remove();
             ensureSenaiPointsBar();
+            const st = senaiStudentStore();
             renderSenaiPointsBar(
-                parseInt(localStorage.getItem('senaiPointsCache') || '0', 10),
-                parseInt(localStorage.getItem('infractionCount') || '0', 10),
+                parseInt(st.getItem('senaiPointsCache') || '0', 10),
+                parseInt(st.getItem('infractionCount') || '0', 10),
                 readCachedDisciplineGrades()
             );
             (async () => {
@@ -895,19 +1067,27 @@ function showIdentificationModal() {
             })();
             return;
         }
+        const turmaId = parseInt(selTurma.value, 10);
         const name = inputName.value.trim();
         const matricula = inputMat.value.trim();
+        const turmaNome =
+            selTurma.options[selTurma.selectedIndex] && selTurma.options[selTurma.selectedIndex].text
+                ? selTurma.options[selTurma.selectedIndex].text.trim()
+                : '';
         errEl.textContent = '';
-        if (name.length < 3 || matricula.length < 2) return;
+        if (!Number.isFinite(turmaId) || turmaId < 1 || name.length < 3 || matricula.length < 2) return;
         btn.disabled = true;
         btn.textContent = 'Conectando...';
         try {
-            const j = await senaiApiPost('student_session', { name, matricula });
-            localStorage.setItem('studentName', name);
-            localStorage.setItem('studentMatricula', matricula.trim().toUpperCase());
-            localStorage.setItem('studentSessionId', j.sessionId);
-            localStorage.setItem('infractionCount', String(j.infractionCount ?? 0));
-            localStorage.setItem('senaiPointsCache', String(j.points ?? 0));
+            const j = await senaiApiPost('student_session', { name, matricula, turmaId });
+            const st = senaiStudentStore();
+            st.setItem('studentName', name);
+            st.setItem('studentMatricula', matricula.trim().toUpperCase());
+            st.setItem('studentSessionId', j.sessionId);
+            st.setItem('studentTurmaId', String(turmaId));
+            st.setItem('studentTurmaNome', turmaNome);
+            st.setItem('infractionCount', String(j.infractionCount ?? 0));
+            st.setItem('senaiPointsCache', String(j.points ?? 0));
             if (Array.isArray(j.disciplineGrades)) {
                 writeCachedDisciplineGrades(j.disciplineGrades);
             }
@@ -916,13 +1096,12 @@ function showIdentificationModal() {
             content.insertBefore(buildLoginGradesPanel(j.disciplineGrades), errEl);
             inputName.disabled = true;
             inputMat.disabled = true;
+            selTurma.disabled = true;
             btn.disabled = false;
             btn.textContent = 'Continuar';
             btn.dataset.phase = '2';
         } catch (e) {
-            errEl.textContent =
-                'Não foi possível registrar a sessão. Verifique se a pasta api/ está no servidor PHP e se json.php responde, ou ajuste o meta senai-api-base. ' +
-                (e.message || '');
+            errEl.textContent = e.message || 'Não foi possível registrar a sessão.';
             btn.disabled = false;
             btn.textContent = 'Começar aula';
         }
@@ -967,6 +1146,7 @@ function initSlideshow() {
             slideNumber.textContent = `${currentSlide + 1} / ${slides.length}`;
         }
 
+        btnPrev.textContent = '← Anterior';
         btnPrev.disabled = currentSlide === 0;
         btnNext.disabled = currentSlide === slides.length - 1;
         
@@ -974,7 +1154,7 @@ function initSlideshow() {
             btnNext.style.display = 'none';
         } else {
             btnNext.style.display = 'inline-block';
-            btnNext.textContent = "Próximo";
+            btnNext.textContent = 'Próximo →';
         }
     }
 
@@ -1043,7 +1223,7 @@ function initEmailSender() {
 
     sendBtns.forEach(btn => {
         btn.addEventListener('click', async (e) => {
-            const studentName = localStorage.getItem('studentName') || "Aluno Desconhecido";
+            const studentName = senaiStudentStore().getItem('studentName') || 'Aluno Desconhecido';
             const lessonTitle = document.title;
             
             // PHP / Banco: .code-input ou data-input-id no botão
@@ -1128,7 +1308,8 @@ function initEmailSender() {
                     try {
                         const mat = getStudentMatricula();
                         const sid = getStudentSessionId();
-                        if (mat && sid) {
+                        const tid = getStudentTurmaId();
+                        if (mat && sid && tid) {
                             await saveActivityWorkspaceServer(codeInput, codeContent);
                             const d = getWorkspaceDescriptor(codeInput);
                             const workspaceKey = await senaiWorkspaceStorageKey(
@@ -1137,13 +1318,14 @@ function initEmailSender() {
                                 d.inputId
                             );
                             const jAct = await senaiApiPost('student_activity', {
+                                turmaId: tid,
                                 matricula: mat,
                                 sessionId: sid,
                                 lessonTitle: activityLessonLabel,
                                 discipline: disciplineTag,
                                 workspaceKey: workspaceKey || undefined
                             });
-                            localStorage.setItem('senaiPointsCache', String(jAct.points));
+                            senaiStudentStore().setItem('senaiPointsCache', String(jAct.points));
                             if (Array.isArray(jAct.disciplineGrades)) {
                                 writeCachedDisciplineGrades(jAct.disciplineGrades);
                             }
@@ -1156,7 +1338,7 @@ function initEmailSender() {
                             );
                             renderSenaiPointsBar(
                                 jAct.points,
-                                parseInt(localStorage.getItem('infractionCount') || '0', 10),
+                                parseInt(senaiStudentStore().getItem('infractionCount') || '0', 10),
                                 jAct.disciplineGrades
                             );
                         } else {
@@ -1188,9 +1370,10 @@ function initEmailSender() {
 }
 
 function initFocusMode() {
-    let infractionCount = parseInt(localStorage.getItem('infractionCount') || '0');
+    const stStore = senaiStudentStore();
+    let infractionCount = parseInt(stStore.getItem('infractionCount') || '0');
     const maxInfractions = 5; 
-    const studentName = localStorage.getItem('studentName') || 'Aluno';
+    const studentName = stStore.getItem('studentName') || 'Aluno';
     let isBlocked = false;
     const blockDurationMs = 30 * 60 * 1000;
     let lockInterval = null;
@@ -1229,11 +1412,11 @@ function initFocusMode() {
         const d = ev.detail || {};
         if (typeof d.infractionCount === 'number') {
             infractionCount = d.infractionCount;
-            localStorage.setItem('infractionCount', String(infractionCount));
+            stStore.setItem('infractionCount', String(infractionCount));
         }
         if (d.resetInfractionsLocal === true) {
-            localStorage.removeItem('blockStartAt');
-            localStorage.removeItem('infractionLastAt');
+            stStore.removeItem('blockStartAt');
+            stStore.removeItem('infractionLastAt');
         }
         if (isBlocked && infractionCount < maxInfractions) {
             isBlocked = false;
@@ -1242,8 +1425,8 @@ function initFocusMode() {
                 clearInterval(lockInterval);
                 lockInterval = null;
             }
-            localStorage.removeItem('blockStartAt');
-            localStorage.removeItem('infractionLastAt');
+            stStore.removeItem('blockStartAt');
+            stStore.removeItem('infractionLastAt');
         }
     });
 
@@ -1268,28 +1451,18 @@ function initFocusMode() {
     function autoResetBlock() {
         isBlocked = false;
         infractionCount = 0;
-        localStorage.setItem('infractionCount', '0');
-        localStorage.removeItem('infractionLastAt');
-        localStorage.removeItem('blockStartAt');
+        senaiClearStudentLocalSession();
         overlay.style.display = 'none';
         if (lockInterval) {
             clearInterval(lockInterval);
             lockInterval = null;
-        }
-        localStorage.removeItem('studentName');
-        localStorage.removeItem('studentMatricula');
-        localStorage.removeItem('studentSessionId');
-        localStorage.removeItem('senaiPointsCache');
-        if (senaiHeartbeatTimer) {
-            clearInterval(senaiHeartbeatTimer);
-            senaiHeartbeatTimer = null;
         }
         showIdentificationModal();
     }
 
     function startLockCountdown(existingStart) {
         const startAt = existingStart && existingStart > 0 ? existingStart : Date.now();
-        localStorage.setItem('blockStartAt', String(startAt));
+        stStore.setItem('blockStartAt', String(startAt));
         const countdownEl = document.getElementById('lockCountdown');
         if (lockInterval) clearInterval(lockInterval);
         lockInterval = setInterval(() => {
@@ -1306,16 +1479,16 @@ function initFocusMode() {
     if (infractionCount >= maxInfractions) {
         isBlocked = true;
         overlay.style.display = 'flex';
-        const storedBlockStart = parseInt(localStorage.getItem('blockStartAt') || '0');
+        const storedBlockStart = parseInt(stStore.getItem('blockStartAt') || '0');
         startLockCountdown(storedBlockStart);
     }
 
     function finishUnlockSuccess() {
         isBlocked = false;
         infractionCount = 0;
-        localStorage.setItem('infractionCount', '0');
-        localStorage.removeItem('infractionLastAt');
-        localStorage.removeItem('blockStartAt');
+        stStore.setItem('infractionCount', '0');
+        stStore.removeItem('infractionLastAt');
+        stStore.removeItem('blockStartAt');
         overlay.style.display = 'none';
         if (unlockPass) unlockPass.value = '';
         if (!document.fullscreenElement) {
@@ -1387,8 +1560,8 @@ function initFocusMode() {
         const sid = getStudentSessionId();
         const doLocal = () => {
             infractionCount++;
-            localStorage.setItem('infractionCount', String(infractionCount));
-            localStorage.setItem('infractionLastAt', String(Date.now()));
+            stStore.setItem('infractionCount', String(infractionCount));
+            stStore.setItem('infractionLastAt', String(Date.now()));
             const remaining = maxInfractions - infractionCount;
 
             if (infractionCount >= maxInfractions) {
@@ -1416,12 +1589,13 @@ function initFocusMode() {
             }
         };
 
-        if (mat && sid) {
-            senaiApiPost('student_infraction', { matricula: mat, sessionId: sid, reason })
+        const tid = getStudentTurmaId();
+        if (mat && sid && tid) {
+            senaiApiPost('student_infraction', { turmaId: tid, matricula: mat, sessionId: sid, reason })
                 .then((j) => {
                     infractionCount = j.infractionCount;
-                    localStorage.setItem('infractionCount', String(infractionCount));
-                    localStorage.setItem('senaiPointsCache', String(j.points));
+                    stStore.setItem('infractionCount', String(infractionCount));
+                    stStore.setItem('senaiPointsCache', String(j.points));
                     if (Array.isArray(j.disciplineGrades)) {
                         writeCachedDisciplineGrades(j.disciplineGrades);
                     }
@@ -1521,21 +1695,44 @@ function initFocusMode() {
         showToast('🚫 Clique direito desativado para evitar cola!');
     });
 
-    // Prevent some shortcuts (Ctrl+C, Ctrl+V, F12, Alt+Tab is impossible to block)
-    document.addEventListener('keydown', (e) => {
-        if (sessionStorage.getItem('masterMode') === 'true') return;
+    // Atalhos comuns de DevTools / código-fonte / salvar página + reforço de copiar/colar (Alt+Tab não dá para bloquear)
+    document.addEventListener(
+        'keydown',
+        (e) => {
+            if (sessionStorage.getItem('masterMode') === 'true') return;
 
-        // F12 or Ctrl+Shift+I (DevTools)
-        if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I')) {
-            e.preventDefault();
-            showToast('🚫 Ferramentas de desenvolvedor bloqueadas.');
-        }
-        // Ctrl+C / Ctrl+V
-        if ((e.ctrlKey && e.key === 'c') || (e.ctrlKey && e.key === 'v')) {
-            e.preventDefault();
-            showToast('🚫 Copiar/Colar bloqueado.');
-        }
-    });
+            const k = e.key;
+            const lower = typeof k === 'string' && k.length === 1 ? k.toLowerCase() : k;
+
+            if (k === 'F12') {
+                e.preventDefault();
+                showToast('🚫 Ferramentas de desenvolvedor bloqueadas.');
+                return;
+            }
+            if (e.ctrlKey && e.shiftKey) {
+                if (lower === 'i' || lower === 'j' || lower === 'c' || lower === 'k') {
+                    e.preventDefault();
+                    showToast('🚫 Ferramentas de desenvolvedor bloqueadas.');
+                    return;
+                }
+            }
+            if (e.ctrlKey && !e.shiftKey && lower === 'u') {
+                e.preventDefault();
+                showToast('🚫 Visualização de código-fonte bloqueada.');
+                return;
+            }
+            if (e.ctrlKey && !e.shiftKey && lower === 's') {
+                e.preventDefault();
+                showToast('🚫 Salvar página bloqueado durante a aula.');
+                return;
+            }
+            if (e.ctrlKey && (lower === 'c' || lower === 'v')) {
+                e.preventDefault();
+                showToast('🚫 Copiar/Colar bloqueado.');
+            }
+        },
+        true
+    );
 
 
     // Force Fullscreen on Click (Optional but recommended)
@@ -1696,17 +1893,7 @@ function initFinishButton() {
     if (finishBtn) {
         finishBtn.addEventListener('click', () => {
             if (confirm('Tem certeza que deseja finalizar a aula? Isso apagará seus dados locais e reiniciará.')) {
-                // Clear ALL storage types
-                localStorage.clear(); 
-                sessionStorage.clear(); // This is crucial for masterMode removal
-                
-                // Explicitly remove known keys just in case
-                sessionStorage.removeItem('masterMode'); 
-                localStorage.removeItem('infractionCount');
-                localStorage.removeItem('studentName');
-                localStorage.removeItem('studentMatricula');
-                localStorage.removeItem('studentSessionId');
-                localStorage.removeItem('senaiPointsCache');
+                sessionStorage.clear();
                 if (senaiHeartbeatTimer) {
                     clearInterval(senaiHeartbeatTimer);
                     senaiHeartbeatTimer = null;

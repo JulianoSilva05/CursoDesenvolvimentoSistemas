@@ -1,8 +1,12 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Material de Java e interfaces gráficas (Swing) do curso técnico SENAI.">
+    <meta name="keywords" content="curso técnico SENAI, desenvolvimento de sistemas, programação, testes de software, banco de dados, PHP, MySQL, IoT, educação profissional, material didático, exercícios">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../../assets/estudando.png">
     <title>Aula 15: Tabelas e Apresentação de Dados</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -133,7 +137,7 @@ public class ExemploCompleto extends JFrame {
                 <li>✓ Aplicar boas práticas vistas</li>
                 <li>✓ Testar funcionalidade completa</li>
             </ul>
-            <textarea id="activity-15" rows="10" placeholder="// Seu código Java aqui
+            <textarea id="activity-15" class="code-input" rows="10" placeholder="// Seu código Java aqui
 // Use os componentes desta aula">import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -142,7 +146,7 @@ public class Aplicacao extends JFrame {
     // Seu código aqui
 }</textarea>
             
-            <button class="send-btn" onclick="validarAtividade15()">Verificar Código</button>
+            <button type="button" class="nav-btn" onclick="validarAtividade15()">Verificar Código</button>
             
             <div id="validation-feedback-15" style="background: #f8f9fa; padding: 10px; border: 1px dashed #ccc; border-radius: 5px; margin-top: 10px; font-size: 0.9rem; color: #555; display: none;">
                 🌡️ <strong>Validação em Tempo Real:</strong> Verificando seu código...
@@ -172,33 +176,13 @@ public class Aplicacao extends JFrame {
     </div>
 
     <div class="controls">
-        <button onclick="previousSlide()" class="nav-btn">← Anterior</button>
-        <span id="slideCounter">1 de 11</span>
-        <button onclick="nextSlide()" class="nav-btn">Próximo →</button>
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 11</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
     </div>
 
+    <script src="../_Common/js/script.js"></script>
     <script>
-        let currentSlide = 0;
-        const slides = document.querySelectorAll('.slide');
-        const totalSlides = slides.length;
-        
-        function showSlide(n) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            if (n >= totalSlides) currentSlide = 0;
-            if (n < 0) currentSlide = totalSlides - 1;
-            slides[currentSlide].classList.add('active');
-            updateProgress();
-            document.getElementById('slideCounter').textContent = `${currentSlide + 1} de ${totalSlides}`;
-        }
-        
-        function nextSlide() { currentSlide++; showSlide(currentSlide); }
-        function previousSlide() { currentSlide--; showSlide(currentSlide); }
-        
-        function updateProgress() {
-            const progress = ((currentSlide + 1) / totalSlides) * 100;
-            document.getElementById('progressBar').style.width = progress + '%';
-        }
-        
         function validarAtividade15() {
             const code = document.getElementById('activity-15').value.toUpperCase();
             const resultDiv = document.getElementById('validation-result-15');
@@ -293,7 +277,6 @@ public class Aplicacao extends JFrame {
         });
         
         function completarAula() { alert('Aula 15 concluída!'); }
-        showSlide(currentSlide);
-    </script>
+            </script>
 </body>
 </html>

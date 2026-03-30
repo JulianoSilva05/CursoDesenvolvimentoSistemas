@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula: transformações industriais e leitura de dados com Python — material didático original.">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Indústria 4.0 — Aula 1: Da mecanização à leitura de dados em painel</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .bloom-box { background: #ecfdf5; border-left: 5px solid #059669; padding: 14px 18px; max-width: 900px; text-align: left; align-self: center; border-radius: 0 8px 8px 0; }
+        .err-box { background: #fef2f2; border-left: 5px solid #ef4444; }
+        .ok-box { background: #f0fdf4; border-left: 5px solid #22c55e; }
+        .slide pre { font-size: 0.95rem; }
+        .rubric-table { font-size: 1rem; }
+        .slide a { color: #004587; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+
+        <div class="slide active">
+            <h1>Indústria 4.0 — visão para desenvolvedores</h1>
+            <h2>Aula 1 — Da mecanização à leitura de dados em painel</h2>
+            <div style="width:100%;max-width:900px;min-height:220px;background:#004587;color:#fff;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-top:16px;">
+                <div style="text-align:center;padding:20px;">
+                    <div style="font-size:1.8rem;font-weight:800;">Do vapor aos dados em tempo real</div>
+                    <div style="opacity:.95;margin-top:10px;">Módulo INTIN40 · material didático do portal (curso 1200 h)</div>
+                </div>
+            </div>
+            <div style="background:#eee;padding:14px;border-radius:8px;margin-top:18px;max-width:900px;text-align:center;">
+                <p><strong>Duração desta aula (planejamento):</strong> 4 horas — ~2 h teoria + ~2 h prática individual</p>
+                <p><a href="index.html">← Voltar ao módulo</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco (regras)</h2>
+            <div class="activity-box">
+                <p><strong>Permanência na aula (sala virtual):</strong> trate esta janela como a sala de aula. Não a abandone para navegar em outras abas, redes, jogos ou mensagens; não minimize o navegador nem mude o foco para outro programa sem autorização do professor. O objetivo é manter <strong>atenção na atividade</strong>, como em prova supervisionada.</p>
+                <p style="margin-top:14px;"><strong>Infrações e bloqueio:</strong></p>
+                <ul style="margin:8px 0 0 22px; max-width:900px; text-align:left;">
+                    <li>Sair da <strong>tela cheia</strong>, <strong>trocar de aba</strong>, <strong>minimizar</strong> a janela ou <strong>perder o foco</strong> para outro aplicativo pode registrar <strong>infração</strong>.</li>
+                    <li>Cada infração costuma descontar <strong>pontos</strong> do seu saldo (quando a escola estiver conectada ao sistema).</li>
+                    <li>Ao atingir <strong>5 infrações</strong> nesta sessão, a tela pode ser <strong>bloqueada</strong>; só o professor (código de desbloqueio) ou o tempo de espera configurado libera o acesso.</li>
+                    <li>Use o botão <strong>◫ Dividir Tela</strong> no campo de resposta para ver o slide ao lado enquanto digita — assim você não precisa “sair” da aula para copiar o enunciado.</li>
+                    <li>Copiar e colar texto externo pode estar <strong>desativado</strong>; a digitação é acompanhada para fins de aprendizagem.</li>
+                </ul>
+                <p style="margin-top:14px;"><strong>Pontuação das atividades:</strong></p>
+                <ul style="margin:8px 0 0 22px; max-width:900px; text-align:left;">
+                    <li>Identifique-se (turma e matrícula) quando o sistema pedir, para vincular envios e notas.</li>
+                    <li>O painel usa até <strong>30 pontos por matéria</strong> no conjunto das atividades; cada envio pode valer até <strong>30 ÷ N</strong> pontos (<em>N</em> = número de atividades previstas naquela disciplina), <strong>após o professor avaliar</strong> no painel administrativo.</li>
+                    <li>Cada aula com entrega conta como atividade a ser corrigida; a rubrica desta aula (0–100) orienta o professor, mas o lançamento final segue as regras da sua unidade escolar.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>1. Objetivo da aula (Taxonomia de Bloom)</h2>
+            <div class="bloom-box">
+                <p><strong>Nível predominante nesta aula:</strong> <em>Lembrar</em> e <em>Compreender</em> (linha do tempo das transformações produtivas; leitura do ambiente conectado); com trecho de <em>Aplicar</em> (interpretar dados simples com Python).</p>
+                <p><strong>Ao final, o aluno será capaz de:</strong></p>
+                <ul style="margin:10px 0 0 22px;">
+                    <li><strong>Lembrar</strong> os marcos das quatro revoluções industriais e uma característica de cada uma;</li>
+                    <li><strong>Compreender</strong> o que distingue a Quarta Revolução (digitalização, dados, integração);</li>
+                    <li><strong>Aplicar</strong> um script Python mínimo para ler uma série de “produção horária” e calcular uma média (simulação de painel de fábrica);</li>
+                    <li><strong>Analisar</strong> (atividade) um pequeno cenário e identificar qual revolução explica melhor o problema apresentado.</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>2. Conteúdo teórico — Por que estudar Indústria 4.0 no curso de DS?</h2>
+            <p style="font-size:1.05rem;color:#475569;max-width:900px;"><em>Texto didático elaborado para este portal: objetivos alinhados à matriz do curso, sem reproduzir trechos de documentos institucionais.</em></p>
+            <p>O <strong>desenvolvedor de sistemas</strong> não trabalha isolado: software em fábricas, logística, energia e serviços conversa com <strong>sensores</strong>, <strong>APIs</strong>, <strong>bancos de dados</strong> e <strong>nuvem</strong>. A Indústria 4.0 descreve o cenário em que máquinas, pessoas e dados se conectam. Saber esse contexto evita que você proponha soluções “de gabinete” que ignoram tempo real, segurança ou volume de dados.</p>
+            <p><strong>Erro comum:</strong> achar que Indústria 4.0 é “só robô”. <strong>Correção:</strong> robôs são parte do ecossistema; o núcleo é <strong>informação útil em tempo oportuno</strong> para decisão (dado certo, no lugar certo, com segurança).</p>
+        </div>
+
+        <div class="slide">
+            <h2>Linha do tempo — Quatro ondas de mudança produtiva</h2>
+            <p style="max-width:900px;">A tabela abaixo é um <strong>roteiro didático</strong> para conversa em sala — não é definição jurídica nem texto normativo. Os rótulos “1ª a 4ª” são convenção didática amplamente usada.</p>
+            <table>
+                <thead><tr><th>Onda</th><th>O que mudou de forma mais visível</th><th>Consequência para quem produz</th></tr></thead>
+                <tbody>
+                    <tr><td>1ª</td><td>Uso de máquinas movidas a vapor e água para substituir força muscular</td><td>Oficinas dão lugar a fábricas; produto começa a sair em série</td></tr>
+                    <tr><td>2ª</td><td>Energia elétrica em escala, combustíveis fósseis, linhas de montagem</td><td>Peças padronizadas e ritmo industrial intenso</td></tr>
+                    <tr><td>3ª</td><td>Eletrônica, controle automático, primeiros sistemas de gestão digitais</td><td>Programação de máquinas e início de tudo ser “medido” por software</td></tr>
+                    <tr><td>4ª</td><td>Equipamentos, pessoas e nuvem conversando em rede; sensores baratos</td><td>Decisão de chão de fábrica e logística apoiada em dados em fluxo contínuo</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top:14px;"><strong>Confusão frequente:</strong> achar que “ter computador” já é Indústria 4.0. O computador entra na 3ª onda; o que marca a leitura atual é <strong>rede + dados + analytics</strong> integrados ao negócio, não o PC isolado.</p>
+        </div>
+
+        <div class="slide">
+            <h2>Blocos de tecnologia que aparecem no discurso da indústria conectada</h2>
+            <p>Em relatórios de consultoria e feiras de automação, costumam aparecer rótulos como <strong>grandes volumes de dados</strong>, <strong>robótica colaborativa</strong>, <strong>cibersegurança operacional</strong>, <strong>dispositivos IoT</strong>, <strong>nuvem</strong>, <strong>impressão 3D industrial</strong>, <strong>gêmeos digitais</strong> e <strong>integração entre ERP, MES e chão de fábrica</strong>. Do lado do desenvolvedor, isso vira <strong>APIs</strong>, <strong>bancos e filas</strong>, <strong>pipelines</strong>, <strong>containers</strong> e <strong>observabilidade</strong> — ou seja, o mesmo curso técnico que você está fazendo, aplicado a contexto real.</p>
+        </div>
+
+        <div class="slide">
+            <h2>3. Exemplo prático — Python: série de produção (correto)</h2>
+            <p>Cenário: cinco horas de “peças boas” saindo de uma célula. Queremos a média horária (KPI simples de painel).</p>
+            <pre><code># Medias de producao (pecas boas por hora) — linha de montagem 2A
+producao_h = [120, 118, 125, 121, 119]
+
+# Media aritmetica: soma / quantidade
+media = sum(producao_h) / len(producao_h)
+print(f"Media horaria (pecas boas): {media:.2f}")
+
+# Interpretacao rapida: se media cair muito vs. meta (ex.: 130),
+# pode indicar gargalo ou falha de sensor — tema para Ind. 4.0
+</code></pre>
+            <p><strong>Por que este código é “bom”:</strong> usa <code>sum</code> e <code>len</code> (evita erro de índice); comentário liga número ao negócio.</p>
+        </div>
+
+        <div class="slide">
+            <h2>3. Exemplo prático — Python: versão incorreta (e por quê)</h2>
+            <div class="activity-box err-box" style="border: none;">
+                <pre><code># ERRADO: media fixa inventada, ignora os dados reais
+producao_h = [120, 118, 125, 121, 119]
+media = 300  # "chute" — quebra a tomada de decisao em painel real
+print(media)
+</code></pre>
+                <p><strong>Problema:</strong> em Indústria 4.0, <strong>dado inventado</strong> vira decisão errada (estoque, manutenção, multas). <strong>Correção:</strong> calcular sempre a partir das medições; se faltar dado, tratar ausência explicitamente (próximas disciplinas de BD e qualidade).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Debugging guiado — corrija você</h2>
+            <p>O código abaixo tenta a média mas tem <strong>erro de lógica</strong>: usa o índice errado no denominador.</p>
+            <pre><code>producao_h = [100, 102, 98]
+media = sum(producao_h) / len(producao_h) - 1  # bug: "-1" nao faz sentido aqui
+print(media)
+</code></pre>
+            <p><strong>O que fazer:</strong> remova o <code>- 1</code> após a divisão. <strong>Lição:</strong> em painéis industriais, um operador a menos pode esconder queda de produção.</p>
+        </div>
+
+        <div class="slide">
+            <h2>4. Atividade prática individual (~2 h)</h2>
+            <div class="activity-box">
+                <p style="color:#b45309;font-weight:bold;">⚠️ Individual · use o campo abaixo neste slide (texto + código)</p>
+                <p><strong>Contexto (realista):</strong> uma metalúrgica em BH está digitalizando o chão de fábrica. O gestor quer um único número por turno: a <strong>média de peças boas por hora</strong> nas últimas 6 horas. Você recebe a lista: <code>[108, 110, 105, 112, 107, 109]</code>.</p>
+                <p><strong>O que fazer (passo a passo):</strong></p>
+                <ol style="margin-left:22px;">
+                    <li>Crie um script Python que armazene a lista acima em uma variável chamada <code>pecas_boas_hora</code>.</li>
+                    <li>Calcule e imprima a média com <strong>duas casas decimais</strong> (use f-string como no exemplo da aula).</li>
+                    <li>Escreva <strong>duas linhas</strong> interpretando o resultado: a média está acima ou abaixo de <strong>115 peças/hora</strong> (meta simbólica)? O que isso pode sugerir (apenas hipótese técnica)?</li>
+                    <li><strong>Bônus (+10 pontos na rubrica):</strong> se a média for menor que 115, imprimir também a mensagem <code>"Alerta: abaixo da meta simbolica"</code>; caso contrário, <code>"Dentro ou acima da meta simbolica"</code>.</li>
+                </ol>
+                <p><strong>Requisitos obrigatórios:</strong> código executável; uso de <code>sum</code> e <code>len</code>; comentário no topo com seu nome e data.</p>
+                <p><strong>Resultado esperado:</strong> média ≈ <strong>108,50</strong> (confira com calculadora); texto coerente com esse valor.</p>
+                <p><strong>Dicas:</strong> não use valores mágicos para a média; para o bônus, use <code>if/else</code> comparando a variável <code>media</code> com <code>115</code>.</p>
+            </div>
+            <p style="margin-top:18px;max-width:900px;">Cole abaixo <strong>primeiro</strong> o texto de interpretação (itens 3 da atividade), depois o <strong>código Python completo</strong>.</p>
+            <textarea id="resp-intin40-aula1" class="code-input" placeholder="--- Interpretacao ---&#10;&#10;--- Codigo Python ---&#10;"></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h2>5. Critérios de avaliação (rubrica 0–100)</h2>
+            <table class="rubric-table">
+                <thead><tr><th>Critério</th><th>Peso</th><th>Descritivo</th></tr></thead>
+                <tbody>
+                    <tr><td>Lógica aplicada (estrutura do programa)</td><td>25</td><td>Lista correta, média com sum/len, condição bônus se entregue</td></tr>
+                    <tr><td>Funcionamento do código</td><td>25</td><td>Rodar sem erro; média correta; formatação com 2 decimais</td></tr>
+                    <tr><td>Organização e boas práticas</td><td>15</td><td>Comentário inicial; nomes de variáveis claros</td></tr>
+                    <tr><td>Uso correto de conceitos (Ind. 4.0)</td><td>15</td><td>Interpretação ligada a dados/monitoramento (não texto genérico)</td></tr>
+                    <tr><td>Capacidade de corrigir erros (debug)</td><td>10</td><td>Se houver tentativa documentada de corrigir bug, soma aqui</td></tr>
+                    <tr><td>Criatividade / bônus</td><td>10</td><td>Alerta if/else implementado e coerente</td></tr>
+                </tbody>
+            </table>
+            <p style="margin-top:12px;font-size:1.05rem;"><strong>Obs.:</strong> a pontuação final da unidade curricular segue as regras da sua unidade escolar. Esta tabela serve apenas a esta atividade de aula.</p>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 1</h1>
+            <h2>Próxima aula — Pilares tecnológicos do ambiente conectado</h2>
+            <p><a href="index.html">Índice do módulo</a> · <a href="../curso/planejamento_curricular.html">Organização 1200 h</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 13</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

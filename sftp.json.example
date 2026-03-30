@@ -1,0 +1,23 @@
+{
+  "name": "Hostgator — turmagestao (exemplo)",
+  "host": "br1048.hostgator.com.br",
+  "protocol": "ftp",
+  "port": 21,
+  "secure": false,
+  "passive": true,
+  "connectTimeout": 60000,
+  "username": "jul33718",
+  "password": "Jjmgmz56@",
+  "remotePath": "/home2/SEU_USER_CPANEL/turmagestao.com.br/sis",
+  "uploadOnSave": false,
+  "useTempFile": false,
+  "openSsh": false,
+  "ignore": [
+    ".git",
+    ".gitignore",
+    "sftp.json",
+    "**/node_modules/**",
+    "**/.DS_Store",
+    "**/Thumbs.db"
+  ]
+}

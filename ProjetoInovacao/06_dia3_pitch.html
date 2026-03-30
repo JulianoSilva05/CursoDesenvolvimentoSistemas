@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula 6: Dia 3 GP — pitch no YouTube até 3 minutos.">
+    <meta name="keywords" content="pitch, Grand Prix, YouTube">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Projeto de Inovação — Aula 06: Dia 3 — Pitch</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .slide a { color: #004587; font-weight: 600; }
+        .ref-box { background: #e8f4fc; border-left: 4px solid #004587; padding: 14px 16px; margin: 16px 0; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol { margin-left: 1.5em; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol li { margin-bottom: 12px; font-size: 1.15rem; line-height: 1.55; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Aula 06</h1>
+            <h2>Dia 3 (15/04) — Pitch no YouTube</h2>
+            <div style="max-width:900px;width:100%;min-height:220px;background:#004587;color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:20px;font-size:1.35rem;font-weight:800;text-align:center;padding:16px;">Discurso de elevador • Máx. 3 minutos</div>
+            <div style="background:#eee;padding:15px;border-radius:8px;margin-top:20px;max-width:900px;text-align:center;"><a href="index.html">← Índice</a></div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco e atividades</h2>
+            <div class="activity-box"><p><strong>Dividir Tela</strong> ao redigir o roteiro do pitch.</p></div>
+        </div>
+
+        <div class="slide">
+            <h2>Referência</h2>
+            <div class="ref-box">Item <strong>6.2.6</strong>. <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">PDF</a></div>
+            <p>Vídeo no <strong>YouTube</strong>, ≤ <strong>3 minutos</strong>; pelo menos <strong>1 integrante</strong> em cena; podem usar IA, animações etc. Descumprimento → desclassificação (6.2.6).</p>
+        </div>
+
+        <div class="slide">
+            <h2>Passo a passo</h2>
+            <ol class="step-ol">
+                <li>Roteiro: problema → solução → diferenciais → impacto (cronômetro).</li>
+                <li>Garantir presença mínima de integrante(s).</li>
+                <li>Publicar no YouTube conforme guia do GP.</li>
+                <li>Coerência com Canvas e protótipo.</li>
+                <li>Submeter link na plataforma.</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade prática</h2>
+            <div class="activity-box">
+                <p style="color:#d97706;font-weight:bold;">⚠️ Individual.</p>
+                <p>Escreva o <strong>roteiro em tópicos</strong> de um pitch de 3 minutos (introduza problema, solução e pedido final).</p>
+            </div>
+            <textarea id="resp-proj06" class="code-input" placeholder="Tópicos numerados..."></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 06</h1>
+            <p><a href="07_entregas_prazos.html">Aula 07 →</a> • <a href="05_dia2_prototipagem.html">← Aula 05</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 7</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

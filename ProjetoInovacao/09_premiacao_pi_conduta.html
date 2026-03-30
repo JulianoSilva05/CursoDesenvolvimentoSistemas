@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula 9: premiação GP SENAI, certificados, PI e conduta.">
+    <meta name="keywords" content="premiação Grand Prix, certificado, propriedade intelectual">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Projeto de Inovação — Aula 09: Premiação, PI e conduta</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .slide a { color: #004587; font-weight: 600; }
+        .ref-box { background: #e8f4fc; border-left: 4px solid #004587; padding: 14px 16px; margin: 16px 0; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol { margin-left: 1.5em; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol li { margin-bottom: 12px; font-size: 1.15rem; line-height: 1.55; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Aula 09</h1>
+            <h2>Premiação, certificados, PI e conduta</h2>
+            <div style="max-width:900px;width:100%;min-height:200px;background:#004587;color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:20px;font-size:1.2rem;font-weight:800;text-align:center;padding:16px;">Cerimônia 05/05/2026 • 5 temáticas</div>
+            <div style="background:#eee;padding:15px;border-radius:8px;margin-top:20px;max-width:900px;text-align:center;"><a href="index.html">← Índice</a></div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco e atividades</h2>
+            <div class="activity-box"><p>Última aula do módulo — mesmo <strong>modo foco</strong> e <strong>Dividir Tela</strong>.</p></div>
+        </div>
+
+        <div class="slide">
+            <h2>Referência</h2>
+            <div class="ref-box">Seções <strong>8</strong> e <strong>9</strong> • item <strong>9.11</strong> (conduta). <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">PDF</a></div>
+        </div>
+
+        <div class="slide">
+            <h2>Premiação e certificados</h2>
+            <ol class="step-ol">
+                <li>Resultado: cerimônia virtual <strong>05/05/2026</strong>.</li>
+                <li><strong>1º, 2º e 3º</strong> em cada uma das 5 temáticas.</li>
+                <li>Medalhas, troféus para escolas, certificados de participação; personalizados para pódio.</li>
+                <li>Possível premiação extra surpresa para 1º lugar (indústria).</li>
+                <li>Prêmios pessoais e intransferíveis.</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>PI e responsabilidades</h2>
+            <p style="max-width:900px;text-align:left;font-size:1.15rem;">Ideias podem ser usadas por empresas/SENAI sem royalties; uso de imagem e dados conforme regulamento; autores respondem por originalidade e direitos de terceiros. Leia o <strong>capítulo 9</strong> do PDF antes de enviar.</p>
+            <div class="activity-box" style="margin-top:16px;"><p><strong>Conduta (9.11):</strong> ambiente respeitoso; sem assédio; denúncias pelos canais oficiais.</p></div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade prática</h2>
+            <div class="activity-box">
+                <p style="color:#d97706;font-weight:bold;">⚠️ Individual.</p>
+                <p>Liste <strong>três responsabilidades</strong> que você assume ao submeter o projeto (ética, dados, terceiros ou propriedade intelectual), com base no regulamento.</p>
+            </div>
+            <textarea id="resp-proj09" class="code-input" placeholder="1) ... 2) ... 3) ..."></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 09</h1>
+            <h2>Parabéns — módulo concluído</h2>
+            <p><a href="index.html">← Voltar ao índice</a> • <a href="08_avaliacao_criterios.html">Aula 08</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 8</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

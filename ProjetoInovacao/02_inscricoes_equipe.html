@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula 2: inscrições Grand Prix SENAI — cadastro, equipe 4-5 pessoas, porta-voz e prazos.">
+    <meta name="keywords" content="inscrição GP SENAI, escuderia, porta-voz, equipe">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Projeto de Inovação — Aula 02: Inscrições, equipe e escuderia</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .slide a { color: #004587; font-weight: 600; }
+        .ref-box { background: #e8f4fc; border-left: 4px solid #004587; padding: 14px 16px; margin: 16px 0; max-width: 900px; text-align: left; font-size: 1.1rem; line-height: 1.5; align-self: center; }
+        .step-ol { margin-left: 1.5em; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol li { margin-bottom: 12px; font-size: 1.15rem; line-height: 1.55; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Aula 02</h1>
+            <h2>Inscrições, equipe e escuderia</h2>
+            <div style="width: 100%; max-width: 900px; min-height: 240px; background: #004587; display: flex; justify-content: center; align-items: center; color: white; border-radius: 10px; margin-top: 20px;">
+                <div style="text-align:center;">
+                    <div style="font-size: 1.8rem; font-weight: 800;">Cadastro e formação do time</div>
+                </div>
+            </div>
+            <div style="background: #eee; padding: 15px; border-radius: 8px; margin-top: 20px; max-width: 900px; text-align: center;">
+                <p><strong>Duração sugerida:</strong> 1 hora</p>
+                <p><a href="index.html">← Índice do módulo</a></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco e atividades</h2>
+            <div class="activity-box">
+                <p><strong>Regras:</strong> infrações por perda de foco; após <strong>5</strong> pode haver bloqueio. Use <strong>Dividir Tela</strong> no campo de resposta.</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Referência</h2>
+            <div class="ref-box">Itens <strong>4</strong> a <strong>4.7</strong>, <strong>5</strong>, <strong>6.2.1–6.2.2</strong>. <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">PDF</a> • <a href="https://www.senai.br/gpdeinovacao" target="_blank" rel="noopener noreferrer">Plataforma</a></div>
+            <p>Inscrição <strong>individual</strong> obrigatória em <a href="https://www.senai.br/gpdeinovacao" target="_blank" rel="noopener noreferrer">senai.br/gpdeinovacao</a>. Período (2026): <strong>02/03 a 04/04</strong> (prorrogação se divulgada).</p>
+        </div>
+
+        <div class="slide">
+            <h2>Passo a passo</h2>
+            <ol class="step-ol">
+                <li><strong>Equipe:</strong> mínimo <strong>4</strong>, máximo <strong>5</strong> alunos matriculados. Equipes <strong>mistas</strong> (SENAI + outras escolas) permitidas.</li>
+                <li><strong>Ensino Superior:</strong> no máximo <strong>2</strong> integrantes do ES (opcional). <strong>Proibida</strong> equipe só com graduação.</li>
+                <li><strong>Cadastro individual</strong> de cada um; depois o(a) <strong>porta-voz</strong> submete a escuderia e a temática (período submissão equipe 2026: <strong>04 a 10/04</strong>).</li>
+                <li><strong>Uma área temática</strong> por equipe; alocação por vaga e ordem de inscrição.</li>
+                <li><strong>Idade ≥ 15 anos</strong>; menores de 18: <strong>Anexo I</strong>. Comprovante escola: <strong>Anexo II</strong> se necessário.</li>
+                <li>Participação <strong>gratuita</strong>; custos de material e internet são da equipe.</li>
+            </ol>
+        </div>
+
+        <div class="slide">
+            <h2>Atenção — contato oficial</h2>
+            <div class="activity-box">
+                <p>E-mail e cadastro <strong>corretos</strong>: dados incorretos podem impedir a Coordenação de manter contato com a escuderia (6.2.2).</p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade prática</h2>
+            <div class="activity-box">
+                <p style="color: #d97706; font-weight: bold;">⚠️ Individual.</p>
+                <p>Liste em tópicos o que <strong>sua equipe</strong> fará, em ordem, desde o cadastro individual até a submissão da escuderia com a temática escolhida.</p>
+            </div>
+            <textarea id="resp-proj02" class="code-input" placeholder="1) ... 2) ..."></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 02</h1>
+            <h2>Próxima: Áreas temáticas e preparação</h2>
+            <p><a href="03_preparacao_desafios.html">Aula 03 →</a> • <a href="01_introducao_gp.html">← Aula 01</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 8</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

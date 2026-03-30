@@ -3,18 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Portal de acesso aos materiais do Curso Técnico em Desenvolvimento de Sistemas do SENAI. Encontre aulas, exercícios e recursos para Banco de Dados, Programação Web, Mobile e muito mais.">
+    <meta name="description" content="Portal do Curso Técnico em Desenvolvimento de Sistemas SENAI: organização curricular 1200 h, Indústria 4.0, banco de dados, desenvolvimento, IoT, testes, projeto de inovação e materiais práticos.">
+    <meta name="keywords" content="curso técnico SENAI, desenvolvimento de sistemas, programação, testes de software, banco de dados, PHP, MySQL, IoT, TCC, projeto de inovação, educação profissional, material didático, exercícios">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="assets/estudando.png">
+    <!-- API no Hostgator: pasta public_html/api (json.php). Em deploy estático (Vercel), o front usa esta URL para POST. -->
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
     <meta property="og:title" content="Curso Técnico em Desenvolvimento de Sistemas - SENAI">
     <meta property="og:description" content="Acesse todo o material didático, aulas e exercícios do curso técnico. Banco de Dados, Desenvolvimento de Sistemas e muito mais.">
     <meta property="og:image" content="assets/img/logo_senai.png">
     <meta property="og:type" content="website">
     <title>Curso de Desenvolvimento de Sistemas - SENAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
             --senai-blue: #004587;
-            --senai-red: #E32119;
+            --senai-red: #e32119;
+            --senai-orange: #ff6b00;
+            --senai-blue-dark: #003366;
             --bg-color: #f4f4f4;
-            --text-color: #333;
+            --text-color: #1e293b;
+            --font-family-senai: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
         }
 
         * {
@@ -24,7 +35,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family-senai);
             background-color: var(--bg-color);
             color: var(--text-color);
             display: flex;
@@ -72,7 +83,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             transition: transform 0.3s, box-shadow 0.3s;
             text-align: center;
-            border-top: 5px solid var(--senai-red);
+            border-top: 5px solid var(--senai-orange);
             text-decoration: none;
             color: var(--text-color);
             display: flex;
@@ -137,6 +148,26 @@
 
     <main>
         <div class="grid-container">
+
+            <!-- Card Organização curricular -->
+            <a href="curso/planejamento_curricular.html" class="card">
+                <div>
+                    <div class="logo-placeholder">📋</div>
+                    <h2>Organização curricular (1200 h)</h2>
+                    <p>Grade por unidades curriculares, cargas horárias e onde cada eixo (Python, SQL, UML, Git, ágil, UX, APIs) aparece na formação.</p>
+                </div>
+                <span class="btn">Abrir planejamento</span>
+            </a>
+
+            <!-- Card Indústria 4.0 -->
+            <a href="IntroducaoIndustria40/index.html" class="card">
+                <div>
+                    <div class="logo-placeholder">🏭</div>
+                    <h2>Indústria 4.0 (INTIN40)</h2>
+                    <p>Transformação digital na indústria: contexto histórico, dados e laboratório introdutório — material didático próprio; Aula 1 completa.</p>
+                </div>
+                <span class="btn">Acessar módulo</span>
+            </a>
             
             <!-- Card Banco de Dados -->
             <a href="BancoDeDados/index.html" class="card">
@@ -176,6 +207,16 @@
                     <p>12 aulas: Bloom, fumaça, funcional, desempenho, usabilidade, segurança, UAT e projeto integrado.</p>
                 </div>
                 <span class="btn">Acessar Aulas</span>
+            </a>
+
+            <!-- Card Projeto de Inovação (TCC) -->
+            <a href="ProjetoInovacao/index.html" class="card">
+                <div>
+                    <div class="logo-placeholder">🎓</div>
+                    <h2>Projeto de Inovação (TCC)</h2>
+                    <p>Trabalho de conclusão: tema, pesquisa, metodologia, documentação, desenvolvimento e defesa do projeto integrador.</p>
+                </div>
+                <span class="btn">Acessar Disciplina</span>
             </a>
 
         </div>

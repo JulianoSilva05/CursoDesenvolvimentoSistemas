@@ -2,3 +2,9 @@ ersjuliano*
 
 # Estado local da API PHP (senhas hash, alunos) — só JSON, sem MySQL
 api/data/state.json
+api/config.php
+
+# SFTP / extensão Natizyskunk — nunca commitar credenciais (use .vscode/sftp.json)
+sftp.json
+.vscode/sftp.json
+**/.vscode/sftp.json

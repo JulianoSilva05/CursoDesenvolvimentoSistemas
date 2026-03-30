@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Painel administrativo do material do curso técnico SENAI — Desenvolvimento de Sistemas.">
+    <meta name="keywords" content="curso técnico SENAI, desenvolvimento de sistemas, programação, testes de software, banco de dados, PHP, MySQL, IoT, educação profissional, material didático, exercícios">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
     <title>Administração — SENAI Curso</title>
     <style>
         :root { --blue: #004587; --red: #E32119; --bg: #f0f2f5; }
@@ -81,13 +86,13 @@
 </head>
 <body>
     <header>
-        <h1>Painel administrativo (JSON)</h1>
-        <p style="margin:8px 0 0; opacity:.9; font-size:.95rem;">Alunos online, atividades, infrações, avisos e senhas</p>
+        <h1>Painel administrativo</h1>
+        <p style="margin:8px 0 0; opacity:.9; font-size:.95rem;">Dados em MySQL (turmas, alunos, atividades, avisos)</p>
     </header>
     <main>
         <div id="loginPanel" class="card">
             <h2>Entrar</h2>
-            <p>Use o e-mail e a senha de administrador. O arquivo <code>api/data/state.json</code> é criado automaticamente na primeira execução da API.</p>
+            <p>Use o e-mail e a senha de administrador. A API usa <strong>MySQL</strong>: copie <code>api/config.example.php</code> para <code>api/config.php</code>, importe <code>api/schema_mysql.sql</code> e defina a senha do admin na base (ou altere pelo painel após o primeiro login).</p>
             <label for="admEmail">E-mail</label>
             <input type="email" id="admEmail" value="julianoqm@gmail.com" autocomplete="username">
             <label for="admPass" style="margin-top:12px;">Senha</label>
@@ -101,7 +106,7 @@
         <div id="dashPanel" class="hidden">
             <div class="card">
                 <h2>Resumo ao vivo</h2>
-                <p>Atualização automática a cada 3s. Dados em <span class="tag">JSON</span> via API.</p>
+                <p>Atualização automática a cada 3s. Dados via API PHP + MySQL.</p>
                 <button type="button" class="btn-secondary" id="btnLogout">Sair</button>
             </div>
 
@@ -123,8 +128,33 @@
             </div>
 
             <div class="card">
+                <h2>Turmas</h2>
+                <p>Cadastre as turmas em que você leciona. Os alunos escolhem a turma ao iniciar a aula.</p>
+                <div class="row" style="align-items:flex-end;flex-wrap:wrap;">
+                    <div class="filter-field" style="flex:1;min-width:200px;">
+                        <label for="newTurmaNome">Nova turma</label>
+                        <input type="text" id="newTurmaNome" placeholder="Ex.: 3º DS A" maxlength="128" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn-primary" id="btnAddTurma">Adicionar turma</button>
+                </div>
+                <p id="turmaStatus" style="font-size:0.92rem;color:#64748b;"></p>
+                <div style="overflow-x:auto;margin-top:12px;">
+                    <table id="tblTurmas">
+                        <thead>
+                            <tr><th>ID</th><th>Nome</th><th>Ativa</th><th></th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
                 <h2>Alunos</h2>
                 <div class="student-filters">
+                    <div class="filter-field">
+                        <label for="filterStudentTurma">Turma</label>
+                        <input type="text" id="filterStudentTurma" placeholder="Nome da turma…" autocomplete="off">
+                    </div>
                     <div class="filter-field">
                         <label for="filterStudentName">Nome</label>
                         <input type="text" id="filterStudentName" placeholder="Contém…" autocomplete="off">
@@ -146,6 +176,7 @@
                         <thead>
                             <tr>
                                 <th>Status</th>
+                                <th>Turma</th>
                                 <th>Matrícula</th>
                                 <th>Nome</th>
                                 <th>Pontos</th>
@@ -161,12 +192,13 @@
             </div>
 
             <div class="card">
-                <h2>Rascunhos de atividades (JSON no servidor)</h2>
+                <h2>Rascunhos de atividades</h2>
                 <p style="line-height:1.55;max-width:960px;">Cada combinação <strong>página + título + campo</strong> guarda o código do aluno. Use o comentário para apontar erros; o aluno vê acima do editor e pode editar o quanto quiser. Atualização junto com a tabela de alunos (3s).</p>
                 <div style="overflow-x:auto;">
                     <table id="tblWorkspaces">
                         <thead>
                             <tr>
+                                <th>Turma</th>
                                 <th>Matrícula</th>
                                 <th>Nome</th>
                                 <th>Disciplina</th>
@@ -186,8 +218,10 @@
 
             <div class="card">
                 <h2>Enviar aviso</h2>
-                <label for="noticeTarget">Matrícula (ou <code>all</code> para todos)</label>
+                <label for="noticeTarget">Matrícula (ou <code>all</code> para todos os alunos)</label>
                 <input type="text" id="noticeTarget" placeholder="12345 ou all">
+                <label for="noticeTurmaId" style="margin-top:12px;">ID da turma (obrigatório se a matrícula não for <code>all</code>)</label>
+                <input type="number" id="noticeTurmaId" placeholder="Ex.: 1" min="1" style="max-width:160px;">
                 <label for="noticeMsg" style="margin-top:12px;">Mensagem</label>
                 <textarea id="noticeMsg" placeholder="Aviso exibido ao aluno na próxima sincronização"></textarea>
                 <div class="row">
@@ -264,7 +298,48 @@
     </div>
 
     <script>
+        /** Igual a SENAI_REMOTE_API_BASE em _Common/js/script.js */
+        const SENAI_REMOTE_API_BASE = 'https://turmagestao.com.br/sis/api';
+
+        function senaiNormHost(hostname) {
+            return String(hostname || '')
+                .replace(/^www\./i, '')
+                .toLowerCase();
+        }
+
+        function senaiResolveApiRoot(configuredUrl) {
+            const raw = String(configuredUrl || '').trim().replace(/\/$/, '');
+            if (!raw) return '';
+            try {
+                const u = new URL(raw);
+                const pageH = senaiNormHost(window.location.hostname);
+                const apiH = senaiNormHost(u.hostname);
+                if (pageH && apiH && pageH === apiH) {
+                    let path = (u.pathname || '').replace(/\/+$/, '');
+                    if (!path) path = '/sis/api';
+                    return (window.location.origin + path).replace(/\/$/, '');
+                }
+                return raw;
+            } catch {
+                return raw;
+            }
+        }
+
         function apiRoot() {
+            const meta = document.querySelector('meta[name="senai-api-base"]');
+            if (meta && meta.content && meta.content.trim()) {
+                return meta.content.trim().replace(/\/$/, '');
+            }
+            const h = window.location.hostname || '';
+            if (
+                SENAI_REMOTE_API_BASE &&
+                String(SENAI_REMOTE_API_BASE).trim() &&
+                h !== 'localhost' &&
+                h !== '127.0.0.1' &&
+                h !== ''
+            ) {
+                return senaiResolveApiRoot(SENAI_REMOTE_API_BASE);
+            }
             const path = window.location.pathname;
             const base = path.replace(/\/admin\/index\.html.*$/i, '').replace(/\/+$/, '') || '';
             return window.location.origin + base + '/api';
@@ -295,6 +370,8 @@
             if (!r.ok) {
                 let msg = (data && data.error) || text.trim() || r.statusText;
                 const low = (msg + ' ' + r.status).toLowerCase();
+                const apiJsonError = data && typeof data.error === 'string';
+                const looksLikeHtml = text && /^\s*</.test(text);
                 if (
                     low.includes('unsupported method') ||
                     low.includes('method not allowed') ||
@@ -303,6 +380,10 @@
                 ) {
                     msg +=
                         ' — Use o servidor embutido do PHP na raiz do projeto (ex.: php -S localhost:8081). Python http.server não processa POST em arquivos .php.';
+                }
+                if (!apiJsonError && (r.status === 404 || looksLikeHtml)) {
+                    msg +=
+                        ' — Vercel/GitHub Pages não executam PHP: hospede a pasta api/ em um servidor com PHP e defina <meta name="senai-api-base" content="https://SEU-DOMINIO/api"> neste HTML.';
                 }
                 throw new Error(msg);
             }
@@ -361,6 +442,79 @@
         });
 
         let lastAdminStudents = [];
+        let lastAdminTurmas = [];
+
+        function renderTurmasTable() {
+            const tb = document.querySelector('#tblTurmas tbody');
+            if (!tb) return;
+            const rows = lastAdminTurmas || [];
+            tb.innerHTML = '';
+            if (rows.length === 0) {
+                tb.innerHTML = '<tr><td colspan="4">Nenhuma turma. Adicione acima.</td></tr>';
+                return;
+            }
+            rows.forEach((t) => {
+                const tr = document.createElement('tr');
+                const id = Number(t.id);
+                const ativo = Number(t.ativo) === 1;
+                tr.innerHTML = `
+                    <td>${id}</td>
+                    <td><code>${escapeHtml(t.nome || '')}</code></td>
+                    <td>${ativo ? 'Sim' : 'Não'}</td>
+                    <td>
+                        <button type="button" class="btn-secondary btn-turma-toggle" data-id="${id}" data-ativo="${ativo ? 0 : 1}">${ativo ? 'Desativar' : 'Ativar'}</button>
+                        <button type="button" class="btn-danger btn-turma-del" data-id="${id}" style="margin-left:6px;">Excluir</button>
+                    </td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        document.getElementById('btnAddTurma')?.addEventListener('click', async () => {
+            const nome = document.getElementById('newTurmaNome')?.value?.trim() || '';
+            const st = document.getElementById('turmaStatus');
+            if (st) st.textContent = '';
+            if (nome.length < 2) {
+                if (st) st.textContent = 'Informe um nome com pelo menos 2 caracteres.';
+                return;
+            }
+            try {
+                await postAction('admin_turma_save', { nome, ativo: true });
+                document.getElementById('newTurmaNome').value = '';
+                await refreshTable();
+                if (st) st.textContent = 'Turma adicionada.';
+            } catch (e) {
+                showAdminModal(e.message || 'Falha ao salvar turma.', 'Erro');
+            }
+        });
+
+        document.getElementById('tblTurmas')?.addEventListener('click', async (e) => {
+            const del = e.target.closest('.btn-turma-del');
+            if (del) {
+                const id = parseInt(del.getAttribute('data-id'), 10);
+                if (!id || !confirm('Excluir a turma ' + id + '? Alunos e dados desta turma serão apagados (cascata).')) return;
+                try {
+                    await postAction('admin_turma_delete', { id });
+                    await refreshTable();
+                } catch (err) {
+                    showAdminModal(err.message || 'Falha ao excluir.', 'Erro');
+                }
+                return;
+            }
+            const tg = e.target.closest('.btn-turma-toggle');
+            if (tg) {
+                const id = parseInt(tg.getAttribute('data-id'), 10);
+                const novoAtivo = parseInt(tg.getAttribute('data-ativo'), 10) === 1;
+                const row = lastAdminTurmas.find((x) => Number(x.id) === id);
+                const nome = row ? String(row.nome || '') : '';
+                if (!nome) return;
+                try {
+                    await postAction('admin_turma_save', { id, nome, ativo: novoAtivo });
+                    await refreshTable();
+                } catch (err) {
+                    showAdminModal(err.message || 'Falha ao atualizar turma.', 'Erro');
+                }
+            }
+        });
 
         function renderDisciplineSlotsTable(slots) {
             const tb = document.querySelector('#tblDiscSlots tbody');
@@ -411,12 +565,19 @@
             if (e.target.id === 'evalModalOverlay') closeEvalModal();
         });
 
-        function openEvalModal(matricula) {
-            const s = lastAdminStudents.find((x) => String(x.matricula) === String(matricula));
+        function openEvalModal(matricula, turmaId) {
+            const s = lastAdminStudents.find(
+                (x) =>
+                    String(x.matricula) === String(matricula) && Number(x.turmaId) === Number(turmaId)
+            );
             if (!s) return;
             document.getElementById('evalModalTitle').textContent = 'Avaliar atividades — ' + (s.name || matricula);
             document.getElementById('evalModalSub').textContent =
-                'Matrícula ' + matricula + ' · Nota entre 0 e o máximo da linha (30 ÷ N da disciplina).';
+                'Turma ' +
+                (s.turmaNome || turmaId) +
+                ' · Matrícula ' +
+                matricula +
+                ' · Nota entre 0 e o máximo da linha (30 ÷ N da disciplina).';
             const body = document.getElementById('evalActsBody');
             body.innerHTML = '';
             const acts = s.activitiesSubmitted || [];
@@ -436,7 +597,7 @@
                         <td>${escapeHtml(a.lessonTitle || '')}</td>
                         <td>${escapeHtml(String(max))}</td>
                         <td><input type="number" step="0.01" min="0" data-max="${escapeHtml(String(max))}" class="eval-pts" value="${escapeHtml(cur)}" aria-label="Nota"></td>
-                        <td><button type="button" class="btn-primary btn-save-grade" data-m="${escapeHtml(matricula)}" data-aid="${escapeHtml(id)}">Salvar</button></td>
+                        <td><button type="button" class="btn-primary btn-save-grade" data-t="${escapeHtml(String(s.turmaId))}" data-m="${escapeHtml(matricula)}" data-aid="${escapeHtml(id)}">Salvar</button></td>
                     `;
                     body.appendChild(tr);
                 });
@@ -455,6 +616,7 @@
             const btn = el && el.closest ? el.closest('.btn-save-grade') : null;
             if (!btn) return;
             const m = btn.getAttribute('data-m');
+            const turmaId = parseInt(btn.getAttribute('data-t') || '0', 10);
             const aid = (btn.getAttribute('data-aid') || '').trim();
             const tr = btn.closest('tr');
             const inp = tr && tr.querySelector('.eval-pts');
@@ -462,8 +624,8 @@
                 showAdminModal('Campo de nota não encontrado na linha.', 'Erro');
                 return;
             }
-            if (!m) {
-                showAdminModal('Matrícula inválida. Feche o modal e abra "Avaliar" de novo.', 'Erro');
+            if (!m || !turmaId) {
+                showAdminModal('Turma ou matrícula inválida. Feche o modal e abra "Avaliar" de novo.', 'Erro');
                 return;
             }
             if (!aid) {
@@ -479,9 +641,9 @@
             v = Math.max(0, Math.min(mx, v));
             btn.disabled = true;
             try {
-                await postAction('admin_grade_activity', { matricula: m, activityId: aid, awardedPoints: v });
+                await postAction('admin_grade_activity', { turmaId, matricula: m, activityId: aid, awardedPoints: v });
                 await refreshTable();
-                openEvalModal(m);
+                openEvalModal(m, turmaId);
                 let btnAfter = null;
                 document.querySelectorAll('#evalActsBody .btn-save-grade').forEach((b) => {
                     if ((b.getAttribute('data-aid') || '').trim() === aid) btnAfter = b;
@@ -503,16 +665,18 @@
         document.getElementById('tblStudents').addEventListener('click', (e) => {
             const ev = e.target.closest('.btn-eval');
             if (ev) {
-                openEvalModal(ev.getAttribute('data-m'));
+                openEvalModal(ev.getAttribute('data-m'), parseInt(ev.getAttribute('data-t') || '0', 10));
                 return;
             }
         });
 
         function getFilteredStudents() {
+            const ft = (document.getElementById('filterStudentTurma')?.value || '').trim().toLowerCase();
             const fn = (document.getElementById('filterStudentName')?.value || '').trim().toLowerCase();
             const fm = (document.getElementById('filterStudentMatricula')?.value || '').trim().toLowerCase();
             const fa = (document.getElementById('filterStudentActivity')?.value || '').trim().toLowerCase();
             return (lastAdminStudents || []).filter((s) => {
+                if (ft && !String(s.turmaNome || '').toLowerCase().includes(ft)) return false;
                 if (fn && !String(s.name || '').toLowerCase().includes(fn)) return false;
                 if (fm && !String(s.matricula || '').toLowerCase().includes(fm)) return false;
                 if (fa) {
@@ -537,6 +701,7 @@
             const rows = getFilteredStudents();
             const headers = [
                 'Status',
+                'Turma',
                 'Matricula',
                 'Nome',
                 'Pontos',
@@ -553,6 +718,7 @@
                 lines.push(
                     [
                         csvEscapeCell(s.online ? 'Online' : 'Offline'),
+                        csvEscapeCell(s.turmaNome || ''),
                         csvEscapeCell(s.matricula),
                         csvEscapeCell(s.name),
                         csvEscapeCell(s.points),
@@ -590,11 +756,12 @@
             tb.innerHTML = '';
             if (filtered.length === 0) {
                 tb.innerHTML =
-                    `<tr><td colspan="8">${total === 0 ? 'Nenhum aluno registrado.' : 'Nenhum aluno corresponde aos filtros.'}</td></tr>`;
+                    `<tr><td colspan="9">${total === 0 ? 'Nenhum aluno registrado.' : 'Nenhum aluno corresponde aos filtros.'}</td></tr>`;
                 return;
             }
             filtered.forEach((s) => {
                 const tr = document.createElement('tr');
+                const tid = Number(s.turmaId);
                 const acts = (s.activitiesSubmitted || [])
                     .map((a) => {
                         const st =
@@ -608,6 +775,7 @@
                     .join('\n');
                 tr.innerHTML = `
                     <td class="${s.online ? 'online' : 'offline'}">${s.online ? '● Online' : '○ Offline'}</td>
+                    <td><span class="tag">${escapeHtml(s.turmaNome || '')}</span></td>
                     <td>${escapeHtml(s.matricula)}</td>
                     <td>${escapeHtml(s.name)}</td>
                     <td>${s.points}</td>
@@ -615,8 +783,8 @@
                     <td><small>${escapeHtml(s.currentPath || '')}<br><em>${escapeHtml(s.currentTitle || '')}</em></small></td>
                     <td><small>${escapeHtml(acts).replace(/\n/g, '<br>')}</small></td>
                     <td>
-                        <button type="button" class="btn-secondary btn-eval" data-m="${escapeHtml(s.matricula)}">Avaliar</button>
-                        <button type="button" class="btn-secondary btn-reset" data-m="${escapeHtml(s.matricula)}">Zerar infrações</button>
+                        <button type="button" class="btn-secondary btn-eval" data-t="${tid}" data-m="${escapeHtml(s.matricula)}">Avaliar</button>
+                        <button type="button" class="btn-secondary btn-reset" data-t="${tid}" data-m="${escapeHtml(s.matricula)}">Zerar infrações</button>
                     </td>
                 `;
                 tb.appendChild(tr);
@@ -624,9 +792,10 @@
             tb.querySelectorAll('.btn-reset').forEach((b) => {
                 b.addEventListener('click', async () => {
                     const m = b.getAttribute('data-m');
+                    const turmaId = parseInt(b.getAttribute('data-t') || '0', 10);
                     if (!confirm('Zerar infrações de ' + m + '?')) return;
                     try {
-                        await postAction('admin_reset_infractions', { matricula: m });
+                        await postAction('admin_reset_infractions', { turmaId, matricula: m });
                         await refreshTable();
                     } catch (e) {
                         showAdminModal(e.message || 'Falha ao zerar infrações.', 'Erro');
@@ -640,14 +809,16 @@
             if (!tb) return;
             tb.innerHTML = '';
             if (!rows || rows.length === 0) {
-                tb.innerHTML = '<tr><td colspan="10">Nenhum rascunho registrado ainda.</td></tr>';
+                tb.innerHTML = '<tr><td colspan="11">Nenhum rascunho registrado ainda.</td></tr>';
                 return;
             }
             rows.forEach((r) => {
                 const tr = document.createElement('tr');
                 const sk = r.storageKey || '';
                 const m = r.matricula || '';
+                const tid = r.turmaId != null ? Number(r.turmaId) : '';
                 tr.innerHTML = `
+                    <td>${escapeHtml(String(tid))}</td>
                     <td>${escapeHtml(m)}</td>
                     <td>${escapeHtml(r.name || '')}</td>
                     <td>${escapeHtml(r.discipline || '')}</td>
@@ -656,8 +827,8 @@
                     <td><small>${escapeHtml(r.activityLabel || r.pageTitle || '')}</small></td>
                     <td><small>${escapeHtml((r.updatedAt || '').slice(0, 19))}</small></td>
                     <td><div class="ws-preview">${escapeHtml(r.codePreview || '')}</div><small>${r.codeLength || 0} chars</small></td>
-                    <td><textarea class="ws-comment-ta" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}" aria-label="Comentário">${escapeHtml(r.professorComment || '')}</textarea></td>
-                    <td><button type="button" class="btn-primary btn-ws-save" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}">Salvar comentário</button></td>
+                    <td><textarea class="ws-comment-ta" data-ws-t="${escapeHtml(String(tid))}" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}" aria-label="Comentário">${escapeHtml(r.professorComment || '')}</textarea></td>
+                    <td><button type="button" class="btn-primary btn-ws-save" data-ws-t="${escapeHtml(String(tid))}" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}">Salvar comentário</button></td>
                 `;
                 tb.appendChild(tr);
             });
@@ -668,6 +839,7 @@
             const btn = el && el.closest ? el.closest('.btn-ws-save') : null;
             if (!btn) return;
             const m = (btn.getAttribute('data-ws-m') || '').trim();
+            const turmaId = parseInt(btn.getAttribute('data-ws-t') || '0', 10);
             const sk = (btn.getAttribute('data-ws-sk') || '').trim();
             const tr = btn.closest('tr');
             const ta = tr && tr.querySelector('textarea.ws-comment-ta');
@@ -675,13 +847,14 @@
                 showAdminModal('Campo de comentário não encontrado na linha.', 'Erro');
                 return;
             }
-            if (!m || !sk) {
+            if (!m || !sk || !turmaId) {
                 showAdminModal('Dados do rascunho incompletos. Recarregue a tabela (atualize a página).', 'Erro');
                 return;
             }
             btn.disabled = true;
             try {
                 await postAction('admin_workspace_comment', {
+                    turmaId,
                     matricula: m,
                     storageKey: sk,
                     professorComment: ta.value
@@ -702,21 +875,29 @@
             } catch (e) {
                 console.warn('admin_list_workspaces', e);
             }
+            let tj = null;
+            try {
+                tj = await postAction('admin_list_turmas');
+            } catch (e) {
+                console.warn('admin_list_turmas', e);
+            }
             lastAdminStudents = j.students || [];
+            lastAdminTurmas = (tj && tj.turmas) || [];
             document.getElementById('rawJson').textContent = JSON.stringify(j, null, 2);
             if (wj && Array.isArray(wj.workspaces)) {
                 renderWorkspacesTable(wj.workspaces);
             }
+            renderTurmasTable();
             renderDisciplineSlotsTable(j.disciplineSlots || {});
             renderStudentsTable();
         }
 
-        ['filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
+        ['filterStudentTurma', 'filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
             const el = document.getElementById(id);
             if (el) el.addEventListener('input', () => renderStudentsTable());
         });
         document.getElementById('btnClearStudentFilters')?.addEventListener('click', () => {
-            ['filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
+            ['filterStudentTurma', 'filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
                 const el = document.getElementById(id);
                 if (el) el.value = '';
             });
@@ -746,10 +927,24 @@
         document.getElementById('btnSendNotice').addEventListener('click', async () => {
             const matricula = document.getElementById('noticeTarget').value.trim();
             const message = document.getElementById('noticeMsg').value.trim();
+            const turmaIdRaw = document.getElementById('noticeTurmaId')?.value?.trim();
+            const turmaId = turmaIdRaw ? parseInt(turmaIdRaw, 10) : null;
             const st = document.getElementById('noticeStatus');
             st.textContent = '';
+            if (message === '') {
+                st.textContent = 'Escreva a mensagem.';
+                return;
+            }
+            if (matricula.toLowerCase() !== 'all' && (!turmaId || turmaId < 1)) {
+                st.textContent = 'Para um aluno específico, informe o ID da turma (e a matrícula correta).';
+                return;
+            }
             try {
-                await postAction('admin_notice', { matricula, message });
+                const payload = { matricula, message };
+                if (matricula.toLowerCase() !== 'all' && turmaId && turmaId > 0) {
+                    payload.turmaId = turmaId;
+                }
+                await postAction('admin_notice', payload);
                 st.textContent = 'Aviso enviado.';
                 document.getElementById('noticeMsg').value = '';
             } catch (e) {

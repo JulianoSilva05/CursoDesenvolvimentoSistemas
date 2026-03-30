@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Aula 5: Dia 2 GP — prototipagem e vídeo de 2 minutos.">
+    <meta name="keywords" content="protótipo Grand Prix, vídeo 2 minutos">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <meta name="senai-api-base" content="https://turmagestao.com.br/sis/api">
+    <title>Projeto de Inovação — Aula 05: Dia 2 — Prototipagem</title>
+    <link rel="stylesheet" href="../DesenvolvimentoDeSistemas/PHP/assets/css/style.css">
+    <style>
+        .slide a { color: #004587; font-weight: 600; }
+        .ref-box { background: #e8f4fc; border-left: 4px solid #004587; padding: 14px 16px; margin: 16px 0; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol { margin-left: 1.5em; max-width: 900px; text-align: left; align-self: center; }
+        .step-ol li { margin-bottom: 12px; font-size: 1.15rem; line-height: 1.55; }
+    </style>
+</head>
+<body>
+    <img src="../DesenvolvimentoDeSistemas/PHP/logo_senai.png" alt="Logo SENAI" class="senai-logo">
+    <div class="progress-bar" id="progressBar"></div>
+
+    <div class="slide-container">
+        <div class="slide active">
+            <h1>Aula 05</h1>
+            <h2>Dia 2 (14/04) — Prototipagem</h2>
+            <div style="max-width:900px;width:100%;min-height:220px;background:#004587;color:white;border-radius:10px;display:flex;align-items:center;justify-content:center;margin-top:20px;font-size:1.4rem;font-weight:800;text-align:center;padding:16px;">Protótipo sujo, rápido e barato • Vídeo ≤ 2 min</div>
+            <div style="background:#eee;padding:15px;border-radius:8px;margin-top:20px;max-width:900px;text-align:center;"><a href="index.html">← Índice</a></div>
+        </div>
+
+        <div class="slide">
+            <h2>Modo foco e atividades</h2>
+            <div class="activity-box"><p>Infrações e <strong>Dividir Tela</strong> — mesmo padrão das aulas de PHP.</p></div>
+        </div>
+
+        <div class="slide">
+            <h2>Referência</h2>
+            <div class="ref-box">Itens <strong>6.2.5</strong> e <strong>5.9 (2)</strong>. <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">PDF</a></div>
+            <p>Protótipo <strong>sujo, rápido e barato</strong> (maquete, desenho, mockup…). Vídeo de <strong>no máximo 2 minutos</strong> com características e funções — 2ª entrega.</p>
+        </div>
+
+        <div class="slide">
+            <h2>Passo a passo</h2>
+            <ol class="step-ol">
+                <li>Alinhar ao <strong>LEAN Canvas</strong> do dia anterior.</li>
+                <li>Materiais acessíveis; custos da equipe.</li>
+                <li>Gravar vídeo ≤ 2 min com áudio e imagem claros.</li>
+                <li>Incluir descrição em texto se a plataforma exigir.</li>
+                <li>Enviar no campo da 2ª entrega.</li>
+            </ol>
+            <div class="activity-box" style="margin-top:16px;"><p><strong>Atenção:</strong> descumprimento de tempo ou formato pode levar à <strong>desclassificação</strong> (6.2.7.1).</p></div>
+        </div>
+
+        <div class="slide">
+            <h2>Atividade prática</h2>
+            <div class="activity-box">
+                <p style="color:#d97706;font-weight:bold;">⚠️ Individual.</p>
+                <p>Descreva um <strong>protótipo sujo</strong> (material + o que mostra) para um desafio <em>hipotético</em> de uma das cinco temáticas.</p>
+            </div>
+            <textarea id="resp-proj05" class="code-input" placeholder="Protótipo em 10–15 linhas..."></textarea>
+            <button class="send-btn">📧 Enviar atividade</button>
+        </div>
+
+        <div class="slide">
+            <h1>Fim da Aula 05</h1>
+            <p><a href="06_dia3_pitch.html">Aula 06 →</a> • <a href="04_dia1_lean_canvas.html">← Aula 04</a></p>
+            <button id="finishLessonBtn" class="finish-btn">🏁 Finalizar aula</button>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button type="button" id="btnPrev" class="nav-btn">← Anterior</button>
+        <span id="slideNumber">1 / 7</span>
+        <button type="button" id="btnNext" class="nav-btn">Próximo →</button>
+    </div>
+    <script src="../DesenvolvimentoDeSistemas/_Common/js/script.js"></script>
+</body>
+</html>

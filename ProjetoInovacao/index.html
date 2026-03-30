@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Projeto de Inovação (TCC) e Grand Prix SENAI de Inovação 2026: aulas com passo a passo conforme o regulamento oficial.">
+    <meta name="keywords" content="curso técnico SENAI, Grand Prix SENAI, inovação, TCC, LEAN Canvas, pitch, prototipagem, regulamento 2026">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" href="../assets/estudando.png">
+    <title>Projeto de Inovação (TCC) — Grand Prix SENAI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --senai-blue: #004587;
+            --senai-red: #e32119;
+            --senai-orange: #ff6b00;
+            --bg-color: #f4f4f4;
+            --text-color: #1e293b;
+            --font-family-senai: "Plus Jakarta Sans", "Segoe UI", system-ui, sans-serif;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: var(--font-family-senai);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: relative;
+        }
+
+        header h1 { font-size: 2rem; margin-bottom: 8px; }
+        header p { opacity: 0.95; }
+
+        .back-link {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            position: absolute;
+            left: 20px;
+            top: 20px;
+        }
+
+        main {
+            flex: 1;
+            padding: 40px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .intro {
+            background: white;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 5px solid var(--senai-red);
+            margin-bottom: 24px;
+        }
+
+        .intro h2 { color: var(--senai-blue); margin-bottom: 10px; }
+        .intro p, .intro li { line-height: 1.65; color: #444; }
+        .intro ul { margin: 10px 0 0 20px; }
+        .intro a { color: var(--senai-blue); font-weight: 600; }
+
+        .doc-box {
+            background: #f0f7ff;
+            border: 1px solid #93c5fd;
+            border-radius: 8px;
+            padding: 14px 18px;
+            margin-top: 14px;
+        }
+
+        .lesson-list {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 14px;
+            margin-top: 8px;
+        }
+
+        .lesson-item {
+            background: white;
+            padding: 18px 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-color);
+            transition: transform 0.2s, border-left 0.2s;
+            border-left: 5px solid transparent;
+            gap: 16px;
+        }
+
+        .lesson-item:hover {
+            transform: translateX(4px);
+            border-left: 5px solid var(--senai-red);
+        }
+
+        .lesson-info h3 {
+            margin-bottom: 6px;
+            color: var(--senai-blue);
+            font-size: 1.05rem;
+        }
+
+        .lesson-info p {
+            color: #666;
+            font-size: 0.95rem;
+            line-height: 1.45;
+        }
+
+        .lesson-num {
+            flex-shrink: 0;
+            width: 40px;
+            height: 40px;
+            background: var(--senai-blue);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 1rem;
+        }
+
+        .btn-start {
+            background-color: var(--senai-blue);
+            color: white;
+            padding: 8px 14px;
+            border-radius: 5px;
+            font-weight: bold;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="../index.html" class="back-link">← Portal</a>
+        <h1>Projeto de Inovação (TCC)</h1>
+        <p>Grand Prix SENAI de Inovação — roteiro de aulas conforme regulamento Edição 2026</p>
+    </header>
+
+    <main>
+        <div class="intro">
+            <h2>Como usar este módulo</h2>
+            <p>As aulas abaixo organizam o <strong>passo a passo</strong> que sua equipe deve seguir para participar do <strong>Grand Prix SENAI de Inovação (GP) 2026</strong>, com base no regulamento oficial. Cada aula abre em <strong>slides</strong> (como nas aulas de PHP): barra de progresso, navegação Anterior/Próximo, <strong>tela cheia</strong>, contagem de <strong>infrações</strong>, campo de atividade com <strong>Dividir Tela</strong>, envio e botão <strong>Finalizar aula</strong>. Identifique-se na primeira visita (matrícula/turma) para pontos e rascunhos, se a escola usar o mesmo sistema.</p>
+            <p>Datas, entregas e critérios citados referem-se à edição 2026; confira sempre a <a href="https://www.senai.br/gpdeinovacao" target="_blank" rel="noopener noreferrer">plataforma oficial</a> para atualizações da Coordenação Geral.</p>
+            <div class="doc-box">
+                <strong>Documento oficial:</strong>
+                <a href="doc/REGULAMENTO-GP-Senai-2026_chancela.pdf" target="_blank" rel="noopener">REGULAMENTO-GP-Senai-2026_chancela.pdf</a> (PDF)
+            </div>
+        </div>
+
+        <div class="lesson-list">
+            <a href="01_introducao_gp.html" class="lesson-item">
+                <span class="lesson-num">1</span>
+                <div class="lesson-info">
+                    <h3>O Grand Prix e o formato da competição</h3>
+                    <p>O que é o GP, temáticas, desafios das empresas e visão geral do evento virtual (13 a 17 de abril de 2026).</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="02_inscricoes_equipe.html" class="lesson-item">
+                <span class="lesson-num">2</span>
+                <div class="lesson-info">
+                    <h3>Inscrições, equipe e escuderia</h3>
+                    <p>Cadastro individual, composição da equipe (4 a 5 integrantes), porta-voz, escolha de uma única área temática e prazos.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="03_preparacao_desafios.html" class="lesson-item">
+                <span class="lesson-num">3</span>
+                <div class="lesson-info">
+                    <h3>As cinco áreas temáticas e a preparação</h3>
+                    <p>Desafios publicados na abertura, webinars, mentorias e materiais antes e durante o GP.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="04_dia1_lean_canvas.html" class="lesson-item">
+                <span class="lesson-num">4</span>
+                <div class="lesson-info">
+                    <h3>Dia 1 do GP — Ideação e LEAN Canvas</h3>
+                    <p>13/04: construir o modelo da ideia e a proposta de valor (1ª entrega na plataforma).</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="05_dia2_prototipagem.html" class="lesson-item">
+                <span class="lesson-num">5</span>
+                <div class="lesson-info">
+                    <h3>Dia 2 do GP — Prototipagem</h3>
+                    <p>14/04: protótipo “sujo, rápido e barato” e vídeo de até 2 minutos (2ª entrega).</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="06_dia3_pitch.html" class="lesson-item">
+                <span class="lesson-num">6</span>
+                <div class="lesson-info">
+                    <h3>Dia 3 do GP — Pitch (discurso de elevador)</h3>
+                    <p>15/04: vídeo no YouTube de até 3 minutos, com requisitos de participação da equipe.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="07_entregas_prazos.html" class="lesson-item">
+                <span class="lesson-num">7</span>
+                <div class="lesson-info">
+                    <h3>Entregas finais, prazos e conformidade</h3>
+                    <p>Prazo único até 19/04 (23h59 Brasília), mentorias até 17/04 e regras que evitam desclassificação.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="08_avaliacao_criterios.html" class="lesson-item">
+                <span class="lesson-num">8</span>
+                <div class="lesson-info">
+                    <h3>Avaliação: critérios e desempate</h3>
+                    <p>Notas de 0 a 10, quatro dimensões de avaliação e ordem de desempate.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+
+            <a href="09_premiacao_pi_conduta.html" class="lesson-item">
+                <span class="lesson-num">9</span>
+                <div class="lesson-info">
+                    <h3>Premiação, certificados, PI e conduta</h3>
+                    <p>Cerimônia em 05/05/2026, prêmios por temática, certificados, propriedade intelectual e conduta esperada.</p>
+                </div>
+                <span class="btn-start">Abrir</span>
+            </a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 SENAI - Serviço Nacional de Aprendizagem Industrial</p>
+    </footer>
+</body>
+</html>
