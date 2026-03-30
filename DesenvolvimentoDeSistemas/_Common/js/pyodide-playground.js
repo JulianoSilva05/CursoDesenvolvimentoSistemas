@@ -29,12 +29,35 @@
         return pyodidePromise;
     }
 
+    function ensurePlaygroundId(root) {
+        if (!root.id) {
+            root.id = 'senai-py-lab-' + Math.random().toString(36).slice(2, 11);
+        }
+        return root.id;
+    }
+
+    /**
+     * Com «Dividir tela», o .py-editor é movido para document.body e deixa de ser
+     * descendente de .senai-py-playground — localizamos pelo data-senai-py-lab.
+     */
+    function resolvePyEditor(root) {
+        var inside = root.querySelector('.py-editor');
+        if (inside) {
+            return inside;
+        }
+        var pid = root.id;
+        if (!pid) {
+            return null;
+        }
+        return document.querySelector('.py-editor[data-senai-py-lab="' + pid + '"]');
+    }
+
     /**
      * @param {HTMLElement} root
      * @param {{ stdinOverride?: string }} [opts]
      */
     async function runPlayground(root, opts) {
-        var editor = root.querySelector('.py-editor');
+        var editor = resolvePyEditor(root);
         var stdinEl = root.querySelector('.py-stdin');
         var outEl = root.querySelector('.py-output');
         var statusEl = root.querySelector('.py-status');
@@ -52,9 +75,9 @@
         if (outEl) outEl.textContent = '';
         if (statusEl) statusEl.textContent = 'Preparando Python…';
 
+        var stdout = '';
         try {
             var pyodide = await getPyodide();
-            var stdout = '';
 
             pyodide.setStdout({
                 batched: function (s) {
@@ -109,8 +132,16 @@
                     msg;
             }
             if (statusEl) statusEl.textContent = 'Erro na execução.';
-            return { ok: false, stdout: '', error: msg };
+            return { ok: false, stdout: stdout, error: msg };
         }
+    }
+
+    function normalizeVerificationText(s) {
+        return String(s || '')
+            .replace(/\u00a0/g, ' ')
+            .replace(/\u2003|\u2002|\u2009/g, ' ')
+            .replace(/\r\n/g, '\n')
+            .trim();
     }
 
     function wireVerify(root, vbtn) {
@@ -132,7 +163,7 @@
 
             if (stdinEl) stdinEl.value = prevStdin;
 
-            var out = (result.stdout || '').trim();
+            var out = normalizeVerificationText(result.stdout || '');
             var feedback = root.querySelector('.py-verify-feedback');
             if (!feedback) {
                 feedback = document.createElement('p');
@@ -146,8 +177,13 @@
                 feedback.style.background = '#fef2f2';
                 feedback.style.color = '#b91c1c';
                 feedback.style.borderLeft = '4px solid #ef4444';
+                var errTail = out ? ' Saída parcial: ' + (out.length > 200 ? out.slice(0, 200) + '…' : out) : '';
                 feedback.textContent =
-                    'A verificação não pôde concluir: corrija erros de execução antes de testar de novo.';
+                    'Erro na execução: ' +
+                    (result.error || 'desconhecido') +
+                    '.' +
+                    errTail +
+                    ' Corrija o código e tente de novo.';
                 return;
             }
 
@@ -156,7 +192,10 @@
                     return true;
                 }
                 if (ex === 'Total: 200') {
-                    return /\bTotal:\s*200(?:\.0)?\b/.test(out);
+                    return /Total\s*:\s*200(?:\.0)?(?!\d)/i.test(out);
+                }
+                if (ex === 'Produto cadastrado com sucesso') {
+                    return /Produto\s+cadastrado\s+com\s+sucesso/i.test(out);
                 }
                 return false;
             }
@@ -175,17 +214,26 @@
                 feedback.style.background = '#fffbeb';
                 feedback.style.color = '#b45309';
                 feedback.style.borderLeft = '4px solid #f59e0b';
+                var snip = out.length > 220 ? out.slice(0, 220) + '…' : out;
                 feedback.textContent =
                     'A saída ainda não contém: ' +
                     missing.map(function (m) {
                         return '"' + m + '"';
                     }).join(', ') +
-                    '. Ajuste o código e execute de novo.';
+                    '. Trecho obtido: ' +
+                    (snip || '(vazio)') +
+                    ' — Confira se não há aspas “curvas” ou texto diferente nas linhas finais.';
             }
         });
     }
 
     function init(root) {
+        var labId = ensurePlaygroundId(root);
+        var ed = root.querySelector('.py-editor');
+        if (ed) {
+            ed.setAttribute('data-senai-py-lab', labId);
+        }
+
         var runBtn = root.querySelector('.py-run-btn');
         if (runBtn) {
             runBtn.addEventListener('click', function () {
