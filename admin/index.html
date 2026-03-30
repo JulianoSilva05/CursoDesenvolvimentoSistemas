@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administração — SENAI Curso</title>
+    <style>
+        :root { --blue: #004587; --red: #E32119; --bg: #f0f2f5; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; background: var(--bg); color: #222; }
+        header { background: var(--blue); color: #fff; padding: 16px 24px; }
+        header h1 { margin: 0; font-size: 1.35rem; }
+        main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .card { background: #fff; border-radius: 10px; padding: 20px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,.08); }
+        label { display: block; font-weight: 600; margin-bottom: 6px; }
+        input, textarea, select, button { font-size: 1rem; }
+        input[type="email"], input[type="password"], input[type="text"], textarea { width: 100%; max-width: 400px; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        textarea { max-width: 100%; min-height: 80px; }
+        button { padding: 10px 18px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; }
+        .btn-primary { background: var(--blue); color: #fff; }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn-secondary { background: #e2e8f0; color: #1e293b; }
+        .row { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-end; margin-top: 12px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; vertical-align: top; }
+        th { background: #f8fafc; }
+        .online { color: #15803d; font-weight: 700; }
+        .offline { color: #64748b; }
+        pre.raw { background: #1e293b; color: #e2e8f0; padding: 12px; border-radius: 8px; overflow: auto; font-size: 0.8rem; max-height: 280px; }
+        #loginPanel { max-width: 420px; }
+        .hidden { display: none !important; }
+        .tag { display: inline-block; background: #dbeafe; color: #1e40af; padding: 2px 8px; border-radius: 4px; font-size: 0.8rem; }
+        #adminModalOverlay {
+            position: fixed; inset: 0; z-index: 20000;
+            background: rgba(15, 23, 42, 0.55);
+            display: none; align-items: center; justify-content: center;
+            padding: 20px; font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        #adminModalOverlay.open { display: flex; }
+        .admin-modal-box {
+            background: #fff; border-radius: 12px; max-width: 480px; width: 100%;
+            box-shadow: 0 20px 50px rgba(0,0,0,.25); overflow: hidden;
+            border-top: 4px solid var(--red);
+        }
+        .admin-modal-box.info { border-top-color: var(--blue); }
+        .admin-modal-title { padding: 18px 20px 8px; font-size: 1.15rem; font-weight: 700; color: #0f172a; }
+        .admin-modal-body {
+            padding: 8px 20px 20px; font-size: 1rem; line-height: 1.55; color: #334155;
+            white-space: pre-wrap; word-break: break-word; max-height: 50vh; overflow-y: auto;
+        }
+        .admin-modal-footer {
+            padding: 12px 20px 18px; display: flex; justify-content: flex-end;
+            background: #f8fafc; border-top: 1px solid #e2e8f0;
+        }
+        #evalModalOverlay {
+            position: fixed; inset: 0; z-index: 21000;
+            background: rgba(15, 23, 42, 0.55);
+            display: none; align-items: center; justify-content: center;
+            padding: 16px; font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+        #evalModalOverlay.open { display: flex; }
+        .eval-modal-inner {
+            background: #fff; border-radius: 12px; max-width: 920px; width: 100%;
+            max-height: 90vh; overflow: hidden; display: flex; flex-direction: column;
+            box-shadow: 0 20px 50px rgba(0,0,0,.25); border-top: 4px solid var(--blue);
+        }
+        .eval-modal-head { padding: 16px 20px; border-bottom: 1px solid #e2e8f0; }
+        .eval-modal-head h3 { margin: 0 0 6px; font-size: 1.1rem; }
+        .eval-modal-scroll { overflow: auto; padding: 12px 16px; flex: 1; }
+        .eval-modal-scroll table { font-size: 0.85rem; }
+        .eval-modal-scroll input[type="number"] { width: 88px; padding: 6px 8px; }
+        .eval-modal-foot { padding: 12px 16px; border-top: 1px solid #e2e8f0; display: flex; justify-content: flex-end; gap: 8px; }
+        .slot-num { width: 100px; }
+        .ws-preview { font-family: ui-monospace, Consolas, monospace; font-size: 0.72rem; max-width: 220px; max-height: 100px; overflow: auto; background: #f8fafc; padding: 6px; border-radius: 4px; white-space: pre-wrap; word-break: break-all; }
+        .ws-comment-ta { width: 100%; min-width: 200px; min-height: 72px; max-width: 360px; font-size: 0.88rem; }
+        #tblWorkspaces { font-size: 0.82rem; }
+        .student-filters { display: flex; flex-wrap: wrap; gap: 14px; align-items: flex-end; margin-bottom: 16px; }
+        .student-filters .filter-field label { font-size: 0.88rem; margin-bottom: 4px; }
+        .student-filters .filter-field input[type="text"] { max-width: 220px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Painel administrativo (JSON)</h1>
+        <p style="margin:8px 0 0; opacity:.9; font-size:.95rem;">Alunos online, atividades, infrações, avisos e senhas</p>
+    </header>
+    <main>
+        <div id="loginPanel" class="card">
+            <h2>Entrar</h2>
+            <p>Use o e-mail e a senha de administrador. O arquivo <code>api/data/state.json</code> é criado automaticamente na primeira execução da API.</p>
+            <label for="admEmail">E-mail</label>
+            <input type="email" id="admEmail" value="julianoqm@gmail.com" autocomplete="username">
+            <label for="admPass" style="margin-top:12px;">Senha</label>
+            <input type="password" id="admPass" autocomplete="current-password">
+            <div class="row">
+                <button type="button" class="btn-primary" id="btnLogin">Entrar</button>
+            </div>
+            <p id="loginErr" style="color:var(--red); margin-top:12px;"></p>
+        </div>
+
+        <div id="dashPanel" class="hidden">
+            <div class="card">
+                <h2>Resumo ao vivo</h2>
+                <p>Atualização automática a cada 3s. Dados em <span class="tag">JSON</span> via API.</p>
+                <button type="button" class="btn-secondary" id="btnLogout">Sair</button>
+            </div>
+
+            <div class="card">
+                <h2>Atividades por disciplina (máx. 30 pts por matéria)</h2>
+                <p style="line-height:1.55;max-width:900px;">Para cada matéria, informe o <strong>total de atividades previstas</strong>. Cada envio do aluno pode receber até <strong>30 ÷ N</strong> pontos após sua avaliação. Alterar aqui atualiza o teto das atividades <em>pendentes</em>.</p>
+                <div style="overflow-x:auto;">
+                    <table id="tblDiscSlots">
+                        <thead>
+                            <tr><th>Disciplina (chave)</th><th>Nº de atividades (N)</th></tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div class="row" style="margin-top:14px;">
+                    <button type="button" class="btn-primary" id="btnSaveSlots">Salvar contagens</button>
+                    <span id="slotsStatus" style="align-self:center;color:#15803d;font-size:0.92rem;"></span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Alunos</h2>
+                <div class="student-filters">
+                    <div class="filter-field">
+                        <label for="filterStudentName">Nome</label>
+                        <input type="text" id="filterStudentName" placeholder="Contém…" autocomplete="off">
+                    </div>
+                    <div class="filter-field">
+                        <label for="filterStudentMatricula">Matrícula</label>
+                        <input type="text" id="filterStudentMatricula" placeholder="Contém…" autocomplete="off">
+                    </div>
+                    <div class="filter-field">
+                        <label for="filterStudentActivity">Atividade</label>
+                        <input type="text" id="filterStudentActivity" placeholder="Atividade, aula ou tela…" autocomplete="off">
+                    </div>
+                    <button type="button" class="btn-secondary" id="btnClearStudentFilters">Limpar filtros</button>
+                    <button type="button" class="btn-primary" id="btnExportStudentsCsv">Exportar CSV</button>
+                    <span id="filterStudentCount" style="font-size:0.9rem;color:#64748b;padding-bottom:8px;"></span>
+                </div>
+                <div style="overflow-x:auto;">
+                    <table id="tblStudents">
+                        <thead>
+                            <tr>
+                                <th>Status</th>
+                                <th>Matrícula</th>
+                                <th>Nome</th>
+                                <th>Pontos</th>
+                                <th>Infrações</th>
+                                <th>Tela (path / título)</th>
+                                <th>Atividades enviadas</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Rascunhos de atividades (JSON no servidor)</h2>
+                <p style="line-height:1.55;max-width:960px;">Cada combinação <strong>página + título + campo</strong> guarda o código do aluno. Use o comentário para apontar erros; o aluno vê acima do editor e pode editar o quanto quiser. Atualização junto com a tabela de alunos (3s).</p>
+                <div style="overflow-x:auto;">
+                    <table id="tblWorkspaces">
+                        <thead>
+                            <tr>
+                                <th>Matrícula</th>
+                                <th>Nome</th>
+                                <th>Disciplina</th>
+                                <th>Path</th>
+                                <th>Campo</th>
+                                <th>Atividade</th>
+                                <th>Atualizado</th>
+                                <th>Rascunho</th>
+                                <th>Comentário ao aluno</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Enviar aviso</h2>
+                <label for="noticeTarget">Matrícula (ou <code>all</code> para todos)</label>
+                <input type="text" id="noticeTarget" placeholder="12345 ou all">
+                <label for="noticeMsg" style="margin-top:12px;">Mensagem</label>
+                <textarea id="noticeMsg" placeholder="Aviso exibido ao aluno na próxima sincronização"></textarea>
+                <div class="row">
+                    <button type="button" class="btn-primary" id="btnSendNotice">Enviar aviso</button>
+                </div>
+                <p id="noticeStatus"></p>
+            </div>
+
+            <div class="card">
+                <h2>Alterar senha do administrador</h2>
+                <label for="oldPw">Senha atual</label>
+                <input type="password" id="oldPw" autocomplete="off">
+                <label for="newPw" style="margin-top:12px;">Nova senha (mín. 6)</label>
+                <input type="password" id="newPw" autocomplete="new-password">
+                <div class="row">
+                    <button type="button" class="btn-primary" id="btnChgAdminPw">Salvar nova senha</button>
+                </div>
+                <p id="pwStatus"></p>
+            </div>
+
+            <div class="card">
+                <h2>Código de desbloqueio (tela vermelha do aluno)</h2>
+                <p>O aluno digita este código quando bloqueado por infrações (validado no servidor).</p>
+                <label for="unlockCode">Novo código</label>
+                <input type="text" id="unlockCode" placeholder="Ex.: 05061989">
+                <div class="row">
+                    <button type="button" class="btn-primary" id="btnUnlockCode">Salvar código</button>
+                </div>
+                <p id="unlockStatus"></p>
+            </div>
+
+            <div class="card">
+                <h2>JSON bruto (última leitura)</h2>
+                <pre class="raw" id="rawJson"></pre>
+            </div>
+        </div>
+    </main>
+
+    <div id="evalModalOverlay" role="dialog" aria-modal="true">
+        <div class="eval-modal-inner">
+            <div class="eval-modal-head">
+                <h3 id="evalModalTitle">Avaliar atividades</h3>
+                <p id="evalModalSub" style="margin:0;font-size:0.9rem;color:#64748b;"></p>
+            </div>
+            <div class="eval-modal-scroll">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Disciplina</th>
+                            <th>Aula / título</th>
+                            <th>Máx (30÷N)</th>
+                            <th>Nota</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="evalActsBody"></tbody>
+                </table>
+            </div>
+            <div class="eval-modal-foot">
+                <button type="button" class="btn-secondary" id="evalModalClose">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="adminModalOverlay" role="dialog" aria-modal="true" aria-labelledby="adminModalTitle">
+        <div class="admin-modal-box" id="adminModalBox">
+            <div class="admin-modal-title" id="adminModalTitle">Mensagem</div>
+            <div class="admin-modal-body" id="adminModalBody"></div>
+            <div class="admin-modal-footer">
+                <button type="button" class="btn-primary" id="adminModalOk">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function apiRoot() {
+            const path = window.location.pathname;
+            const base = path.replace(/\/admin\/index\.html.*$/i, '').replace(/\/+$/, '') || '';
+            return window.location.origin + base + '/api';
+        }
+
+        function token() {
+            return sessionStorage.getItem('senaiAdminToken') || '';
+        }
+
+        async function postAction(action, body = {}) {
+            const headers = {
+                'Content-Type': 'application/json',
+                Accept: 'application/json'
+            };
+            if (token()) headers['Authorization'] = 'Bearer ' + token();
+            const r = await fetch(apiRoot() + '/json.php', {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ action, ...body })
+            });
+            const text = await r.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch {
+                data = { raw: text };
+            }
+            if (!r.ok) {
+                let msg = (data && data.error) || text.trim() || r.statusText;
+                const low = (msg + ' ' + r.status).toLowerCase();
+                if (
+                    low.includes('unsupported method') ||
+                    low.includes('method not allowed') ||
+                    r.status === 405 ||
+                    r.status === 501
+                ) {
+                    msg +=
+                        ' — Use o servidor embutido do PHP na raiz do projeto (ex.: php -S localhost:8081). Python http.server não processa POST em arquivos .php.';
+                }
+                throw new Error(msg);
+            }
+            return data;
+        }
+
+        let adminModalOnKey = null;
+        function showAdminModal(message, title, variant) {
+            const overlay = document.getElementById('adminModalOverlay');
+            const box = document.getElementById('adminModalBox');
+            const ok = document.getElementById('adminModalOk');
+            if (adminModalOnKey) {
+                document.removeEventListener('keydown', adminModalOnKey);
+                adminModalOnKey = null;
+            }
+            document.getElementById('adminModalTitle').textContent = title || 'Aviso';
+            document.getElementById('adminModalBody').textContent = message || '';
+            box.className = 'admin-modal-box' + (variant === 'info' ? ' info' : '');
+            function close() {
+                overlay.classList.remove('open');
+                if (adminModalOnKey) {
+                    document.removeEventListener('keydown', adminModalOnKey);
+                    adminModalOnKey = null;
+                }
+            }
+            adminModalOnKey = (e) => {
+                if (e.key === 'Escape') close();
+            };
+            document.addEventListener('keydown', adminModalOnKey);
+            ok.onclick = close;
+            overlay.onclick = (e) => {
+                if (e.target === overlay) close();
+            };
+            overlay.classList.add('open');
+            ok.focus();
+        }
+
+        document.getElementById('btnLogin').addEventListener('click', async () => {
+            const email = document.getElementById('admEmail').value.trim();
+            const password = document.getElementById('admPass').value;
+            document.getElementById('loginErr').textContent = '';
+            try {
+                const j = await postAction('admin_login', { email, password });
+                sessionStorage.setItem('senaiAdminToken', j.token);
+                document.getElementById('loginPanel').classList.add('hidden');
+                document.getElementById('dashPanel').classList.remove('hidden');
+                startPoll();
+            } catch (e) {
+                document.getElementById('loginErr').textContent = e.message || 'Falha no login';
+            }
+        });
+
+        document.getElementById('btnLogout').addEventListener('click', () => {
+            sessionStorage.removeItem('senaiAdminToken');
+            location.reload();
+        });
+
+        let lastAdminStudents = [];
+
+        function renderDisciplineSlotsTable(slots) {
+            const tb = document.querySelector('#tblDiscSlots tbody');
+            if (!tb || !slots) return;
+            tb.innerHTML = '';
+            const keys = Object.keys(slots).sort((a, b) => a.localeCompare(b, 'pt'));
+            keys.forEach((k) => {
+                const tr = document.createElement('tr');
+                const keyEsc = escapeHtml(k);
+                const keyAttr = encodeURIComponent(k);
+                tr.innerHTML = `<td><code>${keyEsc}</code></td><td><input type="number" min="1" class="slot-num" data-slot-key="${keyAttr}" value="${Number(slots[k]) || 1}"></td>`;
+                tb.appendChild(tr);
+            });
+        }
+
+        document.getElementById('btnSaveSlots').addEventListener('click', async () => {
+            const st = document.getElementById('slotsStatus');
+            st.textContent = '';
+            const slots = {};
+            document.querySelectorAll('#tblDiscSlots input[data-slot-key]').forEach((inp) => {
+                const raw = inp.getAttribute('data-slot-key');
+                if (!raw) return;
+                let k;
+                try {
+                    k = decodeURIComponent(raw);
+                } catch {
+                    k = raw;
+                }
+                let n = parseInt(inp.value, 10);
+                if (!Number.isFinite(n) || n < 1) n = 1;
+                slots[k] = n;
+            });
+            try {
+                await postAction('admin_save_discipline_slots', { slots });
+                st.textContent = 'Salvo.';
+                await refreshTable();
+            } catch (e) {
+                showAdminModal(e.message || 'Falha ao salvar.', 'Erro');
+            }
+        });
+
+        function closeEvalModal() {
+            document.getElementById('evalModalOverlay').classList.remove('open');
+        }
+
+        document.getElementById('evalModalClose').addEventListener('click', closeEvalModal);
+        document.getElementById('evalModalOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'evalModalOverlay') closeEvalModal();
+        });
+
+        function openEvalModal(matricula) {
+            const s = lastAdminStudents.find((x) => String(x.matricula) === String(matricula));
+            if (!s) return;
+            document.getElementById('evalModalTitle').textContent = 'Avaliar atividades — ' + (s.name || matricula);
+            document.getElementById('evalModalSub').textContent =
+                'Matrícula ' + matricula + ' · Nota entre 0 e o máximo da linha (30 ÷ N da disciplina).';
+            const body = document.getElementById('evalActsBody');
+            body.innerHTML = '';
+            const acts = s.activitiesSubmitted || [];
+            if (acts.length === 0) {
+                body.innerHTML = '<tr><td colspan="6">Nenhuma atividade enviada ainda.</td></tr>';
+            } else {
+                acts.forEach((a) => {
+                    const id =
+                        a.id === undefined || a.id === null ? '' : String(a.id).trim();
+                    const max = typeof a.maxPoints === 'number' ? a.maxPoints : '';
+                    const pending = a.awardedPoints === null || a.awardedPoints === undefined;
+                    const cur = pending ? '' : String(a.awardedPoints);
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><small>${escapeHtml((a.at || '').slice(0, 19))}</small></td>
+                        <td>${escapeHtml(a.discipline || '')}</td>
+                        <td>${escapeHtml(a.lessonTitle || '')}</td>
+                        <td>${escapeHtml(String(max))}</td>
+                        <td><input type="number" step="0.01" min="0" data-max="${escapeHtml(String(max))}" class="eval-pts" value="${escapeHtml(cur)}" aria-label="Nota"></td>
+                        <td><button type="button" class="btn-primary btn-save-grade" data-m="${escapeHtml(matricula)}" data-aid="${escapeHtml(id)}">Salvar</button></td>
+                    `;
+                    body.appendChild(tr);
+                });
+            }
+            document.getElementById('evalModalOverlay').classList.add('open');
+        }
+
+        function eventTargetElement(ev) {
+            const t = ev.target;
+            if (!t) return null;
+            return t.nodeType === Node.TEXT_NODE ? t.parentElement : t;
+        }
+
+        document.getElementById('evalActsBody').addEventListener('click', async (e) => {
+            const el = eventTargetElement(e);
+            const btn = el && el.closest ? el.closest('.btn-save-grade') : null;
+            if (!btn) return;
+            const m = btn.getAttribute('data-m');
+            const aid = (btn.getAttribute('data-aid') || '').trim();
+            const tr = btn.closest('tr');
+            const inp = tr && tr.querySelector('.eval-pts');
+            if (!inp) {
+                showAdminModal('Campo de nota não encontrado na linha.', 'Erro');
+                return;
+            }
+            if (!m) {
+                showAdminModal('Matrícula inválida. Feche o modal e abra "Avaliar" de novo.', 'Erro');
+                return;
+            }
+            if (!aid) {
+                showAdminModal(
+                    'Esta atividade não tem ID no servidor (dados antigos ou estado corrompido). Recarregue esta página do administrador; se continuar, peça ao aluno para reenviar a atividade.',
+                    'Não foi possível salvar'
+                );
+                return;
+            }
+            let v = parseFloat(inp.value);
+            if (!Number.isFinite(v)) v = 0;
+            const mx = parseFloat(inp.getAttribute('data-max') || '30');
+            v = Math.max(0, Math.min(mx, v));
+            btn.disabled = true;
+            try {
+                await postAction('admin_grade_activity', { matricula: m, activityId: aid, awardedPoints: v });
+                await refreshTable();
+                openEvalModal(m);
+                let btnAfter = null;
+                document.querySelectorAll('#evalActsBody .btn-save-grade').forEach((b) => {
+                    if ((b.getAttribute('data-aid') || '').trim() === aid) btnAfter = b;
+                });
+                if (btnAfter) {
+                    const lab = btnAfter.textContent;
+                    btnAfter.textContent = 'Salvo ✓';
+                    setTimeout(() => {
+                        if (btnAfter.textContent === 'Salvo ✓') btnAfter.textContent = lab;
+                    }, 2500);
+                }
+            } catch (err) {
+                showAdminModal(err.message || 'Falha ao salvar nota.', 'Erro');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        document.getElementById('tblStudents').addEventListener('click', (e) => {
+            const ev = e.target.closest('.btn-eval');
+            if (ev) {
+                openEvalModal(ev.getAttribute('data-m'));
+                return;
+            }
+        });
+
+        function getFilteredStudents() {
+            const fn = (document.getElementById('filterStudentName')?.value || '').trim().toLowerCase();
+            const fm = (document.getElementById('filterStudentMatricula')?.value || '').trim().toLowerCase();
+            const fa = (document.getElementById('filterStudentActivity')?.value || '').trim().toLowerCase();
+            return (lastAdminStudents || []).filter((s) => {
+                if (fn && !String(s.name || '').toLowerCase().includes(fn)) return false;
+                if (fm && !String(s.matricula || '').toLowerCase().includes(fm)) return false;
+                if (fa) {
+                    const actStr = (s.activitiesSubmitted || [])
+                        .map((a) => `${a.discipline || ''} ${a.lessonTitle || ''} ${a.at || ''}`)
+                        .join(' ')
+                        .toLowerCase();
+                    const screen = `${s.currentPath || ''} ${s.currentTitle || ''}`.toLowerCase();
+                    if (!actStr.includes(fa) && !screen.includes(fa)) return false;
+                }
+                return true;
+            });
+        }
+
+        function csvEscapeCell(v) {
+            const s = String(v ?? '').replace(/"/g, '""');
+            if (/[",\n\r]/.test(s)) return `"${s}"`;
+            return s;
+        }
+
+        function exportStudentsCsv() {
+            const rows = getFilteredStudents();
+            const headers = [
+                'Status',
+                'Matricula',
+                'Nome',
+                'Pontos',
+                'Infracoes',
+                'Path',
+                'Titulo',
+                'Atividades'
+            ];
+            const lines = [headers.join(',')];
+            rows.forEach((s) => {
+                const acts = (s.activitiesSubmitted || [])
+                    .map((a) => `${a.discipline || ''} ${a.lessonTitle || ''} (${a.at || ''})`)
+                    .join(' | ');
+                lines.push(
+                    [
+                        csvEscapeCell(s.online ? 'Online' : 'Offline'),
+                        csvEscapeCell(s.matricula),
+                        csvEscapeCell(s.name),
+                        csvEscapeCell(s.points),
+                        csvEscapeCell(s.infractionCount),
+                        csvEscapeCell(s.currentPath),
+                        csvEscapeCell(s.currentTitle),
+                        csvEscapeCell(acts)
+                    ].join(',')
+                );
+            });
+            const blob = new Blob(['\uFEFF' + lines.join('\r\n')], {
+                type: 'text/csv;charset=utf-8;'
+            });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `alunos_${new Date().toISOString().slice(0, 10)}.csv`;
+            a.rel = 'noopener';
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            URL.revokeObjectURL(url);
+        }
+
+        function renderStudentsTable() {
+            const tb = document.querySelector('#tblStudents tbody');
+            if (!tb) return;
+            const filtered = getFilteredStudents();
+            const total = (lastAdminStudents || []).length;
+            const cnt = document.getElementById('filterStudentCount');
+            if (cnt) {
+                cnt.textContent =
+                    total === 0 ? 'Nenhum aluno' : `${filtered.length} de ${total} aluno(s)`;
+            }
+            tb.innerHTML = '';
+            if (filtered.length === 0) {
+                tb.innerHTML =
+                    `<tr><td colspan="8">${total === 0 ? 'Nenhum aluno registrado.' : 'Nenhum aluno corresponde aos filtros.'}</td></tr>`;
+                return;
+            }
+            filtered.forEach((s) => {
+                const tr = document.createElement('tr');
+                const acts = (s.activitiesSubmitted || [])
+                    .map((a) => {
+                        const st =
+                            a.status === 'pending' ||
+                            a.awardedPoints === null ||
+                            a.awardedPoints === undefined
+                                ? '⏳'
+                                : '✓';
+                        return `${st} ${a.discipline || ''} ${a.lessonTitle || ''} (${a.at || ''})`;
+                    })
+                    .join('\n');
+                tr.innerHTML = `
+                    <td class="${s.online ? 'online' : 'offline'}">${s.online ? '● Online' : '○ Offline'}</td>
+                    <td>${escapeHtml(s.matricula)}</td>
+                    <td>${escapeHtml(s.name)}</td>
+                    <td>${s.points}</td>
+                    <td>${s.infractionCount}</td>
+                    <td><small>${escapeHtml(s.currentPath || '')}<br><em>${escapeHtml(s.currentTitle || '')}</em></small></td>
+                    <td><small>${escapeHtml(acts).replace(/\n/g, '<br>')}</small></td>
+                    <td>
+                        <button type="button" class="btn-secondary btn-eval" data-m="${escapeHtml(s.matricula)}">Avaliar</button>
+                        <button type="button" class="btn-secondary btn-reset" data-m="${escapeHtml(s.matricula)}">Zerar infrações</button>
+                    </td>
+                `;
+                tb.appendChild(tr);
+            });
+            tb.querySelectorAll('.btn-reset').forEach((b) => {
+                b.addEventListener('click', async () => {
+                    const m = b.getAttribute('data-m');
+                    if (!confirm('Zerar infrações de ' + m + '?')) return;
+                    try {
+                        await postAction('admin_reset_infractions', { matricula: m });
+                        await refreshTable();
+                    } catch (e) {
+                        showAdminModal(e.message || 'Falha ao zerar infrações.', 'Erro');
+                    }
+                });
+            });
+        }
+
+        function renderWorkspacesTable(rows) {
+            const tb = document.querySelector('#tblWorkspaces tbody');
+            if (!tb) return;
+            tb.innerHTML = '';
+            if (!rows || rows.length === 0) {
+                tb.innerHTML = '<tr><td colspan="10">Nenhum rascunho registrado ainda.</td></tr>';
+                return;
+            }
+            rows.forEach((r) => {
+                const tr = document.createElement('tr');
+                const sk = r.storageKey || '';
+                const m = r.matricula || '';
+                tr.innerHTML = `
+                    <td>${escapeHtml(m)}</td>
+                    <td>${escapeHtml(r.name || '')}</td>
+                    <td>${escapeHtml(r.discipline || '')}</td>
+                    <td><small>${escapeHtml(r.path || '')}</small></td>
+                    <td><code>${escapeHtml(r.inputId || '')}</code></td>
+                    <td><small>${escapeHtml(r.activityLabel || r.pageTitle || '')}</small></td>
+                    <td><small>${escapeHtml((r.updatedAt || '').slice(0, 19))}</small></td>
+                    <td><div class="ws-preview">${escapeHtml(r.codePreview || '')}</div><small>${r.codeLength || 0} chars</small></td>
+                    <td><textarea class="ws-comment-ta" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}" aria-label="Comentário">${escapeHtml(r.professorComment || '')}</textarea></td>
+                    <td><button type="button" class="btn-primary btn-ws-save" data-ws-m="${escapeHtml(m)}" data-ws-sk="${escapeHtml(sk)}">Salvar comentário</button></td>
+                `;
+                tb.appendChild(tr);
+            });
+        }
+
+        document.getElementById('tblWorkspaces').addEventListener('click', async (e) => {
+            const el = eventTargetElement(e);
+            const btn = el && el.closest ? el.closest('.btn-ws-save') : null;
+            if (!btn) return;
+            const m = (btn.getAttribute('data-ws-m') || '').trim();
+            const sk = (btn.getAttribute('data-ws-sk') || '').trim();
+            const tr = btn.closest('tr');
+            const ta = tr && tr.querySelector('textarea.ws-comment-ta');
+            if (!ta) {
+                showAdminModal('Campo de comentário não encontrado na linha.', 'Erro');
+                return;
+            }
+            if (!m || !sk) {
+                showAdminModal('Dados do rascunho incompletos. Recarregue a tabela (atualize a página).', 'Erro');
+                return;
+            }
+            btn.disabled = true;
+            try {
+                await postAction('admin_workspace_comment', {
+                    matricula: m,
+                    storageKey: sk,
+                    professorComment: ta.value
+                });
+                showAdminModal('Comentário salvo.', 'Sucesso', 'info');
+            } catch (err) {
+                showAdminModal(err.message || 'Falha ao salvar comentário.', 'Erro');
+            } finally {
+                btn.disabled = false;
+            }
+        });
+
+        async function refreshTable() {
+            const j = await postAction('admin_students');
+            let wj = null;
+            try {
+                wj = await postAction('admin_list_workspaces');
+            } catch (e) {
+                console.warn('admin_list_workspaces', e);
+            }
+            lastAdminStudents = j.students || [];
+            document.getElementById('rawJson').textContent = JSON.stringify(j, null, 2);
+            if (wj && Array.isArray(wj.workspaces)) {
+                renderWorkspacesTable(wj.workspaces);
+            }
+            renderDisciplineSlotsTable(j.disciplineSlots || {});
+            renderStudentsTable();
+        }
+
+        ['filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.addEventListener('input', () => renderStudentsTable());
+        });
+        document.getElementById('btnClearStudentFilters')?.addEventListener('click', () => {
+            ['filterStudentName', 'filterStudentMatricula', 'filterStudentActivity'].forEach((id) => {
+                const el = document.getElementById(id);
+                if (el) el.value = '';
+            });
+            renderStudentsTable();
+        });
+        document.getElementById('btnExportStudentsCsv')?.addEventListener('click', () => {
+            const rows = getFilteredStudents();
+            if (rows.length === 0) {
+                showAdminModal('Não há linhas para exportar (ajuste os filtros ou aguarde dados).', 'CSV', 'info');
+                return;
+            }
+            exportStudentsCsv();
+        });
+
+        function escapeHtml(s) {
+            if (!s) return '';
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+        }
+
+        let pollTimer;
+        function startPoll() {
+            refreshTable().catch((e) => showAdminModal(e.message || 'Falha ao carregar alunos.', 'Erro ao atualizar'));
+            clearInterval(pollTimer);
+            pollTimer = setInterval(() => refreshTable().catch(() => {}), 3000);
+        }
+
+        document.getElementById('btnSendNotice').addEventListener('click', async () => {
+            const matricula = document.getElementById('noticeTarget').value.trim();
+            const message = document.getElementById('noticeMsg').value.trim();
+            const st = document.getElementById('noticeStatus');
+            st.textContent = '';
+            try {
+                await postAction('admin_notice', { matricula, message });
+                st.textContent = 'Aviso enviado.';
+                document.getElementById('noticeMsg').value = '';
+            } catch (e) {
+                st.textContent = e.message;
+            }
+        });
+
+        document.getElementById('btnChgAdminPw').addEventListener('click', async () => {
+            const oldPassword = document.getElementById('oldPw').value;
+            const newPassword = document.getElementById('newPw').value;
+            const st = document.getElementById('pwStatus');
+            st.textContent = '';
+            try {
+                await postAction('admin_password', { oldPassword, newPassword });
+                st.textContent = 'Senha alterada. Use a nova no próximo login.';
+                document.getElementById('oldPw').value = '';
+                document.getElementById('newPw').value = '';
+            } catch (e) {
+                st.textContent = e.message;
+            }
+        });
+
+        document.getElementById('btnUnlockCode').addEventListener('click', async () => {
+            const code = document.getElementById('unlockCode').value.trim();
+            const st = document.getElementById('unlockStatus');
+            st.textContent = '';
+            try {
+                await postAction('admin_professor_unlock', { code });
+                st.textContent = 'Código de desbloqueio salvo.';
+                document.getElementById('unlockCode').value = '';
+            } catch (e) {
+                st.textContent = e.message;
+            }
+        });
+
+        if (token()) {
+            document.getElementById('loginPanel').classList.add('hidden');
+            document.getElementById('dashPanel').classList.remove('hidden');
+            startPoll();
+        }
+    </script>
+</body>
+</html>

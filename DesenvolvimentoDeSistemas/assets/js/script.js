@@ -117,9 +117,23 @@ function initSlideshow() {
     btnPrev.addEventListener('click', () => showSlide(currentSlide - 1));
     btnNext.addEventListener('click', () => showSlide(currentSlide + 1));
 
+    function slideshowKeyboardTargetIsEditable(target) {
+        if (!target || !target.tagName) return false;
+        const tag = target.tagName.toUpperCase();
+        if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT') return true;
+        if (target.isContentEditable) return true;
+        return false;
+    }
+
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'ArrowRight' || e.key === 'Space') showSlide(currentSlide + 1);
-        else if (e.key === 'ArrowLeft') showSlide(currentSlide - 1);
+        if (slideshowKeyboardTargetIsEditable(e.target)) return;
+        const k = e.key;
+        const goPrev = k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp';
+        const goNext = k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ';
+        if (!goPrev && !goNext) return;
+        if (k === ' ' && e.target && e.target.tagName && e.target.tagName.toUpperCase() === 'BUTTON') return;
+        e.preventDefault();
+        showSlide(currentSlide + (goNext ? 1 : -1));
     });
 
     // Initialize

@@ -299,6 +299,26 @@ function initSlideshow() {
         showSlide(currentSlide + 1);
     });
 
+    function slideshowKeyboardTargetIsEditable(target) {
+        if (!target || !target.tagName) return false;
+        const tag = target.tagName.toUpperCase();
+        if (tag === 'TEXTAREA' || tag === 'INPUT' || tag === 'SELECT') return true;
+        if (target.isContentEditable) return true;
+        return false;
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (slideshowKeyboardTargetIsEditable(e.target)) return;
+        const k = e.key;
+        const goPrev = k === 'ArrowLeft' || k === 'ArrowUp' || k === 'PageUp';
+        const goNext = k === 'ArrowRight' || k === 'ArrowDown' || k === 'PageDown' || k === ' ';
+        if (!goPrev && !goNext) return;
+        if (k === ' ' && e.target && e.target.tagName && e.target.tagName.toUpperCase() === 'BUTTON') return;
+        e.preventDefault();
+        checkAndEnforceFullscreen();
+        showSlide(currentSlide + (goNext ? 1 : -1));
+    });
+
     showSlide(0);
 }
 

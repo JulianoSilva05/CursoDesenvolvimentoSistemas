@@ -1,1 +1,4 @@
 ersjuliano*
+
+# Estado local da API PHP (senhas hash, alunos) — só JSON, sem MySQL
+api/data/state.json
